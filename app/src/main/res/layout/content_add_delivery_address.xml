@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    tools:showIn="@layout/activity_add_delivery_address"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/delivery_text"
+        android:text="Your Delivery Address"
+        android:textColor="@color/white"
+        android:drawablePadding="-190dp"
+        android:padding="10dp"
+        android:textSize="@dimen/text_size"
+        android:background="@color/Button_Color"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_above="@+id/confirmAddress"
+        android:layout_below="@+id/delivery_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:textSize="@dimen/text_size"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/Full_Name" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:textSize="@dimen/text_size"
+                    android:inputType="textEmailAddress"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/Email_id" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/mobile"
+                    android:layout_width="match_parent"
+                    android:textSize="@dimen/text_size"
+                    android:inputType="number"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/Mobile_no" />
+
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/city"
+                    android:layout_width="match_parent"
+                    android:textSize="@dimen/text_size"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/city" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/address"
+                    android:layout_width="match_parent"
+                    android:textSize="@dimen/text_size"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/Address" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/state"
+                    android:layout_width="match_parent"
+                    android:textSize="@dimen/text_size"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/state" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/pincode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size"
+                    android:inputType="number"
+                    android:hint="@string/pin_code" />
+
+            </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Confirm Address"
+        android:layout_margin="5dp"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/confirmAddress"
+        android:textSize="@dimen/text_size"
+        android:background="@drawable/rounded_btn"
+        android:textStyle="bold"
+        android:textColor="@color/TextColor"
+        android:textAppearance="?android:textAppearanceMedium"
+        />
+
+</RelativeLayout>

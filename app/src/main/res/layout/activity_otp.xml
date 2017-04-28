@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:background="@mipmap/ic_launcher"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:layout_gravity="center"
+            android:layout_width="150dp"
+            android:layout_height="150dp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:text="We're sending you a One Time Password:"
+                android:id="@+id/opttext"
+                android:textSize="16sp"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:textColor="@color/Gray"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_below="@+id/opttext"
+                android:id="@+id/mobinumber"
+                android:layout_margin="10dp"
+                android:textSize="16sp"
+                android:text=""
+                android:textStyle="bold"
+                android:textColor="@color/TextBlackColor"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+
+            <LinearLayout
+                android:id="@+id/otp"
+                android:gravity="center"
+                android:layout_below="@+id/mobinumber"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/otp1"
+                    android:textSize="16sp"
+                    android:inputType="number"
+                    android:gravity="center"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content" />
+
+                <EditText
+                    android:id="@+id/otp2"
+                    android:textSize="16sp"
+                    android:inputType="number"
+                    android:gravity="center"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content" />
+
+                <EditText
+                    android:id="@+id/otp3"
+                    android:textSize="16sp"
+                    android:inputType="number"
+                    android:gravity="center"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content" />
+
+                <EditText
+                    android:id="@+id/otp4"
+                    android:textSize="16sp"
+                    android:inputType="number"
+                    android:gravity="center"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/counter"
+                android:layout_margin="10dp"
+                android:text="03:41"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:layout_below="@+id/otp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:layout_below="@+id/counter"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/sendOTP"
+                    android:background="@drawable/rounded_btn"
+                    android:layout_centerHorizontal="true"
+                    android:text="Verify"
+                    android:layout_weight="1"
+                    android:textSize="16sp"
+                    android:padding="10dp"
+                    android:textColor="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_margin="10dp"
+                    />
+
+                <Button
+                    android:id="@+id/resendOTP"
+                    android:background="@drawable/rounded_btn"
+                    android:layout_below="@+id/sendOTP"
+                    android:layout_width="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:layout_height="40dp"
+                    android:padding="10dp"
+                    android:layout_weight="1"
+                    android:layout_margin="10dp"
+                    android:textSize="16sp"
+                    android:textColor="@color/white"
+                    android:text="Resend OTP"
+                    />
+
+                <Button
+                    android:id="@+id/skip"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text="Skip"
+                    android:padding="10dp"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:layout_weight="1"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="10dp"
+                    android:layout_below="@+id/resendOTP"
+                    android:background="@drawable/rounded_btn"
+                    />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

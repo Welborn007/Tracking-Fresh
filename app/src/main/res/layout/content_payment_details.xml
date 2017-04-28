@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@android:color/white"
+    tools:showIn="@layout/activity_payment_details"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/delivery_text"
+        android:text="Payment Details"
+        android:textColor="@color/white"
+        android:drawablePadding="-190dp"
+        android:padding="10dp"
+        android:textSize="@dimen/text_size"
+        android:background="@color/Button_Color"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_above="@+id/btnSubmit"
+        android:layout_below="@+id/delivery_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="Total Payable amount"
+                android:textColor="@color/black"
+                android:layout_margin="5dp"
+                android:padding="10dp"
+                android:textSize="@dimen/text_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:text="Rs.500"
+                android:textColor="@color/black"
+                android:layout_margin="5dp"
+                android:padding="10dp"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="@drawable/edittext_border"
+            android:orientation="vertical"
+            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:layout_marginLeft="10dp"
+                android:layoutDirection="rtl"
+                android:textSize="@dimen/text_size"
+                android:text="Use Wallet amount for payment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="Available Balance: Rs 200"
+                android:textColor="@color/black"
+                android:layout_marginLeft="10dp"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <CheckBox
+            android:layoutDirection="rtl"
+            android:paddingLeft="5dp"
+            android:textSize="@dimen/text_size"
+            android:text="Cash On Delivery"
+            android:layout_width="match_parent"
+            android:layout_margin="5dp"
+            android:layout_height="wrap_content" />
+
+        <CheckBox
+            android:layoutDirection="rtl"
+            android:textSize="@dimen/text_size"
+            android:layout_margin="5dp"
+            android:paddingLeft="5dp"
+            android:text="Credit/Debit Card,Net Banking"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Place Order"
+        android:layout_margin="5dp"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/btnSubmit"
+        android:textSize="@dimen/text_size"
+        android:background="@drawable/rounded_btn"
+        android:textStyle="bold"
+        android:textColor="@color/TextColor"
+        android:textAppearance="?android:textAppearanceMedium"
+        />
+
+</RelativeLayout>

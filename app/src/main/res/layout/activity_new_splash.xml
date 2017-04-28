@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:fillViewport="true"
+    tools:context="com.kesari.trackingfresh.Splash.NewSplash">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/imageView5"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_above="@+id/btnLogin"
+                    android:src="@drawable/splash" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="GET STARTED"
+                    android:id="@+id/btnLogin"
+                    android:background="@color/MoneyGreen"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_above="@+id/login"
+                    android:textSize="@dimen/text_size"
+                    android:textColor="@color/TextColor"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    />
+
+                <Button
+                    android:id="@+id/login"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="LOG IN WITH TRACKING FRESH"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_alignParentBottom="true"
+                    android:textSize="@dimen/text_size"
+                    android:textColor="@color/black"
+                    android:background="@android:color/transparent"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    />
+
+            </RelativeLayout>
+
+</ScrollView>

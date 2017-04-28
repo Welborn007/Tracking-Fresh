@@ -1,0 +1,73 @@
+[{
+  "id": 1,
+  "product_name": "Orange",
+  "images": "https://www.bforball.com/image/categ/orange.png",
+  "kilo": "1Kg",
+  "Rs":"100 Rs."
+}, {
+  "id": 2,
+  "product_name": "Clothing",
+  "images": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Red_Apple.jpg/265px-Red_Apple.jpg",
+  "kilo": "3Kg",
+  "Rs":"300 Rs."
+}, {
+  "id": 3,
+  "product_name": "Bananas",
+  "images": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Bananas_white_background_DS.jpg/320px-Bananas_white_background_DS.jpg",
+  "kilo": "1 Doz",
+  "Rs":"50 Rs."
+}, {
+  "id": 4,
+  "product_name": "Grapes",
+  "images": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Table_grapes_on_white.jpg/320px-Table_grapes_on_white.jpg",
+  "kilo": "2Kg",
+  "Rs":"60 Rs."
+}, {
+  "id": 5,
+  "product_name": "Dark Grapes",
+  "images": "https://www.bforball.com/image/categ/grapes.png",
+  "kilo": "1Kg",
+  "Rs":"80 Rs."
+}, {
+  "id": 6,
+  "product_name": "Pineapple",
+  "images": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Pineapple_and_cross_section.jpg/286px-Pineapple_and_cross_section.jpg",
+  "kilo": "2Kg",
+  "Rs":"50 Rs."
+}, {
+  "id": 7,
+  "product_name": "Pomegranate",
+  "images": "https://www.bforball.com/image/categ/pomegranate.png",
+  "kilo": "2Kg",
+  "Rs":"150 Rs."
+}, {
+  "id": 8,
+  "product_name": "Jackfruit",
+  "images": "https://www.bforball.com/image/categ/jackfruit.png",
+  "kilo": "3Kg",
+  "Rs":"300 Rs."
+}, {
+  "id": 9,
+  "product_name": "Plum",
+  "images": "https://www.bforball.com/image/categ/plum.png",
+  "kilo": "1Kg",
+  "Rs":"90 Rs."
+}, {
+  "id": 10,
+  "product_name": "Custard-apple",
+  "images": "https://www.bforball.com/image/categ/custard-apple.png",
+  "kilo": "1Kg",
+  "Rs":"80 Rs."
+}, {
+  "id": 11,
+  "product_name": "Peach",
+  "images": "https://www.bforball.com/image/categ/peach.png",
+  "kilo": "1Kg",
+  "Rs":"110 Rs."
+}, {
+  "id": 12,
+  "product_name": "Kiwi",
+  "images": "https://www.bforball.com/image/categ/kiwi.png",
+  "kilo": "1Kg",
+  "Rs":"300 Rs."
+}]

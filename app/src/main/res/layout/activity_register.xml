@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eaeaea"
+    tools:context="com.kesari.trackingfresh.Register.RegisterActivity">
+
+    <android.support.v7.widget.Toolbar android:id="@+id/toolbar"
+        android:layout_marginTop="24dp"
+        android:layout_width="match_parent" android:layout_height="?attr/actionBarSize"
+        android:background="@color/white" app:popupTheme="@style/AppTheme.PopupOverlay" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Register"
+                android:gravity="center"
+                android:paddingLeft="-40dp"
+                android:textSize="14sp"
+                android:layout_centerInParent="true"
+                android:textColor="@color/black"
+                />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_above="@+id/btnRegister"
+        android:layout_below="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/first_name"
+                    android:layout_width="match_parent"
+                    android:textSize="@dimen/text_size"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/first_name" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/last_name"
+                    android:layout_width="match_parent"
+                    android:textSize="@dimen/text_size"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/last_name" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/mobile"
+                    android:layout_width="match_parent"
+                    android:textSize="@dimen/text_size"
+                    android:inputType="number"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/mobileno" />
+
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:textSize="@dimen/text_size"
+                    android:inputType="textEmailAddress"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/email_id" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/location"
+                    android:layout_width="match_parent"
+                    android:textSize="@dimen/text_size"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/location" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:inputType="textPassword"
+                    android:textSize="@dimen/text_size"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/password" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/referral_code"
+                    android:layout_width="match_parent"
+                    android:textSize="@dimen/text_size"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/referral_code" />
+
+            </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        android:layout_margin="5dp"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/btnRegister"
+        android:textSize="@dimen/text_size"
+        android:background="@drawable/rounded_btn"
+        android:textStyle="bold"
+        android:textColor="@color/TextColor"
+        android:textAppearance="?android:textAppearanceMedium"
+        />
+
+</RelativeLayout>

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    >
+
+    <android.support.v7.widget.SearchView
+        android:id="@+id/searchLocation"
+        android:background="@color/white"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+
+    <RelativeLayout
+        android:id="@+id/fragment_holder"
+        android:layout_above="@+id/layout_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/map_Holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.seatgeek.placesautocomplete.PlacesAutocompleteTextView
+                android:id="@+id/places_autocomplete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Search...."
+                android:maxLines="1"
+                android:visibility="gone"
+                android:ellipsize="end"
+                android:scrollHorizontally="true"
+                style="@style/Widget.PlacesAutoCompleteTextView.Styled"
+                app:pacv_googleMapsApiKey="AIzaSyCWqw5vGZZrQxWCsVVvNa37yNdGxiUPQAs"/>
+
+            <TextView
+                android:id="@+id/GuestAddress"
+                android:text="35 Kms"
+                android:textColor="@color/black"
+                android:padding="10dp"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textSize="@dimen/text_size"
+                android:background="@drawable/edittext_border"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:map="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/map_container"
+                android:layout_below="@+id/GuestAddress"
+                class="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                map:uiZoomControls="true" />
+
+            <TextView
+                android:id="@+id/kilometre"
+                android:text="35 Kms"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:padding="10dp"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:textStyle="bold"
+                android:textSize="@dimen/text_size"
+                android:background="@drawable/edittext_border"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </RelativeLayout>
+
+        <FrameLayout
+            android:id="@+id/fragment_data"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </FrameLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_holder"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+        <TextView
+            android:text="Product Category"
+            android:gravity="center_vertical"
+            android:textColor="@color/white"
+            android:padding="15dp"
+            android:textSize="@dimen/text_size"
+            android:background="@color/Button_Color"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:weightSum="3"
+            android:layout_width="match_parent"
+            android:layout_height="100dp">
+
+            <ImageView
+                android:id="@+id/fruits"
+                android:layout_weight="1"
+                android:src="@drawable/fruit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:layout_width="1dp"
+                android:background="#ccc"
+                android:layout_height="match_parent"/>
+
+            <ImageView
+                android:id="@+id/vegetables"
+                android:layout_weight="1"
+                android:src="@drawable/vegetable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:layout_width="1dp"
+                android:background="#ccc"
+                android:layout_height="match_parent"/>
+
+            <ImageView
+                android:id="@+id/groceries"
+                android:layout_weight="1"
+                android:src="@drawable/groceries"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:weightSum="3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:text="@string/fruits"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:padding="15dp"
+            android:layout_weight="1"
+            android:textSize="@dimen/text_size"
+            android:background="@color/Skip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <View
+            android:layout_width="1dp"
+            android:background="#ccc"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:text="@string/vegetables"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:padding="15dp"
+            android:layout_weight="1"
+            android:textSize="@dimen/text_size"
+            android:background="@color/Skip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <View
+            android:layout_width="1dp"
+            android:background="#ccc"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:text="@string/groceries"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:padding="15dp"
+            android:layout_weight="1"
+            android:textSize="@dimen/text_size"
+            android:background="@color/Skip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
+
