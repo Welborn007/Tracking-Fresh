@@ -10,34 +10,33 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
@@ -50,18 +49,20 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.kesari.trackingfresh.ForgetPassword.ForgotPassword_Activity;
 import com.kesari.trackingfresh.ProductPage.DashboardActivity;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Register.RegisterActivity;
 import com.kesari.trackingfresh.Utilities.Constants;
+import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.network.FireToast;
-import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.ActionClickListener;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -71,13 +72,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener,GoogleApiClient.OnConnectionFailedListener,NetworkUtilsReceiver.NetworkResponseInt{
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener, NetworkUtilsReceiver.NetworkResponseInt {
 
-    Button btnLogin,btnSignup;
-    ImageView Fbbtn,Googlebtn;
+    Button btnLogin, btnSignup;
+    TextView btnForget;
+    ImageView Fbbtn, Googlebtn;
     private NetworkUtilsReceiver networkUtilsReceiver;
 
     private static final String TAG = "LoginActivity";
+
+    SharedPreferences sharedpreferencesLogin;
+    public static final String MyPREFERENCES_LOGIN = "MyPrefsLogin";
 
     //Google
     SignInButton signInButton;
@@ -90,21 +95,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     //Facebook
     private CallbackManager callbackManager;
     private LoginButton loginButton;
-    String fb_id,fb_name,fb_gender,fb_birthday,fb_email;
+    String fb_id, fb_name, fb_gender, fb_birthday, fb_email;
 
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
     boolean permission = false;
 
-    EditText user_name,password;
+    EditText user_name, password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_login);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setContentView(R.layout.activity_login);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
 
         /*Register receiver*/
         networkUtilsReceiver = new NetworkUtilsReceiver(this);
@@ -112,9 +119,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         btnLogin = (Button) findViewById(R.id.btnLogin);
         btnSignup = (Button) findViewById(R.id.btnSignup);
+        btnForget = (TextView) findViewById(R.id.btnForget);
 
         user_name = (EditText) findViewById(R.id.user_name);
         password = (EditText) findViewById(R.id.password);
+
+        sharedpreferencesLogin = getSharedPreferences(MyPREFERENCES_LOGIN, Context.MODE_PRIVATE);
+
+        String token = sharedpreferencesLogin.getString("token", "None");
+        Log.i("token", token);
+
+        final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            buildAlertMessageNoGps();
+        } else {
+
+        }
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,11 +144,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 String UserName = user_name.getText().toString();
                 String Password = password.getText().toString();
 
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
-                if(!UserName.isEmpty() && !Password.isEmpty())
-                {
+                if (!UserName.isEmpty() && !Password.isEmpty()) {
                     if (!NetworkUtils.isNetworkConnectionOn(LoginActivity.this)) {
                         FireToast.customSnackbarWithListner(LoginActivity.this, "No internet access", "Settings", new ActionClickListener() {
                             @Override
@@ -136,19 +156,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             }
                         });
                         return;
+                    } else {
+                        sendSimpleLoginData(UserName, Password);
                     }
-                    else
-                    {
-                        sendSimpleLoginData(UserName,Password);
-                    }
-                }
-                else if(UserName.isEmpty())
-                {
+                } else if (UserName.isEmpty()) {
                     //Toast.makeText(LoginActivity.this, getString(R.string.mobileno), Toast.LENGTH_SHORT).show();
                     user_name.setError(getString(R.string.mobileno));
-                }
-                else if(Password.isEmpty())
-                {
+                } else if (Password.isEmpty()) {
                     //Toast.makeText(LoginActivity.this, getString(R.string.password), Toast.LENGTH_SHORT).show();
                     password.setError(getString(R.string.password));
                 }
@@ -159,20 +173,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent startMainActivity = new Intent(getApplicationContext(),RegisterActivity.class);
-                startMainActivity.putExtra("Type","simple");
+                Intent startMainActivity = new Intent(getApplicationContext(), RegisterActivity.class);
+                startMainActivity.putExtra("Type", "simple");
+                startActivity(startMainActivity);
+            }
+        });
+
+        btnForget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent startMainActivity = new Intent(getApplicationContext(), ForgotPassword_Activity.class);
                 startActivity(startMainActivity);
             }
         });
 
         if (Build.VERSION.SDK_INT >= 23) {
 
-            if(checkAndRequestPermissions())
-            {
+            if (checkAndRequestPermissions()) {
 
-            }
-            else
-            {
+            } else {
 
             }
 
@@ -184,12 +203,30 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         init();
     }
 
-    public void sendSimpleLoginData(String Mobile,String Password){
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    public void sendSimpleLoginData(String Mobile, String Password) {
 
         //String url = "http://192.168.1.10:8000/api/customer/login";
         String url = Constants.LoginActivityAPI;
 
-        Log.i("url",url);
+        Log.i("url", url);
 
         JSONObject jsonObject = new JSONObject();
 
@@ -197,10 +234,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             JSONObject postObject = new JSONObject();
 
-            postObject.put("mobileNo",Mobile);
-            postObject.put("password",Password);
+            postObject.put("mobileNo", Mobile);
+            postObject.put("password", Password);
 
-            jsonObject.put("post",postObject);
+            jsonObject.put("post", postObject);
 
             Log.i("JSON CREATED", jsonObject.toString());
 
@@ -208,8 +245,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             e.printStackTrace();
         }
 
+        IOUtils ioUtils = new IOUtils();
 
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+        ioUtils.sendJSONObjectRequest(url, jsonObject, new IOUtils.VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+                SimpleResponse(result.toString());
+            }
+        });
+
+        /*JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
                 url, jsonObject,
                 new Response.Listener<JSONObject>() {
 
@@ -237,36 +282,32 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         //Adding request to request queue
-        MyApplication.getInstance().addRequestToQueue(jsonObjReq, TAG);
+        MyApplication.getInstance().addRequestToQueue(jsonObjReq, TAG);*/
 
     }
 
-    public void SimpleResponse(String Response)
-    {
+    public void SimpleResponse(String Response) {
         try {
 
             JSONObject jsonObject = new JSONObject(Response);
 
             String status = jsonObject.getString("status");
 
-            if(status.equalsIgnoreCase("404"))
-            {
+            if (status.equalsIgnoreCase("404")) {
                 Toast.makeText(this, getString(R.string.please_register), Toast.LENGTH_SHORT).show();
                 user_name.setText("");
                 password.setText("");
             }
 
-            if(status.equalsIgnoreCase("500"))
-            {
+            if (status.equalsIgnoreCase("500")) {
                 String message = jsonObject.getString("message");
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                 user_name.setText("");
                 password.setText("");
             }
 
-            if(status.equalsIgnoreCase("200"))
-            {
-                Intent startMainActivity = new Intent(getApplicationContext(),DashboardActivity.class);
+            if (status.equalsIgnoreCase("200")) {
+                Intent startMainActivity = new Intent(getApplicationContext(), DashboardActivity.class);
                 startActivity(startMainActivity);
 
                 finish();
@@ -274,18 +315,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 SharedPrefUtil.setUser(getApplicationContext(), Response.toString());
             }
 
-        }catch (JSONException jse)
-        {
+        } catch (JSONException jse) {
 
         }
     }
 
-    public void sendSocialLoginData(final String SocialID, final String Name, final String Email, final String Type){
+    public void sendSocialLoginData(final String SocialID, final String Name, final String Email, final String Type, final String firstname, final String lastname) {
 
         //String url = "http://192.168.1.10:8000/api/customer/login";
         String url = Constants.LoginActivityAPI;
 
-        Log.i("url",url);
+        Log.i("url", url);
 
         JSONObject jsonObject = new JSONObject();
 
@@ -293,9 +333,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             JSONObject postObject = new JSONObject();
 
-            postObject.put("socialId",SocialID);
+            postObject.put("socialId", SocialID);
 
-            jsonObject.put("post",postObject);
+            jsonObject.put("post", postObject);
 
             Log.i("JSON CREATED", jsonObject.toString());
 
@@ -303,8 +343,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             e.printStackTrace();
         }
 
+        IOUtils ioUtils = new IOUtils();
 
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+        ioUtils.sendJSONObjectRequest(url, jsonObject, new IOUtils.VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+                SocialResponse(result.toString(), SocialID, Name, Email, Type, firstname, lastname);
+            }
+        });
+
+       /* JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
                 url, jsonObject,
                 new Response.Listener<JSONObject>() {
 
@@ -313,7 +361,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         Log.d(TAG, response.toString());
                         // pDialog.hide();
 
-                        SocialResponse(response.toString(),SocialID,Name,Email,Type);
+                        SocialResponse(response.toString(), SocialID, Name, Email, Type, firstname, lastname);
                     }
                 }, new Response.ErrorListener() {
 
@@ -331,39 +379,39 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         //Adding request to request queue
-        MyApplication.getInstance().addRequestToQueue(jsonObjReq, TAG);
+        MyApplication.getInstance().addRequestToQueue(jsonObjReq, TAG);*/
 
     }
 
-    public void SocialResponse(String Response,String SocialID,String Name,String Email,String Type)
-    {
+    public void SocialResponse(String Response, String SocialID, String Name, String Email, String Type, String firstname, String lastname) {
         try {
 
             JSONObject jsonObject = new JSONObject(Response);
 
             String status = jsonObject.getString("status");
 
-            if(status.equalsIgnoreCase("404"))
-            {
-                Intent startMainActivity = new Intent(getApplicationContext(),RegisterActivity.class);
-                startMainActivity.putExtra("SocialID",SocialID);
-                startMainActivity.putExtra("Name",Name);
-                startMainActivity.putExtra("Email",Email);
-                startMainActivity.putExtra("Type",Type);
-                startActivity(startMainActivity);
+            if (status.equalsIgnoreCase("404")) {
+               /* Intent startMainActivity = new Intent(getApplicationContext(), RegisterActivity.class);
+                startMainActivity.putExtra("SocialID", SocialID);
+                startMainActivity.putExtra("Name", Name);
+                startMainActivity.putExtra("Email", Email);
+                startMainActivity.putExtra("Type", Type);
+                startMainActivity.putExtra("firstname", firstname);
+                startMainActivity.putExtra("lastname", lastname);
+                startActivity(startMainActivity);*/
+
+               sendRegisterData(firstname,lastname,"",Email,"","",Type,SocialID);
             }
 
-            if(status.equalsIgnoreCase("500"))
-            {
+            if (status.equalsIgnoreCase("500")) {
                 String message = jsonObject.getString("message");
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                 user_name.setText("");
                 password.setText("");
             }
 
-            if(status.equalsIgnoreCase("200"))
-            {
-                Intent startMainActivity = new Intent(getApplicationContext(),DashboardActivity.class);
+            if (status.equalsIgnoreCase("200")) {
+                Intent startMainActivity = new Intent(getApplicationContext(), DashboardActivity.class);
                 startActivity(startMainActivity);
 
                 finish();
@@ -371,28 +419,132 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 SharedPrefUtil.setUser(getApplicationContext(), Response.toString());
             }
 
-        }catch (JSONException jse)
-        {
+        } catch (JSONException jse) {
 
         }
     }
+
+    public void sendRegisterData(String FirstName, String LastName, String Mobile, String Email, String ReferralCode, String Password, String Type, String SocialID) {
+
+        //String url = "http://192.168.1.10:8000/api/customer/";
+
+        String url = Constants.RegisterActivityAPI;
+
+        Log.i("url", url);
+
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+
+            JSONObject postObject = new JSONObject();
+
+            postObject.put("firstName", FirstName);
+            postObject.put("lastName", LastName);
+            postObject.put("mobileNo", Mobile);
+            postObject.put("emailId", Email);
+            //postObject.put("location",Location);
+            postObject.put("referralCode", ReferralCode);
+            postObject.put("socialId", SocialID);
+            postObject.put("registrationType", Type);
+            postObject.put("password", Password);
+
+            jsonObject.put("post", postObject);
+
+            Log.i("JSON CREATED", jsonObject.toString());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        IOUtils ioUtils = new IOUtils();
+
+        ioUtils.sendJSONObjectRequest(url, jsonObject, new IOUtils.VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+                RegisterResponse(result.toString());
+            }
+        });
+
+        /*JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                url, jsonObject,
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG, response.toString());
+                        // pDialog.hide();
+
+                        RegisterResponse(response.toString());
+
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                // hide the progress dialog
+                //pDialog.hide();
+            }
+        });
+
+        jsonObjReq.setRetryPolicy(new DefaultRetryPolicy(
+                5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        //Adding request to request queue
+        MyApplication.getInstance().addRequestToQueue(jsonObjReq, TAG);*/
+
+    }
+
+    public void RegisterResponse(String Response) {
+        try {
+
+            JSONObject jsonObject = new JSONObject(Response);
+
+            String status = jsonObject.getString("status");
+            //String message = jsonObject.getString("message");
+
+            if (status.equalsIgnoreCase("500")) {
+                JSONArray jsonArray = jsonObject.getJSONArray("errors");
+                String errors = jsonArray.getString(0);
+                Toast.makeText(this, errors, Toast.LENGTH_LONG).show();
+            }
+
+            if (status.equalsIgnoreCase("200")) {
+                Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                        new ResultCallback<Status>() {
+                            @Override
+                            public void onResult(Status status) {
+                                // ...
+                                finish();
+                                Toast.makeText(LoginActivity.this, getString(R.string.user_registered), Toast.LENGTH_SHORT).show();
+                                Intent i = new Intent(LoginActivity.this, DashboardActivity.class);
+                                startActivity(i);
+                            }
+                        });
+            }
+
+        } catch (JSONException jse) {
+            Log.i("Exception", jse.getMessage());
+        }
+    }
+
 
     @Override
     protected void onRestart() {
         super.onRestart();
 
-        if(permission)
-        {
-            Log.i("permission","backPressed");
-            if(checkAndRequestPermissions())
-            {
+        if (permission) {
+            Log.i("permission", "backPressed");
+            if (checkAndRequestPermissions()) {
 
             }
         }
 
     }
 
-    private  boolean checkAndRequestPermissions() {
+    private boolean checkAndRequestPermissions() {
         int writeStoragePermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
         int locationPermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION);
         int readSMS = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS);
@@ -406,12 +558,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             listPermissionsNeeded.add(android.Manifest.permission.ACCESS_FINE_LOCATION);
         }
 
-        if (readSMS != PackageManager.PERMISSION_GRANTED){
+        if (readSMS != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(android.Manifest.permission.READ_SMS);
         }
 
         if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),REQUEST_ID_MULTIPLE_PERMISSIONS);
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), REQUEST_ID_MULTIPLE_PERMISSIONS);
             return false;
         }
         return true;
@@ -439,10 +591,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     // Check for both permissions
                     if (perms.get(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
                             && perms.get(android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                            && perms.get(android.Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED)
-                    {
+                            && perms.get(android.Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED) {
                         Log.d(TAG, "All permission granted");
-                        Toast.makeText(getApplicationContext(),"All permission granted",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "All permission granted", Toast.LENGTH_LONG).show();
                         //showDeviceDetails();
                         // process the normal flow
                         //else any one or both the permissions are not granted
@@ -453,9 +604,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         //show the dialog or snackbar saying its necessary and try again otherwise proceed with setup.
                         if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                                 || ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                                || ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.READ_SMS))
-                        {
-                            if(checkAndRequestPermissions()) {
+                                || ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.READ_SMS)) {
+                            if (checkAndRequestPermissions()) {
                                 // carry on the normal flow, as the case of  permissions  granted.
                             }
                         }
@@ -493,8 +643,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 .show();
     }
 
-    private void init()
-    {
+    private void init() {
         //Google
         Googlebtn = (ImageView) findViewById(R.id.Googlebtn);
         Googlebtn.setOnClickListener(this);
@@ -515,9 +664,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         //Facebook
         Fbbtn = (ImageView) findViewById(R.id.Fbbtn);
         Fbbtn.setOnClickListener(this);
-        loginButton= (LoginButton)findViewById(R.id.login_button);
-        loginButton.setReadPermissions("public_profile", "email","user_friends","user_birthday");
-        callbackManager= CallbackManager.Factory.create();
+        loginButton = (LoginButton) findViewById(R.id.login_button);
+        loginButton.setReadPermissions("public_profile", "email", "user_friends", "user_birthday");
+        callbackManager = CallbackManager.Factory.create();
     }
 
     @Override
@@ -560,9 +709,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         }
                     });
                     return;
-                }
-                else
-                {
+                } else {
                     signIn();
                 }
 
@@ -578,20 +725,43 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         }
                     });
                     return;
-                }
-                else
-                {
-                    loginButton.performClick();
-                    loginButton.setPressed(true);
-                    loginButton.invalidate();
-                    loginButton.registerCallback(callbackManager, mCallBack);
-                    loginButton.setPressed(false);
-                    loginButton.invalidate();
+                } else {
+                    if(isLoggedIn())
+                    {
+                        LoginManager.getInstance().logOut();
+
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                loginButton.performClick();
+                                loginButton.setPressed(true);
+                                loginButton.invalidate();
+                                loginButton.registerCallback(callbackManager, mCallBack);
+                                loginButton.setPressed(false);
+                                loginButton.invalidate();
+                            }
+                        }, 2000);
+                    }
+                    else
+                    {
+                        loginButton.performClick();
+                        loginButton.setPressed(true);
+                        loginButton.invalidate();
+                        loginButton.registerCallback(callbackManager, mCallBack);
+                        loginButton.setPressed(false);
+                        loginButton.invalidate();
+                    }
                 }
                 break;
 
 
         }
+    }
+
+    public boolean isLoggedIn() {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        return accessToken != null;
     }
 
     //Facebook Call response
@@ -622,10 +792,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                /* startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                                 finish();*/
 
-                               String id = object.getString("id").toString();
-                               String name =  object.getString("name").toString();
-                               String email =  object.getString("email").toString();
-                               String registration_Type = "facebook";
+                                String id = object.getString("id").toString();
+                                String name = object.getString("name").toString();
+                                String email = object.getString("email").toString();
+                                String firstname = object.getString("first_name").toString();
+                                String lastname = object.getString("last_name").toString();
+                                String registration_Type = "facebook";
 
                                 if (!NetworkUtils.isNetworkConnectionOn(LoginActivity.this)) {
                                     FireToast.customSnackbarWithListner(LoginActivity.this, "No internet access", "Settings", new ActionClickListener() {
@@ -635,17 +807,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         }
                                     });
                                     return;
-                                }
-                                else
-                                {
-                                    sendSocialLoginData(id,name,email,registration_Type);
+                                } else {
+                                    sendSocialLoginData(id, name, email, registration_Type, firstname, lastname);
                                 }
 
                                 SharedPreferences.Editor editor = getSharedPreferences("MyPref", MODE_PRIVATE).edit();
                                 editor.putString("name", object.getString("name").toString());
                                 editor.commit();
 
-                            }catch (Exception e){
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
 
@@ -655,7 +825,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     });
 
             Bundle parameters = new Bundle();
-            parameters.putString("fields", "id,name,email,gender, birthday");
+            parameters.putString("fields", "id,name,email,gender, birthday, first_name, last_name");
             request.setParameters(parameters);
             request.executeAsync();
         }
@@ -694,9 +864,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
             /*mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));*/
-            Log.i("email",acct.getEmail());
-            Log.i("id",acct.getId());
-            Log.i("name",acct.getDisplayName());
+            Log.i("email", acct.getEmail());
+            Log.i("id", acct.getId());
+            Log.i("name", acct.getDisplayName());
             /*Log.i("photo",acct.getPhotoUrl().toString());*/
 //            Log.i("authcode",acct.getServerAuthCode());
            /* Log.i("scopes",acct.getGrantedScopes().toString());*/
@@ -705,6 +875,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             user.ID = acct.getId();
             user.email = acct.getEmail();
             user.name = acct.getDisplayName();
+            user.setFirstName(acct.getGivenName());
+            user.setLastName(acct.getFamilyName());
             user.createdAt = "3";
 //            user.profileImageUrl = acct.getPhotoUrl().toString();
 
@@ -712,9 +884,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             startActivity(intent);
             finish();*/
 
+            String personGivenName = acct.getGivenName();
+            String personFamilyName = acct.getFamilyName();
+
+            Log.i(personFamilyName, personGivenName);
+
             String id = acct.getId();
-            String name =  acct.getDisplayName();
-            String email =  acct.getEmail();
+            String name = acct.getDisplayName();
+            String email = acct.getEmail();
             String registration_Type = "google";
 
             if (!NetworkUtils.isNetworkConnectionOn(LoginActivity.this)) {
@@ -725,10 +902,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     }
                 });
                 return;
-            }
-            else
-            {
-                sendSocialLoginData(id,name,email,registration_Type);
+            } else {
+                sendSocialLoginData(id, name, email, registration_Type, personGivenName, personFamilyName);
             }
 
             SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);

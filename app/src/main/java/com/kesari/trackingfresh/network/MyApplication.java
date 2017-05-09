@@ -9,6 +9,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
+import com.kesari.trackingfresh.AddToCart.AddCart_model;
+
+import java.util.ArrayList;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -22,6 +25,7 @@ public class MyApplication extends Application
     private static MyApplication mInstance;
     private RequestQueue requestQueue;
     public final static String TAG = MyApplication.class.getSimpleName();
+    public ArrayList<AddCart_model> myProducts = new ArrayList<AddCart_model>();
 
     @Override
     public void onCreate() {
@@ -62,7 +66,6 @@ public class MyApplication extends Application
 
     }
 
-
     public <T> void addRequestToQueue(Request<T> requestQueue) {
         requestQueue.setTag(TAG);
         getRequestQueue().add(requestQueue);
@@ -72,5 +75,34 @@ public class MyApplication extends Application
         if (requestQueue != null) {
             requestQueue.cancelAll(tag);
         }
+    }
+
+
+    public AddCart_model getProducts(int pPosition) {
+
+        return myProducts.get(pPosition);
+    }
+
+    public void setProducts(AddCart_model Products) {
+
+        myProducts.add(Products);
+
+    }
+
+    public void removeProducts(int Position) {
+
+        myProducts.remove(Position);
+
+    }
+
+    public void removeProductsItems() {
+
+        myProducts.clear();
+
+    }
+
+    public ArrayList<AddCart_model> getProductsArraylist() {
+
+        return myProducts;
     }
 }

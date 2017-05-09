@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.kesari.trackingfresh.DetailPage.DetailsActivity;
 import com.kesari.trackingfresh.R;
-import com.kesari.trackingfresh.network.IOUtils;
+import com.kesari.trackingfresh.Utilities.IOUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -178,6 +178,8 @@ public class Product_categoryFragment extends Fragment
                     {
                         int t = Integer.parseInt(viewHolder.count.getText().toString());
                         viewHolder.count.setText(String.valueOf(t+1));
+
+                        DashboardActivity.updateNotificationsBadge(t+1);
                     }
                     catch (Exception e)
                     {
@@ -194,6 +196,8 @@ public class Product_categoryFragment extends Fragment
                         if(t > 0)
                         {
                             viewHolder.count.setText(String.valueOf(t-1));
+
+                            DashboardActivity.updateNotificationsBadge(t-1);
                         }
 
                         if(t < 0 || t == 0)

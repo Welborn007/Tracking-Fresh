@@ -18,7 +18,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.kesari.trackingfresh.DeliveryAddress.Add_DeliveryAddress;
 import com.kesari.trackingfresh.ProductPage.Product_POJO;
 import com.kesari.trackingfresh.R;
-import com.kesari.trackingfresh.network.IOUtils;
+import com.kesari.trackingfresh.Utilities.IOUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;

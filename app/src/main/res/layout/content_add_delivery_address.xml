@@ -72,6 +72,44 @@
 
             </android.support.design.widget.TextInputLayout>
 
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/flat_no"
+                    android:layout_width="match_parent"
+                    android:textSize="@dimen/text_size"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/flat_no" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/building_name"
+                    android:layout_width="match_parent"
+                    android:textSize="@dimen/text_size"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/building_name" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/landmark"
+                    android:layout_width="match_parent"
+                    android:textSize="@dimen/text_size"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/landmark" />
+
+            </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -83,19 +121,6 @@
                     android:textSize="@dimen/text_size"
                     android:layout_height="wrap_content"
                     android:hint="@string/city" />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/address"
-                    android:layout_width="match_parent"
-                    android:textSize="@dimen/text_size"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/Address" />
 
             </android.support.design.widget.TextInputLayout>
 

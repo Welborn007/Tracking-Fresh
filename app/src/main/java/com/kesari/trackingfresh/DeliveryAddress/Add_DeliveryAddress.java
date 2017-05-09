@@ -13,7 +13,7 @@ import com.kesari.trackingfresh.R;
 public class Add_DeliveryAddress extends AppCompatActivity {
 
     Button confirmAddress;
-    EditText name,email,mobile,city,address,state,pincode;
+    EditText name,email,mobile,city,state,pincode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +30,6 @@ public class Add_DeliveryAddress extends AppCompatActivity {
         email = (EditText) findViewById(R.id.email);
         mobile = (EditText) findViewById(R.id.mobile);
         city = (EditText) findViewById(R.id.city);
-        address = (EditText) findViewById(R.id.address);
         state = (EditText) findViewById(R.id.state);
         pincode = (EditText) findViewById(R.id.pincode);
 

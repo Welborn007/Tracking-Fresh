@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
+import android.graphics.drawable.LayerDrawable;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,6 +20,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -37,6 +40,8 @@ import com.kesari.trackingfresh.Login.LoginActivity;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 
+import static com.kesari.trackingfresh.Utilities.IOUtils.setBadgeCount;
+
 public class DashboardActivity extends AppCompatActivity {
 
     DrawerLayout drawer;
@@ -48,6 +53,7 @@ public class DashboardActivity extends AppCompatActivity {
     SharedPreferences pref;
     SharedPreferences.Editor editor;
     private Boolean exit = false;
+    public static int mNotificationsCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,12 +94,12 @@ public class DashboardActivity extends AppCompatActivity {
         logo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Product_Fragment product_fragment = new Product_Fragment();
+                /*Product_Fragment product_fragment = new Product_Fragment();
 
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
                 transaction.replace(R.id.fragment_holder, product_fragment);
-                transaction.commit();
+                transaction.commit();*/
             }
         });
 
@@ -124,6 +130,37 @@ public class DashboardActivity extends AppCompatActivity {
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.replace(R.id.fragment_holder, product_fragment);
         transaction.commit();
+
+        updateNotificationsBadge(4);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_add_tocart, menu);
+
+        MenuItem item = menu.findItem(R.id.menu_hot);
+        LayerDrawable icon = (LayerDrawable) item.getIcon();
+
+        setBadgeCount(this, icon, mNotificationsCount);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        invalidateOptionsMenu();
+        return true;
+    }
+
+
+    public static void updateNotificationsBadge(int count) {
+        mNotificationsCount = count;
+
+        // force the ActionBar to relayout its MenuItems.
+        // onCreateOptionsMenu(Menu) will be called again.
     }
 
     @Override

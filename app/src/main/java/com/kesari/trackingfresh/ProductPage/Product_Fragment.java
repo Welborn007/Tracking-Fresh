@@ -6,28 +6,32 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.BaseAdapter;
@@ -41,10 +45,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -65,14 +72,15 @@ import com.kesari.trackingfresh.Map.JSON_POJO;
 import com.kesari.trackingfresh.Map.PathJSONParser;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
+import com.kesari.trackingfresh.Utilities.IOUtils;
+import com.kesari.trackingfresh.Utilities.OnSwipeTouchListener;
+import com.kesari.trackingfresh.Utilities.RecyclerItemClickListener;
 import com.kesari.trackingfresh.network.FireToast;
-import com.kesari.trackingfresh.network.IOUtils;
+import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.ActionClickListener;
-import com.seatgeek.placesautocomplete.OnPlaceSelectedListener;
 import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
-import com.seatgeek.placesautocomplete.model.Place;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -80,6 +88,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -91,12 +100,13 @@ import java.util.concurrent.TimeUnit;
 
 import mehdi.sakout.fancybuttons.FancyButton;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 /**
  * Created by kesari on 11/04/17.
  */
 
-public class Product_Fragment extends Fragment implements OnMapReadyCallback
-{
+public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
     private LatLng Current_Origin;
 
@@ -111,11 +121,11 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
     HashMap<String, HashMap> extraMarkerInfo = new HashMap<String, HashMap>();
 
     private static final String TAG_ID = "id";
-    private static final String TAG_LOCATION_NAME= "location_name";
+    private static final String TAG_LOCATION_NAME = "location_name";
     private static final String TAG_LATITUDE = "latitude";
     private static final String TAG_LONGITUDE = "longitude";
 
-    GridView recyclerView;
+    GridView gridView;
     private LinearLayoutManager llm;
 
     //private RecyclerView.Adapter adapterItineraryDetails;
@@ -126,7 +136,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
     private GoogleMap map;
     /*private MarkerOptions currentPositionMarker = null;
     private Marker currentLocationMarker;*/
-    ImageView fruits,vegetables,groceries;
+    ImageView fruits, vegetables, groceries;
     View f1;
     FrameLayout fragment_data;
     Marker marker;
@@ -138,8 +148,15 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
 
     SearchView searchView;
     PlacesAutocompleteTextView placesAutocompleteTextView;
-    TextView kilometre,GuestAddress;
+    TextView kilometre, GuestAddress,ETA;
     RelativeLayout map_Holder;
+    LinearLayout layout_holder,product_holder;
+    FloatingActionButton fab;
+    FancyButton product_category;
+
+    private RecyclerView recyclerView;
+    private LinearLayoutManager linearLayoutManager;
+    private Product_RecyclerAdapter product_recyclerAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -153,14 +170,106 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
         f1 = (View) V.findViewById(R.id.map_container);
         fragment_data = (FrameLayout) V.findViewById(R.id.fragment_data);
 
+        recyclerView = (RecyclerView) V.findViewById(R.id.product_category_recyclerview);
+        recyclerView.setHasFixedSize(true);
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
         searchView = (SearchView) V.findViewById(R.id.searchLocation);
         placesAutocompleteTextView = (PlacesAutocompleteTextView) V.findViewById(R.id.places_autocomplete);
 
         kilometre = (TextView) V.findViewById(R.id.kilometre);
+        ETA = (TextView) V.findViewById(R.id.ETA);
         GuestAddress = (TextView) V.findViewById(R.id.GuestAddress);
         map_Holder = (RelativeLayout) V.findViewById(R.id.map_Holder);
+        layout_holder = (LinearLayout) V.findViewById(R.id.layout_holder);
+        product_holder = (LinearLayout) V.findViewById(R.id.product_holder);
+        fab = (FloatingActionButton) V.findViewById(R.id.fab);
+        product_category = (FancyButton) V.findViewById(R.id.product_category);
 
-        placesAutocompleteTextView.setOnPlaceSelectedListener(
+        product_category.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+            public void onSwipeTop() {
+                Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
+                        R.anim.slide_down);
+
+                Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
+                        R.anim.slide_up);
+
+                product_category.setIconResource(getString(R.string.drop_down));
+
+                product_holder.setVisibility(View.VISIBLE);
+                product_holder.startAnimation(slide_up);
+            }
+
+            public void onSwipeBottom() {
+                Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
+                        R.anim.slide_down);
+
+                Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
+                        R.anim.slide_up);
+
+                product_category.setIconResource(getString(R.string.drop_up));
+
+                product_holder.setVisibility(View.GONE);
+                product_holder.startAnimation(slide_down);
+            }
+
+        });
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
+                        R.anim.slide_down);
+
+                Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
+                        R.anim.slide_up);
+
+                if(layout_holder.getVisibility() == View.VISIBLE)
+                {
+                    layout_holder.setVisibility(View.GONE);
+                    fab.setImageResource(R.drawable.ic_plus);
+                    //IOUtils.slideToBottom(layout_holder);
+                    layout_holder.startAnimation(slide_down);
+                }
+                else if(layout_holder.getVisibility() == View.GONE)
+                {
+                    layout_holder.setVisibility(View.VISIBLE);
+                    fab.setImageResource(R.drawable.ic_minus);
+                    //IOUtils.slideToTop(layout_holder);
+                    layout_holder.startAnimation(slide_up);
+                }
+
+            }
+        });
+
+        GuestAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        recyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(getApplicationContext(), new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+
+                        Product_categoryFragment product_categoryFragment = new Product_categoryFragment();
+
+                        FragmentManager manager = getActivity().getSupportFragmentManager();
+                        FragmentTransaction transaction = manager.beginTransaction();
+                        transaction.replace(R.id.fragment_data, product_categoryFragment);
+                        transaction.commit();
+
+                        map_Holder.setVisibility(View.GONE);
+
+                    }
+                })
+        );
+
+        /*placesAutocompleteTextView.setOnPlaceSelectedListener(
                 new OnPlaceSelectedListener() {
                     @Override
                     public void onPlaceSelected(final Place place) {
@@ -169,12 +278,12 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
                         Geocoder coder = new Geocoder(getActivity());
                         try {
                             ArrayList<Address> adresses = (ArrayList<Address>) coder.getFromLocationName(place.description, 50);
-                            for(Address add : adresses){
+                            for (Address add : adresses) {
 
-                                    double longitude = add.getLongitude();
-                                    double latitude = add.getLatitude();
+                                double longitude = add.getLongitude();
+                                double latitude = add.getLatitude();
 
-                                Current_Origin = new LatLng(latitude,longitude);
+                                Current_Origin = new LatLng(latitude, longitude);
 
                             }
                         } catch (IOException e) {
@@ -182,7 +291,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
                         }
                     }
                 }
-        );
+        );*/
 
         return V;
     }
@@ -203,7 +312,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
 
         gps = new GPSTracker(getActivity());
 
-        Current_Origin = new LatLng(gps.getLatitude(),gps.getLongitude());
+        Current_Origin = new LatLng(gps.getLatitude(), gps.getLongitude());
 
         Log.i("latitude", String.valueOf(gps.getLatitude()));
         Log.i("longitude", String.valueOf(gps.getLongitude()));
@@ -242,7 +351,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
             }
         });
 
-
+        getProductDataListing();
     }
 
     @Override
@@ -256,7 +365,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
             return;
         }
 
-        map.setMyLocationEnabled(true);
+        //map.setMyLocationEnabled(true);
 
         Location location = new Location(LocationManager.GPS_PROVIDER);
         location.setLatitude(gps.getLatitude());
@@ -264,22 +373,22 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
 
         updateCurrentLocationMarker(location);
 
-        CameraPosition cameraPosition = new CameraPosition.Builder().
+        /*CameraPosition cameraPosition = new CameraPosition.Builder().
                 target(Current_Origin).
                 tilt(60).
                 zoom(18).
                 bearing(0).
                 build();
 
-        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));*/
 
-        map.addMarker(new MarkerOptions().position(Current_Origin)
+        /*map.addMarker(new MarkerOptions().position(Current_Origin)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_home))
-                .title("Origin"));
+                .title("Origin"));*/
 
         //map.moveCamera(CameraUpdateFactory.newLatLngZoom(Current_Origin, 18.0f));
 
-        ScheduledExecutorService scheduleTaskExecutor= Executors.newScheduledThreadPool(5);
+        ScheduledExecutorService scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
 
         // This schedule a task to run every 10 minutes:
         scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
@@ -292,10 +401,21 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
                         }
                     });
                     return;
-                }
-                else
-                {
-                    getDriverLocationTask();
+                } else {
+                    //getDriverLocationTask();
+
+                    IOUtils ioUtils = new IOUtils();
+
+                    ioUtils.getGETStringRequest(Constants.LocationAPI, new IOUtils.VolleyCallback() {
+                        @Override
+                        public void onSuccess(String result) {
+                            DriverLocationResponse(result);
+                        }
+                    });
+
+
+                    //DriverLocationResponse(IOUtils.getStringRequest(getActivity(),Constants.LocationAPI));
+                    //getDriverLocationTaskSample();
                 }
             }
         }, 0, 3, TimeUnit.SECONDS);
@@ -304,8 +424,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
             @Override
             public boolean onMarkerClick(Marker marker) {
 
-                try
-                {
+                try {
                     // Get extra data with marker ID
                     HashMap<String, String> marker_data = extraMarkerInfo.get(marker.getId());
 
@@ -335,12 +454,12 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
                     lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
                     window.setAttributes(lp);
 
-                    recyclerView = (GridView) dialog.findViewById(R.id.list);
+                    gridView = (GridView) dialog.findViewById(R.id.list);
 
-                    //recyclerView.setHasFixedSize(true);
+                    //gridView.setHasFixedSize(true);
                     llm = new LinearLayoutManager(getActivity());
                     llm.setOrientation(LinearLayoutManager.VERTICAL);
-                    //recyclerView.setLayoutManager(llm);
+                    //gridView.setLayoutManager(llm);
 
                     dialog.show();
 
@@ -348,9 +467,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
 
                     Toast.makeText(getActivity(), LatLng, Toast.LENGTH_SHORT).show();
 
-                }
-                catch (NullPointerException npe)
-                {
+                } catch (NullPointerException npe) {
 
                 }
 
@@ -399,7 +516,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
         });*/
     }
 
-    private double bearingBetweenLocations(LatLng latLng1,LatLng latLng2) {
+    private double bearingBetweenLocations(LatLng latLng1, LatLng latLng2) {
 
         double PI = 3.14159;
         double lat1 = latLng1.latitude * PI / 180;
@@ -422,7 +539,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
     }
 
     private void rotateMarker(final Marker marker, final float toRotation) {
-        if(!isMarkerRotating) {
+        if (!isMarkerRotating) {
             final Handler handler = new Handler();
             final long start = SystemClock.uptimeMillis();
             final float startRotation = marker.getRotation();
@@ -440,7 +557,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
 
                     float rot = t * toRotation + (1 - t) * startRotation;
 
-                    float bearing =  -rot > 180 ? rot / 2 : rot;
+                    float bearing = -rot > 180 ? rot / 2 : rot;
 
                     marker.setRotation(bearing);
 
@@ -455,9 +572,9 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
         }
     }
 
-    public void updateCurrentLocationMarker(Location currentLatLng){
+    public void updateCurrentLocationMarker(Location currentLatLng) {
 
-        if(map != null){
+        if (map != null) {
 
             /*LatLng latLng = new LatLng(currentLatLng.getLatitude(),currentLatLng.getLongitude());
             if(currentPositionMarker == null){
@@ -487,34 +604,38 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
                 + destLongitude;
 
         String sensor = "sensor=false";
-        String params = waypoints + "&" + sensor;
+        String key = "key=AIzaSyCWqw5vGZZrQxWCsVVvNa37yNdGxiUPQAs";
+        String params = waypoints + "&" + sensor + "&" + key;
         String output = "json";
         String url = "https://maps.googleapis.com/maps/api/directions/"
-                + output + "?"+"origin="+Current_Origin.latitude + "," + Current_Origin.longitude+"&destination="+destLatitude + ","
-                + destLongitude +"&" + params;
+                + output + "?" + "origin=" + Current_Origin.latitude + "," + Current_Origin.longitude + "&destination=" + destLatitude + ","
+                + destLongitude + "&" + params;
 
         ReadTask downloadTask = new ReadTask();
         downloadTask.execute(url);
 
     }
 
-    private void addMarkers(String id,String location_name,Double latitude,Double longitude) {
+    private void addMarkers(String id, String location_name, Double latitude, Double longitude) {
 
         LatLng dest = new LatLng(latitude, longitude);
 
         HashMap<String, String> data = new HashMap<String, String>();
 
+
+
         if (map != null) {
             marker = map.addMarker(new MarkerOptions().position(dest)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_delivery_van))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_van_image))
+                    .rotation((float) bearingBetweenLocations(oldLocation,newLocation))
                     .title(location_name));
 
-            data.put(TAG_ID,id);
-            data.put(TAG_LOCATION_NAME,location_name);
+            data.put(TAG_ID, id);
+            data.put(TAG_LOCATION_NAME, location_name);
             data.put(TAG_LATITUDE, String.valueOf(latitude));
             data.put(TAG_LONGITUDE, String.valueOf(longitude));
 
-            extraMarkerInfo.put(marker.getId(),data);
+            extraMarkerInfo.put(marker.getId(), data);
 
             map.addMarker(new MarkerOptions().position(Current_Origin)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_home))
@@ -549,8 +670,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
         return Math.toDegrees(Math.atan2(y, x));
     }
 
-    public void getData()
-    {
+    public void getData() {
         try {
             JSONArray jsonArray = new JSONArray(loadJSONFromAsset());
 
@@ -572,7 +692,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
 
                 jsonIndiaModelList.add(js);
 
-                addMarkers(id,location_name,latitude,longitude);
+                addMarkers(id, location_name, latitude, longitude);
                 //getMapsApiDirectionsUrl(latitude,longitude);
             }
 
@@ -581,8 +701,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
         }
     }
 
-    public void getProductData()
-    {
+    public void getProductData() {
         try {
             JSONArray jsonArray = new JSONArray(loadProductJSONFromAsset());
 
@@ -611,9 +730,47 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
 
             Collections.shuffle(product_pojos);
 
-            myDataAdapter = new MyDataAdapter(product_pojos,getActivity());
-            recyclerView.setAdapter(myDataAdapter);
+            myDataAdapter = new MyDataAdapter(product_pojos, getActivity());
+            gridView.setAdapter(myDataAdapter);
             myDataAdapter.notifyDataSetChanged();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getProductDataListing() {
+        try {
+            JSONArray jsonArray = new JSONArray(loadProductJSONFromAsset());
+
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+
+                JSONObject jo_inside = jsonArray.getJSONObject(i);
+
+                Product_POJO js = new Product_POJO();
+
+                String product_name = jo_inside.getString("product_name");
+                String images = jo_inside.getString("images");
+                String id = jo_inside.getString("id");
+                String kilo = jo_inside.getString("kilo");
+                String Rs = jo_inside.getString("Rs");
+
+                js.setId(id);
+                js.setImages(images);
+                js.setProduct_name(product_name);
+                js.setKilo(kilo);
+                js.setRs(Rs);
+
+                product_pojos.add(js);
+
+            }
+
+            Collections.shuffle(product_pojos);
+
+            product_recyclerAdapter = new Product_RecyclerAdapter(product_pojos, getActivity());
+            recyclerView.setAdapter(product_recyclerAdapter);
+            product_recyclerAdapter.notifyDataSetChanged();
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -626,7 +783,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
         private LayoutInflater layoutInflater = null;
 
         public MyDataAdapter(List<Product_POJO> Product_POJOs, Activity activity) {
-            this.Product_POJOs =  Product_POJOs;
+            this.Product_POJOs = Product_POJOs;
             this.activity = activity;
         }
 
@@ -677,7 +834,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
 
             viewHolder.product_name.setText(product_pojo.getProduct_name());
 
-            viewHolder.imageView.setController(IOUtils.getFrescoImageController(activity,product_pojo.getImages()));
+            viewHolder.imageView.setController(IOUtils.getFrescoImageController(activity, product_pojo.getImages()));
             viewHolder.imageView.setHierarchy(IOUtils.getFrescoImageHierarchy(activity));
 
             viewHolder.weight.setText(product_pojo.getKilo());
@@ -694,13 +851,12 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
             viewHolder.plus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    try
-                    {
+                    try {
                         int t = Integer.parseInt(viewHolder.count.getText().toString());
-                        viewHolder.count.setText(String.valueOf(t+1));
-                    }
-                    catch (Exception e)
-                    {
+                        viewHolder.count.setText(String.valueOf(t + 1));
+
+                        DashboardActivity.updateNotificationsBadge(t+1);
+                    } catch (Exception e) {
 
                     }
                 }
@@ -711,18 +867,17 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
                 public void onClick(View v) {
                     try {
                         int t = Integer.parseInt(viewHolder.count.getText().toString());
-                        if(t > 0)
-                        {
-                            viewHolder.count.setText(String.valueOf(t-1));
+                        if (t > 0) {
+                            viewHolder.count.setText(String.valueOf(t - 1));
+
+                            DashboardActivity.updateNotificationsBadge(t-1);
                         }
 
-                        if(t < 0 || t == 0)
-                        {
+                        if (t < 0 || t == 0) {
                             viewHolder.holder_count.setVisibility(View.GONE);
                             viewHolder.addtoCart.setVisibility(View.VISIBLE);
                         }
-                    }catch (Exception e)
-                    {
+                    } catch (Exception e) {
 
                     }
                 }
@@ -740,9 +895,9 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
         }
 
         private class ViewHolder {
-            TextView product_name,weight,price,count;
+            TextView product_name, weight, price, count;
             SimpleDraweeView imageView;
-            FancyButton plus,minus;
+            FancyButton plus, minus;
             Button addtoCart;
             LinearLayout holder_count;
         }
@@ -798,7 +953,71 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            Log.i("ReadTaskResult",result);
+            Log.i("ReadTaskResult", result);
+
+            String distance = "";
+            String duration = "";
+
+            try {
+
+                JSONObject jsonObjectMain = new JSONObject(result);
+
+                JSONArray jsonArray = jsonObjectMain.getJSONArray("routes");
+
+                JSONObject jsonObject = jsonArray.getJSONObject(0);
+
+                JSONArray legs = jsonObject.getJSONArray("legs");
+
+                JSONObject jsonObject1 = legs.getJSONObject(1);
+
+                JSONObject jsonObject2 = jsonObject1.getJSONObject("distance");
+                JSONObject jsonObject3 = jsonObject1.getJSONObject("duration");
+
+                distance = jsonObject2.getString("text");
+                duration = jsonObject3.getString("text");
+
+                Log.i("Distance", String.valueOf(distance));
+                kilometre.setText(distance);
+
+                Log.i("time", String.valueOf(duration));
+                ETA.setText("Estimated Delivery Time: " + duration);
+
+                String EndAddress = jsonObject1.getString("end_address");
+                kilometre.setText("Vehicle is " + distance + " away at " + EndAddress);
+
+                String StartAddress = jsonObject1.getString("start_address");
+                GuestAddress.setText("Your Address: " + StartAddress);
+
+                JSONArray jsonArray1 = jsonObject1.getJSONArray("steps");
+                JSONObject jsonObject4 = jsonArray1.getJSONObject(jsonArray1.length()-1);
+
+                String Instructions = jsonObject4.getString("html_instructions");
+
+                try {
+                    // Convert from Unicode to UTF-8
+                    //String string = "abc\u5639\u563b";
+                    byte[] utf8 = Instructions.getBytes("UTF-8");
+
+                    // Convert from UTF-8 to Unicode
+                    Instructions = new String(utf8, "UTF-8");
+
+                } catch (UnsupportedEncodingException e) {}
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    Log.i("Direction",String.valueOf(Html.fromHtml(Instructions,Html.FROM_HTML_MODE_LEGACY)));
+                    //kilometre.setText(String.valueOf(Html.fromHtml(Instructions,Html.FROM_HTML_MODE_LEGACY)));
+                }
+                else
+                {
+                    Log.i("Direction",String.valueOf(Html.fromHtml(Instructions)));
+                    //kilometre.setText(String.valueOf(Html.fromHtml(Instructions)));
+                }
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
             new ParserTask().execute(result);
         }
     }
@@ -854,22 +1073,20 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
                 }
 
                 map.addPolyline(polyLineOptions);
-            }catch (Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
     }
 
-    public void getDriverLocationTask()
-    {
+    public void getDriverLocationTask() {
         //String url = "http://192.168.1.220:8000/api/vehicle_positions/by_driver_id/dr001";
         //String url = "http://115.112.155.181:8000/api/vehicle_positions/by_driver_id/dr001";
 
         String url = Constants.LocationAPI;
 
-        Log.i("url",url);
+        Log.i("url", url);
 
         RequestQueue mRequestQueue = Volley.newRequestQueue(getActivity());
 
@@ -891,73 +1108,200 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback
         mRequestQueue.add(stringRequest);
     }
 
-    public void DriverLocationResponse(String resp)
-    {
+    public void getDriverLocationTaskSample() {
+        //String url = "http://192.168.1.220:8000/api/vehicle_positions/by_driver_id/dr001";
+        //String url = "http://115.112.155.181:8000/api/vehicle_positions/by_driver_id/dr001";
+
+        String url = "http://192.168.1.121:8000/api/company/";
+
+        Log.i("url", url);
+
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+
+            JSONObject postObject = new JSONObject();
+
+            postObject.put("firstName", "sadjkas");
+            postObject.put("lastName", "dasdj");
+            postObject.put("mobileNo", "dkaskdk");
+            postObject.put("emailId", "dasjd");
+            //postObject.put("location",Location);
+            postObject.put("referralCode", "dsajdjk");
+            postObject.put("socialId", "adsjsajk");
+
+            jsonObject.put("post", postObject);
+
+            Log.i("JSON CREATED", jsonObject.toString());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+
+        /*RequestQueue mRequestQueue = Volley.newRequestQueue(getActivity());
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("Response", response.toString());
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+
+                String json = null;
+
+                NetworkResponse response = error.networkResponse;
+
+
+
+                if(response != null && response.data != null){
+                    switch(response.statusCode){
+                        case 404:
+                            json = new String(response.data);
+                            json = trimMessage(json, "message");
+                            Log.d("Error", json);
+                            break;
+                    }
+                    //Additional cases
+                }
+            }
+        });*/
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                url, jsonObject,
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG, response.toString());
+                        // pDialog.hide();
+
+                        //RegisterResponse(response.toString());
+
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                // hide the progress dialog
+                //pDialog.hide();
+
+                String json = null;
+                String json1 = null;
+
+                NetworkResponse response = error.networkResponse;
+
+                json = new String(response.data);
+               /* json = trimMessage(json, "message");
+                json1 = trimMessage(json, "errors");*/
+                Log.d("Error", json);
+
+               /* if(response != null && response.data != null){
+                    switch(response.statusCode){
+                        case 404:
+                            json = new String(response.data);
+                            json = trimMessage(json, "message");
+                            Log.d("Error", json);
+                            break;
+                    }
+                    //Additional cases
+                }*/
+            }
+        });
+
+
+        jsonObjReq.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        MyApplication.getInstance().addRequestToQueue(jsonObjReq, TAG);
+    }
+
+    public String trimMessage(String json, String key){
+        String trimmedString = null;
+
+        try{
+            JSONObject obj = new JSONObject(json);
+            trimmedString = obj.getString(key);
+        } catch(JSONException e){
+            e.printStackTrace();
+            return null;
+        }
+
+        return trimmedString;
+    }
+
+    //Somewhere that has access to a context
+    public void displayMessage(String toastString){
+        Toast.makeText(getActivity(), toastString, Toast.LENGTH_LONG).show();
+    }
+
+    public void DriverLocationResponse(String resp) {
         map.clear();
-            try
-            {
-                JSONObject jsonObject = new JSONObject(resp);
+        try {
+            JSONObject jsonObject = new JSONObject(resp);
 
-                JSONObject dataObject = jsonObject.getJSONObject("data");
+            JSONObject dataObject = jsonObject.getJSONObject("data");
 
-                String created_at = dataObject.getString("created_at");
+            String created_at = dataObject.getString("created_at");
 
-                JSONArray geoArray = dataObject.getJSONArray("geo");
+            JSONArray geoArray = dataObject.getJSONArray("geo");
 
-                Double cust_longitude = geoArray.getDouble(0);
-                Double cust_latitude = geoArray.getDouble(1);
+            Double cust_longitude = geoArray.getDouble(0);
+            Double cust_latitude = geoArray.getDouble(1);
 
 //                final LatLng startPosition = marker.getPosition();
-                final LatLng finalPosition = new LatLng(cust_latitude, cust_longitude);
+            final LatLng finalPosition = new LatLng(cust_latitude, cust_longitude);
 
-                LatLng currentPosition = new LatLng(
-                        cust_latitude,
-                        cust_longitude);
+            LatLng currentPosition = new LatLng(
+                    cust_latitude,
+                    cust_longitude);
 
-                //marker.setPosition(currentPosition);
+            //marker.setPosition(currentPosition);
 
-                map.setTrafficEnabled(true);
+            map.setTrafficEnabled(true);
 
-                CameraPosition cameraPosition = new CameraPosition.Builder().
-                        target(finalPosition).
-                        tilt(60).
-                        zoom(18).
-                        bearing(0).
-                        build();
+            CameraPosition cameraPosition = new CameraPosition.Builder().
+                    target(finalPosition).
+                    tilt(60).
+                    zoom(18).
+                    bearing(0).
+                    build();
 
-                map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-                newLocation = currentPosition;
+            newLocation = currentPosition;
 
-                addMarkers("1","TKF Vehicle",cust_latitude,cust_longitude);
-                getMapsApiDirectionsUrl(cust_latitude,cust_longitude);
+            addMarkers("1", "TKF Vehicle", cust_latitude, cust_longitude);
+            getMapsApiDirectionsUrl(cust_latitude, cust_longitude);
 
-                latlang = new LatLng(cust_latitude,cust_longitude );
+            latlang = new LatLng(cust_latitude, cust_longitude);
 
-                Location loc1 = new Location("");
-                loc1.setLatitude(Current_Origin.latitude);
-                loc1.setLongitude(Current_Origin.longitude);
+            Location loc1 = new Location("");
+            loc1.setLatitude(Current_Origin.latitude);
+            loc1.setLongitude(Current_Origin.longitude);
 
-                Location loc2 = new Location("");
-                loc2.setLatitude(latlang.latitude);
-                loc2.setLongitude(latlang.longitude);
+            Location loc2 = new Location("");
+            loc2.setLatitude(latlang.latitude);
+            loc2.setLongitude(latlang.longitude);
 
-                float distanceInMeters = loc1.distanceTo(loc2)/1000;
+            float distanceInMeters = loc1.distanceTo(loc2) / 1000;
 
-                Log.i("Distance",String.valueOf(distanceInMeters));
 
-                String VehicleAddress = IOUtils.getCompleteAddressString(getActivity(),latlang.latitude,latlang.longitude);
 
-                String CustomerAddress = IOUtils.getCompleteAddressString(getActivity(),Current_Origin.latitude,Current_Origin.longitude);
+            //String VehicleAddress = IOUtils.getCompleteAddressString(getActivity(), latlang.latitude, latlang.longitude);
 
-                kilometre.setText("Vehicle is " + String.valueOf(IOUtils.roundToOneDigit(distanceInMeters)) + " kms away at " + VehicleAddress);
+            //String CustomerAddress = IOUtils.getCompleteAddressString(getActivity(), Current_Origin.latitude, Current_Origin.longitude);
 
-                GuestAddress.setText("Your Address: " + CustomerAddress);
+            //kilometre.setText("Vehicle is " + String.valueOf(IOUtils.roundToOneDigit(distanceInMeters)) + " kms away at " + VehicleAddress);
 
-            }catch (JSONException e)
-            {
-                Toast.makeText(getActivity(), "exception", Toast.LENGTH_SHORT).show();
-            }
+        } catch (JSONException e) {
+            Toast.makeText(getActivity(), "exception", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }
