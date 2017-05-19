@@ -11,12 +11,18 @@ public interface Constants {
     String LIVEIP = "115.112.155.181:8000";
 
     //Login API
-    String LoginActivityAPI = "http://" + StagingIP + "/api/customer/login";
+    String LoginActivityAPI = "http://" + LIVEIP + "/api/customer/login";
 
     //Register API
-    String RegisterActivityAPI = "http://" + StagingIP + "/api/customer/";
+    String RegisterActivityAPI = "http://" + LIVEIP + "/api/customer/";
 
     //Driver Location API - Product_Fragment
     String LocationAPI = "http://"+ LIVEIP +"/api/vehicle_positions/by_driver_id/dr001";
+
+    //Product Category
+    String Product_Category = "http://erp.kesari.in:8000/api/productCategory/list/";
+
+    //Product Desc
+    String Product_Desc = "http://erp.kesari.in:8000/api/product/list/";
 
 }

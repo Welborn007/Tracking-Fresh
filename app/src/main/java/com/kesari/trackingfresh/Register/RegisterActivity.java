@@ -14,12 +14,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -28,8 +22,8 @@ import com.google.android.gms.common.api.Status;
 import com.kesari.trackingfresh.Login.LoginActivity;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
+import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.network.FireToast;
-import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
 import com.nispok.snackbar.Snackbar;
@@ -39,13 +33,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class RegisterActivity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt{
+public class RegisterActivity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt {
 
-    EditText first_name,last_name,mobile,email,location,referral_code,password;
+    EditText first_name, last_name, mobile, email, location, referral_code, password;
     Button btnRegister;
     private static final String TAG = "Register_Call";
 
-    String SocialID = "",Name,Email,Type = "simple";
+    String SocialID = "", FirstName, LastName, Name, Email, Type = "simple";
     GoogleApiClient mGoogleApiClient;
     private NetworkUtilsReceiver networkUtilsReceiver;
 
@@ -70,19 +64,20 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
         referral_code = (EditText) findViewById(R.id.referral_code);
         password = (EditText) findViewById(R.id.password);
 
-        try
-        {
+        try {
             SocialID = getIntent().getStringExtra("SocialID");
             Name = getIntent().getStringExtra("Name");
+            FirstName = getIntent().getStringExtra("firstname");
+            LastName = getIntent().getStringExtra("lastname");
             Email = getIntent().getStringExtra("Email");
             Type = getIntent().getStringExtra("Type");
 
-            first_name.setText(Name);
+            first_name.setText(FirstName);
+            last_name.setText(LastName);
             email.setText(Email);
 
-        }catch (NullPointerException npe)
-        {
-            Log.i("Null","Null");
+        } catch (NullPointerException npe) {
+            Log.i("Null", "Null");
             SocialID = "";
             Type = "simple";
         }
@@ -100,14 +95,11 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
                 String Referral_code = referral_code.getText().toString();
                 String Password = password.getText().toString();
 
-                if(!FirstName.isEmpty() && !LastName.isEmpty() && !Mobile.isEmpty() && !Email.isEmpty() && !Password.isEmpty())
-                {
-                    if(android.util.Patterns.EMAIL_ADDRESS.matcher(Email).matches() && android.util.Patterns.PHONE.matcher(Mobile).matches())
-                    {
+                if (!FirstName.isEmpty() && !LastName.isEmpty() && !Mobile.isEmpty() && !Email.isEmpty() && !Password.isEmpty()) {
+                    if (android.util.Patterns.EMAIL_ADDRESS.matcher(Email).matches() && android.util.Patterns.PHONE.matcher(Mobile).matches()) {
                         //int mob = Integer.parseInt(Mobile);
 
-                        if(Mobile.length() >= 10)
-                        {
+                        if (Mobile.length() >= 10) {
                             if (!NetworkUtils.isNetworkConnectionOn(RegisterActivity.this)) {
                                 FireToast.customSnackbarWithListner(RegisterActivity.this, "No internet access", "Settings", new ActionClickListener() {
                                     @Override
@@ -116,46 +108,30 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
                                     }
                                 });
                                 return;
+                            } else {
+                                sendRegisterData(FirstName, LastName, Mobile, Email, Referral_code, Password, Type, SocialID);
                             }
-                            else
-                            {
-                                sendRegisterData(FirstName,LastName,Mobile,Email,Referral_code,Password,Type,SocialID);
-                            }
-                        }
-                        else
-                        {
+                        } else {
                             //Toast.makeText(RegisterActivity.this, getString(R.string.less_than_10digit) , Toast.LENGTH_SHORT).show();
                             mobile.setError(getString(R.string.less_than_10digit));
                         }
-                    }
-                    else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(Email).matches())
-                    {
+                    } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(Email).matches()) {
                         //Toast.makeText(RegisterActivity.this, getString(R.string.proper_email), Toast.LENGTH_SHORT).show();
                         email.setError(getString(R.string.proper_email));
-                    }
-                    else if(!android.util.Patterns.PHONE.matcher(Mobile).matches())
-                    {
+                    } else if (!android.util.Patterns.PHONE.matcher(Mobile).matches()) {
                         //Toast.makeText(RegisterActivity.this, getString(R.string.proper_mobile), Toast.LENGTH_SHORT).show();
                         mobile.setError(getString(R.string.proper_mobile));
                     }
-                }
-                else if(FirstName.isEmpty())
-                {
+                } else if (FirstName.isEmpty()) {
                     //Toast.makeText(RegisterActivity.this, getString(R.string.first_name), Toast.LENGTH_SHORT).show();
                     first_name.setError(getString(R.string.first_name));
-                }
-                else if(LastName.isEmpty())
-                {
+                } else if (LastName.isEmpty()) {
                     //Toast.makeText(RegisterActivity.this, getString(R.string.last_name), Toast.LENGTH_SHORT).show();
                     last_name.setError(getString(R.string.last_name));
-                }
-                else if(Mobile.isEmpty())
-                {
+                } else if (Mobile.isEmpty()) {
                     //Toast.makeText(RegisterActivity.this, getString(R.string.mobileno), Toast.LENGTH_SHORT).show();
                     mobile.setError(getString(R.string.mobileno));
-                }
-                else if(Email.isEmpty())
-                {
+                } else if (Email.isEmpty()) {
                     //Toast.makeText(RegisterActivity.this, getString(R.string.email_id), Toast.LENGTH_SHORT).show();
                     email.setError(getString(R.string.email_id));
                 }
@@ -163,8 +139,7 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
                 {
                     Toast.makeText(RegisterActivity.this, getString(R.string.location), Toast.LENGTH_SHORT).show();
                 }*/
-                else if(Password.isEmpty())
-                {
+                else if (Password.isEmpty()) {
                     //Toast.makeText(RegisterActivity.this, getString(R.string.password), Toast.LENGTH_SHORT).show();
                     password.setError(getString(R.string.password));
                 }
@@ -174,13 +149,13 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
     }
 
 
-    public void sendRegisterData(String FirstName,String LastName,String Mobile,String Email,String ReferralCode,String Password,String Type,String SocialID){
+    public void sendRegisterData(String FirstName, String LastName, String Mobile, String Email, String ReferralCode, String Password, String Type, String SocialID) {
 
         //String url = "http://192.168.1.10:8000/api/customer/";
 
         String url = Constants.RegisterActivityAPI;
 
-        Log.i("url",url);
+        Log.i("url", url);
 
         JSONObject jsonObject = new JSONObject();
 
@@ -188,17 +163,17 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
 
             JSONObject postObject = new JSONObject();
 
-            postObject.put("firstName",FirstName);
-            postObject.put("lastName",LastName);
-            postObject.put("mobileNo",Mobile);
-            postObject.put("emailId",Email);
+            postObject.put("firstName", FirstName);
+            postObject.put("lastName", LastName);
+            postObject.put("mobileNo", Mobile);
+            postObject.put("emailId", Email);
             //postObject.put("location",Location);
-            postObject.put("referralCode",ReferralCode);
-            postObject.put("socialId",SocialID);
-            postObject.put("registrationType",Type);
-            postObject.put("password",Password);
+            postObject.put("referralCode", ReferralCode);
+            postObject.put("socialId", SocialID);
+            postObject.put("registrationType", Type);
+            postObject.put("password", Password);
 
-            jsonObject.put("post",postObject);
+            jsonObject.put("post", postObject);
 
             Log.i("JSON CREATED", jsonObject.toString());
 
@@ -206,8 +181,16 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
             e.printStackTrace();
         }
 
+        IOUtils ioUtils = new IOUtils();
 
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+        ioUtils.sendJSONObjectRequest(url, jsonObject, new IOUtils.VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+                RegisterResponse(result.toString());
+            }
+        });
+
+        /*JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
                 url, jsonObject,
                 new Response.Listener<JSONObject>() {
 
@@ -235,12 +218,11 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         //Adding request to request queue
-        MyApplication.getInstance().addRequestToQueue(jsonObjReq, TAG);
+        MyApplication.getInstance().addRequestToQueue(jsonObjReq, TAG);*/
 
     }
 
-    public void RegisterResponse(String Response)
-    {
+    public void RegisterResponse(String Response) {
         try {
 
             JSONObject jsonObject = new JSONObject(Response);
@@ -248,15 +230,13 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
             String status = jsonObject.getString("status");
             //String message = jsonObject.getString("message");
 
-            if(status.equalsIgnoreCase("500"))
-            {
+            if (status.equalsIgnoreCase("500")) {
                 JSONArray jsonArray = jsonObject.getJSONArray("errors");
                 String errors = jsonArray.getString(0);
                 Toast.makeText(this, errors, Toast.LENGTH_LONG).show();
             }
 
-            if(status.equalsIgnoreCase("200"))
-            {
+            if (status.equalsIgnoreCase("200")) {
                 Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                         new ResultCallback<Status>() {
                             @Override
@@ -264,15 +244,14 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
                                 // ...
                                 finish();
                                 Toast.makeText(RegisterActivity.this, getString(R.string.user_registered), Toast.LENGTH_SHORT).show();
-                                Intent i=new Intent(RegisterActivity.this,LoginActivity.class);
+                                Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
                                 startActivity(i);
                             }
                         });
             }
 
-        }catch (JSONException jse)
-        {
-            Log.i("Exception",jse.getMessage());
+        } catch (JSONException jse) {
+            Log.i("Exception", jse.getMessage());
         }
     }
 
@@ -299,7 +278,7 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
                     public void onResult(Status status) {
                         // ...
                         finish();
-                        Intent i=new Intent(RegisterActivity.this,LoginActivity.class);
+                        Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
                         startActivity(i);
                     }
                 });
@@ -320,7 +299,7 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
                         public void onResult(Status status) {
                             // ...
                             finish();
-                            Intent i=new Intent(RegisterActivity.this,LoginActivity.class);
+                            Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
                             startActivity(i);
                         }
                     });

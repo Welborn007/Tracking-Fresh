@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Tracking Fresh</string>
 
-    <string name="LoginText">Username</string>
+    <string name="LoginText">Mobile Number</string>
     <string name="ForgotMobile">Enter your Registered Mobile No.</string>
     <string name="PassText">Enter Password</string>
     <string name="FullName">Enter Full Name</string>
@@ -33,6 +33,9 @@
     <string name="Address">Address</string>
     <string name="state">State</string>
     <string name="pin_code">Pin Code</string>
+    <string name="flat_no">Flat No.</string>
+    <string name="building_name">Building Name</string>
+    <string name="landmark">Landmark</string>
 
     <string name="pickupCheckbox">Pick Up (If Pick up is checked, above address is not applicable. User will come to Vehicle and buy the product.)</string>
 
@@ -54,5 +57,8 @@
     <string name="proper_mobile">Enter Proper Mobile No.</string>
     <string name="user_registered">User Registered!!!</string>
     <string name="please_register">Please Register!!!</string>
+
+    <string name="drop_up">&#xf0d8;</string>
+    <string name="drop_down">&#xf0d7;</string>
 
 </resources>

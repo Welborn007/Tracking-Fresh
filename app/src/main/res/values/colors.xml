@@ -33,7 +33,7 @@
 
 
     <color name="colorEdittextBackground">#f1f1f1</color>
-    <color name="colorImageviewBackground">#e5e5e5</color>
+    <color name="colorImageviewBackground">#33e5e5e5</color>
     <color name="Skip">#a9a8a8</color>
     <color name="Button_Color">#d40f14</color>
 

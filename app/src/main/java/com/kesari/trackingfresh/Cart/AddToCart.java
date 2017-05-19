@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -15,19 +16,14 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.kesari.trackingfresh.AddToCart.AddCart_model;
 import com.kesari.trackingfresh.DeliveryAddress.Add_DeliveryAddress;
-import com.kesari.trackingfresh.ProductPage.Product_POJO;
 import com.kesari.trackingfresh.R;
-import com.kesari.trackingfresh.network.IOUtils;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.kesari.trackingfresh.Utilities.IOUtils;
+import com.kesari.trackingfresh.network.MyApplication;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import mehdi.sakout.fancybuttons.FancyButton;
@@ -36,9 +32,10 @@ public class AddToCart extends AppCompatActivity {
 
     GridView gridview;
     private MyDataAdapter myDataAdapter;
-    List<Product_POJO> product_pojos = new ArrayList<>();
+    //List<Product_POJO> product_pojos = new ArrayList<>();
     TextView cart_count;
     Button checkOut;
+    MyApplication myApplication;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,13 +58,15 @@ public class AddToCart extends AppCompatActivity {
             }
         });
 
+        myApplication = (MyApplication) getApplicationContext();
+
         getProductData();
     }
 
     public void getProductData()
     {
         try {
-            JSONArray jsonArray = new JSONArray(loadProductJSONFromAsset());
+            /*JSONArray jsonArray = new JSONArray(loadProductJSONFromAsset());
 
 
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -93,36 +92,39 @@ public class AddToCart extends AppCompatActivity {
             }
 
             Collections.shuffle(product_pojos);
+*/
 
-            myDataAdapter = new MyDataAdapter(product_pojos,AddToCart.this);
+
+
+            myDataAdapter = new MyDataAdapter(myApplication.getProductsArraylist(),AddToCart.this);
             gridview.setAdapter(myDataAdapter);
             myDataAdapter.notifyDataSetChanged();
 
-            cart_count.setText(String.valueOf(product_pojos.size()) + " Products - Rs. 475");
+            cart_count.setText(String.valueOf(myApplication.getProductsArraylist().size()) + " Products - Rs. 475");
 
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     class MyDataAdapter<T> extends BaseAdapter {
-        List<Product_POJO> Product_POJOs;
+        List<AddCart_model> AddCart_models;
         private Activity activity;
         private LayoutInflater layoutInflater = null;
 
-        public MyDataAdapter(List<Product_POJO> Product_POJOs, Activity activity) {
-            this.Product_POJOs =  Product_POJOs;
+        public MyDataAdapter(List<AddCart_model> AddCart_models, Activity activity) {
+            this.AddCart_models =  AddCart_models;
             this.activity = activity;
         }
 
         @Override
         public int getCount() {
-            return Product_POJOs.size();
+            return AddCart_models.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return Product_POJOs.get(position);
+            return AddCart_models.get(position);
         }
 
         @Override
@@ -155,16 +157,17 @@ public class AddToCart extends AppCompatActivity {
                 viewHolder = (MyDataAdapter.ViewHolder) convertView.getTag();
             }
 
-            Product_POJO product_pojo = product_pojos.get(position);
+            AddCart_model product_pojo = AddCart_models.get(position);
 
-            viewHolder.product_name.setText(product_pojo.getProduct_name());
+            viewHolder.product_name.setText(product_pojo.getProductName());
 
-            viewHolder.imageView.setController(IOUtils.getFrescoImageController(activity,product_pojo.getImages()));
+            viewHolder.imageView.setController(IOUtils.getFrescoImageController(activity,product_pojo.getProductImage()));
             viewHolder.imageView.setHierarchy(IOUtils.getFrescoImageHierarchy(activity));
 
-            viewHolder.weight.setText(product_pojo.getKilo());
-            viewHolder.price.setText(product_pojo.getRs());
+            viewHolder.weight.setText(product_pojo.getUnit() + product_pojo.getUnitsOfMeasurement());
+            viewHolder.price.setText("25rs");
 
+            viewHolder.count.setText(String.valueOf(product_pojo.getQuantity()));
 
             viewHolder.plus.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -229,5 +232,15 @@ public class AddToCart extends AppCompatActivity {
             return null;
         }
         return json;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

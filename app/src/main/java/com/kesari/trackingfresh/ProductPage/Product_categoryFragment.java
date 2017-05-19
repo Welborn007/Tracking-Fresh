@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,31 +17,34 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.gson.Gson;
+import com.kesari.trackingfresh.AddToCart.AddCart_model;
 import com.kesari.trackingfresh.DetailPage.DetailsActivity;
 import com.kesari.trackingfresh.R;
-import com.kesari.trackingfresh.network.IOUtils;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.kesari.trackingfresh.Utilities.Constants;
+import com.kesari.trackingfresh.Utilities.IOUtils;
+import com.kesari.trackingfresh.network.MyApplication;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import mehdi.sakout.fancybuttons.FancyButton;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by kesari on 11/04/17.
  */
 
-public class Product_categoryFragment extends Fragment
-{
+public class Product_categoryFragment extends Fragment {
     GridView gridview;
     private MyDataAdapter myDataAdapter;
-    List<Product_POJO> product_pojos = new ArrayList<>();
+    private Gson gson;
+    private SubProductMainPOJO subProductMainPOJO;
+    MyApplication myApplication;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,6 +54,8 @@ public class Product_categoryFragment extends Fragment
 
         gridview = (GridView) V.findViewById(R.id.list);
 
+        gson = new Gson();
+
         return V;
     }
 
@@ -58,66 +64,71 @@ public class Product_categoryFragment extends Fragment
         super.onActivityCreated(savedInstanceState);
 
         getProductData();
+
+        myApplication = (MyApplication) getApplicationContext();
     }
 
 
-    public void getProductData()
-    {
+    public void getProductData() {
+        Bundle args = getArguments();
+
+        String category_id = args.getString("category_id");
+
         try {
-            JSONArray jsonArray = new JSONArray(loadProductJSONFromAsset());
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNDk1MDk4NTE5fQ.6NTw1IfVEWbpB8I_LzHqYcv48OXSacUG0t-HfjiF-I8");
+
+            ioUtils.getGETStringRequestHeader(Constants.Product_Desc + category_id, params, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.i("product_category", result);
+
+                    getProductDataResponse(result);
+                }
+            });
 
 
-            for (int i = 0; i < jsonArray.length(); i++) {
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-                JSONObject jo_inside = jsonArray.getJSONObject(i);
+    public void getProductDataResponse(String Response) {
 
-                Product_POJO js = new Product_POJO();
+        subProductMainPOJO = gson.fromJson(Response, SubProductMainPOJO.class);
 
-                String product_name = jo_inside.getString("product_name");
-                String images = jo_inside.getString("images");
-                String id = jo_inside.getString("id");
-                String kilo = jo_inside.getString("kilo");
-                String Rs = jo_inside.getString("Rs");
+        try {
 
-                js.setId(id);
-                js.setImages(images);
-                js.setProduct_name(product_name);
-                js.setKilo(kilo);
-                js.setRs(Rs);
-
-                product_pojos.add(js);
-
-            }
-
-            Collections.shuffle(product_pojos);
-
-            myDataAdapter = new MyDataAdapter(product_pojos,getActivity());
+            myDataAdapter = new MyDataAdapter(subProductMainPOJO.getData(), getActivity());
             gridview.setAdapter(myDataAdapter);
             myDataAdapter.notifyDataSetChanged();
 
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     class MyDataAdapter<T> extends BaseAdapter {
-        List<Product_POJO> Product_POJOs;
+        List<SubProductSubPOJO> SubProductSubPOJOs;
         private Activity activity;
         private LayoutInflater layoutInflater = null;
 
-        public MyDataAdapter(List<Product_POJO> Product_POJOs, Activity activity) {
-            this.Product_POJOs =  Product_POJOs;
+        public MyDataAdapter(List<SubProductSubPOJO> SubProductSubPOJOs, Activity activity) {
+            this.SubProductSubPOJOs = SubProductSubPOJOs;
             this.activity = activity;
         }
 
         @Override
         public int getCount() {
-            return Product_POJOs.size();
+            return SubProductSubPOJOs.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return Product_POJOs.get(position);
+            return SubProductSubPOJOs.get(position);
         }
 
         @Override
@@ -153,34 +164,73 @@ public class Product_categoryFragment extends Fragment
                 viewHolder = (ViewHolder) convertView.getTag();
             }
 
-            Product_POJO product_pojo = product_pojos.get(position);
+            final SubProductSubPOJO product_pojo = SubProductSubPOJOs.get(position);
 
-            viewHolder.product_name.setText(product_pojo.getProduct_name());
+            viewHolder.product_name.setText(product_pojo.getProductName());
 
-            viewHolder.imageView.setController(IOUtils.getFrescoImageController(activity,product_pojo.getImages()));
+            viewHolder.imageView.setController(IOUtils.getFrescoImageController(activity, product_pojo.getProductImage()));
             viewHolder.imageView.setHierarchy(IOUtils.getFrescoImageHierarchy(activity));
 
-            viewHolder.weight.setText(product_pojo.getKilo());
-            viewHolder.price.setText(product_pojo.getRs());
+            viewHolder.weight.setText(product_pojo.getUnit() + product_pojo.getUnitsOfMeasurement());
+            viewHolder.price.setText("100rs");
 
             viewHolder.addtoCart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     viewHolder.holder_count.setVisibility(View.VISIBLE);
                     viewHolder.addtoCart.setVisibility(View.GONE);
+                    viewHolder.count.setText("1");
+
+
+                    if (!myApplication.checkifproductexists(product_pojo.getProductId())) {
+                        AddCart_model addCart_model = new AddCart_model();
+                        addCart_model.set__v(product_pojo.get__v());
+                        addCart_model.setProductCategory(product_pojo.getProductCategory());
+                        addCart_model.setProductId(product_pojo.getProductId());
+                        addCart_model.setProductName(product_pojo.getProductName());
+                        addCart_model.set_id(product_pojo.get_id());
+                        addCart_model.setUnitsOfMeasurement(product_pojo.getUnitsOfMeasurement());
+                        addCart_model.setCuid(product_pojo.getCuid());
+                        addCart_model.setSlug(product_pojo.getSlug());
+                        addCart_model.setProductCategoryId(product_pojo.getProductCategoryId());
+                        addCart_model.setProductDescription(product_pojo.getProductDescription());
+                        addCart_model.setProductDetails(product_pojo.getProductDetails());
+                        addCart_model.setUnit(product_pojo.getUnit());
+                        addCart_model.setUnitsOfMeasurementId(product_pojo.getUnitsOfMeasurementId());
+                        addCart_model.setProductImage(product_pojo.getProductImage());
+                        addCart_model.setActive(product_pojo.getActive());
+                        addCart_model.setCreatedBy(product_pojo.getCreatedBy());
+                        addCart_model.set__v(product_pojo.get__v());
+                        addCart_model.setEditedBy(product_pojo.getEditedBy());
+                        addCart_model.setEditedAt(product_pojo.getEditedAt());
+                        addCart_model.setCreatedAt(product_pojo.getCreatedAt());
+                        addCart_model.setQuantity(1);
+
+                        myApplication.setProducts(addCart_model);
+                    } else {
+                        //Toast.makeText(activity, "Product already present in cart!!", Toast.LENGTH_SHORT).show();
+                        viewHolder.count.setText(myApplication.getProductQuantity(product_pojo.getProductId()));
+
+                    }
                 }
             });
 
             viewHolder.plus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    try
-                    {
+                    try {
                         int t = Integer.parseInt(viewHolder.count.getText().toString());
-                        viewHolder.count.setText(String.valueOf(t+1));
-                    }
-                    catch (Exception e)
-                    {
+                        viewHolder.count.setText(String.valueOf(t + 1));
+
+                        //DashboardActivity.updateNotificationsBadge(t + 1);
+
+                        if (!myApplication.IncrementProductQuantity(product_pojo.getProductId())) {
+
+                        } else {
+
+                        }
+
+                    } catch (Exception e) {
 
                     }
                 }
@@ -191,18 +241,28 @@ public class Product_categoryFragment extends Fragment
                 public void onClick(View v) {
                     try {
                         int t = Integer.parseInt(viewHolder.count.getText().toString());
-                        if(t > 0)
-                        {
-                            viewHolder.count.setText(String.valueOf(t-1));
+                        if (t > 0) {
+                            viewHolder.count.setText(String.valueOf(t - 1));
+
+                            //DashboardActivity.updateNotificationsBadge(t - 1);
+
+                            if (!myApplication.DecrementProductQuantity(product_pojo.getProductId())) {
+
+                            } else {
+
+                            }
                         }
 
-                        if(t < 0 || t == 0)
-                        {
+                        if (t == 1) {
+
+                            myApplication.RemoveProductonZeroQuantity(product_pojo.getProductId());
+
                             viewHolder.holder_count.setVisibility(View.GONE);
                             viewHolder.addtoCart.setVisibility(View.VISIBLE);
+
+                            viewHolder.count.setText("0");
                         }
-                    }catch (Exception e)
-                    {
+                    } catch (Exception e) {
 
                     }
                 }
@@ -211,8 +271,33 @@ public class Product_categoryFragment extends Fragment
             viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent in = new Intent(activity, DetailsActivity.class);
-                    startActivity(in);
+
+                    try {
+                        Intent in = new Intent(activity, DetailsActivity.class);
+                        in.putExtra("_id", product_pojo.get_id());
+                        in.putExtra("unitsOfMeasurement", product_pojo.getUnitsOfMeasurement());
+                        in.putExtra("productCategory", product_pojo.getProductCategory());
+                        in.putExtra("cuid", product_pojo.getCuid());
+                        in.putExtra("slug", product_pojo.getSlug());
+                        in.putExtra("productCategoryId", product_pojo.getProductCategoryId());
+                        in.putExtra("productName", product_pojo.getProductName());
+                        in.putExtra("productDescription", product_pojo.getProductDescription());
+                        in.putExtra("productDetails", product_pojo.getProductDetails());
+                        in.putExtra("unit", product_pojo.getUnit());
+                        in.putExtra("unitsOfMeasurementId", product_pojo.getUnitsOfMeasurementId());
+                        in.putExtra("productId", product_pojo.getProductId());
+                        in.putExtra("productImage", product_pojo.getProductImage());
+                        in.putExtra("active", product_pojo.getActive());
+                        in.putExtra("createdBy", product_pojo.getCreatedBy());
+                        in.putExtra("__v", product_pojo.get__v());
+                        in.putExtra("editedBy", product_pojo.getEditedBy());
+                        in.putExtra("editedAt", product_pojo.getEditedAt());
+                        in.putExtra("createdAt", product_pojo.getCreatedAt());
+                        startActivity(in);
+
+                    } catch (Exception e) {
+                        Log.i("Exception_MyDataAdapter", e.getMessage());
+                    }
                 }
             });
 
@@ -220,9 +305,9 @@ public class Product_categoryFragment extends Fragment
         }
 
         private class ViewHolder {
-            TextView product_name,weight,price,count;
+            TextView product_name, weight, price, count;
             SimpleDraweeView imageView;
-            FancyButton plus,minus;
+            FancyButton plus, minus;
             Button addtoCart;
             LinearLayout holder_count;
         }
