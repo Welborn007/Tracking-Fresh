@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -32,11 +33,12 @@ import com.facebook.imagepipeline.image.ImageInfo;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.network.MyApplication;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by kesari on 13/04/17.
@@ -173,7 +175,7 @@ public class IOUtils {
         icon.setDrawableByLayerId(R.id.ic_badge, badge);
     }
 
-    // Volley Get Request
+    // Volley String Get Request
     public void getGETStringRequest(String url,final VolleyCallback callback) {
 
         Log.i("url", url);
@@ -205,6 +207,44 @@ public class IOUtils {
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         MyApplication.getInstance().addRequestToQueue(stringRequest, "");
+    }
+
+    // Volley String Get Request with Header
+    public void getGETStringRequestHeader(String url, final Map<String, String> paramsHeaders ,final VolleyCallback callback) {
+
+        //RequestQueue queue = Volley.newRequestQueue(this);
+        StringRequest postRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        Log.d("Response", response);
+
+                        callback.onSuccess(response);
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO Auto-generated method stub
+                        Log.d("ERROR","error => "+error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                /*Map<String, String> params = new HashMap<String, String>();
+                params.put("User-Agent", "Nintendo Gameboy");*/
+
+                return paramsHeaders;
+            }
+        };
+
+        postRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        MyApplication.getInstance().addRequestToQueue(postRequest, "");
     }
 
     public interface VolleyCallback{

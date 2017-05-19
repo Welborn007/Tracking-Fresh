@@ -89,6 +89,84 @@ public class MyApplication extends Application
 
     }
 
+    public String getProductQuantity(String product_id)
+    {
+
+        //DashboardActivity.updateNotificationsBadge(myProducts.size());
+
+        for (AddCart_model item : myProducts) {
+            if (item.getProductId().equals(product_id)) {
+
+                return String.valueOf(item.getQuantity());
+            }
+        }
+
+        return "0";
+    }
+
+    public boolean checkifproductexists(String product_id)
+    {
+
+        //DashboardActivity.updateNotificationsBadge(myProducts.size());
+
+        for (AddCart_model item : myProducts) {
+            if (item.getProductId().equals(product_id)) {
+
+                item.setQuantity(item.getQuantity() + 1);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean IncrementProductQuantity(String product_id)
+    {
+        //DashboardActivity.updateNotificationsBadge(myProducts.size());
+
+        for (AddCart_model item : myProducts) {
+            if (item.getProductId().equals(product_id)) {
+
+                item.setQuantity(item.getQuantity() + 1);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean DecrementProductQuantity(String product_id)
+    {
+        //DashboardActivity.updateNotificationsBadge(myProducts.size());
+
+        for (AddCart_model item : myProducts) {
+            if (item.getProductId().equals(product_id)) {
+
+                item.setQuantity(item.getQuantity() - 1);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean RemoveProductonZeroQuantity(String product_id)
+    {
+        //DashboardActivity.updateNotificationsBadge(myProducts.size());
+
+        for (AddCart_model item : myProducts) {
+            if (item.getProductId().equals(product_id)) {
+
+                int position = myProducts.indexOf(item);
+
+                myProducts.remove(position);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void removeProducts(int Position) {
 
         myProducts.remove(Position);
@@ -102,6 +180,8 @@ public class MyApplication extends Application
     }
 
     public ArrayList<AddCart_model> getProductsArraylist() {
+
+        //DashboardActivity.updateNotificationsBadge(myProducts.size());
 
         return myProducts;
     }

@@ -69,6 +69,8 @@ public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.Netwo
         counter = (TextView) findViewById(R.id.counter);
         number = (TextView) findViewById(R.id.mobinumber);
 
+        number.setText(getIntent().getStringExtra("mobile_num"));
+
         Timer();
 
         resend.setEnabled(false);

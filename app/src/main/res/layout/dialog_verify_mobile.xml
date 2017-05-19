@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:paddingBottom="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/delivery_text"
+        android:text="Verify Mobile Number"
+        android:textColor="@color/white"
+        android:padding="10dp"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_size"
+        android:background="@color/Button_Color"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_margin="5dp"
+            android:id="@+id/holder"
+            android:gravity="center"
+            android:layout_below="@+id/delivery_text"
+            android:layout_width="match_parent"
+            android:layout_height="80dp">
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/mobile"
+                    android:layout_width="match_parent"
+                    android:textSize="@dimen/text_size"
+                    android:inputType="number"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/Mobile_no" />
+
+            </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Confirm"
+        android:layout_margin="5dp"
+        android:layout_below="@+id/holder"
+        android:id="@+id/confirmNumber"
+        android:textSize="@dimen/text_size"
+        android:background="@drawable/rounded_btn"
+        android:textStyle="bold"
+        android:textColor="@color/TextColor"
+        android:textAppearance="?android:textAppearanceMedium"
+        />
+
+</RelativeLayout>

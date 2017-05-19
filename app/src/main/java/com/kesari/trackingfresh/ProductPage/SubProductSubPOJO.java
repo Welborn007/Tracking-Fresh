@@ -1,10 +1,10 @@
-package com.kesari.trackingfresh.AddToCart;
+package com.kesari.trackingfresh.ProductPage;
 
 /**
- * Created by kesari on 08/05/17.
+ * Created by kesari on 18/05/17.
  */
 
-public class AddCart_model {
+public class SubProductSubPOJO {
 
     private String productDescription;
 
@@ -43,16 +43,6 @@ public class AddCart_model {
     private String productName;
 
     private String productCategoryId;
-
-    private int quantity;
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
 
     public String getProductDescription() {
         return productDescription;
@@ -205,5 +195,4 @@ public class AddCart_model {
     public void setProductCategoryId(String productCategoryId) {
         this.productCategoryId = productCategoryId;
     }
-
 }

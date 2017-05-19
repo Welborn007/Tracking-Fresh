@@ -21,13 +21,13 @@ import mehdi.sakout.fancybuttons.FancyButton;
 
 public class Product_RecyclerAdapter extends RecyclerView.Adapter<Product_RecyclerAdapter.RecyclerViewHolder>
 {
-    List<Product_POJO>Product_POJOs;
+    List<ProductCategorySubPOJO>ProductCategorySubPOJOs;
     Context context;
     int selected_position = -1;
 
-    public Product_RecyclerAdapter(List<Product_POJO> Product_POJOs, Context context)
+    public Product_RecyclerAdapter(List<ProductCategorySubPOJO> ProductCategorySubPOJOs, Context context)
     {
-        this.Product_POJOs = Product_POJOs;
+        this.ProductCategorySubPOJOs = ProductCategorySubPOJOs;
         this.context = context;
     }
 
@@ -66,16 +66,16 @@ public class Product_RecyclerAdapter extends RecyclerView.Adapter<Product_Recycl
             }
         });
 
-        holder.product_name.setText(Product_POJOs.get(position).getProduct_name().toString());
+        holder.product_name.setText(ProductCategorySubPOJOs.get(position).getCategoryName().toString());
 
-        holder.product_image.setController(IOUtils.getFrescoImageController(context,Product_POJOs.get(position).getImages()));
+        holder.product_image.setController(IOUtils.getFrescoImageController(context,ProductCategorySubPOJOs.get(position).getCategoryImage()));
         holder.product_image.setHierarchy(IOUtils.getFrescoImageHierarchy(context));
     }
 
     @Override
     public int getItemCount() {
 
-        return Product_POJOs.size();
+        return ProductCategorySubPOJOs.size();
     }
 
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder

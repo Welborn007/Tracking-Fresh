@@ -124,6 +124,7 @@
 
 
                     <mehdi.sakout.fancybuttons.FancyButton
+                        android:id="@+id/delete"
                         fancy:fb_fontIconResource="&#xf014;"
                         fancy:fb_textColor="@color/Gray"
                         fancy:fb_borderColor="@color/Gray"
@@ -157,6 +158,7 @@
                         android:layout_height="wrap_content" />
 
                     <TextView
+                        android:id="@+id/product_description"
                         android:text="@string/tomatoDesc"
                         android:layout_marginLeft="10dp"
                         android:textSize="@dimen/text_size"
@@ -173,7 +175,25 @@
                         android:layout_height="wrap_content" />
 
                     <TextView
+                        android:id="@+id/package_contents"
                         android:text="Tomato, 1kg"
+                        android:layout_marginLeft="10dp"
+                        android:textSize="@dimen/text_size"
+                        android:textColor="@color/black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:text="Product Category"
+                        android:textSize="@dimen/text_size18"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/product_category"
+                        android:text="Meat"
                         android:layout_marginLeft="10dp"
                         android:textSize="@dimen/text_size"
                         android:textColor="@color/black"
@@ -189,6 +209,7 @@
                         android:layout_height="wrap_content" />
 
                     <TextView
+                        android:id="@+id/related_searches"
                         android:text="@string/related_Searches"
                         android:layout_marginLeft="10dp"
                         android:textSize="@dimen/text_size"
@@ -205,6 +226,7 @@
                         android:layout_height="wrap_content" />
 
                     <TextView
+                        android:id="@+id/disclaimer"
                         android:text="@string/disclaimer_text"
                         android:layout_marginLeft="10dp"
                         android:textSize="@dimen/text_size"

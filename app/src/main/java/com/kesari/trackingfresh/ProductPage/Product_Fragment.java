@@ -1,13 +1,18 @@
 package com.kesari.trackingfresh.ProductPage;
 
 import android.app.Activity;
-import android.app.Dialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +25,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -28,8 +34,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
@@ -65,6 +69,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.gson.Gson;
 import com.kesari.trackingfresh.DetailPage.DetailsActivity;
 import com.kesari.trackingfresh.Map.GPSTracker;
 import com.kesari.trackingfresh.Map.HttpConnection;
@@ -90,9 +95,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -158,6 +163,10 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     private LinearLayoutManager linearLayoutManager;
     private Product_RecyclerAdapter product_recyclerAdapter;
 
+    private Gson gson;
+    private ProductCategoryMainPojo productCategoryMainPojo;
+    private SubProductMainPOJO subProductMainPOJO;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -169,6 +178,8 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
         groceries = (ImageView) V.findViewById(R.id.groceries);
         f1 = (View) V.findViewById(R.id.map_container);
         fragment_data = (FrameLayout) V.findViewById(R.id.fragment_data);
+
+        gson = new Gson();
 
         recyclerView = (RecyclerView) V.findViewById(R.id.product_category_recyclerview);
         recyclerView.setHasFixedSize(true);
@@ -248,7 +259,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
         GuestAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                sendNotification("Check Our New Seasonal Products!!!");
             }
         });
 
@@ -256,7 +267,13 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 new RecyclerItemClickListener(getApplicationContext(), new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
 
+
+
                         Product_categoryFragment product_categoryFragment = new Product_categoryFragment();
+
+                        Bundle args = new Bundle();
+                        args.putString("category_id",  productCategoryMainPojo.getData().get(position).get_id());
+                        product_categoryFragment .setArguments(args);
 
                         FragmentManager manager = getActivity().getSupportFragmentManager();
                         FragmentTransaction transaction = manager.beginTransaction();
@@ -294,6 +311,43 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
         );*/
 
         return V;
+    }
+
+    private void sendNotification(String messageBody) {
+        Intent intent = new Intent(getActivity(), DashboardActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getActivity(), 0, intent,
+                PendingIntent.FLAG_ONE_SHOT);
+
+        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+
+        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getActivity())
+                .setContentTitle("Tracking Fresh")
+                .setContentText(messageBody)
+                .setLargeIcon(largeIcon)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setContentIntent(pendingIntent);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            notificationBuilder.setSmallIcon(R.drawable.ic_stat_tkf);
+        } else {
+            notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+        }
+
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.notif_banner);
+        //bitmap = Bitmap.createScaledBitmap(bitmap, 500, 350, false);
+
+        notificationBuilder.setStyle(new NotificationCompat.BigPictureStyle()
+                .bigPicture(bitmap));
+
+        NotificationManager notificationManager =
+                (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Random random = new Random();
+        int id = random.nextInt(9999 - 1000) + 1000;
+        notificationManager.notify(id, notificationBuilder.build());
     }
 
     @Override
@@ -424,7 +478,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             @Override
             public boolean onMarkerClick(Marker marker) {
 
-                try {
+                /*try {
                     // Get extra data with marker ID
                     HashMap<String, String> marker_data = extraMarkerInfo.get(marker.getId());
 
@@ -463,13 +517,13 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
                     dialog.show();
 
-                    getProductData();
+                    //getProductData();
 
                     Toast.makeText(getActivity(), LatLng, Toast.LENGTH_SHORT).show();
 
                 } catch (NullPointerException npe) {
 
-                }
+                }*/
 
                 return false;
             }
@@ -626,7 +680,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
         if (map != null) {
             marker = map.addMarker(new MarkerOptions().position(dest)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_van_image))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_van_02))
                     .rotation((float) bearingBetweenLocations(oldLocation,newLocation))
                     .title(location_name));
 
@@ -701,7 +755,51 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    public void getProductData() {
+    public void getProductData()
+    {
+        Bundle args = getArguments();
+
+        String category_id = args.getString("category_id");
+
+        try {
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNDk1MDk4NTE5fQ.6NTw1IfVEWbpB8I_LzHqYcv48OXSacUG0t-HfjiF-I8");
+
+            ioUtils.getGETStringRequestHeader(Constants.Product_Desc + category_id, params, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.i("product_category",result);
+
+                    getProductDataResponse(result);
+                }
+            });
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getProductDataResponse(String Response)
+    {
+
+        subProductMainPOJO = gson.fromJson(Response,SubProductMainPOJO.class);
+
+        try {
+
+            myDataAdapter = new MyDataAdapter(subProductMainPOJO.getData(),getActivity());
+            gridView.setAdapter(myDataAdapter);
+            myDataAdapter.notifyDataSetChanged();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*public void getProductData() {
         try {
             JSONArray jsonArray = new JSONArray(loadProductJSONFromAsset());
 
@@ -738,42 +836,43 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             e.printStackTrace();
         }
     }
-
+*/
     public void getProductDataListing() {
         try {
-            JSONArray jsonArray = new JSONArray(loadProductJSONFromAsset());
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNDk1MDk4NTE5fQ.6NTw1IfVEWbpB8I_LzHqYcv48OXSacUG0t-HfjiF-I8");
+
+            ioUtils.getGETStringRequestHeader(Constants.Product_Category, params, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.i("product_category",result);
+
+                    ProductCategoryResponse(result);
+                }
+            });
 
 
-            for (int i = 0; i < jsonArray.length(); i++) {
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-                JSONObject jo_inside = jsonArray.getJSONObject(i);
+    public void ProductCategoryResponse(String Response)
+    {
+        productCategoryMainPojo = gson.fromJson(Response,ProductCategoryMainPojo.class);
+        try
+        {
 
-                Product_POJO js = new Product_POJO();
-
-                String product_name = jo_inside.getString("product_name");
-                String images = jo_inside.getString("images");
-                String id = jo_inside.getString("id");
-                String kilo = jo_inside.getString("kilo");
-                String Rs = jo_inside.getString("Rs");
-
-                js.setId(id);
-                js.setImages(images);
-                js.setProduct_name(product_name);
-                js.setKilo(kilo);
-                js.setRs(Rs);
-
-                product_pojos.add(js);
-
-            }
-
-            Collections.shuffle(product_pojos);
-
-            product_recyclerAdapter = new Product_RecyclerAdapter(product_pojos, getActivity());
+            product_recyclerAdapter = new Product_RecyclerAdapter(productCategoryMainPojo.getData(), getActivity());
             recyclerView.setAdapter(product_recyclerAdapter);
             product_recyclerAdapter.notifyDataSetChanged();
 
-        } catch (JSONException e) {
-            e.printStackTrace();
+        }catch (Exception e)
+        {
+            Log.i("exception",e.toString());
         }
     }
 
@@ -855,7 +954,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                         int t = Integer.parseInt(viewHolder.count.getText().toString());
                         viewHolder.count.setText(String.valueOf(t + 1));
 
-                        DashboardActivity.updateNotificationsBadge(t+1);
+                        //DashboardActivity.updateNotificationsBadge(t+1);
                     } catch (Exception e) {
 
                     }
@@ -870,7 +969,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                         if (t > 0) {
                             viewHolder.count.setText(String.valueOf(t - 1));
 
-                            DashboardActivity.updateNotificationsBadge(t-1);
+                            //DashboardActivity.updateNotificationsBadge(t-1);
                         }
 
                         if (t < 0 || t == 0) {
