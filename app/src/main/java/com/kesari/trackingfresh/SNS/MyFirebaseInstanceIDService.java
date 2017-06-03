@@ -10,7 +10,7 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 
 
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
-    private static final String TAG = "MyFirebaseIIDService";
+    private String TAG = this.getClass().getSimpleName();
 
     SharedPreferences sharedpreferencesLogin;
     SharedPreferences.Editor editorLogin;
@@ -20,18 +20,21 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     @Override
     public void onTokenRefresh() {
 
-        //Getting registration token
-        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        Log.d("Inside"," firebase");
-        //Displaying token on logcat
-        Log.d(TAG, "Refreshed token: " + refreshedToken);
+        try
+        {
 
-        token = FirebaseInstanceId.getInstance().getToken();
+            //Getting registration token
+            String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+            Log.d("Inside"," firebase");
+            //Displaying token on logcat
+            Log.d(TAG, "Refreshed token: " + refreshedToken);
 
-        sharedpreferencesLogin = getSharedPreferences(MyPREFERENCES_LOGIN, Context.MODE_PRIVATE);
-        editorLogin = sharedpreferencesLogin.edit();
-        editorLogin.putString("token", token);
-        editorLogin.apply();
+            token = FirebaseInstanceId.getInstance().getToken();
+
+            sharedpreferencesLogin = getSharedPreferences(MyPREFERENCES_LOGIN, Context.MODE_PRIVATE);
+            editorLogin = sharedpreferencesLogin.edit();
+            editorLogin.putString("token", token);
+            editorLogin.apply();
 
         /*try {
             Navigation.myFireBaseToken = refreshedToken;
@@ -41,6 +44,10 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         {
             e.printStackTrace();
         }*/
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
 
     }
 

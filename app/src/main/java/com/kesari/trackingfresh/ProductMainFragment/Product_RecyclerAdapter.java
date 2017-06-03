@@ -1,8 +1,9 @@
-package com.kesari.trackingfresh.ProductPage;
+package com.kesari.trackingfresh.ProductMainFragment;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ public class Product_RecyclerAdapter extends RecyclerView.Adapter<Product_Recycl
     List<ProductCategorySubPOJO>ProductCategorySubPOJOs;
     Context context;
     int selected_position = -1;
+    private String TAG = this.getClass().getSimpleName();
 
     public Product_RecyclerAdapter(List<ProductCategorySubPOJO> ProductCategorySubPOJOs, Context context)
     {
@@ -44,32 +46,41 @@ public class Product_RecyclerAdapter extends RecyclerView.Adapter<Product_Recycl
     @Override
     public void onBindViewHolder(final RecyclerViewHolder holder, final int position) {
 
-        if(selected_position == position){
+        try
+        {
 
-            holder.product_name.setBackgroundColor(Color.parseColor("#80CBC4"));
+            if(selected_position == position){
 
-        }else{
+                holder.product_name.setBackgroundColor(Color.parseColor("#80CBC4"));
 
-            holder.product_name.setBackgroundColor(Color.parseColor("#ffffff"));
+            }else{
+
+                holder.product_name.setBackgroundColor(Color.parseColor("#ffffff"));
+            }
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    notifyItemChanged(selected_position);
+                    selected_position = position;
+                    notifyItemChanged(selected_position);
+
+                    selected_position = position;
+                    notifyDataSetChanged();
+                }
+            });
+
+            holder.product_name.setText(ProductCategorySubPOJOs.get(position).getCategoryName().toString());
+
+            holder.product_image.setController(IOUtils.getFrescoImageController(context,ProductCategorySubPOJOs.get(position).getCategoryImage()));
+            holder.product_image.setHierarchy(IOUtils.getFrescoImageHierarchy(context));
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
         }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                notifyItemChanged(selected_position);
-                selected_position = position;
-                notifyItemChanged(selected_position);
-
-                selected_position = position;
-                notifyDataSetChanged();
-            }
-        });
-
-        holder.product_name.setText(ProductCategorySubPOJOs.get(position).getCategoryName().toString());
-
-        holder.product_image.setController(IOUtils.getFrescoImageController(context,ProductCategorySubPOJOs.get(position).getCategoryImage()));
-        holder.product_image.setHierarchy(IOUtils.getFrescoImageHierarchy(context));
     }
 
     @Override

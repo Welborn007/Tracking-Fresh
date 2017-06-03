@@ -6,7 +6,7 @@ import android.location.Location;
 import android.location.LocationManager;
 
 import com.google.gson.Gson;
-import com.kesari.trackingfresh.Login.LoginMain;
+import com.kesari.trackingfresh.Login.ProfileMain;
 
 /**
  * Created by kesari on 26/04/17.
@@ -18,14 +18,16 @@ public class SharedPrefUtil {
     private static String KEY_LAT = "latitude";
     private static String KEY_LONGI = "longitude";
 
-    public static LoginMain getUser(Context context) {
+    public static String KEY_USER_TOKEN = "token";
+
+    public static ProfileMain getUser(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         String data = preferences.getString(KEY_USER, null);
         Gson gson = new Gson();
         if (data == null)
             return null;
         else
-            return gson.fromJson(data, LoginMain.class);
+            return gson.fromJson(data, ProfileMain.class);
     }
 
 
@@ -33,6 +35,18 @@ public class SharedPrefUtil {
         SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         preferences.edit().putString(KEY_USER, value).apply();
 
+    }
+
+    public static void setToken(Context context, String Token) {
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        preferences.edit().putString(KEY_USER_TOKEN, Token).apply();
+    }
+
+    public static String getToken(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        String Token = preferences.getString(KEY_USER_TOKEN, "");
+
+        return Token;
     }
 
     public static void setLocation(Context context, float lat, float lon) {

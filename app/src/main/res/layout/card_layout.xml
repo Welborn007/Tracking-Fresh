@@ -114,6 +114,7 @@
                 android:layout_height="30dp"
                 android:text="Add to Cart"
                 android:id="@+id/addtoCart"
+                android:visibility="gone"
                 android:textSize="@dimen/text_size"
                 android:background="@drawable/rounded_btn"
                 android:textStyle="bold"
@@ -122,6 +123,7 @@
                 />
 
             <mehdi.sakout.fancybuttons.FancyButton
+                android:id="@+id/delete"
                 fancy:fb_fontIconResource="&#xf014;"
                 fancy:fb_textColor="@color/Gray"
                 fancy:fb_borderColor="@color/Gray"

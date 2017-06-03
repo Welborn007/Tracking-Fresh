@@ -1,6 +1,5 @@
-package com.kesari.trackingfresh.ProductPage;
+package com.kesari.trackingfresh.ProductMainFragment;
 
-import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -10,14 +9,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -36,29 +33,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.Interpolator;
-import android.view.animation.LinearInterpolator;
-import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -70,25 +51,25 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
-import com.kesari.trackingfresh.DetailPage.DetailsActivity;
-import com.kesari.trackingfresh.Map.GPSTracker;
+import com.kesari.trackingfresh.DashBoard.DashboardActivity;
 import com.kesari.trackingfresh.Map.HttpConnection;
 import com.kesari.trackingfresh.Map.JSON_POJO;
 import com.kesari.trackingfresh.Map.PathJSONParser;
+import com.kesari.trackingfresh.ProductSubFragment.Product_categoryFragment;
+import com.kesari.trackingfresh.ProductSubFragment.SubProductMainPOJO;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.OnSwipeTouchListener;
 import com.kesari.trackingfresh.Utilities.RecyclerItemClickListener;
+import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.network.FireToast;
-import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.ActionClickListener;
 import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -116,13 +97,14 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     private LatLng Current_Origin;
 
     //GoogleMap googleMap;
-    final String TAG = "GuestRoute";
-    private GPSTracker gps;
+    private String TAG = this.getClass().getSimpleName();
+    //private GPSTracker gps;
+    private Location Current_Location;
     private double latitude;
     private double longitude;
 
     List<JSON_POJO> jsonIndiaModelList = new ArrayList<>();
-    List<Product_POJO> product_pojos = new ArrayList<>();
+    //List<Product_POJO> product_pojos = new ArrayList<>();
     HashMap<String, HashMap> extraMarkerInfo = new HashMap<String, HashMap>();
 
     private static final String TAG_ID = "id";
@@ -134,7 +116,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     private LinearLayoutManager llm;
 
     //private RecyclerView.Adapter adapterItineraryDetails;
-    private MyDataAdapter myDataAdapter;
+    //private MyDataAdapter myDataAdapter;
 
     private Context mContext;
     private SupportMapFragment supportMapFragment;
@@ -154,10 +136,12 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     SearchView searchView;
     PlacesAutocompleteTextView placesAutocompleteTextView;
     TextView kilometre, GuestAddress,ETA;
-    RelativeLayout map_Holder;
+    public static RelativeLayout map_Holder;
     LinearLayout layout_holder,product_holder;
     FloatingActionButton fab;
     FancyButton product_category;
+
+    public static FrameLayout frameLayout;
 
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
@@ -167,124 +151,132 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     private ProductCategoryMainPojo productCategoryMainPojo;
     private SubProductMainPOJO subProductMainPOJO;
 
+    private static final int DURATION = 3000;
+    ScheduledExecutorService scheduleTaskExecutor;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View V = inflater.inflate(R.layout.fragment_product, container, false);
 
-        fruits = (ImageView) V.findViewById(R.id.fruits);
-        vegetables = (ImageView) V.findViewById(R.id.vegetables);
-        groceries = (ImageView) V.findViewById(R.id.groceries);
-        f1 = (View) V.findViewById(R.id.map_container);
-        fragment_data = (FrameLayout) V.findViewById(R.id.fragment_data);
+        try
+        {
 
-        gson = new Gson();
+            fruits = (ImageView) V.findViewById(R.id.fruits);
+            vegetables = (ImageView) V.findViewById(R.id.vegetables);
+            groceries = (ImageView) V.findViewById(R.id.groceries);
+            f1 = (View) V.findViewById(R.id.map_container);
+            fragment_data = (FrameLayout) V.findViewById(R.id.fragment_data);
 
-        recyclerView = (RecyclerView) V.findViewById(R.id.product_category_recyclerview);
-        recyclerView.setHasFixedSize(true);
-        linearLayoutManager = new LinearLayoutManager(getActivity());
-        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        recyclerView.setLayoutManager(linearLayoutManager);
+            gson = new Gson();
 
-        searchView = (SearchView) V.findViewById(R.id.searchLocation);
-        placesAutocompleteTextView = (PlacesAutocompleteTextView) V.findViewById(R.id.places_autocomplete);
+            recyclerView = (RecyclerView) V.findViewById(R.id.product_category_recyclerview);
+            recyclerView.setHasFixedSize(true);
+            linearLayoutManager = new LinearLayoutManager(getActivity());
+            linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+            recyclerView.setLayoutManager(linearLayoutManager);
 
-        kilometre = (TextView) V.findViewById(R.id.kilometre);
-        ETA = (TextView) V.findViewById(R.id.ETA);
-        GuestAddress = (TextView) V.findViewById(R.id.GuestAddress);
-        map_Holder = (RelativeLayout) V.findViewById(R.id.map_Holder);
-        layout_holder = (LinearLayout) V.findViewById(R.id.layout_holder);
-        product_holder = (LinearLayout) V.findViewById(R.id.product_holder);
-        fab = (FloatingActionButton) V.findViewById(R.id.fab);
-        product_category = (FancyButton) V.findViewById(R.id.product_category);
+            searchView = (SearchView) V.findViewById(R.id.searchLocation);
+            placesAutocompleteTextView = (PlacesAutocompleteTextView) V.findViewById(R.id.places_autocomplete);
 
-        product_category.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
-            public void onSwipeTop() {
-                Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
-                        R.anim.slide_down);
+            kilometre = (TextView) V.findViewById(R.id.kilometre);
+            ETA = (TextView) V.findViewById(R.id.ETA);
+            GuestAddress = (TextView) V.findViewById(R.id.GuestAddress);
+            map_Holder = (RelativeLayout) V.findViewById(R.id.map_Holder);
+            layout_holder = (LinearLayout) V.findViewById(R.id.layout_holder);
+            product_holder = (LinearLayout) V.findViewById(R.id.product_holder);
+            fab = (FloatingActionButton) V.findViewById(R.id.fab);
+            product_category = (FancyButton) V.findViewById(R.id.product_category);
 
-                Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
-                        R.anim.slide_up);
+            frameLayout = (FrameLayout) V.findViewById(R.id.fragment_data);
 
-                product_category.setIconResource(getString(R.string.drop_down));
+            product_category.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+                public void onSwipeTop() {
+                    Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
+                            R.anim.slide_down);
 
-                product_holder.setVisibility(View.VISIBLE);
-                product_holder.startAnimation(slide_up);
-            }
+                    Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
+                            R.anim.slide_up);
 
-            public void onSwipeBottom() {
-                Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
-                        R.anim.slide_down);
+                    product_category.setIconResource(getString(R.string.drop_down));
 
-                Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
-                        R.anim.slide_up);
-
-                product_category.setIconResource(getString(R.string.drop_up));
-
-                product_holder.setVisibility(View.GONE);
-                product_holder.startAnimation(slide_down);
-            }
-
-        });
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
-                        R.anim.slide_down);
-
-                Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
-                        R.anim.slide_up);
-
-                if(layout_holder.getVisibility() == View.VISIBLE)
-                {
-                    layout_holder.setVisibility(View.GONE);
-                    fab.setImageResource(R.drawable.ic_plus);
-                    //IOUtils.slideToBottom(layout_holder);
-                    layout_holder.startAnimation(slide_down);
-                }
-                else if(layout_holder.getVisibility() == View.GONE)
-                {
-                    layout_holder.setVisibility(View.VISIBLE);
-                    fab.setImageResource(R.drawable.ic_minus);
-                    //IOUtils.slideToTop(layout_holder);
-                    layout_holder.startAnimation(slide_up);
+                    product_holder.setVisibility(View.VISIBLE);
+                    product_holder.startAnimation(slide_up);
                 }
 
-            }
-        });
+                public void onSwipeBottom() {
+                    Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
+                            R.anim.slide_down);
 
-        GuestAddress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendNotification("Check Our New Seasonal Products!!!");
-            }
-        });
+                    Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
+                            R.anim.slide_up);
 
-        recyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(getApplicationContext(), new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override public void onItemClick(View view, int position) {
+                    product_category.setIconResource(getString(R.string.drop_up));
 
+                    product_holder.setVisibility(View.GONE);
+                    product_holder.startAnimation(slide_down);
+                }
 
+            });
 
-                        Product_categoryFragment product_categoryFragment = new Product_categoryFragment();
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-                        Bundle args = new Bundle();
-                        args.putString("category_id",  productCategoryMainPojo.getData().get(position).get_id());
-                        product_categoryFragment .setArguments(args);
+                    Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
+                            R.anim.slide_down);
 
-                        FragmentManager manager = getActivity().getSupportFragmentManager();
-                        FragmentTransaction transaction = manager.beginTransaction();
-                        transaction.replace(R.id.fragment_data, product_categoryFragment);
-                        transaction.commit();
+                    Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
+                            R.anim.slide_up);
 
-                        map_Holder.setVisibility(View.GONE);
-
+                    if(layout_holder.getVisibility() == View.VISIBLE)
+                    {
+                        layout_holder.setVisibility(View.GONE);
+                        fab.setImageResource(R.drawable.ic_plus);
+                        //IOUtils.slideToBottom(layout_holder);
+                        layout_holder.startAnimation(slide_down);
                     }
-                })
-        );
+                    else if(layout_holder.getVisibility() == View.GONE)
+                    {
+                        layout_holder.setVisibility(View.VISIBLE);
+                        fab.setImageResource(R.drawable.ic_minus);
+                        //IOUtils.slideToTop(layout_holder);
+                        layout_holder.startAnimation(slide_up);
+                    }
+
+                }
+            });
+
+            GuestAddress.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    sendNotification("Check Our New Seasonal Products!!!");
+                }
+            });
+
+            recyclerView.addOnItemTouchListener(
+                    new RecyclerItemClickListener(getApplicationContext(), new RecyclerItemClickListener.OnItemClickListener() {
+                        @Override public void onItemClick(View view, int position) {
+
+                            frameLayout.setVisibility(View.VISIBLE);
+
+                            Product_categoryFragment product_categoryFragment = new Product_categoryFragment();
+
+                            Bundle args = new Bundle();
+                            args.putString("category_id",  productCategoryMainPojo.getData().get(position).get_id());
+                            product_categoryFragment .setArguments(args);
+
+                            FragmentManager manager = getActivity().getSupportFragmentManager();
+                            FragmentTransaction transaction = manager.beginTransaction();
+                            transaction.replace(R.id.fragment_data, product_categoryFragment);
+                            transaction.commit();
+
+                            map_Holder.setVisibility(View.GONE);
+
+                        }
+                    })
+            );
 
         /*placesAutocompleteTextView.setOnPlaceSelectedListener(
                 new OnPlaceSelectedListener() {
@@ -310,122 +302,148 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 }
         );*/
 
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+
         return V;
     }
 
     private void sendNotification(String messageBody) {
-        Intent intent = new Intent(getActivity(), DashboardActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getActivity(), 0, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+        try
+        {
 
-        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+            Intent intent = new Intent(getActivity(), DashboardActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent pendingIntent = PendingIntent.getActivity(getActivity(), 0, intent,
+                    PendingIntent.FLAG_ONE_SHOT);
 
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getActivity())
-                .setContentTitle("Tracking Fresh")
-                .setContentText(messageBody)
-                .setLargeIcon(largeIcon)
-                .setAutoCancel(true)
-                .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent);
+            Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            notificationBuilder.setSmallIcon(R.drawable.ic_stat_tkf);
-        } else {
-            notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+            Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getActivity())
+                    .setContentTitle("Tracking Fresh")
+                    .setContentText(messageBody)
+                    .setLargeIcon(largeIcon)
+                    .setAutoCancel(true)
+                    .setSound(defaultSoundUri)
+                    .setContentIntent(pendingIntent);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                notificationBuilder.setSmallIcon(R.drawable.ic_stat_tkf);
+            } else {
+                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+            }
+
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.notif_banner);
+            //bitmap = Bitmap.createScaledBitmap(bitmap, 500, 350, false);
+
+            notificationBuilder.setStyle(new NotificationCompat.BigPictureStyle()
+                    .bigPicture(bitmap));
+
+            NotificationManager notificationManager =
+                    (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+
+            Random random = new Random();
+            int id = random.nextInt(9999 - 1000) + 1000;
+            notificationManager.notify(id, notificationBuilder.build());
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
         }
-
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.notif_banner);
-        //bitmap = Bitmap.createScaledBitmap(bitmap, 500, 350, false);
-
-        notificationBuilder.setStyle(new NotificationCompat.BigPictureStyle()
-                .bigPicture(bitmap));
-
-        NotificationManager notificationManager =
-                (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-
-        Random random = new Random();
-        int id = random.nextInt(9999 - 1000) + 1000;
-        notificationManager.notify(id, notificationBuilder.build());
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mContext = getActivity();
+        try
+        {
 
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        supportMapFragment = (SupportMapFragment) fm.findFragmentById(R.id.map_container);
-        if (supportMapFragment == null) {
-            supportMapFragment = SupportMapFragment.newInstance();
-            fm.beginTransaction().replace(R.id.map_container, supportMapFragment).commit();
+            mContext = getActivity();
+
+            FragmentManager fm = getActivity().getSupportFragmentManager();
+            supportMapFragment = (SupportMapFragment) fm.findFragmentById(R.id.map_container);
+            if (supportMapFragment == null) {
+                supportMapFragment = SupportMapFragment.newInstance();
+                fm.beginTransaction().replace(R.id.map_container, supportMapFragment).commit();
+            }
+            supportMapFragment.getMapAsync(this);
+
+            //gps = new GPSTracker(getActivity());
+
+            //Current_Origin = new LatLng(gps.getLatitude(), gps.getLongitude());
+
+            Current_Location = SharedPrefUtil.getLocation(getActivity());
+
+            Current_Origin = new LatLng(Current_Location.getLatitude(), Current_Location.getLongitude());
+
+            Log.i("latitude", String.valueOf(Current_Location.getLatitude()));
+            Log.i("longitude", String.valueOf(Current_Location.getLongitude()));
+
+            oldLocation = Current_Origin;
+
+            fruits.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Product_categoryFragment product_categoryFragment = new Product_categoryFragment();
+
+                    FragmentManager manager = getActivity().getSupportFragmentManager();
+                    FragmentTransaction transaction = manager.beginTransaction();
+                    transaction.replace(R.id.fragment_data, product_categoryFragment);
+                    transaction.commit();
+
+                    map_Holder.setVisibility(View.GONE);
+
+                }
+            });
+
+            vegetables.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    //map.clear();
+
+                    //getData();
+                }
+            });
+
+            groceries.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+
+            getProductDataListing();
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
         }
-        supportMapFragment.getMapAsync(this);
 
-        gps = new GPSTracker(getActivity());
-
-        Current_Origin = new LatLng(gps.getLatitude(), gps.getLongitude());
-
-        Log.i("latitude", String.valueOf(gps.getLatitude()));
-        Log.i("longitude", String.valueOf(gps.getLongitude()));
-
-        oldLocation = Current_Origin;
-
-        fruits.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Product_categoryFragment product_categoryFragment = new Product_categoryFragment();
-
-                FragmentManager manager = getActivity().getSupportFragmentManager();
-                FragmentTransaction transaction = manager.beginTransaction();
-                transaction.replace(R.id.fragment_data, product_categoryFragment);
-                transaction.commit();
-
-                map_Holder.setVisibility(View.GONE);
-
-            }
-        });
-
-        vegetables.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                //map.clear();
-
-                //getData();
-            }
-        });
-
-        groceries.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        getProductDataListing();
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        //getData();
+        try
+        {
 
-        map = googleMap;
-        if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
+            //getData();
 
-        //map.setMyLocationEnabled(true);
+            map = googleMap;
+            if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
 
-        Location location = new Location(LocationManager.GPS_PROVIDER);
-        location.setLatitude(gps.getLatitude());
-        location.setLongitude(gps.getLongitude());
+            //map.setMyLocationEnabled(true);
 
-        updateCurrentLocationMarker(location);
+           /* Location location = new Location(LocationManager.GPS_PROVIDER);
+            location.setLatitude(Current_Location.getLatitude());
+            location.setLongitude(Current_Location.getLongitude());*/
+
+            //updateCurrentLocationMarker();
 
         /*CameraPosition cameraPosition = new CameraPosition.Builder().
                 target(Current_Origin).
@@ -440,9 +458,46 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_home))
                 .title("Origin"));*/
 
-        //map.moveCamera(CameraUpdateFactory.newLatLngZoom(Current_Origin, 18.0f));
+            //map.moveCamera(CameraUpdateFactory.newLatLngZoom(Current_Origin, 18.0f));
 
-        ScheduledExecutorService scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
+            if (!NetworkUtils.isNetworkConnectionOn(getActivity())) {
+                FireToast.customSnackbarWithListner(getActivity(), "No internet access", "Settings", new ActionClickListener() {
+                    @Override
+                    public void onActionClicked(Snackbar snackbar) {
+                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                    }
+                });
+                return;
+            }
+            else
+            {
+                scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
+
+                // This schedule a task to run every 10 minutes:
+                scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
+                    public void run() {
+
+                        Current_Location = SharedPrefUtil.getLocation(getActivity());
+                        Current_Origin = new LatLng(Current_Location.getLatitude(), Current_Location.getLongitude());
+
+                        Log.i("laittudeText",String.valueOf(Current_Origin.latitude));
+
+                        if(!String.valueOf(Current_Origin.latitude).equalsIgnoreCase("0.0")  && !String.valueOf(Current_Origin.longitude).equalsIgnoreCase("0.0"))
+                        {
+                            IOUtils ioUtils = new IOUtils();
+
+                            ioUtils.getGETStringRequest(getActivity(),Constants.LocationAPI, new IOUtils.VolleyCallback() {
+                                @Override
+                                public void onSuccess(String result) {
+                                    DriverLocationResponse(result);
+                                }
+                            });
+                        }
+                    }
+                }, 0, 5, TimeUnit.SECONDS);
+            }
+
+        /*ScheduledExecutorService scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
 
         // This schedule a task to run every 10 minutes:
         scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
@@ -460,7 +515,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
                     IOUtils ioUtils = new IOUtils();
 
-                    ioUtils.getGETStringRequest(Constants.LocationAPI, new IOUtils.VolleyCallback() {
+                    ioUtils.getGETStringRequest(getActivity(),Constants.LocationAPI, new IOUtils.VolleyCallback() {
                         @Override
                         public void onSuccess(String result) {
                             DriverLocationResponse(result);
@@ -472,11 +527,11 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                     //getDriverLocationTaskSample();
                 }
             }
-        }, 0, 3, TimeUnit.SECONDS);
+        }, 0, 3, TimeUnit.SECONDS);*/
 
-        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
+            map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
 
                 /*try {
                     // Get extra data with marker ID
@@ -525,9 +580,9 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
                 }*/
 
-                return false;
-            }
-        });
+                    return false;
+                }
+            });
 
         /*final LatLng startPosition = marker.getPosition();
         final LatLng finalPosition = new LatLng(gps.getLatitude(), gps.getLongitude());
@@ -568,6 +623,11 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 }
             }
         });*/
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+
     }
 
     private double bearingBetweenLocations(LatLng latLng1, LatLng latLng2) {
@@ -592,7 +652,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
         return brng;
     }
 
-    private void rotateMarker(final Marker marker, final float toRotation) {
+    /*private void rotateMarker(final Marker marker, final float toRotation) {
         if (!isMarkerRotating) {
             final Handler handler = new Handler();
             final long start = SystemClock.uptimeMillis();
@@ -624,13 +684,13 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 }
             });
         }
-    }
+    }*/
 
-    public void updateCurrentLocationMarker(Location currentLatLng) {
+   /* public void updateCurrentLocationMarker() {
 
         if (map != null) {
 
-            /*LatLng latLng = new LatLng(currentLatLng.getLatitude(),currentLatLng.getLongitude());
+            *//*LatLng latLng = new LatLng(currentLatLng.getLatitude(),currentLatLng.getLongitude());
             if(currentPositionMarker == null){
                 currentPositionMarker = new MarkerOptions();
 
@@ -644,65 +704,92 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 currentLocationMarker.setPosition(latLng);
 
             ///currentPositionMarker.position(latLng);
-            map.moveCamera(CameraUpdateFactory.newLatLng(latLng));*/
+            map.moveCamera(CameraUpdateFactory.newLatLng(latLng));*//*
 
             //getData();
         }
-    }
+    }*/
 
     public void getMapsApiDirectionsUrl(Double destLatitude, Double destLongitude) {
 
-        String waypoints = "waypoints=optimize:true|"
-                + Current_Origin.latitude + "," + Current_Origin.longitude
-                + "|" + "|" + destLatitude + ","
-                + destLongitude;
+        try
+        {
 
-        String sensor = "sensor=false";
-        String key = "key=AIzaSyCWqw5vGZZrQxWCsVVvNa37yNdGxiUPQAs";
-        String params = waypoints + "&" + sensor + "&" + key;
-        String output = "json";
-        String url = "https://maps.googleapis.com/maps/api/directions/"
-                + output + "?" + "origin=" + Current_Origin.latitude + "," + Current_Origin.longitude + "&destination=" + destLatitude + ","
-                + destLongitude + "&" + params;
+            String waypoints = "waypoints=optimize:true|"
+                    + Current_Origin.latitude + "," + Current_Origin.longitude
+                    + "|" + "|" + destLatitude + ","
+                    + destLongitude;
 
-        ReadTask downloadTask = new ReadTask();
-        downloadTask.execute(url);
+            String sensor = "sensor=false";
+            String key = "key=" + getString(R.string.googleMaps_ServerKey);
+            String params = waypoints  + "&" + key + "&" + sensor;
+            String output = "json";
+            String url = "https://maps.googleapis.com/maps/api/directions/"
+                    + output + "?" + "origin=" + Current_Origin.latitude + "," + Current_Origin.longitude + "&destination=" + destLatitude + ","
+                    + destLongitude + "&" + params;
 
+            ReadTask downloadTask = new ReadTask();
+            downloadTask.execute(url);
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
     }
 
     private void addMarkers(String id, String location_name, Double latitude, Double longitude) {
 
-        LatLng dest = new LatLng(latitude, longitude);
+        try
+        {
 
-        HashMap<String, String> data = new HashMap<String, String>();
+            final LatLng dest = new LatLng(latitude, longitude);
 
+            HashMap<String, String> data = new HashMap<String, String>();
 
+       /* map.addCircle(new CircleOptions()
+                .center(new LatLng(latitude, longitude))
+                .radius(500)
+                .strokeWidth(5)
+                .strokeColor(Color.GREEN)
+                .fillColor(0x30ff0000));*/
 
-        if (map != null) {
-            marker = map.addMarker(new MarkerOptions().position(dest)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_van_02))
-                    .rotation((float) bearingBetweenLocations(oldLocation,newLocation))
-                    .title(location_name));
+            if (map != null) {
+                marker = map.addMarker(new MarkerOptions().position(dest)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_van))
+                        .rotation((float) bearingBetweenLocations(oldLocation,newLocation))
+                        .title(location_name));
 
-            data.put(TAG_ID, id);
-            data.put(TAG_LOCATION_NAME, location_name);
-            data.put(TAG_LATITUDE, String.valueOf(latitude));
-            data.put(TAG_LONGITUDE, String.valueOf(longitude));
+                data.put(TAG_ID, id);
+                data.put(TAG_LOCATION_NAME, location_name);
+                data.put(TAG_LATITUDE, String.valueOf(latitude));
+                data.put(TAG_LONGITUDE, String.valueOf(longitude));
 
-            extraMarkerInfo.put(marker.getId(), data);
+                extraMarkerInfo.put(marker.getId(), data);
 
-            map.addMarker(new MarkerOptions().position(Current_Origin)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_home))
-                    .title("Origin"));
+                IOUtils.showRipples(dest,map,DURATION);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        IOUtils.showRipples(dest,map,DURATION);
+                    }
+                }, DURATION - 500);
 
-            //float bearing = (float) bearing(convertLatLngToLocation(oldLocation),convertLatLngToLocation(newLocation))
-            //rotateMarker(marker, bearing);
+                map.addMarker(new MarkerOptions().position(Current_Origin)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_home))
+                        .title("Origin"));
+
+                //float bearing = (float) bearing(convertLatLngToLocation(oldLocation),convertLatLngToLocation(newLocation))
+                //rotateMarker(marker, bearing);
+            }
+
+            oldLocation = newLocation;
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
         }
 
-        oldLocation = newLocation;
     }
 
-    private Location convertLatLngToLocation(LatLng latLng) {
+    /*private Location convertLatLngToLocation(LatLng latLng) {
         Location loc = new Location("someLoc");
         loc.setLatitude(latLng.latitude);
         loc.setLongitude(latLng.longitude);
@@ -722,9 +809,9 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
         double x = Math.cos(latitude1) * Math.sin(latitude2) - Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(longDiff);
 
         return Math.toDegrees(Math.atan2(y, x));
-    }
+    }*/
 
-    public void getData() {
+    /*public void getData() {
         try {
             JSONArray jsonArray = new JSONArray(loadJSONFromAsset());
 
@@ -753,9 +840,9 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
-    public void getProductData()
+   /* public void getProductData()
     {
         Bundle args = getArguments();
 
@@ -768,7 +855,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             Map<String, String> params = new HashMap<String, String>();
             params.put("Authorization", "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNDk1MDk4NTE5fQ.6NTw1IfVEWbpB8I_LzHqYcv48OXSacUG0t-HfjiF-I8");
 
-            ioUtils.getGETStringRequestHeader(Constants.Product_Desc + category_id, params, new IOUtils.VolleyCallback() {
+            ioUtils.getGETStringRequestHeader(getActivity(),Constants.Product_Desc + category_id, params, new IOUtils.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
                     Log.i("product_category",result);
@@ -786,9 +873,9 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     public void getProductDataResponse(String Response)
     {
 
-        subProductMainPOJO = gson.fromJson(Response,SubProductMainPOJO.class);
-
         try {
+
+            subProductMainPOJO = gson.fromJson(Response,SubProductMainPOJO.class);
 
             myDataAdapter = new MyDataAdapter(subProductMainPOJO.getData(),getActivity());
             gridView.setAdapter(myDataAdapter);
@@ -797,7 +884,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     /*public void getProductData() {
         try {
@@ -842,10 +929,12 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
             IOUtils ioUtils = new IOUtils();
 
-            Map<String, String> params = new HashMap<String, String>();
-            params.put("Authorization", "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNDk1MDk4NTE5fQ.6NTw1IfVEWbpB8I_LzHqYcv48OXSacUG0t-HfjiF-I8");
+            Log.i("Token",SharedPrefUtil.getToken(getActivity()));
 
-            ioUtils.getGETStringRequestHeader(Constants.Product_Category, params, new IOUtils.VolleyCallback() {
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(getActivity()));
+
+            ioUtils.getGETStringRequestHeader(getActivity(),Constants.Product_Category, params, new IOUtils.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
                     Log.i("product_category",result);
@@ -862,9 +951,10 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
     public void ProductCategoryResponse(String Response)
     {
-        productCategoryMainPojo = gson.fromJson(Response,ProductCategoryMainPojo.class);
+
         try
         {
+            productCategoryMainPojo = gson.fromJson(Response,ProductCategoryMainPojo.class);
 
             product_recyclerAdapter = new Product_RecyclerAdapter(productCategoryMainPojo.getData(), getActivity());
             recyclerView.setAdapter(product_recyclerAdapter);
@@ -876,7 +966,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    class MyDataAdapter<T> extends BaseAdapter {
+  /*  class MyDataAdapter<T> extends BaseAdapter {
         List<Product_POJO> Product_POJOs;
         private Activity activity;
         private LayoutInflater layoutInflater = null;
@@ -929,66 +1019,74 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
 
-            Product_POJO product_pojo = product_pojos.get(position);
+            try
+            {
 
-            viewHolder.product_name.setText(product_pojo.getProduct_name());
+                Product_POJO product_pojo = Product_POJOs.get(position);
 
-            viewHolder.imageView.setController(IOUtils.getFrescoImageController(activity, product_pojo.getImages()));
-            viewHolder.imageView.setHierarchy(IOUtils.getFrescoImageHierarchy(activity));
+                viewHolder.product_name.setText(product_pojo.getProduct_name());
 
-            viewHolder.weight.setText(product_pojo.getKilo());
-            viewHolder.price.setText(product_pojo.getRs());
+                viewHolder.imageView.setController(IOUtils.getFrescoImageController(activity, product_pojo.getImages()));
+                viewHolder.imageView.setHierarchy(IOUtils.getFrescoImageHierarchy(activity));
 
-            viewHolder.addtoCart.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    viewHolder.holder_count.setVisibility(View.VISIBLE);
-                    viewHolder.addtoCart.setVisibility(View.GONE);
-                }
-            });
+                viewHolder.weight.setText(product_pojo.getKilo());
+                viewHolder.price.setText(product_pojo.getRs());
 
-            viewHolder.plus.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        int t = Integer.parseInt(viewHolder.count.getText().toString());
-                        viewHolder.count.setText(String.valueOf(t + 1));
-
-                        //DashboardActivity.updateNotificationsBadge(t+1);
-                    } catch (Exception e) {
-
+                viewHolder.addtoCart.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        viewHolder.holder_count.setVisibility(View.VISIBLE);
+                        viewHolder.addtoCart.setVisibility(View.GONE);
                     }
-                }
-            });
+                });
 
-            viewHolder.minus.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        int t = Integer.parseInt(viewHolder.count.getText().toString());
-                        if (t > 0) {
-                            viewHolder.count.setText(String.valueOf(t - 1));
+                viewHolder.plus.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            int t = Integer.parseInt(viewHolder.count.getText().toString());
+                            viewHolder.count.setText(String.valueOf(t + 1));
 
-                            //DashboardActivity.updateNotificationsBadge(t-1);
+                            //DashboardActivity.updateNotificationsBadge(t+1);
+                        } catch (Exception e) {
+
                         }
-
-                        if (t < 0 || t == 0) {
-                            viewHolder.holder_count.setVisibility(View.GONE);
-                            viewHolder.addtoCart.setVisibility(View.VISIBLE);
-                        }
-                    } catch (Exception e) {
-
                     }
-                }
-            });
+                });
 
-            viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent in = new Intent(activity, DetailsActivity.class);
-                    startActivity(in);
-                }
-            });
+                viewHolder.minus.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            int t = Integer.parseInt(viewHolder.count.getText().toString());
+                            if (t > 0) {
+                                viewHolder.count.setText(String.valueOf(t - 1));
+
+                                //DashboardActivity.updateNotificationsBadge(t-1);
+                            }
+
+                            if (t < 0 || t == 0) {
+                                viewHolder.holder_count.setVisibility(View.GONE);
+                                viewHolder.addtoCart.setVisibility(View.VISIBLE);
+                            }
+                        } catch (Exception e) {
+
+                        }
+                    }
+                });
+
+                viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent in = new Intent(activity, DetailsActivity.class);
+                        startActivity(in);
+                    }
+                });
+
+
+            } catch (Exception e) {
+                Log.i(TAG, e.getMessage());
+            }
 
             return convertView;
         }
@@ -1000,7 +1098,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             Button addtoCart;
             LinearLayout holder_count;
         }
-    }
+    }*/
 
     public String loadJSONFromAsset() {
         String json = null;
@@ -1018,7 +1116,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
         return json;
     }
 
-    public String loadProductJSONFromAsset() {
+    /*public String loadProductJSONFromAsset() {
         String json = null;
         try {
             InputStream is = getActivity().getAssets().open("products_mock.json");
@@ -1032,7 +1130,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             return null;
         }
         return json;
-    }
+    }*/
 
 
     private class ReadTask extends AsyncTask<String, Void, String> {
@@ -1085,7 +1183,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 kilometre.setText("Vehicle is " + distance + " away at " + EndAddress);
 
                 String StartAddress = jsonObject1.getString("start_address");
-                GuestAddress.setText("Your Address: " + StartAddress);
+                GuestAddress.setText(/*"Your Address: " +*/ StartAddress);
 
                 JSONArray jsonArray1 = jsonObject1.getJSONArray("steps");
                 JSONObject jsonObject4 = jsonArray1.getJSONObject(jsonArray1.length()-1);
@@ -1113,7 +1211,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 }
 
 
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -1172,6 +1270,8 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 }
 
                 map.addPolyline(polyLineOptions);
+
+                scheduleTaskExecutor.shutdown();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1179,7 +1279,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
     }
 
-    public void getDriverLocationTask() {
+    /*public void getDriverLocationTask() {
         //String url = "http://192.168.1.220:8000/api/vehicle_positions/by_driver_id/dr001";
         //String url = "http://115.112.155.181:8000/api/vehicle_positions/by_driver_id/dr001";
 
@@ -1205,9 +1305,9 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         mRequestQueue.add(stringRequest);
-    }
+    }*/
 
-    public void getDriverLocationTaskSample() {
+    /*public void getDriverLocationTaskSample() {
         //String url = "http://192.168.1.220:8000/api/vehicle_positions/by_driver_id/dr001";
         //String url = "http://115.112.155.181:8000/api/vehicle_positions/by_driver_id/dr001";
 
@@ -1239,7 +1339,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
 
 
-        /*RequestQueue mRequestQueue = Volley.newRequestQueue(getActivity());
+        *//*RequestQueue mRequestQueue = Volley.newRequestQueue(getActivity());
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -1269,7 +1369,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                     //Additional cases
                 }
             }
-        });*/
+        });*//*
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
                 url, jsonObject,
@@ -1297,11 +1397,11 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 NetworkResponse response = error.networkResponse;
 
                 json = new String(response.data);
-               /* json = trimMessage(json, "message");
-                json1 = trimMessage(json, "errors");*/
+               *//* json = trimMessage(json, "message");
+                json1 = trimMessage(json, "errors");*//*
                 Log.d("Error", json);
 
-               /* if(response != null && response.data != null){
+               *//* if(response != null && response.data != null){
                     switch(response.statusCode){
                         case 404:
                             json = new String(response.data);
@@ -1310,7 +1410,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                             break;
                     }
                     //Additional cases
-                }*/
+                }*//*
             }
         });
 
@@ -1318,9 +1418,9 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
         jsonObjReq.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         MyApplication.getInstance().addRequestToQueue(jsonObjReq, TAG);
-    }
+    }*/
 
-    public String trimMessage(String json, String key){
+   /* public String trimMessage(String json, String key){
         String trimmedString = null;
 
         try{
@@ -1337,7 +1437,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     //Somewhere that has access to a context
     public void displayMessage(String toastString){
         Toast.makeText(getActivity(), toastString, Toast.LENGTH_LONG).show();
-    }
+    }*/
 
     public void DriverLocationResponse(String resp) {
         map.clear();
@@ -1378,7 +1478,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             addMarkers("1", "TKF Vehicle", cust_latitude, cust_longitude);
             getMapsApiDirectionsUrl(cust_latitude, cust_longitude);
 
-            latlang = new LatLng(cust_latitude, cust_longitude);
+            /*latlang = new LatLng(cust_latitude, cust_longitude);
 
             Location loc1 = new Location("");
             loc1.setLatitude(Current_Origin.latitude);
@@ -1388,7 +1488,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             loc2.setLatitude(latlang.latitude);
             loc2.setLongitude(latlang.longitude);
 
-            float distanceInMeters = loc1.distanceTo(loc2) / 1000;
+            float distanceInMeters = loc1.distanceTo(loc2) / 1000;*/
 
 
 
@@ -1398,8 +1498,9 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
             //kilometre.setText("Vehicle is " + String.valueOf(IOUtils.roundToOneDigit(distanceInMeters)) + " kms away at " + VehicleAddress);
 
-        } catch (JSONException e) {
-            Toast.makeText(getActivity(), "exception", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            //Toast.makeText(getActivity(), "exception", Toast.LENGTH_SHORT).show();
+            Log.i(TAG, e.getMessage());
         }
     }
 

@@ -1,4 +1,4 @@
-package com.kesari.trackingfresh.ProductPage;
+package com.kesari.trackingfresh.TrashClasses;
 
 /**
  * Created by kesari on 23/03/2017 AD.

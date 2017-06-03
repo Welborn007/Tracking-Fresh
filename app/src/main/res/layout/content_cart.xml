@@ -19,6 +19,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <RelativeLayout
+        android:id="@+id/relativelay_reclview"
+        android:layout_below="@+id/cart_count"
+        android:layout_above="@+id/checkOut"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+    </RelativeLayout>
+
     <GridView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

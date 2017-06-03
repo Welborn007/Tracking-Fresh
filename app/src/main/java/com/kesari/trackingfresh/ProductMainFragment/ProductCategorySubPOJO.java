@@ -1,4 +1,4 @@
-package com.kesari.trackingfresh.ProductPage;
+package com.kesari.trackingfresh.ProductMainFragment;
 
 /**
  * Created by kesari on 18/05/17.

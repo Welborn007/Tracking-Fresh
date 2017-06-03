@@ -12,6 +12,7 @@
 
     <string name="payment">Payment</string>
     <string name="myaccount">My Account</string>
+    <string name="myOrders">My Orders</string>
     <string name="refer_earn">Refer &amp; Earn</string>
     <string name="help">Help</string>
     <string name="settings">Settings</string>
@@ -60,5 +61,7 @@
 
     <string name="drop_up">&#xf0d8;</string>
     <string name="drop_down">&#xf0d7;</string>
+
+    <string name="googleMaps_ServerKey">AIzaSyDoJCSIjyCfQAO_F0NNaPXm_vPxrLhJWXM</string>
 
 </resources>

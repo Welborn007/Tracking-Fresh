@@ -8,13 +8,14 @@ import android.view.WindowManager;
 import android.widget.Button;
 
 import com.kesari.trackingfresh.Login.LoginActivity;
-import com.kesari.trackingfresh.ProductPage.DashboardActivity;
+import com.kesari.trackingfresh.DashBoard.DashboardActivity;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 
 public class NewSplash extends AppCompatActivity {
 
     Button btnLogin,login;
+    private String TAG = this.getClass().getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +46,8 @@ public class NewSplash extends AppCompatActivity {
 
     public void startApp()
     {
-        if (SharedPrefUtil.getUser(NewSplash.this) != null) {
-            if(!SharedPrefUtil.getUser(NewSplash.this).getUser().getEmailId().isEmpty())
+        if (SharedPrefUtil.getToken(NewSplash.this) != null) {
+            if(!SharedPrefUtil.getToken(NewSplash.this).isEmpty())
             {
                 Intent startMainActivity = new Intent(getApplicationContext(),DashboardActivity.class);
                 startActivity(startMainActivity);
