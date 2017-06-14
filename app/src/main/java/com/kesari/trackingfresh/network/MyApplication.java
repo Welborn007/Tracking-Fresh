@@ -112,7 +112,7 @@ public class MyApplication extends Application
         for (AddCart_model item : myProducts) {
             if (item.getProductId().equals(product_id)) {
 
-                item.setQuantity(item.getQuantity() + 1);
+                //item.setQuantity(item.getQuantity() + 1);
                 return true;
             }
         }

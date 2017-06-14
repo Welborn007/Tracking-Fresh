@@ -13,11 +13,17 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
+import com.google.gson.Gson;
 import com.kesari.trackingfresh.Map.JSON_POJO;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
+import com.kesari.trackingfresh.Order.OrderReview;
 import com.kesari.trackingfresh.R;
+import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
+import com.kesari.trackingfresh.Utilities.RecyclerItemClickListener;
+import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
@@ -31,7 +37,9 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OrderListActivity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt{
 
@@ -42,6 +50,8 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
     private RecyclerView recListOrders;
     private LinearLayoutManager Orders;
     List<JSON_POJO> jsonIndiaModelList = new ArrayList<>();
+    private Gson gson;
+    private OrderMainPOJO orderMainPOJO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +65,8 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+            gson = new Gson();
+
             recListOrders = (RecyclerView) findViewById(R.id.recyclerView);
 
             recListOrders.setHasFixedSize(true);
@@ -62,6 +74,19 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
             Orders.setOrientation(LinearLayoutManager.VERTICAL);
             recListOrders.setLayoutManager(Orders);
 
+            recListOrders.addOnItemTouchListener(
+                    new RecyclerItemClickListener(getApplicationContext(), new RecyclerItemClickListener.OnItemClickListener() {
+                        @Override public void onItemClick(View view, int position) {
+
+                            String orderID = orderMainPOJO.getData().get(position).get_id();
+
+                            Intent intent = new Intent(OrderListActivity.this, OrderReview.class);
+                            intent.putExtra("orderID",orderID);
+                            startActivity(intent);
+
+                        }
+                    })
+            );
 
         /*Register receiver*/
             networkUtilsReceiver = new NetworkUtilsReceiver(this);
@@ -82,12 +107,54 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
                 }
             }
 
-            getData();
+            //getData();
+            getOrderList();
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
 
+    }
+
+    private void getOrderList()
+    {
+        try
+        {
+
+            String url = Constants.OrderList;
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(OrderListActivity.this));
+
+            ioUtils.getGETStringRequestHeader(OrderListActivity.this, url , params , new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG, result.toString());
+
+                    getOrderListResponse(result);
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void getOrderListResponse(String Response)
+    {
+        try
+        {
+            orderMainPOJO = gson.fromJson(Response, OrderMainPOJO.class);
+
+
+            adapterOrders = new OrdersListRecycler_Adapter(orderMainPOJO.getData());
+            recListOrders.setAdapter(adapterOrders);
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
     }
 
     public void getData() {
@@ -126,8 +193,6 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
 
             }
 
-            adapterOrders = new OrdersListRecycler_Adapter(jsonIndiaModelList);
-            recListOrders.setAdapter(adapterOrders);
 
         } catch (JSONException e) {
             e.printStackTrace();

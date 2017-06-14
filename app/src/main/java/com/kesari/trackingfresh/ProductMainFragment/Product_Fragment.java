@@ -754,8 +754,8 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
             if (map != null) {
                 marker = map.addMarker(new MarkerOptions().position(dest)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_van))
-                        .rotation((float) bearingBetweenLocations(oldLocation,newLocation))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_van_order))
+                        //.rotation((float) bearingBetweenLocations(oldLocation,newLocation))
                         .title(location_name));
 
                 data.put(TAG_ID, id);

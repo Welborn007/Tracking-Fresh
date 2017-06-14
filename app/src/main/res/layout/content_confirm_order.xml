@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@android:color/white"
+    tools:showIn="@layout/activity_confirm_order"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/delivery_text"
+        android:text="Confirm Order Details"
+        android:textColor="@color/white"
+        android:padding="10dp"
+        android:textSize="@dimen/text_size"
+        android:background="@color/Button_Color"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:layout_below="@+id/delivery_text"
+        android:layout_above="@+id/total_holder"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_margin="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="Order Placed By : "
+                android:textColor="@color/Gray"
+                android:textSize="@dimen/text_size14"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/order_placed_by"
+                android:text="Welborn Machado"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_margin="5dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="Order Status : "
+                android:textColor="@color/Gray"
+                android:textSize="@dimen/text_size14"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/order_status"
+                android:text="pending"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            xmlns:fancy="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:id="@+id/guestCardview"
+            android:background="@color/LightGray"
+            card_view:cardCornerRadius="4dp"
+            card_view:cardElevation="4dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:text="Product"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size"
+                        android:layout_width="190dp"
+                        android:layout_height="wrap_content"/>
+
+                    <View
+                        android:background="#000000"
+                        android:layout_width="1dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:text="Quantity"
+                        android:layout_marginLeft="5dp"
+                        android:textColor="@color/black"
+                        android:gravity="center"
+                        android:textSize="@dimen/text_size"
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"/>
+
+                    <View
+                        android:background="#000000"
+                        android:layout_width="1dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:text="Price"
+                        android:layout_marginLeft="5dp"
+                        android:textColor="@color/black"
+                        android:gravity="center"
+                        android:textSize="@dimen/text_size"
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"/>
+
+
+                </LinearLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/recyclerView"
+                    android:layout_margin="5dp"
+                    android:scrollbars="vertical"
+                    android:background="@color/LightGray">
+                </android.support.v7.widget.RecyclerView>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/total_holder"
+        android:layout_margin="5dp"
+        android:paddingRight="10dp"
+        android:gravity="right"
+        android:layout_above="@+id/btnSubmit"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="Order Status = "
+            android:textColor="@color/Gray"
+            android:textSize="@dimen/text_size14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/order_total"
+            android:text="1100rs"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Confirm Order and Pay"
+        android:layout_margin="5dp"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/btnSubmit"
+        android:textSize="@dimen/text_size"
+        android:background="@drawable/rounded_btn"
+        android:textStyle="bold"
+        android:textColor="@color/TextColor"
+        android:textAppearance="?android:textAppearanceMedium"
+        />
+
+</RelativeLayout>

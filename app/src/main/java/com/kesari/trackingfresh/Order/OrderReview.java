@@ -8,22 +8,45 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
+import com.kesari.trackingfresh.OrderTracking.OrderBikerTrackingActivity;
 import com.kesari.trackingfresh.R;
+import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
+import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.ActionClickListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt{
     private String TAG = this.getClass().getSimpleName();
     private NetworkUtilsReceiver networkUtilsReceiver;
+
+    String OrderID = "";
+    private RecyclerView recListProducts;
+    private LinearLayoutManager ProductsLayout;
+    private Gson gson;
+    OrderReviewMainPOJO orderReviewMainPOJO;
+    private RecyclerView.Adapter adapterProducts;
+
+    TextView total_price,payment_status,payment_mode,fullName,buildingName,landmark,address,mobileNo;
+
+    Button btnSubmit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +63,39 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
             networkUtilsReceiver = new NetworkUtilsReceiver(this);
             registerReceiver(networkUtilsReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
+            gson = new Gson();
+
+            OrderID = getIntent().getStringExtra("orderID");
+            recListProducts = (RecyclerView) findViewById(R.id.recyclerView);
+
+            recListProducts.setHasFixedSize(true);
+            ProductsLayout = new LinearLayoutManager(OrderReview.this);
+            ProductsLayout.setOrientation(LinearLayoutManager.VERTICAL);
+            recListProducts.setLayoutManager(ProductsLayout);
+
+            total_price = (TextView) findViewById(R.id.total_price);
+            payment_status = (TextView) findViewById(R.id.payment_status);
+            payment_mode = (TextView) findViewById(R.id.payment_mode);
+            fullName = (TextView) findViewById(R.id.fullName);
+            buildingName = (TextView) findViewById(R.id.buildingName);
+            landmark = (TextView) findViewById(R.id.landmark);
+            address = (TextView) findViewById(R.id.address);
+            mobileNo = (TextView) findViewById(R.id.mobileNo);
+
+            btnSubmit = (Button) findViewById(R.id.btnSubmit);
+
+            final String orderID = getIntent().getStringExtra("orderID");
+
+            btnSubmit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(OrderReview.this, OrderBikerTrackingActivity.class);
+                    intent.putExtra("orderID",orderID);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+
             final LocationManager locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
 
             if ( !locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) )
@@ -55,10 +111,76 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
                 }
             }
 
+            getOrderDetailsfromID();
+
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
 
+    }
+
+    private void getOrderDetailsfromID() {
+        try {
+
+            String url = Constants.OrderDetails + OrderID;
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(OrderReview.this));
+
+            ioUtils.getGETStringRequestHeader(OrderReview.this, url, params, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG, result.toString());
+
+                    OrderDetailsResponse(result);
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void OrderDetailsResponse(String Response)
+    {
+        try
+        {
+            orderReviewMainPOJO = gson.fromJson(Response, OrderReviewMainPOJO.class);
+
+            adapterProducts = new OrderReViewRecyclerAdapter(orderReviewMainPOJO.getData().getOrder(),OrderReview.this);
+            recListProducts.setAdapter(adapterProducts);
+
+            payment_status = (TextView) findViewById(R.id.payment_status);
+            payment_mode = (TextView) findViewById(R.id.payment_mode);
+            fullName = (TextView) findViewById(R.id.fullName);
+            buildingName = (TextView) findViewById(R.id.buildingName);
+            landmark = (TextView) findViewById(R.id.landmark);
+            address = (TextView) findViewById(R.id.address);
+            mobileNo = (TextView) findViewById(R.id.mobileNo);
+
+            total_price.setText(orderReviewMainPOJO.getData().getTotal_price() + " .Rs");
+
+            if(orderReviewMainPOJO.getData().getPayment_Status() != null)
+            {
+                payment_status.setText(orderReviewMainPOJO.getData().getPayment_Status());
+            }
+
+            if(orderReviewMainPOJO.getData().getPayment_Mode() != null)
+            {
+                payment_mode.setText(orderReviewMainPOJO.getData().getPayment_Mode());
+            }
+
+            fullName.setText(orderReviewMainPOJO.getData().getAddress().getFullName());
+            buildingName.setText(orderReviewMainPOJO.getData().getAddress().getFlat_No() + ", " + orderReviewMainPOJO.getData().getAddress().getBuildingName());
+            landmark.setText(orderReviewMainPOJO.getData().getAddress().getLandmark());
+            address.setText(orderReviewMainPOJO.getData().getAddress().getCity() + ", " + orderReviewMainPOJO.getData().getAddress().getState() + ", " + orderReviewMainPOJO.getData().getAddress().getPincode());
+            mobileNo.setText(orderReviewMainPOJO.getData().getAddress().getMobileNo());
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
     }
 
     @Override

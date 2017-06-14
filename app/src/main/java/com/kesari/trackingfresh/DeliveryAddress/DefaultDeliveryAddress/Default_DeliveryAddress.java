@@ -1,4 +1,4 @@
-package com.kesari.trackingfresh.DeliveryAddress;
+package com.kesari.trackingfresh.DeliveryAddress.DefaultDeliveryAddress;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -19,27 +19,46 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.kesari.trackingfresh.AddToCart.AddCart_model;
+import com.kesari.trackingfresh.ConfirmOrder.ConfirmOrderActivity;
+import com.kesari.trackingfresh.ConfirmOrder.OrderAddPojo;
+import com.kesari.trackingfresh.DeliveryAddress.AddDeliveryAddress.Add_DeliveryAddress;
+import com.kesari.trackingfresh.DeliveryAddress.AddressPOJO;
+import com.kesari.trackingfresh.DeliveryAddress.UpdateDeleteDeliveryAddress.FetchedDeliveryAddressActivity;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
-import com.kesari.trackingfresh.Payment.PaymentDetails;
 import com.kesari.trackingfresh.R;
+import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.network.FireToast;
+import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.ActionClickListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class Default_DeliveryAddress extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt{
 
     private NetworkUtilsReceiver networkUtilsReceiver;
-    Button btnSubmit,btnChange;
+    Button btnSubmit,btnChange,btnNew;
     //private GPSTracker gpsTracker;
     private Location Current_Origin;
     private String TAG = this.getClass().getSimpleName();
@@ -61,6 +80,17 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
 
     TextView name,address,city,pincode;
 
+    List<AddressPOJO> addressArrayList = new ArrayList<>();
+    List<AddCart_model> addCart_models = new ArrayList<>();
+
+    private Gson gson;
+    private FetchAddressPOJO fetchAddressPOJO;
+    private OrderAddPojo orderAddPojo;
+    boolean default_address = false;
+    MyApplication myApplication;
+    LinearLayout address_holder;
+    CheckBox pickup;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +106,9 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
         /*Register receiver*/
             networkUtilsReceiver = new NetworkUtilsReceiver(this);
             registerReceiver(networkUtilsReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
+            gson = new Gson();
+            myApplication = (MyApplication) getApplicationContext();
 
             final LocationManager locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
 
@@ -94,35 +127,237 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
 
             btnSubmit = (Button) findViewById(R.id.btnSubmit);
             btnChange = (Button) findViewById(R.id.btnChange);
+            btnNew = (Button) findViewById(R.id.btnNew);
 
             name = (TextView) findViewById(R.id.name);
             address = (TextView) findViewById(R.id.address);
             city = (TextView) findViewById(R.id.city);
             pincode = (TextView) findViewById(R.id.pincode);
 
-            name.setText(getIntent().getStringExtra("FullName"));
-            address.setText("B/201, Lourdes Park, Bolinj-Sopara Rd.");
-            city.setText(getIntent().getStringExtra("city"));
-            pincode.setText(getIntent().getStringExtra("postalCode"));
+            pickup = (CheckBox) findViewById(R.id.pickup);
+            address_holder = (LinearLayout) findViewById(R.id.address_holder);
+
+            pickup.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                    if(isChecked)
+                    {
+                        address_holder.setVisibility(View.GONE);
+                    }
+                    else
+                    {
+                        address_holder.setVisibility(View.VISIBLE);
+                    }
+
+                }
+            });
+
+            btnNew.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Default_DeliveryAddress.this, Add_DeliveryAddress.class);
+                    startActivity(intent);
+                }
+            });
 
             btnChange.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    SetDefaultAddress();
+                    //SetDefaultAddress();
+                    Intent intent = new Intent(Default_DeliveryAddress.this, FetchedDeliveryAddressActivity.class);
+                    startActivity(intent);
                 }
             });
 
             btnSubmit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(Default_DeliveryAddress.this, PaymentDetails.class);
-                    startActivity(intent);
+
+                    if(default_address)
+                    {
+                        addOrderListFromCart();
+                    }
+                    else
+                    {
+                        FireToast.customSnackbar(Default_DeliveryAddress.this, "Default address not set!", "");
+                    }
+                }
+            });
+
+           /* for (int i = 0; i < myApplication.getProductsArraylist().size(); i++) {
+                AddCart_model addCart_model = new AddCart_model();
+                addCart_model.setProductId(myApplication.getProductsArraylist().get(i).getProductId());
+                addCart_model.setQuantity(myApplication.getProductsArraylist().get(i).getQuantity());
+                addCart_model.setPrice("100");
+                Log.i("product_id", myApplication.getProductsArraylist().get(i).getProductId());
+                addCart_model.setActive(myApplication.getProductsArraylist().get(i).getActive());
+                addCart_models.add(addCart_model);
+            }*/
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+
+    }
+
+    private void fetchUserAddress() {
+        try {
+
+            String url = Constants.FetchAddress;
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(Default_DeliveryAddress.this));
+
+            ioUtils.getGETStringRequestHeader(Default_DeliveryAddress.this, url, params, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG, result.toString());
+
+                    fetchUserAddressResponse(result);
                 }
             });
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
+    }
+
+    private void fetchUserAddressResponse(String Response) {
+        try {
+
+            fetchAddressPOJO = gson.fromJson(Response, FetchAddressPOJO.class);
+
+            if (fetchAddressPOJO.getData().isEmpty()) {
+                Intent intent = new Intent(Default_DeliveryAddress.this, Add_DeliveryAddress.class);
+                startActivity(intent);
+            } else {
+
+                addressArrayList = fetchAddressPOJO.getData();
+
+                for (Iterator<AddressPOJO> it = addressArrayList.iterator(); it.hasNext(); ) {
+                    AddressPOJO addressPOJO = it.next();
+
+                    if (addressPOJO.isDefault())
+                    {
+                        name.setText(addressPOJO.getFullName());
+                        address.setText(addressPOJO.getFlat_No() + ", " + addressPOJO.getBuildingName() + ", " + addressPOJO.getLandmark());
+                        city.setText(addressPOJO.getCity());
+                        pincode.setText(addressPOJO.getPincode());
+
+                        default_address = true;
+                    }
+
+                }
+
+                if(!default_address)
+                {
+                    Intent intent = new Intent(Default_DeliveryAddress.this, FetchedDeliveryAddressActivity.class);
+                    intent.putExtra("default_address","false");
+                    startActivity(intent);
+                    FireToast.customSnackbar(Default_DeliveryAddress.this, "Default address not set!", "");
+                }
+
+            }
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void addOrderListFromCart()
+    {
+        try
+        {
+
+            String url = Constants.AddOrder ;
+
+            Log.i("url", url);
+
+            JSONObject jsonObject = new JSONObject();
+
+            try {
+
+                //JSONArray postObject = new JSONArray();
+
+                JSONObject postObject = new JSONObject();
+                JSONArray cartItemsArray = new JSONArray();
+                JSONObject cartItemsObjedct;
+                for (int i = 0; i < myApplication.getProductsArraylist().size(); i++)
+                {
+                    cartItemsObjedct = new JSONObject();
+                    cartItemsObjedct.put("productId", myApplication.getProductsArraylist().get(i).getProductId());
+                    cartItemsObjedct.put("productName",myApplication.getProductsArraylist().get(i).getProductName());
+                    cartItemsObjedct.put("quantity",myApplication.getProductsArraylist().get(i).getQuantity());
+                    cartItemsObjedct.put("price","100");
+                    Log.i("product_id", myApplication.getProductsArraylist().get(i).getProductId());
+                    cartItemsObjedct.put("active",myApplication.getProductsArraylist().get(i).getActive());
+                    cartItemsArray.put(cartItemsObjedct);
+                }
+
+                /*postObject.put("otp", OTP);
+                postObject.put("mobileNo", MobileNo);
+                postObject.put("id", SharedPrefUtil.getUser(Default_DeliveryAddress.this).getData().get_id());
+*/
+                postObject.put("order",cartItemsArray);
+                postObject.put("total_price","1100");
+                postObject.put("vehicleNo","vehicleNo1");
+                jsonObject.put("post", postObject);
+
+                Log.i("JSON CREATED", jsonObject.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(Default_DeliveryAddress.this));
+
+            IOUtils ioUtils = new IOUtils();
+
+            ioUtils.sendJSONObjectRequestHeader(Default_DeliveryAddress.this, url,params, jsonObject, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG, result.toString());
+
+                    OrderSendResponse(result);
+                }
+            });
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+
+    }
+
+    private void OrderSendResponse(String Response)
+    {
+        try
+        {
+            orderAddPojo = gson.fromJson(Response, OrderAddPojo.class);
+
+            JSONObject jsonObject = new JSONObject(Response);
+
+            String Message = jsonObject.getString("message");
+
+            if(!orderAddPojo.getMessage().get_id().isEmpty())
+            {
+                Intent intent = new Intent(Default_DeliveryAddress.this, ConfirmOrderActivity.class);
+                intent.putExtra("confirmOrder",Response);
+                startActivity(intent);
+                finish();
+            }
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fetchUserAddress();
 
     }
 

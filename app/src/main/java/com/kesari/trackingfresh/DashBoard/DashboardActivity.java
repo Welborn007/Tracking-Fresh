@@ -109,7 +109,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
     String subAdminArea = "";
     String subLocality = "";
     MyApplication myApplication ;
-    RelativeLayout my_orders_holder,profile_holder;
+    RelativeLayout my_orders_holder,profile_holder,help_holder;
 
     private Gson gson;
     VerifyMobilePOJO verifyMobilePOJO;
@@ -164,6 +164,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             name_Login = (TextView) header.findViewById(R.id.name_Login);
 
             profile_holder = (RelativeLayout) header.findViewById(R.id.profile_holder);
+            help_holder = (RelativeLayout) header.findViewById(R.id.help_holder);
 
             try
             {
@@ -175,6 +176,13 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             {
                 name = "Guest";
             }
+
+            help_holder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
 
             my_orders_holder.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -262,6 +270,14 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        Product_Fragment.map_Holder.setVisibility(View.VISIBLE);
+        Product_Fragment.frameLayout.setVisibility(View.GONE);
     }
 
     private void getVerifiedMobileNumber(String Token)

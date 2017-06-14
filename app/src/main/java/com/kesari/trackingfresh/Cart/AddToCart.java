@@ -24,12 +24,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.gson.Gson;
 import com.kesari.trackingfresh.AddToCart.AddCart_model;
-import com.kesari.trackingfresh.DeliveryAddress.Add_DeliveryAddress;
-import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.DashBoard.DashboardActivity;
+import com.kesari.trackingfresh.DeliveryAddress.AddDeliveryAddress.Add_DeliveryAddress;
+import com.kesari.trackingfresh.DeliveryAddress.DefaultDeliveryAddress.Default_DeliveryAddress;
+import com.kesari.trackingfresh.DeliveryAddress.DefaultDeliveryAddress.FetchAddressPOJO;
+import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.R;
+import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
+import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
@@ -39,7 +44,9 @@ import com.nispok.snackbar.listeners.ActionClickListener;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import mehdi.sakout.fancybuttons.FancyButton;
 
@@ -55,6 +62,8 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
     private RelativeLayout relativeLayout;
     private TextView valueTV;
     private String TAG = this.getClass().getSimpleName();
+    private Gson gson;
+    private FetchAddressPOJO fetchAddressPOJO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +81,8 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
         /*Register receiver*/
             networkUtilsReceiver = new NetworkUtilsReceiver(this);
             registerReceiver(networkUtilsReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
+            gson = new Gson();
 
             final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -110,8 +121,7 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
                 public void onClick(View v) {
 
                     if (!myApplication.getProductsArraylist().isEmpty()) {
-                        Intent intent = new Intent(AddToCart.this, Add_DeliveryAddress.class);
-                        startActivity(intent);
+                       fetchUserAddress();
                     } else {
                         Toast.makeText(AddToCart.this, "No Items in Cart!!", Toast.LENGTH_SHORT).show();
                     }
@@ -122,6 +132,60 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
             Log.i(TAG, e.getMessage());
         }
 
+    }
+
+    private void fetchUserAddress() {
+        try {
+
+            String url = Constants.FetchAddress;
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(AddToCart.this));
+
+            ioUtils.getGETStringRequestHeader(AddToCart.this, url, params, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG, result.toString());
+
+                    fetchUserAddressResponse(result);
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void fetchUserAddressResponse(String Response) {
+        try {
+
+            fetchAddressPOJO = gson.fromJson(Response, FetchAddressPOJO.class);
+
+            if (fetchAddressPOJO.getData().isEmpty()) {
+                Intent intent = new Intent(AddToCart.this, Add_DeliveryAddress.class);
+                startActivity(intent);
+            } else {
+
+               /* addressArrayList = fetchAddressPOJO.getData();
+
+                for (Iterator<AddressPOJO> it = addressArrayList.iterator(); it.hasNext(); ) {
+                    AddressPOJO address = it.next();
+
+                    if (address.getIsDefault().equals("true"))
+                    {
+
+                    }
+                }*/
+
+                Intent intent = new Intent(AddToCart.this, Default_DeliveryAddress.class);
+                startActivity(intent);
+            }
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
     }
 
     public void getProductData() {
@@ -280,7 +344,7 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
                             if (t == 1) {
 
                                 myApplication.RemoveProductonZeroQuantity(product_pojo.getProductId());
-                                myApplication.removeProducts(position);
+                                //myApplication.removeProducts(position);
                                 notifyDataSetChanged();
                                 viewHolder.count.setText("0");
                             }

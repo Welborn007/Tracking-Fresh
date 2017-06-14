@@ -73,11 +73,25 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:text="Add to Cart"
+                        android:id="@+id/addtoCart"
+                        android:textSize="@dimen/text_size"
+                        android:background="@drawable/rounded_btn"
+                        android:textStyle="bold"
+                        android:textColor="@color/TextColor"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        />
+
                     <LinearLayout
                         android:orientation="horizontal"
                         android:background="@drawable/linear_layout_border"
                         android:layout_marginRight="10dp"
                         android:layout_width="100dp"
+                        android:visibility="gone"
+                        android:id="@+id/holder_count"
                         android:weightSum="3"
                         android:layout_height="30dp">
 
@@ -132,6 +146,7 @@
                         fancy:fb_focusColor="@color/colorHighlight"
                         fancy:fb_textSize="10sp"
                         fancy:fb_text=""
+                        android:visibility="gone"
                         android:padding="5dp"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"/>
@@ -252,7 +267,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:text="Go to Cart"
-                    android:id="@+id/addtoCart"
+                    android:id="@+id/gotoCart"
                     android:layout_weight="1"
                     android:drawablePadding="-40dp"
                     android:drawableLeft="@drawable/ic_addtocart"

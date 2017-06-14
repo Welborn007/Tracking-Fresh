@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_gravity="right"
+        android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
@@ -42,6 +42,11 @@
         android:textColor="@color/black"
         />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#ccc"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,6 +56,11 @@
         android:textSize="14sp"
         android:textColor="@color/black"
         />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#ccc"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -62,41 +72,10 @@
         android:textColor="@color/black"
         />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_advance_order"
-        android:text="Advance Order"
-        android:gravity="center_vertical"
-        android:textSize="14sp"
-        android:textColor="@color/black"
-        />
-
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/Gray"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="If you are a new user"
-        android:gravity="center"
-        android:layout_marginTop="10dp"
-        android:textSize="14sp"
-        android:textColor="@color/black"
-        />
-
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Register"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:textSize="14sp"
-        android:textColor="@color/black"
-        />
+        android:background="#ccc"/>
 
     <Button
         android:layout_width="match_parent"

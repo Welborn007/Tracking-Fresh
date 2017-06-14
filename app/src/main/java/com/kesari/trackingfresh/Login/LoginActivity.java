@@ -20,7 +20,10 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -130,6 +133,38 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             user_name = (EditText) findViewById(R.id.user_name);
             password = (EditText) findViewById(R.id.password);
+
+
+            password.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    final int DRAWABLE_LEFT = 0;
+                    final int DRAWABLE_TOP = 1;
+                    final int DRAWABLE_RIGHT = 2;
+                    final int DRAWABLE_BOTTOM = 3;
+
+                    if(event.getAction() == MotionEvent.ACTION_UP) {
+                        if(event.getRawX() >= (password.getRight() - password.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                            // your action here
+
+                            password.setFocusable(true);
+                            password.requestFocus();
+
+                            if(password.getTransformationMethod() == PasswordTransformationMethod.getInstance())
+                            {
+                                password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                            }
+                            else if(password.getTransformationMethod() == HideReturnsTransformationMethod.getInstance())
+                            {
+                                password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                            }
+
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            });
 
             sharedpreferencesLogin = getSharedPreferences(MyPREFERENCES_LOGIN, Context.MODE_PRIVATE);
 
@@ -596,7 +631,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         int writeStoragePermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
         int locationPermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION);
         int readSMS = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS);
-
+        int Camera = ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA);
 
         List<String> listPermissionsNeeded = new ArrayList<>();
         if (writeStoragePermission != PackageManager.PERMISSION_GRANTED) {
@@ -608,6 +643,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         if (readSMS != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(android.Manifest.permission.READ_SMS);
+        }
+
+        if (Camera != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(android.Manifest.permission.CAMERA);
         }
 
         if (!listPermissionsNeeded.isEmpty()) {
@@ -630,6 +669,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 perms.put(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
                 perms.put(android.Manifest.permission.ACCESS_FINE_LOCATION, PackageManager.PERMISSION_GRANTED);
                 perms.put(android.Manifest.permission.READ_SMS, PackageManager.PERMISSION_GRANTED);
+                perms.put(android.Manifest.permission.CAMERA, PackageManager.PERMISSION_GRANTED);
 
                 // Fill with actual results from user
                 if (grantResults.length > 0) {
@@ -639,7 +679,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     // Check for both permissions
                     if (perms.get(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
                             && perms.get(android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                            && perms.get(android.Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED) {
+                            && perms.get(android.Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED
+                            && perms.get(android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                         Log.d(TAG, "All permission granted");
                         Toast.makeText(getApplicationContext(), "All permission granted", Toast.LENGTH_LONG).show();
                         //showDeviceDetails();
@@ -652,7 +693,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         //show the dialog or snackbar saying its necessary and try again otherwise proceed with setup.
                         if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                                 || ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                                || ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.READ_SMS)) {
+                                || ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.READ_SMS)
+                                || ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.CAMERA)) {
                             if (checkAndRequestPermissions()) {
                                 // carry on the normal flow, as the case of  permissions  granted.
                             }

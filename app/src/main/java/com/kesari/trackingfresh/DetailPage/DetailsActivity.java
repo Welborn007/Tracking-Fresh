@@ -16,17 +16,26 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
+import com.google.gson.Gson;
+import com.kesari.trackingfresh.AddToCart.AddCart_model;
 import com.kesari.trackingfresh.Cart.AddToCart;
-import com.kesari.trackingfresh.DeliveryAddress.Add_DeliveryAddress;
+import com.kesari.trackingfresh.DeliveryAddress.AddDeliveryAddress.Add_DeliveryAddress;
+import com.kesari.trackingfresh.DeliveryAddress.AddressPOJO;
+import com.kesari.trackingfresh.DeliveryAddress.DefaultDeliveryAddress.Default_DeliveryAddress;
+import com.kesari.trackingfresh.DeliveryAddress.DefaultDeliveryAddress.FetchAddressPOJO;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.R;
+import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
+import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
@@ -34,47 +43,54 @@ import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.ActionClickListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import mehdi.sakout.fancybuttons.FancyButton;
 
-public class DetailsActivity extends AppCompatActivity implements BaseSliderView.OnSliderClickListener,NetworkUtilsReceiver.NetworkResponseInt{
+public class DetailsActivity extends AppCompatActivity implements BaseSliderView.OnSliderClickListener, NetworkUtilsReceiver.NetworkResponseInt {
 
     private SliderLayout mDemoSlider;
-    TextView discount,count;
-    FancyButton plus,minus,delete;
-    Button addtoCart,checkOut;
-    TextView price,percent,disclaimer,related_searches,package_contents,product_description,product_category,title_productname;
+    TextView discount, count;
+    FancyButton plus, minus, delete;
+    LinearLayout holder_count;
+    Button gotoCart,addtoCart, checkOut;
+    TextView price, percent, disclaimer, related_searches, package_contents, product_description, product_category, title_productname;
     private String TAG = this.getClass().getSimpleName();
     private String productDescription = "";
     private String unitsOfMeasurement = "";
     private String productCategory = "";
-    private String __v = "";
+    //private String __v = "";
     private String productImage = "";
-    private String editedAt = "";
+    //private String editedAt = "";
     private String productId = "";
     private String unit = "";
-    private String cuid = "";
-    private String createdBy = "";
+    //private String cuid = "";
+    //private String createdBy = "";
     private String _id = "";
-    private String unitsOfMeasurementId ="";
-    private String createdAt = "";
-    private String editedBy = "";
+    private String unitsOfMeasurementId = "";
+    //private String createdAt = "";
+    //private String editedBy = "";
     private String productDetails = "";
     private String active = "";
-    private String slug = "";
+    //private String slug = "";
     private String productName = "";
     private String productCategoryId = "";
     private NetworkUtilsReceiver networkUtilsReceiver;
     MyApplication myApplication;
+    List<AddressPOJO> addressArrayList = new ArrayList<>();
+
+    private Gson gson;
+    private FetchAddressPOJO fetchAddressPOJO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
-        try
-        {
+        try {
 
             //Initializing toolbar
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -85,14 +101,13 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             networkUtilsReceiver = new NetworkUtilsReceiver(this);
             registerReceiver(networkUtilsReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
-            final LocationManager locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+            gson = new Gson();
 
-            if ( !locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) )
-            {
+            final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 IOUtils.buildAlertMessageNoGps(DetailsActivity.this);
-            }
-            else
-            {
+            } else {
                 if (!IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
                     // LOCATION SERVICE
                     startService(new Intent(this, LocationServiceNew.class));
@@ -105,29 +120,23 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             productDescription = getIntent().getStringExtra("productDescription");
             unitsOfMeasurement = getIntent().getStringExtra("unitsOfMeasurement");
             productCategory = getIntent().getStringExtra("productCategory");
-            __v = getIntent().getStringExtra("__v");
             productImage = getIntent().getStringExtra("productImage");
-            editedAt = getIntent().getStringExtra("editedAt");
             productId = getIntent().getStringExtra("productId");
             unit = getIntent().getStringExtra("unit");
-            cuid = getIntent().getStringExtra("cuid");
-            createdBy = getIntent().getStringExtra("createdBy");
             _id = getIntent().getStringExtra("_id");
             unitsOfMeasurementId = getIntent().getStringExtra("unitsOfMeasurementId");
-            createdAt = getIntent().getStringExtra("createdAt");
-            editedBy = getIntent().getStringExtra("editedBy");
             productDetails = getIntent().getStringExtra("productDetails");
             active = getIntent().getStringExtra("active");
-            slug = getIntent().getStringExtra("slug");
             productName = getIntent().getStringExtra("productName");
             productCategoryId = getIntent().getStringExtra("productCategoryId");
 
+
             initCollapsingToolbar();
             //Image Slider
-            mDemoSlider = (SliderLayout)findViewById(R.id.slider);
+            mDemoSlider = (SliderLayout) findViewById(R.id.slider);
             mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Default);
 
-            HashMap<String,String> url_maps = new HashMap<String, String>();
+            HashMap<String, String> url_maps = new HashMap<String, String>();
             /*url_maps.put("Tomato1", "http://cdn1-www.wholesomebabyfood.momtastic.com/assets/uploads/2015/04/tomato.jpg");
             url_maps.put("Tomato2", "https://grist.files.wordpress.com/2009/09/tomato.jpg");
             url_maps.put("Tomato3", "http://media.treehugger.com/assets/images/2012/08/Ramon-Gonzalez-Tomatoes.jpg.650x0_q70_crop-smart.jpg");
@@ -138,7 +147,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             url_maps.put("Tomato3", productImage);
             url_maps.put("Tomato4", productImage);
 
-            for(String name : url_maps.keySet()){
+            for (String name : url_maps.keySet()) {
                 TextSliderView textSliderView = new TextSliderView(this);
                 // initialize a SliderLayout
                 textSliderView
@@ -150,7 +159,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
                 //add your extra information
                 textSliderView.bundle(new Bundle());
                 textSliderView.getBundle()
-                        .putString("extra",name);
+                        .putString("extra", name);
 
                 mDemoSlider.addSlider(textSliderView);
             }
@@ -172,34 +181,78 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             package_contents = (TextView) findViewById(R.id.package_contents);
             product_description = (TextView) findViewById(R.id.product_description);
             count = (TextView) findViewById(R.id.count);
-            addtoCart = (Button) findViewById(R.id.addtoCart);
+            gotoCart = (Button) findViewById(R.id.gotoCart);
             checkOut = (Button) findViewById(R.id.checkOut);
             product_category = (TextView) findViewById(R.id.product_category);
             title_productname = (TextView) findViewById(R.id.title_productname);
 
+            addtoCart = (Button) findViewById(R.id.addtoCart);
+            holder_count = (LinearLayout) findViewById(R.id.holder_count);
+
             //Setting value
             product_description.setText(productDetails);
-            package_contents.setText(productDescription +  "," + unit + unitsOfMeasurement);
+            package_contents.setText(productDescription + "," + unit + unitsOfMeasurement);
             product_category.setText(productCategory);
             title_productname.setText(productName);
+
+            /*if (!myApplication.checkifproductexists(productId)) {
+                holder_count.setVisibility(View.VISIBLE);
+                addtoCart.setVisibility(View.GONE);
+            } else {
+                holder_count.setVisibility(View.GONE);
+                addtoCart.setVisibility(View.VISIBLE);
+            }*/
+
+            addtoCart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    holder_count.setVisibility(View.VISIBLE);
+                    addtoCart.setVisibility(View.GONE);
+                    count.setText("1");
+
+                    if (!myApplication.checkifproductexists(productId)) {
+
+                        //count.setText("0");
+
+                        AddCart_model addCart_model = new AddCart_model();
+                        addCart_model.setProductCategory(productCategory);
+                        addCart_model.setProductId(productId);
+                        addCart_model.setProductName(productName);
+                        addCart_model.set_id(_id);
+                        addCart_model.setUnitsOfMeasurement(unitsOfMeasurement);
+                        addCart_model.setProductCategoryId(productCategoryId);
+                        addCart_model.setProductDescription(productDescription);
+                        addCart_model.setProductDetails(productDetails);
+                        addCart_model.setUnit(unit);
+                        addCart_model.setUnitsOfMeasurementId(unitsOfMeasurementId);
+                        addCart_model.setProductImage(productImage);
+                        addCart_model.setActive(active);
+                        addCart_model.setQuantity(1);
+
+                        myApplication.setProducts(addCart_model);
+
+                    } else {
+                        count.setText(myApplication.getProductQuantity(productId));
+                    }
+
+                }
+            });
 
             //Click Listeners
             plus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    try
-                    {
+                    try {
                         int t = Integer.parseInt(count.getText().toString());
-                        count.setText(String.valueOf(t+1));
+                        count.setText(String.valueOf(t + 1));
 
                         if (!myApplication.IncrementProductQuantity(productId)) {
 
                         } else {
 
                         }
-                    }
-                    catch (Exception e)
-                    {
+                    } catch (Exception e) {
 
                     }
                 }
@@ -210,9 +263,10 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
                 public void onClick(View v) {
                     try {
                         int t = Integer.parseInt(count.getText().toString());
-                        if(t > 0)
-                        {
-                            count.setText(String.valueOf(t-1));
+                        if (t > 0) {
+                            count.setText(String.valueOf(t - 1));
+
+                            //DashboardActivity.updateNotificationsBadge(t - 1);
 
                             if (!myApplication.DecrementProductQuantity(productId)) {
 
@@ -220,22 +274,31 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
 
                             }
                         }
-                    }catch (Exception e)
-                    {
+
+                        if (t == 1) {
+
+                            myApplication.RemoveProductonZeroQuantity(productId);
+
+                            holder_count.setVisibility(View.GONE);
+                            addtoCart.setVisibility(View.VISIBLE);
+
+                            count.setText("0");
+                        }
+                    } catch (Exception e) {
 
                     }
                 }
             });
 
-            delete.setOnClickListener(new View.OnClickListener() {
+           /* delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     myApplication.RemoveProductonZeroQuantity(productId);
                     count.setText("0");
                 }
-            });
+            });*/
 
-            addtoCart.setOnClickListener(new View.OnClickListener() {
+            gotoCart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(DetailsActivity.this, AddToCart.class);
@@ -246,22 +309,77 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             checkOut.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(DetailsActivity.this, Add_DeliveryAddress.class);
-                    startActivity(intent);
+
+                    if (!myApplication.getProductsArraylist().isEmpty()) {
+                        fetchUserAddress();
+                    } else {
+                        Toast.makeText(DetailsActivity.this, "No Items in Cart!!", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
         }
-        catch (Exception e)
-        {
-            Log.i(TAG,e.getMessage());
+    }
+
+    private void fetchUserAddress() {
+        try {
+
+            String url = Constants.FetchAddress;
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(DetailsActivity.this));
+
+            ioUtils.getGETStringRequestHeader(DetailsActivity.this, url, params, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG, result.toString());
+
+                    fetchUserAddressResponse(result);
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void fetchUserAddressResponse(String Response) {
+        try {
+
+            fetchAddressPOJO = gson.fromJson(Response, FetchAddressPOJO.class);
+
+            if (fetchAddressPOJO.getData().isEmpty()) {
+                Intent intent = new Intent(DetailsActivity.this, Add_DeliveryAddress.class);
+                startActivity(intent);
+            } else {
+
+               /* addressArrayList = fetchAddressPOJO.getData();
+
+                for (Iterator<AddressPOJO> it = addressArrayList.iterator(); it.hasNext(); ) {
+                    AddressPOJO address = it.next();
+
+                    if (address.getIsDefault().equals("true"))
+                    {
+
+                    }
+                }*/
+
+                Intent intent = new Intent(DetailsActivity.this, Default_DeliveryAddress.class);
+                startActivity(intent);
+            }
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
         }
     }
 
     private void initCollapsingToolbar() {
 
-        try
-        {
+        try {
 
             final CollapsingToolbarLayout collapsingToolbar =
                     (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
@@ -327,9 +445,8 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
                 Log.e(TAG, "Location service is stopped");
             }
 
-        }catch (Exception e)
-        {
-            Log.i(TAG,e.getMessage());
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
         }
     }
 
@@ -354,9 +471,8 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
                 return;
             }
 
-        }catch (Exception e)
-        {
-            Log.i(TAG,e.getMessage());
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
         }
     }
 }

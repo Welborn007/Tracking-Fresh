@@ -65,7 +65,7 @@ public class SharedPrefUtil {
 
     public static void setClear(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        preferences.edit().remove(KEY_USER).commit();
+        preferences.edit().remove(KEY_USER).remove(KEY_USER_TOKEN).commit();
     }
 
 }

@@ -6,9 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.kesari.trackingfresh.Map.JSON_POJO;
 import com.kesari.trackingfresh.R;
 
 import java.util.List;
@@ -19,10 +19,10 @@ import java.util.List;
 
 public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListRecycler_Adapter.RecyclerViewHolder>{
 
-    private List<JSON_POJO> OrdersListReView;
+    private List<OrderSubPOJO> OrdersListReView;
 
 
-    public OrdersListRecycler_Adapter(List<JSON_POJO> OrdersListReView)
+    public OrdersListRecycler_Adapter(List<OrderSubPOJO> OrdersListReView)
     {
         this.OrdersListReView = OrdersListReView;
     }
@@ -41,24 +41,45 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
 
         try {
 
-            holder.order_number.setText(OrdersListReView.get(position).getId());
-            holder.customer_name.setText(OrdersListReView.get(position).getCustomer_name());
-            holder.payment_confirm.setText(OrdersListReView.get(position).getPayment_confirmation());
-            holder.payment_mode.setText(OrdersListReView.get(position).getPayment_mode());
+            holder.order_number.setText(String.valueOf(position + 1));
+            holder.customer_name.setText(OrdersListReView.get(position).getCreatedBy());
 
-            if(OrdersListReView.get(position).getOrder_status().equalsIgnoreCase("rejected"))
+
+            if(OrdersListReView.get(position).getPayment_Status() == null)
+            {
+                holder.payment_confirmHolder.setVisibility(View.GONE);
+            }
+            else
+            {
+                holder.payment_confirmHolder.setVisibility(View.VISIBLE);
+                holder.payment_confirm.setText(OrdersListReView.get(position).getPayment_Status());
+            }
+
+            if(OrdersListReView.get(position).getPayment_Mode() == null)
+            {
+                holder.payment_modeHolder.setVisibility(View.GONE);
+            }
+            else
+            {
+                holder.payment_modeHolder.setVisibility(View.VISIBLE);
+                holder.payment_mode.setText(OrdersListReView.get(position).getPayment_Mode());
+            }
+
+            holder.total_price.setText(OrdersListReView.get(position).getTotal_price());
+
+            if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("rejected"))
             {
                 holder.order_status.setImageResource(R.drawable.rejected);
             }
-            else if(OrdersListReView.get(position).getOrder_status().equalsIgnoreCase("accepted"))
+            else if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("Accepted"))
             {
                 holder.order_status.setImageResource(R.drawable.accepted);
             }
-            else if(OrdersListReView.get(position).getOrder_status().equalsIgnoreCase("pending"))
+            else if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("Pending"))
             {
                 holder.order_status.setImageResource(R.drawable.pending);
             }
-            else if(OrdersListReView.get(position).getOrder_status().equalsIgnoreCase("cancelled"))
+            else if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("cancelled"))
             {
                 holder.order_status.setImageResource(R.drawable.cancel);
             }
@@ -92,9 +113,11 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
 
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder
     {
-        TextView order_number,customer_name,payment_confirm,payment_mode,time_txt,distance_txt;
+        TextView order_number,customer_name,payment_confirm,payment_mode,time_txt,distance_txt,total_price;
         CardView subItemCard_view;
         ImageView order_status;
+        LinearLayout payment_confirmHolder,payment_modeHolder;
+
         public RecyclerViewHolder(View view)
         {
             super(view);
@@ -105,6 +128,10 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
             distance_txt = (TextView) view.findViewById(R.id.distance_txt);
             time_txt = (TextView) view.findViewById(R.id.time_txt);
             subItemCard_view = (CardView) view.findViewById(R.id.subItemCard_view);
+            total_price = (TextView) view.findViewById(R.id.total_price);
+
+            payment_confirmHolder = (LinearLayout) view.findViewById(R.id.payment_confirmHolder);
+            payment_modeHolder = (LinearLayout) view.findViewById(R.id.payment_modeHolder);
 
             order_status = (ImageView) view.findViewById(R.id.order_status);
         }

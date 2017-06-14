@@ -33,9 +33,9 @@
                 app:civ_border_color="#FFFFFFFF"/>
 
             <ImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:id="@+id/photo_edit"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_alignParentRight="true"
                 android:src="@drawable/ic_edit_logo"
                 />
@@ -53,7 +53,6 @@
                 android:id="@+id/customer_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Welborn Machado"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size"
                 android:textStyle="bold" />
@@ -91,9 +90,9 @@
                     />
 
                 <ImageView
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:id="@+id/profile_edit"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_alignParentRight="true"
                     android:src="@drawable/ic_edit_logo"
                     />

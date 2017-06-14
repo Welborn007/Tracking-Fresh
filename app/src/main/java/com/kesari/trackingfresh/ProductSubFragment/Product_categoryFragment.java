@@ -191,14 +191,11 @@ public class Product_categoryFragment extends Fragment {
 
                         if (!myApplication.checkifproductexists(product_pojo.getProductId())) {
                             AddCart_model addCart_model = new AddCart_model();
-                            addCart_model.set__v(product_pojo.get__v());
                             addCart_model.setProductCategory(product_pojo.getProductCategory());
                             addCart_model.setProductId(product_pojo.getProductId());
                             addCart_model.setProductName(product_pojo.getProductName());
                             addCart_model.set_id(product_pojo.get_id());
                             addCart_model.setUnitsOfMeasurement(product_pojo.getUnitsOfMeasurement());
-                            addCart_model.setCuid(product_pojo.getCuid());
-                            addCart_model.setSlug(product_pojo.getSlug());
                             addCart_model.setProductCategoryId(product_pojo.getProductCategoryId());
                             addCart_model.setProductDescription(product_pojo.getProductDescription());
                             addCart_model.setProductDetails(product_pojo.getProductDetails());
@@ -206,11 +203,6 @@ public class Product_categoryFragment extends Fragment {
                             addCart_model.setUnitsOfMeasurementId(product_pojo.getUnitsOfMeasurementId());
                             addCart_model.setProductImage(product_pojo.getProductImage());
                             addCart_model.setActive(product_pojo.getActive());
-                            addCart_model.setCreatedBy(product_pojo.getCreatedBy());
-                            addCart_model.set__v(product_pojo.get__v());
-                            addCart_model.setEditedBy(product_pojo.getEditedBy());
-                            addCart_model.setEditedAt(product_pojo.getEditedAt());
-                            addCart_model.setCreatedAt(product_pojo.getCreatedAt());
                             addCart_model.setQuantity(1);
 
                             myApplication.setProducts(addCart_model);
@@ -284,8 +276,6 @@ public class Product_categoryFragment extends Fragment {
                             in.putExtra("_id", product_pojo.get_id());
                             in.putExtra("unitsOfMeasurement", product_pojo.getUnitsOfMeasurement());
                             in.putExtra("productCategory", product_pojo.getProductCategory());
-                            in.putExtra("cuid", product_pojo.getCuid());
-                            in.putExtra("slug", product_pojo.getSlug());
                             in.putExtra("productCategoryId", product_pojo.getProductCategoryId());
                             in.putExtra("productName", product_pojo.getProductName());
                             in.putExtra("productDescription", product_pojo.getProductDescription());
@@ -295,11 +285,8 @@ public class Product_categoryFragment extends Fragment {
                             in.putExtra("productId", product_pojo.getProductId());
                             in.putExtra("productImage", product_pojo.getProductImage());
                             in.putExtra("active", product_pojo.getActive());
-                            in.putExtra("createdBy", product_pojo.getCreatedBy());
-                            in.putExtra("__v", product_pojo.get__v());
-                            in.putExtra("editedBy", product_pojo.getEditedBy());
-                            in.putExtra("editedAt", product_pojo.getEditedAt());
-                            in.putExtra("createdAt", product_pojo.getCreatedAt());
+
+                            //in.putExtra("quantity",String.valueOf(viewHolder.count.getText().toString().trim()));
                             startActivity(in);
 
                         } catch (Exception e) {
