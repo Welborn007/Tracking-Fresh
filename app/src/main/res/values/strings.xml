@@ -18,6 +18,7 @@
     <string name="settings">Settings</string>
     <string name="legal">Legal</string>
     <string name="Advance_Order">Advance Order</string>
+    <string name="Vehicle_Route">Vehicle Route</string>
 
     <string name="fruits">Fruits</string>
     <string name="vegetables">Vegetables</string>
@@ -44,7 +45,7 @@
 
     <string name="loading">Loading…</string>
 
-    <string name="facebook_app_id">627982030744422</string>
+    <string name="facebook_app_id">216123462237612</string>
 
     //Register
     <string name="first_name">Enter First Name</string>
@@ -75,5 +76,6 @@
     <string name="PinCode">EnterPin Code</string>
     <string name="addressType">Enter Address Type</string>
 
+    <string name="vehicle_searching">Please wait while we are checking nearby vehicle.....</string>
 
 </resources>

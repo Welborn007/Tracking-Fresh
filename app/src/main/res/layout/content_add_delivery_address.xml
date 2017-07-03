@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"/>
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/mapScroll"
         android:layout_above="@+id/confirmAddress"
         android:layout_below="@+id/delivery_text"
         android:layout_width="match_parent"
@@ -172,6 +173,26 @@
                 android:layout_margin="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+            <RelativeLayout
+                android:id="@+id/map_layout"
+                android:layout_width="match_parent"
+                android:layout_height="300dp">
+
+                <fragment
+                    android:id="@+id/map_container_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"/>
+
+
+                <ImageView
+                    android:id="@+id/transparent_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@android:color/transparent" />
+
+            </RelativeLayout>
 
         </LinearLayout>
 

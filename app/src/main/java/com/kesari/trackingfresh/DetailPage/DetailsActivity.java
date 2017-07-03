@@ -1,9 +1,12 @@
 package com.kesari.trackingfresh.DetailPage;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -13,8 +16,10 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -50,13 +55,15 @@ import java.util.Map;
 
 import mehdi.sakout.fancybuttons.FancyButton;
 
+import static com.kesari.trackingfresh.Utilities.IOUtils.setBadgeCount;
+
 public class DetailsActivity extends AppCompatActivity implements BaseSliderView.OnSliderClickListener, NetworkUtilsReceiver.NetworkResponseInt {
 
     private SliderLayout mDemoSlider;
     TextView discount, count;
     FancyButton plus, minus, delete;
     LinearLayout holder_count;
-    Button gotoCart,addtoCart, checkOut;
+    Button gotoCart, addtoCart, checkOut;
     TextView price, percent, disclaimer, related_searches, package_contents, product_description, product_category, title_productname;
     private String TAG = this.getClass().getSimpleName();
     private String productDescription = "";
@@ -67,6 +74,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
     //private String editedAt = "";
     private String productId = "";
     private String unit = "";
+    private String productPrice = "";
     //private String cuid = "";
     //private String createdBy = "";
     private String _id = "";
@@ -78,12 +86,16 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
     //private String slug = "";
     private String productName = "";
     private String productCategoryId = "";
+    private String availableQuantity = "";
+    private String brand = "";
     private NetworkUtilsReceiver networkUtilsReceiver;
     MyApplication myApplication;
     List<AddressPOJO> addressArrayList = new ArrayList<>();
 
     private Gson gson;
     private FetchAddressPOJO fetchAddressPOJO;
+    public static int mNotificationsCount = 0;
+    // ScheduledExecutorService scheduleTaskExecutor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +129,8 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
 
             myApplication = (MyApplication) getApplicationContext();
             // Getting Data from previous activity
+
+
             productDescription = getIntent().getStringExtra("productDescription");
             unitsOfMeasurement = getIntent().getStringExtra("unitsOfMeasurement");
             productCategory = getIntent().getStringExtra("productCategory");
@@ -129,7 +143,9 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             active = getIntent().getStringExtra("active");
             productName = getIntent().getStringExtra("productName");
             productCategoryId = getIntent().getStringExtra("productCategoryId");
-
+            productPrice = getIntent().getStringExtra("price");
+            availableQuantity = getIntent().getStringExtra("quantity");
+            brand = getIntent().getStringExtra("brand");
 
             initCollapsingToolbar();
             //Image Slider
@@ -195,6 +211,8 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             product_category.setText(productCategory);
             title_productname.setText(productName);
 
+            price.setText("Price Rs. " + productPrice);
+
             /*if (!myApplication.checkifproductexists(productId)) {
                 holder_count.setVisibility(View.VISIBLE);
                 addtoCart.setVisibility(View.GONE);
@@ -225,6 +243,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
                         addCart_model.setProductDescription(productDescription);
                         addCart_model.setProductDetails(productDetails);
                         addCart_model.setUnit(unit);
+                        addCart_model.setPrice(productPrice);
                         addCart_model.setUnitsOfMeasurementId(unitsOfMeasurementId);
                         addCart_model.setProductImage(productImage);
                         addCart_model.setActive(active);
@@ -245,12 +264,33 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
                 public void onClick(View v) {
                     try {
                         int t = Integer.parseInt(count.getText().toString());
-                        count.setText(String.valueOf(t + 1));
 
-                        if (!myApplication.IncrementProductQuantity(productId)) {
+
+                        if (t < Integer.parseInt(availableQuantity))
+                        {
+                            count.setText(String.valueOf(t + 1));
+                            if (!myApplication.IncrementProductQuantity(productId)) {
+
+                            } else {
+
+                            }
 
                         } else {
+                            final Dialog dialog = new Dialog(DetailsActivity.this);
+                            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            dialog.setContentView(R.layout.item_unavailable_dialog);
+                            dialog.setCanceledOnTouchOutside(false);
+                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                            dialog.show();
 
+                            Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
+                            btnCancel.setText("Oops! Only " + availableQuantity + " items available!!");
+                            btnCancel.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.dismiss();
+                                }
+                            });
                         }
                     } catch (Exception e) {
 
@@ -317,6 +357,17 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
                     }
                 }
             });
+
+            updateNotificationsBadge(myApplication.getProductsArraylist().size());
+
+            /*scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
+
+            // This schedule a task to run every 10 minutes:
+            scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
+                public void run() {
+                    updateNotificationsBadge(myApplication.getProductsArraylist().size());
+                }
+            }, 0, 1, TimeUnit.SECONDS);*/
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
@@ -422,15 +473,6 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
 
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     protected void onDestroy() {
@@ -438,6 +480,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
 
         try {
             unregisterReceiver(networkUtilsReceiver);
+            //scheduleTaskExecutor.shutdown();
 
             if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
                 // LOCATION SERVICE
@@ -474,5 +517,48 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_add_tocart, menu);
+
+        MenuItem item = menu.findItem(R.id.menu_hot);
+        LayerDrawable icon = (LayerDrawable) item.getIcon();
+
+        setBadgeCount(this, icon, mNotificationsCount);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        invalidateOptionsMenu();
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_hot:
+                Intent intent = new Intent(DetailsActivity.this, AddToCart.class);
+                startActivity(intent);
+                finish();
+                return true;
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public static void updateNotificationsBadge(int count) {
+        mNotificationsCount = count;
+
+        // force the ActionBar to relayout its MenuItems.
+        // onCreateOptionsMenu(Menu) will be called again.
     }
 }

@@ -35,7 +35,7 @@ public class OrderReviewDataPOJO {
 
     private String payment_Id;
 
-    private List<OrderReviewProductPOJO> order = new ArrayList<OrderReviewProductPOJO>();
+    private List<OrderReviewProductPOJO> orders = new ArrayList<OrderReviewProductPOJO>();
 
     public String getStatus() {
         return status;
@@ -142,10 +142,10 @@ public class OrderReviewDataPOJO {
     }
 
     public List<OrderReviewProductPOJO> getOrder() {
-        return order;
+        return orders;
     }
 
     public void setOrder(List<OrderReviewProductPOJO> order) {
-        this.order = order;
+        this.orders = order;
     }
 }

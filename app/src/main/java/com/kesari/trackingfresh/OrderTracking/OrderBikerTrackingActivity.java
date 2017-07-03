@@ -34,6 +34,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.gson.Gson;
+import com.kesari.trackingfresh.CheckNearestVehicleAvailability.CheckVehicleActivity;
+import com.kesari.trackingfresh.CheckNearestVehicleAvailability.NearestVehicleMainPOJO;
 import com.kesari.trackingfresh.DashBoard.DashboardActivity;
 import com.kesari.trackingfresh.Map.HttpConnection;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
@@ -50,12 +53,14 @@ import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.ActionClickListener;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -83,8 +88,10 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
     private static final String TAG_LONGITUDE = "longitude";
 
     TextView kilometre, GuestAddress,ETA;
-
     Button btnSubmit;
+    private Gson gson;
+    NearestVehicleMainPOJO nearestVehicleMainPOJO;
+    String[] geoArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +108,8 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
             /*Register receiver*/
             networkUtilsReceiver = new NetworkUtilsReceiver(this);
             registerReceiver(networkUtilsReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
+            gson = new Gson();
 
             final LocationManager locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
 
@@ -230,7 +239,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
 
                         Log.i("laittudeText",String.valueOf(Current_Origin.latitude));
 
-                        if(!String.valueOf(Current_Origin.latitude).equalsIgnoreCase("0.0")  && !String.valueOf(Current_Origin.longitude).equalsIgnoreCase("0.0"))
+                        /*if(!String.valueOf(Current_Origin.latitude).equalsIgnoreCase("0.0")  && !String.valueOf(Current_Origin.longitude).equalsIgnoreCase("0.0"))
                         {
                             IOUtils ioUtils = new IOUtils();
 
@@ -240,7 +249,41 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                                     DriverLocationResponse(result);
                                 }
                             });
+                        }*/
+
+
+                        String url = Constants.CheckNearestVehicle ;
+
+                        Log.i("url", url);
+
+                        JSONObject jsonObject = new JSONObject();
+
+                        try {
+
+                            JSONObject postObject = new JSONObject();
+
+                            postObject.put("longitude", SharedPrefUtil.getLocation(OrderBikerTrackingActivity.this).getLongitude());
+                            postObject.put("latitude", SharedPrefUtil.getLocation(OrderBikerTrackingActivity.this).getLatitude());
+
+                            jsonObject.put("post", postObject);
+
+                            Log.i("JSON CREATED", jsonObject.toString());
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
+
+                        Map<String, String> params = new HashMap<String, String>();
+                        params.put("Authorization", "JWT " + SharedPrefUtil.getToken(OrderBikerTrackingActivity.this));
+
+                        IOUtils ioUtils = new IOUtils();
+
+                        ioUtils.sendJSONObjectRequestHeader(OrderBikerTrackingActivity.this, url,params, jsonObject, new IOUtils.VolleyCallback() {
+                            @Override
+                            public void onSuccess(String result) {
+                                DriverLocationResponse(result);
+                            }
+                        });
                     }
                 }, 0, 5, TimeUnit.SECONDS);
             }
@@ -317,7 +360,21 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
     public void DriverLocationResponse(String resp) {
         map.clear();
         try {
-            JSONObject jsonObject = new JSONObject(resp);
+
+            nearestVehicleMainPOJO = gson.fromJson(resp, NearestVehicleMainPOJO.class);
+
+            if(nearestVehicleMainPOJO.getData().isEmpty())
+            {
+                Intent intent = new Intent(OrderBikerTrackingActivity.this, CheckVehicleActivity.class);
+                startActivity(intent);
+                finish();
+            }
+            else
+            {
+                geoArray = nearestVehicleMainPOJO.getData().get(0).getGeo().getCoordinates();
+            }
+
+           /* JSONObject jsonObject = new JSONObject(resp);
 
             JSONObject dataObject = jsonObject.getJSONObject("data");
 
@@ -326,7 +383,10 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
             JSONArray geoArray = dataObject.getJSONArray("geo");
 
             Double cust_longitude = geoArray.getDouble(0);
-            Double cust_latitude = geoArray.getDouble(1);
+            Double cust_latitude = geoArray.getDouble(1);*/
+
+            Double cust_longitude = Double.parseDouble(geoArray[0]);
+            Double cust_latitude = Double.parseDouble(geoArray[1]);
 
 //                final LatLng startPosition = marker.getPosition();
             final LatLng finalPosition = new LatLng(cust_latitude, cust_longitude);
@@ -397,7 +457,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
 
             if (map != null) {
                 marker = map.addMarker(new MarkerOptions().position(dest)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_red_car))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_up_angle))
                         .rotation((float) bearingBetweenLocations(oldLocation,newLocation))
                         .title(location_name));
 

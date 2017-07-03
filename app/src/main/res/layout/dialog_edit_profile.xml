@@ -18,16 +18,16 @@
         android:layout_height="wrap_content"/>
 
     <android.support.v4.widget.NestedScrollView
-        android:layout_above="@+id/confirmAddress"
+        android:id="@+id/scrollHolder"
         android:layout_below="@+id/delivery_text"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_margin="5dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -70,20 +70,22 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/mobile"
+                    android:id="@+id/referral_code"
                     android:layout_width="match_parent"
                     android:textSize="@dimen/text_size"
-                    android:inputType="number"
+                    android:inputType="textEmailAddress"
                     android:layout_height="wrap_content"
-                    android:hint="@string/Mobile_no" />
+                    android:hint="@string/referral_code" />
 
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -97,6 +99,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -110,6 +113,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -123,6 +127,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -136,6 +141,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -149,6 +155,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -162,22 +169,22 @@
 
             </android.support.design.widget.TextInputLayout>
 
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Submit Profile"
+                android:layout_margin="5dp"
+                android:id="@+id/confirmAddress"
+                android:textSize="@dimen/text_size"
+                android:background="@drawable/rounded_btn"
+                android:textStyle="bold"
+                android:textColor="@color/TextColor"
+                android:textAppearance="?android:textAppearanceMedium"
+                />
+
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Submit Profile"
-        android:layout_margin="5dp"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/confirmAddress"
-        android:textSize="@dimen/text_size"
-        android:background="@drawable/rounded_btn"
-        android:textStyle="bold"
-        android:textColor="@color/TextColor"
-        android:textAppearance="?android:textAppearanceMedium"
-        />
 
 </RelativeLayout>

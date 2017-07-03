@@ -3,6 +3,7 @@ package com.kesari.trackingfresh.DeliveryAddress.AddDeliveryAddress;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -10,15 +11,25 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.DeliveryAddress.DefaultDeliveryAddress.Default_DeliveryAddress;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
@@ -40,7 +51,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt
+public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt,OnMapReadyCallback
 {
 
     Button confirmAddress;
@@ -67,6 +78,10 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
     CheckBox defaultAddress;
     private Gson gson;
     private AddAddressPOJO addAddressPOJO;
+    private SupportMapFragment supportMapFragment;
+
+    String Latitude,Longitude;
+    NestedScrollView nestedScrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +116,14 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
                 }
             }
 
+            FragmentManager fm = getSupportFragmentManager();
+            supportMapFragment = (SupportMapFragment) fm.findFragmentById(R.id.map_container_address);
+            if (supportMapFragment == null) {
+                supportMapFragment = SupportMapFragment.newInstance();
+                fm.beginTransaction().replace(R.id.map_container, supportMapFragment).commit();
+            }
+            supportMapFragment.getMapAsync(this);
+
             confirmAddress = (Button) findViewById(R.id.confirmAddress);
 
             name = (EditText) findViewById(R.id.name);
@@ -116,6 +139,36 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
             landmark = (EditText) findViewById(R.id.landmark);
             addressType = (EditText) findViewById(R.id.addressType);
             defaultAddress = (CheckBox) findViewById(R.id.defaultAddress);
+            nestedScrollView = (NestedScrollView) findViewById(R.id.mapScroll);
+
+            ImageView transparentImageView = (ImageView) findViewById(R.id.transparent_image);
+
+            transparentImageView.setOnTouchListener(new View.OnTouchListener() {
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    int action = event.getAction();
+                    switch (action) {
+                        case MotionEvent.ACTION_DOWN:
+                            // Disallow ScrollView to intercept touch events.
+                            nestedScrollView.requestDisallowInterceptTouchEvent(true);
+                            // Disable touch on transparent view
+                            return false;
+
+                        case MotionEvent.ACTION_UP:
+                            // Allow ScrollView to intercept touch events.
+                            nestedScrollView.requestDisallowInterceptTouchEvent(false);
+                            return true;
+
+                        case MotionEvent.ACTION_MOVE:
+                            nestedScrollView.requestDisallowInterceptTouchEvent(true);
+                            return false;
+
+                        default:
+                            return true;
+                    }
+                }
+            });
 
             //gpsTracker = new GPSTracker(Add_DeliveryAddress.this);
 
@@ -128,8 +181,10 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
 
             name.setText(FullName);
             email.setText(SharedPrefUtil.getUser(Add_DeliveryAddress.this).getData().getEmailId());
-
             mobile.setText(SharedPrefUtil.getUser(Add_DeliveryAddress.this).getData().getMobileNo());
+
+            Latitude = String.valueOf(SharedPrefUtil.getLocation(Add_DeliveryAddress.this).getLatitude());
+            Longitude = String.valueOf(SharedPrefUtil.getLocation(Add_DeliveryAddress.this).getLongitude());
 
             Geocoder geocoder = new Geocoder(this, Locale.getDefault());
             List<Address> addresses = null;
@@ -257,6 +312,36 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
 
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+        try
+        {
+
+            if (ActivityCompat.checkSelfPermission(Add_DeliveryAddress.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(Add_DeliveryAddress.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+
+            googleMap.setMyLocationEnabled(true);
+
+            googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                @Override
+                public void onMapClick(LatLng latLng) {
+
+                    Latitude = String.valueOf(latLng.latitude);
+                    Longitude = String.valueOf(latLng.longitude);
+                    Toast.makeText(Add_DeliveryAddress.this, "Location Set!!", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+
+    }
+
     private void AddNewAddress(String fullName,String emailId,String mobileNo,String flat_no,String buildingName,String landmark,String city,String state,String pincode,String address_Type,String isDefault)
     {
         try
@@ -283,8 +368,8 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
                 postObject.put("pincode", pincode);
                 postObject.put("address_Type", address_Type);
                 postObject.put("isDefault", isDefault);
-                postObject.put("latitude", String.valueOf(SharedPrefUtil.getLocation(Add_DeliveryAddress.this).getLatitude()));
-                postObject.put("longitude",String.valueOf(SharedPrefUtil.getLocation(Add_DeliveryAddress.this).getLongitude()));
+                postObject.put("latitude", Latitude);
+                postObject.put("longitude",Longitude);
 
 
                 jsonObject.put("post", postObject);

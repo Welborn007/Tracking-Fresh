@@ -1,17 +1,30 @@
 package com.kesari.trackingfresh.YourOrders;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.kesari.trackingfresh.Order.OrderReview;
 import com.kesari.trackingfresh.R;
+import com.kesari.trackingfresh.Utilities.Constants;
+import com.kesari.trackingfresh.Utilities.IOUtils;
+import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by kesari-Aniket on 8/1/16.
@@ -20,11 +33,13 @@ import java.util.List;
 public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListRecycler_Adapter.RecyclerViewHolder>{
 
     private List<OrderSubPOJO> OrdersListReView;
+    private String TAG = this.getClass().getSimpleName();
+    private Context context;
 
-
-    public OrdersListRecycler_Adapter(List<OrderSubPOJO> OrdersListReView)
+    public OrdersListRecycler_Adapter(List<OrderSubPOJO> OrdersListReView,Context context)
     {
         this.OrdersListReView = OrdersListReView;
+        this.context = context;
     }
 
     @Override
@@ -67,39 +82,45 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
 
             holder.total_price.setText(OrdersListReView.get(position).getTotal_price());
 
-            if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("rejected"))
+            if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("Rejected"))
             {
                 holder.order_status.setImageResource(R.drawable.rejected);
+                holder.cancel.setVisibility(View.GONE);
             }
             else if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("Accepted"))
             {
                 holder.order_status.setImageResource(R.drawable.accepted);
+                holder.cancel.setVisibility(View.VISIBLE);
             }
             else if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("Pending"))
             {
                 holder.order_status.setImageResource(R.drawable.pending);
+                holder.cancel.setVisibility(View.VISIBLE);
             }
-            else if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("cancelled"))
+            else if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("Cancelled"))
             {
                 holder.order_status.setImageResource(R.drawable.cancel);
+                holder.cancel.setVisibility(View.GONE);
             }
+
+            holder.cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    updateOrderDetails(OrdersListReView.get(position).get_id(),"Cancelled");
+                }
+            });
 
             holder.subItemCard_view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    /*Intent intent = new Intent(v.getContext(), OrdersProductListActivity.class);
-                    intent.putExtra("order_id",OrdersListReView.get(position).getId());
-                    intent.putExtra("customer_name",OrdersListReView.get(position).getCustomer_name());
-                    intent.putExtra("payment_mode",OrdersListReView.get(position).getPayment_mode());
-                    intent.putExtra("payment_confirm",OrdersListReView.get(position).getPayment_confirmation());
-                    intent.putExtra("latitude",OrdersListReView.get(position).getLatitude());
-                    intent.putExtra("longitude",OrdersListReView.get(position).getLongitude());
-                    v.getContext().startActivity(intent);*/
+                    String orderID = OrdersListReView.get(position).get_id();
+
+                    Intent intent = new Intent(context, OrderReview.class);
+                    intent.putExtra("orderID",orderID);
+                    context.startActivity(intent);
                 }
             });
 
-            //holder.distance_txt.setText(OrdersListReView.get(position).getDistance());
-            //holder.time_txt.setText(OrdersListReView.get(position).getTime());
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -117,6 +138,7 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
         CardView subItemCard_view;
         ImageView order_status;
         LinearLayout payment_confirmHolder,payment_modeHolder;
+        Button cancel;
 
         public RecyclerViewHolder(View view)
         {
@@ -134,8 +156,67 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
             payment_modeHolder = (LinearLayout) view.findViewById(R.id.payment_modeHolder);
 
             order_status = (ImageView) view.findViewById(R.id.order_status);
+            cancel = (Button) view.findViewById(R.id.cancel);
         }
     }
 
+    private void updateOrderDetails(String orderID, String OrderStatus) {
+        try {
 
+            String url = Constants.UpdateOrder;
+
+            JSONObject jsonObject = new JSONObject();
+
+            try {
+
+                JSONObject postObject = new JSONObject();
+
+                postObject.put("id", orderID);
+                postObject.put("status",OrderStatus);
+
+                jsonObject.put("post", postObject);
+
+                Log.i("JSON CREATED", jsonObject.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(context));
+
+            ioUtils.sendJSONObjectPutRequestHeader(context, url, params, jsonObject, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG, result.toString());
+
+                  UpdateResponse(result);
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void UpdateResponse(String Response)
+    {
+        try
+        {
+
+            JSONObject jsonObject = new JSONObject(Response);
+
+            String message = jsonObject.getString("message");
+
+            if(message.equalsIgnoreCase("Updated Successfull!!"))
+            {
+                OrderListActivity.getOrderList(context);
+            }
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
 }

@@ -18,7 +18,7 @@ import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.kesari.trackingfresh.DashBoard.DashboardActivity;
+import com.kesari.trackingfresh.CheckNearestVehicleAvailability.CheckVehicleActivity;
 import com.kesari.trackingfresh.R;
 
 import java.util.Random;
@@ -47,7 +47,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
         try
         {
 
-            Intent intent = new Intent(this, DashboardActivity.class);
+            Intent intent = new Intent(this, CheckVehicleActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                     PendingIntent.FLAG_ONE_SHOT);

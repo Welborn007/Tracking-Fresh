@@ -22,7 +22,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.gson.Gson;
-import com.kesari.trackingfresh.DashBoard.DashboardActivity;
+import com.kesari.trackingfresh.CheckNearestVehicleAvailability.CheckVehicleActivity;
 import com.kesari.trackingfresh.Login.LoginActivity;
 import com.kesari.trackingfresh.Login.LoginMain;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
@@ -192,11 +192,7 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
         try
         {
 
-//String url = "http://192.168.1.10:8000/api/customer/";
-
             String url = Constants.RegisterActivityAPI;
-
-            Log.i("url", url);
 
             JSONObject jsonObject = new JSONObject();
 
@@ -216,8 +212,6 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
 
                 jsonObject.put("post", postObject);
 
-                Log.i("JSON CREATED", jsonObject.toString());
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -230,36 +224,6 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
                     RegisterResponse(result.toString());
                 }
             });
-
-        /*JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
-                url, jsonObject,
-                new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, response.toString());
-                        // pDialog.hide();
-
-                        RegisterResponse(response.toString());
-
-                    }
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-                // hide the progress dialog
-                //pDialog.hide();
-            }
-        });
-
-        jsonObjReq.setRetryPolicy(new DefaultRetryPolicy(
-                5000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        //Adding request to request queue
-        MyApplication.getInstance().addRequestToQueue(jsonObjReq, TAG);*/
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
@@ -282,31 +246,6 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
             {
                 Toast.makeText(this, loginMain.getMessage(), Toast.LENGTH_SHORT).show();
             }
-
-            /*JSONObject jsonObject = new JSONObject(Response);
-
-            String status = jsonObject.getString("status");
-            //String message = jsonObject.getString("message");
-
-            if (status.equalsIgnoreCase("500")) {
-                JSONArray jsonArray = jsonObject.getJSONArray("errors");
-                String errors = jsonArray.getString(0);
-                Toast.makeText(this, errors, Toast.LENGTH_LONG).show();
-            }
-
-            if (status.equalsIgnoreCase("200")) {
-                Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                        new ResultCallback<Status>() {
-                            @Override
-                            public void onResult(Status status) {
-                                // ...
-                                finish();
-                                Toast.makeText(RegisterActivity.this, getString(R.string.user_registered), Toast.LENGTH_SHORT).show();
-                                Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
-                                startActivity(i);
-                            }
-                        });
-            }*/
 
         } catch (Exception jse) {
             Log.i(TAG, jse.getMessage());
@@ -343,7 +282,7 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
         {
 
             SharedPrefUtil.setUser(getApplicationContext(), Response.toString());
-            Intent startMainActivity = new Intent(getApplicationContext(), DashboardActivity.class);
+            Intent startMainActivity = new Intent(getApplicationContext(), CheckVehicleActivity.class);
             startActivity(startMainActivity);
 
             finish();

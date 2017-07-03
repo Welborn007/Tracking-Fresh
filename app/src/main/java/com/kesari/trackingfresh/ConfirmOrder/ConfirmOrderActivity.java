@@ -1,6 +1,8 @@
 package com.kesari.trackingfresh.ConfirmOrder;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.LocationManager;
@@ -12,34 +14,43 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.kesari.trackingfresh.DashBoard.DashboardActivity;
+import com.kesari.trackingfresh.DeliveryAddress.OrderFareMainPOJO;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.Payment.PaymentDetails;
 import com.kesari.trackingfresh.R;
+import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
+import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.ActionClickListener;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ConfirmOrderActivity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt{
 
     private String TAG = this.getClass().getSimpleName();
     private NetworkUtilsReceiver networkUtilsReceiver;
 
-    TextView order_placed_by,order_status,order_total;
+    TextView order_placed_by,order_status,order_total,delivery_charge;
     RecyclerView recyclerViewConfirmOrder;
     private LinearLayoutManager confirmOrderLayoutManager;
     private Gson gson;
     private RecyclerView.Adapter confirmOrderAdapter;
-    private OrderAddPojo orderAddPojo;
+    private OrderFareMainPOJO orderFareMainPOJO;
     private Button confirm_Order_pay;
 
     @Override
@@ -78,27 +89,16 @@ public class ConfirmOrderActivity extends AppCompatActivity implements NetworkUt
             order_placed_by = (TextView) findViewById(R.id.order_placed_by);
             order_status = (TextView) findViewById(R.id.order_status);
             order_total = (TextView) findViewById(R.id.order_total);
+            delivery_charge = (TextView) findViewById(R.id.delivery_charge);
             confirm_Order_pay = (Button) findViewById(R.id.btnSubmit);
             recyclerViewConfirmOrder = (RecyclerView) findViewById(R.id.recyclerView);
+
+            order_placed_by.setText(getIntent().getStringExtra("OrderPlacedBy"));
 
             recyclerViewConfirmOrder.setHasFixedSize(true);
             confirmOrderLayoutManager = new LinearLayoutManager(ConfirmOrderActivity.this);
             confirmOrderLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             recyclerViewConfirmOrder.setLayoutManager(confirmOrderLayoutManager);
-
-            confirm_Order_pay.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(!orderAddPojo.getMessage().get_id().isEmpty())
-                    {
-                        Intent intent = new Intent(ConfirmOrderActivity.this, PaymentDetails.class);
-                        intent.putExtra("orderID",orderAddPojo.getMessage().get_id());
-                        intent.putExtra("amount",orderAddPojo.getMessage().getTotal_price());
-                        startActivity(intent);
-                        finish();
-                    }
-                }
-            });
 
             try
             {
@@ -109,6 +109,20 @@ public class ConfirmOrderActivity extends AppCompatActivity implements NetworkUt
                 Log.i("EXCEPTIOM","Exception");
             }
 
+            confirm_Order_pay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(!orderFareMainPOJO.getData().getOrders().isEmpty())
+                    {
+                        Intent intent = new Intent(ConfirmOrderActivity.this, PaymentDetails.class);
+                        //intent.putExtra("orderID",orderAddPojo.getMessage().get_id());
+                        intent.putExtra("amount",orderFareMainPOJO.getData().getTotal_price());
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+            });
+
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
@@ -118,19 +132,20 @@ public class ConfirmOrderActivity extends AppCompatActivity implements NetworkUt
     {
         try
         {
-            orderAddPojo = gson.fromJson(Response, OrderAddPojo.class);
+            orderFareMainPOJO = gson.fromJson(Response, OrderFareMainPOJO.class);
 
             JSONObject jsonObject = new JSONObject(Response);
 
-            String Message = jsonObject.getString("message");
+            //String Message = jsonObject.getString("message");
 
-            if(!orderAddPojo.getMessage().get_id().isEmpty())
+            if(!orderFareMainPOJO.getData().getOrders().isEmpty())
             {
-                order_placed_by.setText(orderAddPojo.getMessage().getCreatedBy());
-                order_status.setText(orderAddPojo.getMessage().getStatus());
-                order_total.setText(orderAddPojo.getMessage().getTotal_price());
+                //order_placed_by.setText(orderAddPojo.getMessage().getCreatedBy());
+                //order_status.setText(orderAddPojo.getMessage().getStatus());
+                order_total.setText(orderFareMainPOJO.getData().getTotal_price());
+                delivery_charge.setText(orderFareMainPOJO.getData().getDelivery_charge());
 
-                confirmOrderAdapter = new ConfirmOrder_RecyclerAdpater(orderAddPojo.getMessage().getOrder(),ConfirmOrderActivity.this);
+                confirmOrderAdapter = new ConfirmOrder_RecyclerAdpater(orderFareMainPOJO.getData().getOrders(),ConfirmOrderActivity.this);
                 recyclerViewConfirmOrder.setAdapter(confirmOrderAdapter);
             }
 
@@ -185,4 +200,117 @@ public class ConfirmOrderActivity extends AppCompatActivity implements NetworkUt
             Log.i(TAG,e.getMessage());
         }
     }
+
+    private void updateImageDialog()
+    {
+
+        final CharSequence[] options = { "Yes","Cancel" };
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(ConfirmOrderActivity.this);
+
+        builder.setTitle("Are You Sure You Want to Cancel the Order?");
+
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+
+            @Override
+
+            public void onClick(DialogInterface dialog, int item) {
+
+                if (options[item].equals("Yes"))
+                {
+                    dialog.cancel();
+                    //updateOrderDetails(orderAddPojo.getMessage().get_id(),"Cancelled");
+                }
+                else if (options[item].equals("Cancel")) {
+
+                    dialog.cancel();
+                }
+
+            }
+
+        });
+
+        builder.show();
+    }
+
+    private void updateOrderDetails(String orderID, String OrderStatus) {
+        try {
+
+            String url = Constants.UpdateOrder;
+
+            JSONObject jsonObject = new JSONObject();
+
+            try {
+
+                JSONObject postObject = new JSONObject();
+
+                postObject.put("id", orderID);
+                postObject.put("status",OrderStatus);
+
+                jsonObject.put("post", postObject);
+
+                Log.i("JSON CREATED", jsonObject.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(ConfirmOrderActivity.this));
+
+            ioUtils.sendJSONObjectPutRequestHeader(ConfirmOrderActivity.this, url, params, jsonObject, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG, result.toString());
+
+                    PaymentUpdateResponse(result);
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void PaymentUpdateResponse(String Response)
+    {
+        try
+        {
+
+            JSONObject jsonObject = new JSONObject(Response);
+
+            String message = jsonObject.getString("message");
+
+            if(message.equalsIgnoreCase("Updated Successfull!!"))
+            {
+                Log.i(TAG, Response);
+                Intent intent = new Intent(ConfirmOrderActivity.this, DashboardActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                //updateImageDialog();
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /*@Override
+    public void onBackPressed() {
+
+
+        updateImageDialog();
+    }*/
 }

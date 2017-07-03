@@ -34,6 +34,26 @@ public class AddCart_model {
 
     private String price;
 
+    private String brand;
+
+    private String availableQuantity;
+
+    public String getAvailableQuantity() {
+        return availableQuantity;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public void setAvailableQuantity(String availableQuantity) {
+        this.availableQuantity = availableQuantity;
+    }
+
     public String getPrice() {
         return price;
     }

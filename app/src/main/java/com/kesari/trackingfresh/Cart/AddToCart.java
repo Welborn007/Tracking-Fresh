@@ -1,9 +1,12 @@
 package com.kesari.trackingfresh.Cart;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -13,9 +16,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
@@ -50,6 +55,8 @@ import java.util.Map;
 
 import mehdi.sakout.fancybuttons.FancyButton;
 
+import static com.kesari.trackingfresh.Utilities.IOUtils.setBadgeCount;
+
 public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt {
 
     private NetworkUtilsReceiver networkUtilsReceiver;
@@ -64,6 +71,10 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
     private String TAG = this.getClass().getSimpleName();
     private Gson gson;
     private FetchAddressPOJO fetchAddressPOJO;
+
+    //ScheduledExecutorService scheduleTaskExecutor;
+    public static int mNotificationsCount = 0;
+    int Total = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +139,17 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
                 }
             });
 
+            updateNotificationsBadge(myApplication.getProductsArraylist().size());
+
+            /*scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
+
+            // This schedule a task to run every 10 minutes:
+            scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
+                public void run() {
+                    updateNotificationsBadge(myApplication.getProductsArraylist().size());
+                }
+            }, 0, 1, TimeUnit.SECONDS);*/
+
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
@@ -166,21 +188,12 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
             if (fetchAddressPOJO.getData().isEmpty()) {
                 Intent intent = new Intent(AddToCart.this, Add_DeliveryAddress.class);
                 startActivity(intent);
+                finish();
             } else {
-
-               /* addressArrayList = fetchAddressPOJO.getData();
-
-                for (Iterator<AddressPOJO> it = addressArrayList.iterator(); it.hasNext(); ) {
-                    AddressPOJO address = it.next();
-
-                    if (address.getIsDefault().equals("true"))
-                    {
-
-                    }
-                }*/
 
                 Intent intent = new Intent(AddToCart.this, Default_DeliveryAddress.class);
                 startActivity(intent);
+                finish();
             }
 
         } catch (Exception e) {
@@ -190,40 +203,17 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
 
     public void getProductData() {
         try {
-            /*JSONArray jsonArray = new JSONArray(loadProductJSONFromAsset());
-
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-
-                JSONObject jo_inside = jsonArray.getJSONObject(i);
-
-                Product_POJO js = new Product_POJO();
-
-                String product_name = jo_inside.getString("product_name");
-                String images = jo_inside.getString("images");
-                String id = jo_inside.getString("id");
-                String kilo = jo_inside.getString("kilo");
-                String Rs = jo_inside.getString("Rs");
-
-                js.setId(id);
-                js.setImages(images);
-                js.setProduct_name(product_name);
-                js.setKilo(kilo);
-                js.setRs(Rs);
-
-                product_pojos.add(js);
-
-            }
-
-            Collections.shuffle(product_pojos);
-*/
-
 
             myDataAdapter = new MyDataAdapter(myApplication.getProductsArraylist(), AddToCart.this);
             gridview.setAdapter(myDataAdapter);
             myDataAdapter.notifyDataSetChanged();
 
-            cart_count.setText(String.valueOf(myApplication.getProductsArraylist().size()) + " Products - Rs. 475");
+            /*for (int i = 0; i < myApplication.getProductsArraylist().size(); i++)
+            {
+                Total = Integer.parseInt(myApplication.getProductsArraylist().get(i).getPrice()) * myApplication.getProductsArraylist().get(i).getQuantity();
+            }
+*/
+            cart_count.setText(String.valueOf(myApplication.getProductsArraylist().size()) + " Products" /*+ String.valueOf(Total)*/);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -276,6 +266,8 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
                 viewHolder.minus = (FancyButton) convertView.findViewById(R.id.minus);
                 viewHolder.delete = (FancyButton) convertView.findViewById(R.id.delete);
 
+                viewHolder.quantity_price = (TextView) convertView.findViewById(R.id.quantity_price);
+
                 convertView.setTag(viewHolder);
             } else {
                 viewHolder = (MyDataAdapter.ViewHolder) convertView.getTag();
@@ -291,15 +283,20 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
                 viewHolder.imageView.setHierarchy(IOUtils.getFrescoImageHierarchy(activity));
 
                 viewHolder.weight.setText(product_pojo.getUnit() + product_pojo.getUnitsOfMeasurement());
-                viewHolder.price.setText("25rs");
+                viewHolder.price.setText(product_pojo.getPrice());
 
                 viewHolder.count.setText(String.valueOf(product_pojo.getQuantity()));
+                viewHolder.quantity_price.setText(String.valueOf(Integer.parseInt(product_pojo.getPrice()) * product_pojo.getQuantity()));
 
                 viewHolder.delete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         myApplication.removeProducts(position);
                         notifyDataSetChanged();
+                        getProductData();
+
+                        //Total = Total - Integer.parseInt(viewHolder.quantity_price.getText().toString());
+                        //cart_count.setText(String.valueOf(myApplication.getProductsArraylist().size()) + " Products - Rs. " + String.valueOf(Total));
                     }
                 });
 
@@ -308,19 +305,53 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
                     public void onClick(View v) {
                         try {
                             int t = Integer.parseInt(viewHolder.count.getText().toString());
-                            viewHolder.count.setText(String.valueOf(t + 1));
+                            //viewHolder.count.setText(String.valueOf(t + 1));
 
                             //DashboardActivity.updateNotificationsBadge(t + 1);
 
-                            if (!myApplication.IncrementProductQuantity(product_pojo.getProductId())) {
+
+                            if (t < Integer.parseInt(product_pojo.getAvailableQuantity()))
+                            {
+                                viewHolder.count.setText(String.valueOf(t + 1));
+                                viewHolder.quantity_price.setText(String.valueOf(Integer.parseInt(product_pojo.getPrice()) * (t + 1)));
+
+                                //Total = Total + Integer.parseInt(product_pojo.getPrice());
+                                //cart_count.setText(String.valueOf(myApplication.getProductsArraylist().size()) + " Products - Rs. " + String.valueOf(Total));
+
+                                if (!myApplication.IncrementProductQuantity(product_pojo.getProductId())) {
+
+                                } else {
+
+                                }
+
+                            } else {
+                                final Dialog dialog = new Dialog(activity);
+                                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                dialog.setContentView(R.layout.item_unavailable_dialog);
+                                dialog.setCanceledOnTouchOutside(false);
+                                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                                dialog.show();
+
+                                Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
+                                btnCancel.setText("Oops! Only " + product_pojo.getAvailableQuantity() + " items available!!");
+                                btnCancel.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                            }
+
+                            /*if (!myApplication.IncrementProductQuantity(product_pojo.getProductId())) {
 
                             } else {
 
                             }
-
+*/
                         } catch (Exception e) {
 
                         }
+
                     }
                 });
 
@@ -333,6 +364,10 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
                                 viewHolder.count.setText(String.valueOf(t - 1));
 
                                 //DashboardActivity.updateNotificationsBadge(t - 1);
+                                viewHolder.quantity_price.setText(String.valueOf(Integer.parseInt(product_pojo.getPrice()) * (t - 1)));
+
+                                //Total = Total - Integer.parseInt(product_pojo.getPrice());
+                                //cart_count.setText(String.valueOf(myApplication.getProductsArraylist().size()) + " Products - Rs. " + String.valueOf(Total));
 
                                 if (!myApplication.DecrementProductQuantity(product_pojo.getProductId())) {
 
@@ -346,6 +381,7 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
                                 myApplication.RemoveProductonZeroQuantity(product_pojo.getProductId());
                                 //myApplication.removeProducts(position);
                                 notifyDataSetChanged();
+                                getProductData();
                                 viewHolder.count.setText("0");
                             }
                         } catch (Exception e) {
@@ -369,7 +405,7 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
         }
 
         private class ViewHolder {
-            TextView product_name, weight, price, count;
+            TextView product_name, weight, price, count,quantity_price;
             SimpleDraweeView imageView;
             FancyButton plus, minus, delete;
         }
@@ -389,6 +425,34 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
             return null;
         }
         return json;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_add_tocart, menu);
+
+        MenuItem item = menu.findItem(R.id.menu_hot);
+        LayerDrawable icon = (LayerDrawable) item.getIcon();
+
+        setBadgeCount(this, icon, mNotificationsCount);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        invalidateOptionsMenu();
+        return true;
+    }
+
+    public static void updateNotificationsBadge(int count) {
+        mNotificationsCount = count;
+
+        // force the ActionBar to relayout its MenuItems.
+        // onCreateOptionsMenu(Menu) will be called again.
     }
 
     @Override
@@ -417,6 +481,8 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
 
         try {
             unregisterReceiver(networkUtilsReceiver);
+
+            //scheduleTaskExecutor.shutdown();
 
             if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
                 // LOCATION SERVICE

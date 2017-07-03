@@ -58,6 +58,7 @@ import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
+import com.kesari.trackingfresh.VehicleRoute.RouteActivity;
 import com.kesari.trackingfresh.YourOrders.OrderListActivity;
 import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.MyApplication;
@@ -65,6 +66,7 @@ import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.ActionClickListener;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -73,9 +75,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.kesari.trackingfresh.Utilities.IOUtils.setBadgeCount;
 
@@ -109,13 +110,15 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
     String subAdminArea = "";
     String subLocality = "";
     MyApplication myApplication ;
-    RelativeLayout my_orders_holder,profile_holder,help_holder;
+    RelativeLayout my_orders_holder,profile_holder,help_holder,route_holder;
 
     private Gson gson;
     VerifyMobilePOJO verifyMobilePOJO;
     SendOtpPOJO sendOtpPOJO;
     Dialog dialog;
     private ViewGroup mSnackbarContainer;
+    CircleImageView profile_image;
+    //ScheduledExecutorService scheduleTaskExecutor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,6 +152,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             filter = (ImageView) findViewById(R.id.filter);
             map_View = (ImageView) findViewById(R.id.map_View);
 
+
             map_View.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -162,9 +166,28 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
 
             my_orders_holder = (RelativeLayout) header.findViewById(R.id.my_orders_holder);
             name_Login = (TextView) header.findViewById(R.id.name_Login);
+            profile_image = (CircleImageView) header.findViewById(R.id.profile_image);
+
+            if(SharedPrefUtil.getUser(DashboardActivity.this).getData().getProfileImage() != null)
+            {
+                Picasso
+                        .with(DashboardActivity.this)
+                        .load(SharedPrefUtil.getUser(DashboardActivity.this).getData().getProfileImage())
+                        .into(profile_image);
+            }
+
 
             profile_holder = (RelativeLayout) header.findViewById(R.id.profile_holder);
             help_holder = (RelativeLayout) header.findViewById(R.id.help_holder);
+            route_holder = (RelativeLayout) header.findViewById(R.id.route_holder);
+
+            route_holder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(DashboardActivity.this, RouteActivity.class);
+                    startActivity(intent);
+                }
+            });
 
             try
             {
@@ -244,17 +267,29 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             transaction.replace(R.id.fragment_holder, product_fragment);
             transaction.commit();
 
+            updateNotificationsBadge(myApplication.getProductsArraylist().size());
+
             //updateNotificationsBadge(4);
 
-            ScheduledExecutorService scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
+            /*scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
 
             // This schedule a task to run every 10 minutes:
             scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
                 public void run() {
-                    DashboardActivity.updateNotificationsBadge(myApplication.getProductsArraylist().size());
+                    updateNotificationsBadge(myApplication.getProductsArraylist().size());
                 }
             }, 0, 1, TimeUnit.SECONDS);
 
+
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    getVerifiedMobileNumber(SharedPrefUtil.getToken(DashboardActivity.this));
+
+                }
+            }, 3000);*/
 
             final Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
@@ -360,7 +395,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                         if (android.util.Patterns.PHONE.matcher(mobile_number).matches())
                         {
                             if (mobile_number.length() >= 10) {
-                               sendMobileMobileNumber(mobile.getText().toString(),mSnackbarContainer);
+                               sendMobileNumber(mobile.getText().toString(),mSnackbarContainer);
                             }
                             else
                             {
@@ -402,7 +437,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
 
     }
 
-    private void sendMobileMobileNumber(String MobileNo,ViewGroup viewGroup)
+    private void sendMobileNumber(final String MobileNo, ViewGroup viewGroup)
     {
         String url = Constants.SendOTP ;
 
@@ -434,12 +469,12 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             @Override
             public void onSuccess(String result) {
 
-                OTPResponse(result);
+                OTPResponse(result,MobileNo);
             }
         });
     }
 
-    private void OTPResponse(String Response)
+    private void OTPResponse(String Response,String mobile)
     {
         try
         {
@@ -448,7 +483,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             if(sendOtpPOJO.getMessage().equalsIgnoreCase("Otp Send"))
             {
                 Intent intent = new Intent(DashboardActivity.this, OTP.class);
-                intent.putExtra("mobile_num","");
+                intent.putExtra("mobile_num",mobile);
                 startActivity(intent);
             }
 
@@ -625,6 +660,35 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
         TextView nameTxt = (TextView) view.findViewById(R.id.name);
         nameTxt.setText("Hello " + name);
 
+        TextView my_account = (TextView) view.findViewById(R.id.my_account);
+        TextView my_orders = (TextView) view.findViewById(R.id.my_orders);
+
+        my_account.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DashboardActivity.this, ProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        my_orders.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DashboardActivity.this, OrderListActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        CircleImageView imgUserimage = (CircleImageView) view.findViewById(R.id.imgUserimage);
+
+        if(SharedPrefUtil.getUser(DashboardActivity.this).getData().getProfileImage() != null)
+        {
+            Picasso
+                    .with(DashboardActivity.this)
+                    .load(SharedPrefUtil.getUser(DashboardActivity.this).getData().getProfileImage())
+                    .into(imgUserimage);
+        }
+
         Button logout = (Button) view.findViewById(R.id.btnLogout);
 
         logout.setOnClickListener(new View.OnClickListener() {
@@ -705,6 +769,8 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
 
         try {
             unregisterReceiver(networkUtilsReceiver);
+
+            //scheduleTaskExecutor.shutdown();
 
             if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
                 // LOCATION SERVICE

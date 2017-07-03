@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.LayerDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -14,6 +15,7 @@ import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -27,10 +29,11 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.AddToCart.AddCart_model;
+import com.kesari.trackingfresh.Cart.AddToCart;
 import com.kesari.trackingfresh.ConfirmOrder.ConfirmOrderActivity;
-import com.kesari.trackingfresh.ConfirmOrder.OrderAddPojo;
 import com.kesari.trackingfresh.DeliveryAddress.AddDeliveryAddress.Add_DeliveryAddress;
 import com.kesari.trackingfresh.DeliveryAddress.AddressPOJO;
+import com.kesari.trackingfresh.DeliveryAddress.OrderFareMainPOJO;
 import com.kesari.trackingfresh.DeliveryAddress.UpdateDeleteDeliveryAddress.FetchedDeliveryAddressActivity;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.R;
@@ -54,6 +57,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import static com.kesari.trackingfresh.Utilities.IOUtils.setBadgeCount;
 
 public class Default_DeliveryAddress extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt{
 
@@ -85,11 +90,15 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
 
     private Gson gson;
     private FetchAddressPOJO fetchAddressPOJO;
-    private OrderAddPojo orderAddPojo;
+    private OrderFareMainPOJO orderFareMainPOJO;
     boolean default_address = false;
-    MyApplication myApplication;
     LinearLayout address_holder;
     CheckBox pickup;
+    String OrderPlacedBy = "";
+
+    //ScheduledExecutorService scheduleTaskExecutor;
+    MyApplication myApplication;
+    public static int mNotificationsCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,15 +194,16 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
                 }
             });
 
-           /* for (int i = 0; i < myApplication.getProductsArraylist().size(); i++) {
-                AddCart_model addCart_model = new AddCart_model();
-                addCart_model.setProductId(myApplication.getProductsArraylist().get(i).getProductId());
-                addCart_model.setQuantity(myApplication.getProductsArraylist().get(i).getQuantity());
-                addCart_model.setPrice("100");
-                Log.i("product_id", myApplication.getProductsArraylist().get(i).getProductId());
-                addCart_model.setActive(myApplication.getProductsArraylist().get(i).getActive());
-                addCart_models.add(addCart_model);
-            }*/
+            updateNotificationsBadge(myApplication.getProductsArraylist().size());
+
+           /* scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
+
+            // This schedule a task to run every 10 minutes:
+            scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
+                public void run() {
+                    updateNotificationsBadge(myApplication.getProductsArraylist().size());
+                }
+            }, 0, 1, TimeUnit.SECONDS);*/
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
@@ -242,10 +252,13 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
 
                     if (addressPOJO.isDefault())
                     {
+                        OrderPlacedBy = addressPOJO.getFullName();
                         name.setText(addressPOJO.getFullName());
                         address.setText(addressPOJO.getFlat_No() + ", " + addressPOJO.getBuildingName() + ", " + addressPOJO.getLandmark());
                         city.setText(addressPOJO.getCity());
                         pincode.setText(addressPOJO.getPincode());
+
+                        SharedPrefUtil.setDefaultLocation(Default_DeliveryAddress.this,Float.parseFloat(addressPOJO.getLatitude()),Float.parseFloat(addressPOJO.getLongitude()));
 
                         default_address = true;
                     }
@@ -272,7 +285,7 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
         try
         {
 
-            String url = Constants.AddOrder ;
+            String url = Constants.GetFare ;
 
             Log.i("url", url);
 
@@ -291,9 +304,8 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
                     cartItemsObjedct.put("productId", myApplication.getProductsArraylist().get(i).getProductId());
                     cartItemsObjedct.put("productName",myApplication.getProductsArraylist().get(i).getProductName());
                     cartItemsObjedct.put("quantity",myApplication.getProductsArraylist().get(i).getQuantity());
-                    cartItemsObjedct.put("price","100");
-                    Log.i("product_id", myApplication.getProductsArraylist().get(i).getProductId());
-                    cartItemsObjedct.put("active",myApplication.getProductsArraylist().get(i).getActive());
+                    cartItemsObjedct.put("price",myApplication.getProductsArraylist().get(i).getPrice());
+                    //cartItemsObjedct.put("active",myApplication.getProductsArraylist().get(i).getActive());
                     cartItemsArray.put(cartItemsObjedct);
                 }
 
@@ -301,9 +313,9 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
                 postObject.put("mobileNo", MobileNo);
                 postObject.put("id", SharedPrefUtil.getUser(Default_DeliveryAddress.this).getData().get_id());
 */
-                postObject.put("order",cartItemsArray);
-                postObject.put("total_price","1100");
-                postObject.put("vehicleNo","vehicleNo1");
+                postObject.put("orders",cartItemsArray);
+                //postObject.put("total_price","1100");
+                postObject.put("vehicleId",SharedPrefUtil.getNearestVehicle(Default_DeliveryAddress.this).getData().get(0).getVehicle_id());
                 jsonObject.put("post", postObject);
 
                 Log.i("JSON CREATED", jsonObject.toString());
@@ -335,18 +347,25 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
     {
         try
         {
-            orderAddPojo = gson.fromJson(Response, OrderAddPojo.class);
+            orderFareMainPOJO = gson.fromJson(Response, OrderFareMainPOJO.class);
 
             JSONObject jsonObject = new JSONObject(Response);
 
-            String Message = jsonObject.getString("message");
+            //String Message = jsonObject.getString("message");
 
-            if(!orderAddPojo.getMessage().get_id().isEmpty())
+            if(!orderFareMainPOJO.getData().getOrders().isEmpty())
             {
                 Intent intent = new Intent(Default_DeliveryAddress.this, ConfirmOrderActivity.class);
                 intent.putExtra("confirmOrder",Response);
+                intent.putExtra("OrderPlacedBy",OrderPlacedBy);
                 startActivity(intent);
-                finish();
+                //finish();
+
+                //myApplication.removeProductsItems();
+            }
+            else
+            {
+                FireToast.customSnackbar(Default_DeliveryAddress.this, "No Products Added!!!", "");
             }
 
         } catch (Exception e) {
@@ -362,13 +381,55 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_add_tocart, menu);
+
+        MenuItem item = menu.findItem(R.id.menu_hot);
+        LayerDrawable icon = (LayerDrawable) item.getIcon();
+
+        setBadgeCount(this, icon, mNotificationsCount);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        invalidateOptionsMenu();
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menu_hot:
+                Intent intent = new Intent(Default_DeliveryAddress.this, AddToCart.class);
+                startActivity(intent);
+                finish();
+                return true;
+
             case android.R.id.home:
+                Intent intent1 = new Intent(Default_DeliveryAddress.this, AddToCart.class);
+                startActivity(intent1);
                 finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Default_DeliveryAddress.this, AddToCart.class);
+        startActivity(intent);
+    }
+
+    public static void updateNotificationsBadge(int count) {
+        mNotificationsCount = count;
+
+        // force the ActionBar to relayout its MenuItems.
+        // onCreateOptionsMenu(Menu) will be called again.
     }
 
     private void SetDefaultAddress()
@@ -478,6 +539,7 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
 
         try {
             unregisterReceiver(networkUtilsReceiver);
+            //scheduleTaskExecutor.shutdown();
 
             if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
                 // LOCATION SERVICE

@@ -22,8 +22,9 @@
             android:layout_height="120dp" />
 
         <LinearLayout
+            android:id="@+id/data_holder"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="2"
             android:padding="5dp">
@@ -123,6 +124,8 @@
 
                 </LinearLayout>
 
+
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -194,6 +197,7 @@
 
         </LinearLayout>
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -228,6 +232,22 @@
                 android:textStyle="bold" />
 
         </LinearLayout>
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:textSize="@dimen/text_size"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/data_holder"
+            android:background="@drawable/rounded_btn"
+            android:textStyle="bold"
+            android:textColor="@color/TextColor"
+            android:textAppearance="?android:textAppearanceMedium"
+            />
 
     </RelativeLayout>
 

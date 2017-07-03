@@ -47,14 +47,30 @@
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/price"
-            android:text="Price"
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_gravity="center"
-            android:textColor="@color/black"
-            android:textSize="14sp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/price"
+                android:text="100"
+                android:layout_gravity="center"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="Rs / Quantity"
+                android:layout_gravity="center"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
@@ -135,6 +151,25 @@
                 android:padding="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"/>
+
+            <TextView
+                android:id="@+id/quantity_price"
+                android:text="100"
+                android:layout_gravity="center"
+                android:textSize="16sp"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="Rs"
+                android:layout_gravity="center"
+                android:textSize="16sp"
+                android:layout_marginLeft="5dp"
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 

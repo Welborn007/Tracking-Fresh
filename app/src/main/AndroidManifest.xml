@@ -143,10 +143,17 @@
             android:name=".DeliveryAddress.UpdateDeleteDeliveryAddress.FetchedDeliveryAddressActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity android:name=".ConfirmOrder.ConfirmOrderActivity"
+        <activity
+            android:name=".ConfirmOrder.ConfirmOrderActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" ></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CheckNearestVehicleAvailability.CheckVehicleActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
+        <activity android:name=".VehicleRoute.RouteActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"></activity>
     </application>
 
 </manifest>

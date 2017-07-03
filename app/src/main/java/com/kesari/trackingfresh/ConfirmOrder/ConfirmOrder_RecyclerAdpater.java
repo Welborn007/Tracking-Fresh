@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.kesari.trackingfresh.DeliveryAddress.OrderFareListPOJO;
 import com.kesari.trackingfresh.R;
 
 import java.util.List;
@@ -18,13 +19,13 @@ import java.util.List;
 
 public class ConfirmOrder_RecyclerAdpater extends RecyclerView.Adapter<ConfirmOrder_RecyclerAdpater.RecyclerViewHolder>
 {
-    List<OrderAddListPOJO> OrderAddListPOJOs;
+    List<OrderFareListPOJO> OrderFareListPOJOs;
     Context context;
     private String TAG = this.getClass().getSimpleName();
 
-    public ConfirmOrder_RecyclerAdpater(List<OrderAddListPOJO> OrderAddListPOJOs, Context context)
+    public ConfirmOrder_RecyclerAdpater(List<OrderFareListPOJO> OrderFareListPOJOs, Context context)
     {
-        this.OrderAddListPOJOs = OrderAddListPOJOs;
+        this.OrderFareListPOJOs = OrderFareListPOJOs;
         this.context = context;
     }
 
@@ -44,9 +45,10 @@ public class ConfirmOrder_RecyclerAdpater extends RecyclerView.Adapter<ConfirmOr
         try
         {
 
-            holder.product_name.setText(OrderAddListPOJOs.get(position).getProductName());
-            holder.quantity.setText(OrderAddListPOJOs.get(position).getQuantity());
-            holder.price.setText(OrderAddListPOJOs.get(position).getPrice());
+            holder.product_name.setText(OrderFareListPOJOs.get(position).getProductName());
+            holder.quantity.setText(OrderFareListPOJOs.get(position).getQuantity());
+            holder.price.setText(OrderFareListPOJOs.get(position).getPrice());
+            holder.subtotal.setText(OrderFareListPOJOs.get(position).getSub_total());
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
@@ -58,13 +60,13 @@ public class ConfirmOrder_RecyclerAdpater extends RecyclerView.Adapter<ConfirmOr
     @Override
     public int getItemCount() {
 
-        return OrderAddListPOJOs.size();
+        return OrderFareListPOJOs.size();
     }
 
     public class RecyclerViewHolder extends RecyclerView.ViewHolder
     {
 
-        TextView product_name,quantity,price;
+        TextView product_name,quantity,price,subtotal;
 
         public RecyclerViewHolder(View view)
         {
@@ -72,7 +74,7 @@ public class ConfirmOrder_RecyclerAdpater extends RecyclerView.Adapter<ConfirmOr
             product_name = (TextView) view.findViewById(R.id.product_name);
             quantity = (TextView) view.findViewById(R.id.quantity);
             price = (TextView) view.findViewById(R.id.price);
-
+            subtotal = (TextView) view.findViewById(R.id.subtotal);
         }
     }
 }

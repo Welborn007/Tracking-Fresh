@@ -1,14 +1,14 @@
 package com.kesari.trackingfresh.Splash;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import com.kesari.trackingfresh.CheckNearestVehicleAvailability.CheckVehicleActivity;
 import com.kesari.trackingfresh.Login.LoginActivity;
-import com.kesari.trackingfresh.DashBoard.DashboardActivity;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 
@@ -49,7 +49,7 @@ public class NewSplash extends AppCompatActivity {
         if (SharedPrefUtil.getToken(NewSplash.this) != null) {
             if(!SharedPrefUtil.getToken(NewSplash.this).isEmpty())
             {
-                Intent startMainActivity = new Intent(getApplicationContext(),DashboardActivity.class);
+                Intent startMainActivity = new Intent(getApplicationContext(),CheckVehicleActivity.class);
                 startActivity(startMainActivity);
                 finish();
             }

@@ -96,6 +96,8 @@ public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.Netwo
             Otp3 = (EditText) findViewById(R.id.otp3);
             Otp4 = (EditText) findViewById(R.id.otp4);
 
+            mobile = getIntent().getStringExtra("mobile_num");
+
             Otp1.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void afterTextChanged(Editable s) {
@@ -192,7 +194,7 @@ public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.Netwo
             counter = (TextView) findViewById(R.id.counter);
             number = (TextView) findViewById(R.id.mobinumber);
 
-            number.setText(getIntent().getStringExtra("mobile_num"));
+            number.setText(mobile);
 
             Timer();
 
@@ -228,7 +230,7 @@ public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.Netwo
 
                     if(!OTP1.isEmpty() && !OTP2.isEmpty() && !OTP3.isEmpty() && !OTP4.isEmpty())
                     {
-                        matchOTPNumber(getIntent().getStringExtra("mobile_num"), OTPNumber);
+                        matchOTPNumber(mobile, OTPNumber);
                     }
                     else
                     {
@@ -386,7 +388,7 @@ public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.Netwo
 
                                     if(!String.valueOf(s.charAt(0)).isEmpty() && !String.valueOf(s.charAt(1)).isEmpty() && !String.valueOf(s.charAt(2)).isEmpty() && !String.valueOf(s.charAt(3)).isEmpty())
                                     {
-                                        matchOTPNumber(getIntent().getStringExtra("mobile_num"), OTPNumber);
+                                        matchOTPNumber(mobile, OTPNumber);
                                     }
                                     else
                                     {

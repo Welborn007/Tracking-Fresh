@@ -33,6 +33,7 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/my_account"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/ic_black_account"
@@ -48,6 +49,7 @@
         android:background="#ccc"/>
 
     <TextView
+        android:id="@+id/my_orders"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/ic_my_orders"

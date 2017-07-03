@@ -1,9 +1,11 @@
 package com.kesari.trackingfresh.Payment;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -13,17 +15,29 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.kesari.trackingfresh.CheckNearestVehicleAvailability.NearestVehicleMainPOJO;
+import com.kesari.trackingfresh.ConfirmOrder.OrderAddPojo;
+import com.kesari.trackingfresh.DashBoard.DashboardActivity;
+import com.kesari.trackingfresh.DashBoard.VerifyMobilePOJO;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
+import com.kesari.trackingfresh.OTP.OTP;
+import com.kesari.trackingfresh.OTP.SendOtpPOJO;
 import com.kesari.trackingfresh.OrderTracking.OrderBikerTrackingActivity;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
+import com.kesari.trackingfresh.VehicleRoute.RouteActivity;
 import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
@@ -33,6 +47,7 @@ import com.nispok.snackbar.listeners.ActionClickListener;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -46,8 +61,16 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
     private NetworkUtilsReceiver networkUtilsReceiver;
     private TextView price_payable;
     private RadioButton cash_on_delivery,online_payment;
-    private String OrderID = "";
+    //private String OrderID = "";
     MyApplication myApplication;
+    OrderAddPojo orderAddPojo;
+    private Gson gson;
+    boolean online = false,cod =false;
+    VerifyMobilePOJO verifyMobilePOJO;
+    SendOtpPOJO sendOtpPOJO;
+    Dialog dialog;
+    private ViewGroup mSnackbarContainer;
+    NearestVehicleMainPOJO nearestVehicleMainPOJO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +85,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
             myApplication = (MyApplication) getApplicationContext();
+            gson = new Gson();
 
         /*Register receiver*/
             networkUtilsReceiver = new NetworkUtilsReceiver(this);
@@ -97,7 +121,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
             {
 
                 price_payable.setText(getIntent().getStringExtra("amount"));
-                OrderID = getIntent().getStringExtra("orderID");
+                //OrderID = getIntent().getStringExtra("orderID");
 
             }catch (NullPointerException npe)
             {
@@ -110,14 +134,15 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
                     if(online_payment.isChecked())
                     {
-                        startPayment(OrderID,"100");
-                        Toast.makeText(PaymentDetails.this, "Online Payment", Toast.LENGTH_SHORT).show();
+                        getVerifiedMobileNumber(SharedPrefUtil.getToken(PaymentDetails.this));
+                        //addOrderListFromCart();
+                        online = true;
                     }
                     else if(cash_on_delivery.isChecked())
                     {
-                        Toast.makeText(PaymentDetails.this, "Cash On Delivery!!", Toast.LENGTH_SHORT).show();
-
-                        updateOrderDetails(OrderID,"COD","");
+                        getVerifiedMobileNumber(SharedPrefUtil.getToken(PaymentDetails.this));
+                        //addOrderListFromCart();
+                        cod = true;
                     }
                     else
                     {
@@ -132,6 +157,360 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
             Log.i(TAG, e.getMessage());
         }
 
+    }
+
+    private void getVerifiedMobileNumber(String Token)
+    {
+        try
+        {
+
+            String url = Constants.VerifyMobile + SharedPrefUtil.getUser(PaymentDetails.this).getData().get_id();
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + Token);
+
+            ioUtils.getGETStringRequestHeader(PaymentDetails.this, url , params , new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG, result.toString());
+
+                    VerifyResponse(result);
+
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void VerifyResponse(String Response)
+    {
+        try
+        {
+
+            verifyMobilePOJO = gson.fromJson(Response, VerifyMobilePOJO.class);
+
+            if(verifyMobilePOJO.getMessage().equalsIgnoreCase("Mobile number not found"))
+            {
+                verifyMobileNumber("");
+            }
+            else if(verifyMobilePOJO.getMessage().equalsIgnoreCase("Mobile not Verified"))
+            {
+                verifyMobileNumber(verifyMobilePOJO.getMobileNo());
+            }
+            else if(verifyMobilePOJO.getMessage().equalsIgnoreCase("Mobile Verified"))
+            {
+                sendLATLONVehicle();
+            }
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void sendLATLONVehicle()
+    {
+        try
+        {
+
+            String url = Constants.CheckNearestVehicle ;
+
+            Log.i("url", url);
+
+            JSONObject jsonObject = new JSONObject();
+
+            try {
+
+                JSONObject postObject = new JSONObject();
+
+                postObject.put("longitude", SharedPrefUtil.getDefaultLocation(PaymentDetails.this).getLongitude());
+                postObject.put("latitude", SharedPrefUtil.getDefaultLocation(PaymentDetails.this).getLatitude());
+
+                jsonObject.put("post", postObject);
+
+                Log.i("JSON CREATED", jsonObject.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(PaymentDetails.this));
+
+            IOUtils ioUtils = new IOUtils();
+
+            ioUtils.sendJSONObjectRequestHeader(PaymentDetails.this, url,params, jsonObject, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    NearestVehicleResponse(result);
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+
+    }
+
+    private void NearestVehicleResponse(String Response)
+    {
+        try
+        {
+            nearestVehicleMainPOJO = gson.fromJson(Response, NearestVehicleMainPOJO.class);
+
+            if(nearestVehicleMainPOJO.getData().isEmpty())
+            {
+                final Dialog dialog = new Dialog(PaymentDetails.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.item_unavailable_dialog);
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.setCancelable(false);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                dialog.show();
+
+                Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
+                btnCancel.setText("No Nearby Vehicle for the Delivery Address. Check Nearby Vehicle Route!");
+                btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        Intent intent = new Intent(PaymentDetails.this, RouteActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                });
+            }
+            else
+            {
+                addOrderListFromCart();
+            }
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void verifyMobileNumber(final String MobileNumber)
+    {
+        try {
+
+            // Create custom dialog object
+            dialog = new Dialog(PaymentDetails.this);
+            // Include dialog.xml file
+            dialog.setContentView(R.layout.dialog_verify_mobile);
+            // Set dialog title
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.setTitle("Custom Dialog");
+
+            final EditText mobile;
+            Button confirmNumber;
+
+            mobile = (EditText) dialog.findViewById(R.id.mobile);
+            confirmNumber = (Button) dialog.findViewById(R.id.confirmNumber);
+
+            mSnackbarContainer = (ViewGroup) dialog.findViewById(R.id.snackbar_container);
+
+            mobile.setText(MobileNumber);
+
+            confirmNumber.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    String mobile_number = mobile.getText().toString();
+
+                    if(!mobile_number.isEmpty())
+                    {
+                        if (android.util.Patterns.PHONE.matcher(mobile_number).matches())
+                        {
+                            if (mobile_number.length() >= 10) {
+                                sendMobileNumber(mobile.getText().toString(),mSnackbarContainer);
+                            }
+                            else
+                            {
+                                mobile.setError(getString(R.string.less_than_10digit));
+                            }
+                        }
+                        else
+                        {
+                            mobile.setError(getString(R.string.proper_mobile));
+                        }
+                    }
+                    else
+                    {
+                        mobile.setError(getString(R.string.mobileno));
+                    }
+
+                }
+            });
+
+            /*gpsTracker = new GPSTracker(DashboardActivity.this);
+
+            Double Lat = gpsTracker.getLatitude();
+            Double Long = gpsTracker.getLongitude();*/
+
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            Window window = dialog.getWindow();
+            lp.copyFrom(window.getAttributes());
+
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            window.setAttributes(lp);
+
+            dialog.show();
+
+        }catch (Exception e)
+        {
+            Log.i(TAG,"dialog_Mobile");
+        }
+
+    }
+
+    private void sendMobileNumber(final String MobileNo, ViewGroup viewGroup)
+    {
+        String url = Constants.SendOTP ;
+
+        Log.i("url", url);
+
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+
+            JSONObject postObject = new JSONObject();
+
+            postObject.put("mobileNo", MobileNo);
+            postObject.put("id",SharedPrefUtil.getUser(PaymentDetails.this).getData().get_id());
+
+            jsonObject.put("post", postObject);
+
+            Log.i("JSON CREATED", jsonObject.toString());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("Authorization", "JWT " + SharedPrefUtil.getToken(PaymentDetails.this));
+
+        IOUtils ioUtils = new IOUtils();
+
+        ioUtils.sendJSONObjectRequestHeaderDialog(PaymentDetails.this, viewGroup, url, params ,jsonObject, new IOUtils.VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+
+                OTPResponse(result,MobileNo);
+            }
+        });
+    }
+
+    private void OTPResponse(String Response,String mobile)
+    {
+        try
+        {
+            sendOtpPOJO = gson.fromJson(Response, SendOtpPOJO.class);
+
+            if(sendOtpPOJO.getMessage().equalsIgnoreCase("Otp Send"))
+            {
+                Intent intent = new Intent(PaymentDetails.this, OTP.class);
+                intent.putExtra("mobile_num",mobile);
+                startActivity(intent);
+            }
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void addOrderListFromCart()
+    {
+        try
+        {
+
+            String url = Constants.AddOrder ;
+
+            Log.i("url", url);
+
+            JSONObject jsonObject = new JSONObject();
+
+            try {
+
+                //JSONArray postObject = new JSONArray();
+
+                JSONObject postObject = new JSONObject();
+                JSONArray cartItemsArray = new JSONArray();
+                JSONObject cartItemsObjedct;
+                for (int i = 0; i < myApplication.getProductsArraylist().size(); i++)
+                {
+                    cartItemsObjedct = new JSONObject();
+                    cartItemsObjedct.put("productId", myApplication.getProductsArraylist().get(i).getProductId());
+                    cartItemsObjedct.put("productName",myApplication.getProductsArraylist().get(i).getProductName());
+                    cartItemsObjedct.put("quantity",myApplication.getProductsArraylist().get(i).getQuantity());
+                    cartItemsObjedct.put("price",myApplication.getProductsArraylist().get(i).getPrice());
+                    //cartItemsObjedct.put("active",myApplication.getProductsArraylist().get(i).getActive());
+                    cartItemsArray.put(cartItemsObjedct);
+                }
+
+                postObject.put("orders",cartItemsArray);
+                postObject.put("total_price",getIntent().getStringExtra("amount"));
+                postObject.put("vehicleId",SharedPrefUtil.getNearestVehicle(PaymentDetails.this).getData().get(0).getVehicle_id());
+                jsonObject.put("post", postObject);
+
+                Log.i("JSON CREATED", jsonObject.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(PaymentDetails.this));
+
+            IOUtils ioUtils = new IOUtils();
+
+            ioUtils.sendJSONObjectRequestHeader(PaymentDetails.this, url,params, jsonObject, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG, result.toString());
+                    OrderSendResponse(result);
+
+                }
+            });
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+
+    }
+
+    private void OrderSendResponse(String Response)
+    {
+        try
+        {
+            orderAddPojo = gson.fromJson(Response, OrderAddPojo.class);
+
+            if(!orderAddPojo.getMessage().get_id().isEmpty())
+            {
+                if(online)
+                {
+                    startPayment(orderAddPojo.getMessage().get_id(),getIntent().getStringExtra("amount"));
+                    Toast.makeText(PaymentDetails.this, "Online Payment", Toast.LENGTH_SHORT).show();
+                }
+
+                if(cod)
+                {
+                    Toast.makeText(PaymentDetails.this, "Cash On Delivery!!", Toast.LENGTH_SHORT).show();
+                    updateOrderDetails(orderAddPojo.getMessage().get_id(),"COD","");
+                }
+            }
+            else
+            {
+                FireToast.customSnackbar(PaymentDetails.this, "Order Failed!!", "");
+            }
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
     }
 
     public void startPayment(String orderID,String priceTotal) {
@@ -193,7 +572,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
         Log.i("Payment","Success");
         Log.i("PaymentID",razorpayPaymentID);
 
-        updateOrderDetails(OrderID,"Online Payment",razorpayPaymentID);
+        updateOrderDetails(orderAddPojo.getMessage().get_id(),"Online Payment",razorpayPaymentID);
     }
 
     @Override
@@ -202,12 +581,75 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
          * Add your logic here for a failed payment response
          */
 
-        updateOrderDetails(OrderID,"Online Payment","SampLe123");
+        //updateOrderDetails(OrderID,"Online Payment","SampLe123");
 
         Log.i("Payment","Error");
         Log.i("Payment",response);
+        CancelOrder(orderAddPojo.getMessage().get_id(),"Cancelled");
     }
 
+    private void CancelOrder(String orderID, String OrderStatus) {
+        try {
+
+            String url = Constants.UpdateOrder;
+
+            JSONObject jsonObject = new JSONObject();
+
+            try {
+
+                JSONObject postObject = new JSONObject();
+
+                postObject.put("id", orderID);
+                postObject.put("status",OrderStatus);
+
+                jsonObject.put("post", postObject);
+
+                Log.i("JSON CREATED", jsonObject.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(PaymentDetails.this));
+
+            ioUtils.sendJSONObjectPutRequestHeader(PaymentDetails.this, url, params, jsonObject, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG, result.toString());
+
+                    CancelResponse(result);
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void CancelResponse(String Response)
+    {
+        try
+        {
+
+            JSONObject jsonObject = new JSONObject(Response);
+
+            String message = jsonObject.getString("message");
+
+            if(message.equalsIgnoreCase("Updated Successfull!!"))
+            {
+                Log.i(TAG, Response);
+                Intent intent = new Intent(PaymentDetails.this, DashboardActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
 
     private void updateOrderDetails(String orderID, String payment_mode,String paymentId) {
         try {
@@ -221,7 +663,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 JSONObject postObject = new JSONObject();
 
                 postObject.put("id", orderID);
-                postObject.put("status","Accepted");
+                postObject.put("status","Pending");
                 postObject.put("payment_Mode",payment_mode);
 
                 if(!payment_mode.equalsIgnoreCase("COD"))
@@ -273,10 +715,9 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
             if(message.equalsIgnoreCase("Updated Successfull!!"))
             {
                 Intent intent = new Intent(PaymentDetails.this, OrderBikerTrackingActivity.class);
-                intent.putExtra("orderID",OrderID);
+                intent.putExtra("orderID",orderAddPojo.getMessage().get_id());
                 startActivity(intent);
                 finish();
-
                 myApplication.removeProductsItems();
             }
             else

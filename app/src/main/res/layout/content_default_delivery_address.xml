@@ -143,6 +143,7 @@
             android:id="@+id/pickup"
             android:text="@string/pickupCheckbox"
             android:layout_margin="5dp"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -151,7 +152,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Place Order"
+        android:text="View Order"
         android:layout_margin="5dp"
         android:layout_alignParentBottom="true"
         android:id="@+id/btnSubmit"

@@ -57,7 +57,7 @@
 
                     <LinearLayout
                         android:orientation="horizontal"
-                        android:padding="10dp"
+                        android:padding="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
@@ -93,9 +93,9 @@
 
                     <LinearLayout
                         android:orientation="horizontal"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:paddingBottom="10dp"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:paddingBottom="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
@@ -135,6 +135,7 @@
             <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:map="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/map_container"
+                android:layout_below="@+id/guestCardview"
                 class="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -144,9 +145,8 @@
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 xmlns:fancy="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/subItemCard_view"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 android:layout_alignParentBottom="true"
                 android:layout_margin="5dp"
                 android:background="@color/LightGray"
@@ -154,21 +154,14 @@
                 card_view:cardElevation="4dp">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical">
 
 
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:visibility="gone"
-                        android:layout_height="1dp"
-                        android:background="#ccc" />
-
                     <TextView
                         android:id="@+id/ETA"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
                         android:layout_alignParentRight="true"

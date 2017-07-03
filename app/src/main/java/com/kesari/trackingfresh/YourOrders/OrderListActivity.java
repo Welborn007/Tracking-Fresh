@@ -3,6 +3,7 @@ package com.kesari.trackingfresh.YourOrders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.LayerDrawable;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -12,19 +13,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.google.gson.Gson;
+import com.kesari.trackingfresh.Cart.AddToCart;
 import com.kesari.trackingfresh.Map.JSON_POJO;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
-import com.kesari.trackingfresh.Order.OrderReview;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
-import com.kesari.trackingfresh.Utilities.RecyclerItemClickListener;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.network.FireToast;
+import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
 import com.nispok.snackbar.Snackbar;
@@ -41,17 +42,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.kesari.trackingfresh.Utilities.IOUtils.setBadgeCount;
+
 public class OrderListActivity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt{
 
     private String TAG = this.getClass().getSimpleName();
     private NetworkUtilsReceiver networkUtilsReceiver;
 
-    private RecyclerView.Adapter adapterOrders;
-    private RecyclerView recListOrders;
-    private LinearLayoutManager Orders;
+    public static RecyclerView.Adapter adapterOrders;
+    public static RecyclerView recListOrders;
+    public static LinearLayoutManager Orders;
     List<JSON_POJO> jsonIndiaModelList = new ArrayList<>();
-    private Gson gson;
-    private OrderMainPOJO orderMainPOJO;
+    public static Gson gson;
+    public static OrderMainPOJO orderMainPOJO;
+
+    //ScheduledExecutorService scheduleTaskExecutor;
+    MyApplication myApplication;
+    public static int mNotificationsCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,19 +81,6 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
             Orders.setOrientation(LinearLayoutManager.VERTICAL);
             recListOrders.setLayoutManager(Orders);
 
-            recListOrders.addOnItemTouchListener(
-                    new RecyclerItemClickListener(getApplicationContext(), new RecyclerItemClickListener.OnItemClickListener() {
-                        @Override public void onItemClick(View view, int position) {
-
-                            String orderID = orderMainPOJO.getData().get(position).get_id();
-
-                            Intent intent = new Intent(OrderListActivity.this, OrderReview.class);
-                            intent.putExtra("orderID",orderID);
-                            startActivity(intent);
-
-                        }
-                    })
-            );
 
         /*Register receiver*/
             networkUtilsReceiver = new NetworkUtilsReceiver(this);
@@ -108,7 +102,20 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
             }
 
             //getData();
-            getOrderList();
+            getOrderList(OrderListActivity.this);
+
+            myApplication = (MyApplication) getApplicationContext();
+
+            updateNotificationsBadge(myApplication.getProductsArraylist().size());
+
+            /*scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
+
+            // This schedule a task to run every 10 minutes:
+            scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
+                public void run() {
+                   updateNotificationsBadge(myApplication.getProductsArraylist().size());
+                }
+            }, 0, 1, TimeUnit.SECONDS);*/
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
@@ -116,7 +123,7 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
 
     }
 
-    private void getOrderList()
+    public static void getOrderList(final Context context)
     {
         try
         {
@@ -126,34 +133,40 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
             IOUtils ioUtils = new IOUtils();
 
             Map<String, String> params = new HashMap<String, String>();
-            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(OrderListActivity.this));
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(context));
 
-            ioUtils.getGETStringRequestHeader(OrderListActivity.this, url , params , new IOUtils.VolleyCallback() {
+            ioUtils.getGETStringRequestHeader(context, url , params , new IOUtils.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
-                    Log.d(TAG, result.toString());
+                    Log.d("OrderListActivity", result.toString());
 
-                    getOrderListResponse(result);
+                    getOrderListResponse(result,context);
                 }
             });
 
         } catch (Exception e) {
-            Log.i(TAG, e.getMessage());
+            Log.i("OrderListActivity", e.getMessage());
         }
     }
 
-    private void getOrderListResponse(String Response)
+    public static void getOrderListResponse(String Response,Context context)
     {
         try
         {
             orderMainPOJO = gson.fromJson(Response, OrderMainPOJO.class);
 
-
-            adapterOrders = new OrdersListRecycler_Adapter(orderMainPOJO.getData());
-            recListOrders.setAdapter(adapterOrders);
+            if(orderMainPOJO.getData().isEmpty())
+            {
+                FireToast.customSnackbar(context, "No Orders Found!!!", "");
+            }
+            else
+            {
+                adapterOrders = new OrdersListRecycler_Adapter(orderMainPOJO.getData(),context);
+                recListOrders.setAdapter(adapterOrders);
+            }
 
         } catch (Exception e) {
-            Log.i(TAG, e.getMessage());
+            Log.i("OrderListActivity", e.getMessage());
         }
     }
 
@@ -215,14 +228,49 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
         return json;
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_add_tocart, menu);
+
+        MenuItem item = menu.findItem(R.id.menu_hot);
+        LayerDrawable icon = (LayerDrawable) item.getIcon();
+
+        setBadgeCount(this, icon, mNotificationsCount);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        invalidateOptionsMenu();
+        return true;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menu_hot:
+                Intent intent = new Intent(OrderListActivity.this, AddToCart.class);
+                startActivity(intent);
+                finish();
+                return true;
+
             case android.R.id.home:
                 finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public static void updateNotificationsBadge(int count) {
+        mNotificationsCount = count;
+
+        // force the ActionBar to relayout its MenuItems.
+        // onCreateOptionsMenu(Menu) will be called again.
     }
 
     @Override
@@ -231,6 +279,7 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
 
         try {
             unregisterReceiver(networkUtilsReceiver);
+            //scheduleTaskExecutor.shutdown();
 
             if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
                 // LOCATION SERVICE

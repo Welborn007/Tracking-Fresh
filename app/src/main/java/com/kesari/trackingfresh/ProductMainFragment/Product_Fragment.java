@@ -51,6 +51,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
+import com.kesari.trackingfresh.CheckNearestVehicleAvailability.CheckVehicleActivity;
+import com.kesari.trackingfresh.CheckNearestVehicleAvailability.NearestVehicleMainPOJO;
 import com.kesari.trackingfresh.DashBoard.DashboardActivity;
 import com.kesari.trackingfresh.Map.HttpConnection;
 import com.kesari.trackingfresh.Map.JSON_POJO;
@@ -70,6 +72,7 @@ import com.nispok.snackbar.listeners.ActionClickListener;
 import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -153,6 +156,9 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
     private static final int DURATION = 3000;
     ScheduledExecutorService scheduleTaskExecutor;
+
+    NearestVehicleMainPOJO nearestVehicleMainPOJO;
+    String[] geoArray;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -436,8 +442,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                     ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
-
-            //map.setMyLocationEnabled(true);
+            map.setMyLocationEnabled(true);
 
            /* Location location = new Location(LocationManager.GPS_PROVIDER);
             location.setLatitude(Current_Location.getLatitude());
@@ -484,15 +489,41 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
                         if(!String.valueOf(Current_Origin.latitude).equalsIgnoreCase("0.0")  && !String.valueOf(Current_Origin.longitude).equalsIgnoreCase("0.0"))
                         {
+
+                            String url = Constants.CheckNearestVehicle ;
+
+                            Log.i("url", url);
+
+                            JSONObject jsonObject = new JSONObject();
+
+                            try {
+
+                                JSONObject postObject = new JSONObject();
+
+                                postObject.put("longitude", SharedPrefUtil.getLocation(getActivity()).getLongitude());
+                                postObject.put("latitude", SharedPrefUtil.getLocation(getActivity()).getLatitude());
+
+                                jsonObject.put("post", postObject);
+
+                                Log.i("JSON CREATED", jsonObject.toString());
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            Map<String, String> params = new HashMap<String, String>();
+                            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(getActivity()));
+
                             IOUtils ioUtils = new IOUtils();
 
-                            ioUtils.getGETStringRequest(getActivity(),Constants.LocationAPI, new IOUtils.VolleyCallback() {
+                            ioUtils.sendJSONObjectRequestHeader(getActivity(), url,params, jsonObject, new IOUtils.VolleyCallback() {
                                 @Override
                                 public void onSuccess(String result) {
                                     DriverLocationResponse(result);
                                 }
                             });
                         }
+
                     }
                 }, 0, 5, TimeUnit.SECONDS);
             }
@@ -630,6 +661,50 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
     }
 
+   /* private void sendLATLONVehicle()
+    {
+        try
+        {
+
+            String url = Constants.CheckNearestVehicle ;
+
+            Log.i("url", url);
+
+            JSONObject jsonObject = new JSONObject();
+
+            try {
+
+                JSONObject postObject = new JSONObject();
+
+                postObject.put("longitude", SharedPrefUtil.getLocation(getActivity()).getLongitude());
+                postObject.put("latitude", SharedPrefUtil.getLocation(getActivity()).getLatitude());
+
+                jsonObject.put("post", postObject);
+
+                Log.i("JSON CREATED", jsonObject.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(getActivity()));
+
+            IOUtils ioUtils = new IOUtils();
+
+            ioUtils.sendJSONObjectRequestHeader(getActivity(), url,params, jsonObject, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    DriverLocationResponse(result);
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+
+    }*/
+
     private double bearingBetweenLocations(LatLng latLng1, LatLng latLng2) {
 
         double PI = 3.14159;
@@ -754,7 +829,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
             if (map != null) {
                 marker = map.addMarker(new MarkerOptions().position(dest)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_van_order))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_delivery_van))
                         //.rotation((float) bearingBetweenLocations(oldLocation,newLocation))
                         .title(location_name));
 
@@ -934,7 +1009,9 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             Map<String, String> params = new HashMap<String, String>();
             params.put("Authorization", "JWT " + SharedPrefUtil.getToken(getActivity()));
 
-            ioUtils.getGETStringRequestHeader(getActivity(),Constants.Product_Category, params, new IOUtils.VolleyCallback() {
+            String URL = Constants.Product_Category + SharedPrefUtil.getNearestVehicle(getActivity()).getData().get(0).getVehicle_id();
+
+            ioUtils.getGETStringRequestHeader(getActivity(),URL, params, new IOUtils.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
                     Log.i("product_category",result);
@@ -1177,7 +1254,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 kilometre.setText(distance);
 
                 Log.i("time", String.valueOf(duration));
-                ETA.setText("Estimated Delivery Time: " + duration);
+                ETA.setText("Duration : " + duration);
 
                 String EndAddress = jsonObject1.getString("end_address");
                 kilometre.setText("Vehicle is " + distance + " away at " + EndAddress);
@@ -1262,7 +1339,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                     }
 
                     polyLineOptions.addAll(points);
-                    polyLineOptions.width(10);
+                    polyLineOptions.width(12);
 
                     Random rnd = new Random();
                     int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
@@ -1442,16 +1519,32 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     public void DriverLocationResponse(String resp) {
         map.clear();
         try {
-            JSONObject jsonObject = new JSONObject(resp);
 
+            nearestVehicleMainPOJO = gson.fromJson(resp, NearestVehicleMainPOJO.class);
+
+            if(nearestVehicleMainPOJO.getData().isEmpty())
+            {
+                Intent intent = new Intent(getActivity(), CheckVehicleActivity.class);
+                startActivity(intent);
+                getActivity().finish();
+            }
+            else
+            {
+                geoArray = nearestVehicleMainPOJO.getData().get(0).getGeo().getCoordinates();
+            }
+
+            /*JSONObject jsonObject = new JSONObject(resp);
             JSONObject dataObject = jsonObject.getJSONObject("data");
-
             String created_at = dataObject.getString("created_at");
-
             JSONArray geoArray = dataObject.getJSONArray("geo");
 
             Double cust_longitude = geoArray.getDouble(0);
-            Double cust_latitude = geoArray.getDouble(1);
+            Double cust_latitude = geoArray.getDouble(1);*/
+
+
+
+            Double cust_longitude = Double.parseDouble(geoArray[0]);
+            Double cust_latitude = Double.parseDouble(geoArray[1]);
 
 //                final LatLng startPosition = marker.getPosition();
             final LatLng finalPosition = new LatLng(cust_latitude, cust_longitude);

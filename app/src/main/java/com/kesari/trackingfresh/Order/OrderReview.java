@@ -3,6 +3,7 @@ package com.kesari.trackingfresh.Order;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.LayerDrawable;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -12,12 +13,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.kesari.trackingfresh.Cart.AddToCart;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.OrderTracking.OrderBikerTrackingActivity;
 import com.kesari.trackingfresh.R;
@@ -25,6 +28,7 @@ import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.network.FireToast;
+import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
 import com.nispok.snackbar.Snackbar;
@@ -32,6 +36,8 @@ import com.nispok.snackbar.listeners.ActionClickListener;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.kesari.trackingfresh.Utilities.IOUtils.setBadgeCount;
 
 public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt{
     private String TAG = this.getClass().getSimpleName();
@@ -43,10 +49,12 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
     private Gson gson;
     OrderReviewMainPOJO orderReviewMainPOJO;
     private RecyclerView.Adapter adapterProducts;
-
     TextView total_price,payment_status,payment_mode,fullName,buildingName,landmark,address,mobileNo;
-
     Button btnSubmit;
+
+    //ScheduledExecutorService scheduleTaskExecutor;
+    MyApplication myApplication;
+    public static int mNotificationsCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +120,20 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
             }
 
             getOrderDetailsfromID();
+
+
+            myApplication = (MyApplication) getApplicationContext();
+
+            updateNotificationsBadge(myApplication.getProductsArraylist().size());
+
+            /*scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
+
+            // This schedule a task to run every 10 minutes:
+            scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
+                public void run() {
+                    updateNotificationsBadge(myApplication.getProductsArraylist().size());
+                }
+            }, 0, 1, TimeUnit.SECONDS);*/
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
@@ -184,13 +206,47 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_add_tocart, menu);
+
+        MenuItem item = menu.findItem(R.id.menu_hot);
+        LayerDrawable icon = (LayerDrawable) item.getIcon();
+
+        setBadgeCount(this, icon, mNotificationsCount);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        invalidateOptionsMenu();
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menu_hot:
+                Intent intent = new Intent(OrderReview.this, AddToCart.class);
+                startActivity(intent);
+                finish();
+                return true;
+
             case android.R.id.home:
                 finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public static void updateNotificationsBadge(int count) {
+        mNotificationsCount = count;
+
+        // force the ActionBar to relayout its MenuItems.
+        // onCreateOptionsMenu(Menu) will be called again.
     }
 
     @Override
@@ -199,6 +255,7 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
 
         try {
             unregisterReceiver(networkUtilsReceiver);
+            //scheduleTaskExecutor.shutdown();
 
             if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
                 // LOCATION SERVICE

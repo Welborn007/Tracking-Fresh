@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -25,6 +26,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -33,6 +35,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -53,15 +61,17 @@ import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.gson.Gson;
-import com.kesari.trackingfresh.DashBoard.DashboardActivity;
+import com.kesari.trackingfresh.CheckNearestVehicleAvailability.CheckVehicleActivity;
 import com.kesari.trackingfresh.ForgetPassword.ForgotPassword_Activity;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Register.RegisterActivity;
 import com.kesari.trackingfresh.Utilities.Constants;
+import com.kesari.trackingfresh.Utilities.ErrorPOJO;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.network.FireToast;
+import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
 import com.nispok.snackbar.Snackbar;
@@ -82,7 +92,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     TextView btnForget;
     ImageView Fbbtn, Googlebtn;
     private NetworkUtilsReceiver networkUtilsReceiver;
-
+    ErrorPOJO errorPOJO;
     private String TAG = this.getClass().getSimpleName();
 
     SharedPreferences sharedpreferencesLogin;
@@ -315,32 +325,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 password.setText("");
             }
 
-            /*JSONObject jsonObject = new JSONObject(Response);
-
-            String status = jsonObject.getString("status");
-
-            if (status.equalsIgnoreCase("404")) {
-                Toast.makeText(this, getString(R.string.please_register), Toast.LENGTH_SHORT).show();
-                user_name.setText("");
-                password.setText("");
-            }
-
-            if (status.equalsIgnoreCase("500")) {
-                String message = jsonObject.getString("message");
-                Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-                user_name.setText("");
-                password.setText("");
-            }
-
-            if (status.equalsIgnoreCase("200")) {
-                Intent startMainActivity = new Intent(getApplicationContext(), DashboardActivity.class);
-                startActivity(startMainActivity);
-
-                finish();
-
-                SharedPrefUtil.setUser(getApplicationContext(), Response.toString());
-            }*/
-
         } catch (Exception jse) {
             Log.i(TAG, jse.getMessage());
         }
@@ -375,7 +359,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         try
         {
             SharedPrefUtil.setUser(getApplicationContext(), Response.toString());
-            Intent startMainActivity = new Intent(getApplicationContext(), DashboardActivity.class);
+            Intent startMainActivity = new Intent(getApplicationContext(), CheckVehicleActivity.class);
             startActivity(startMainActivity);
             finish();
         } catch (Exception e) {
@@ -387,6 +371,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         try
         {
+
+            final Dialog dialog = new Dialog(LoginActivity.this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.progressdialog);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            dialog.show();
+
             String url = Constants.LoginActivityAPI;
 
             Log.i("url", url);
@@ -407,18 +399,93 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 e.printStackTrace();
             }
 
-            IOUtils ioUtils = new IOUtils();
+            /*IOUtils ioUtils = new IOUtils();
 
             ioUtils.sendJSONObjectRequest(LoginActivity.this, url, jsonObject, new IOUtils.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
                     SocialResponse(result.toString(), SocialID, Name, Email, Type, firstname, lastname);
                 }
+            });*/
+
+            JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                    url, jsonObject,
+                    new Response.Listener<JSONObject>() {
+
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d("response", response.toString());
+                            dialog.dismiss();
+                            SocialResponse(response.toString(), SocialID, Name, Email, Type, firstname, lastname);
+                        }
+                    }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    //VolleyLog.d("Error", "Error: " + error.getMessage());
+                    dialog.dismiss();
+
+                    try{
+                        String json = null;
+                        NetworkResponse response = error.networkResponse;
+                        json = new String(response.data);
+                        Log.d("Error", json);
+
+                        ErrorResponse(json,LoginActivity.this, SocialID, Name, Email, Type, firstname, lastname);
+
+                    }catch (Exception e)
+                    {
+                        //Log.d("Error", e.getMessage());
+                    }
+                }
             });
+
+            jsonObjReq.setRetryPolicy(new DefaultRetryPolicy(
+                    30000,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+            //Adding request to request queue
+            MyApplication.getInstance().addRequestToQueue(jsonObjReq, "");
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
+
+    }
+
+    private void ErrorResponse(String Response,Context context,String SocialID, String Name, String Email, String Type, String firstname, String lastname)
+    {
+        gson = new Gson();
+        errorPOJO = gson.fromJson(Response, ErrorPOJO.class);
+
+        if(errorPOJO.getErrors() != null)
+        {
+            String[] error = errorPOJO.getErrors();
+            String errorString = error[0];
+
+            if(errorString.equalsIgnoreCase("User not found"))
+            {
+                sendRegisterData(firstname, lastname, "", Email, "", "", Type, SocialID);
+            }
+
+            FireToast.customSnackbar(context, errorString,"");
+
+        }
+        else if(errorPOJO.getMessage() != null)
+        {
+            FireToast.customSnackbar(context, errorPOJO.getMessage(),"");
+
+            if(errorPOJO.getMessage().equalsIgnoreCase("User not found"))
+            {
+                sendRegisterData(firstname, lastname, "", Email, "", "", Type, SocialID);
+            }
+        }
+        else
+        {
+            FireToast.customSnackbar(context, "Oops Something Went Wrong!!","");
+        }
+
 
     }
 
@@ -437,45 +504,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 SharedPrefUtil.setToken(LoginActivity.this,loginMain.getUser().getToken());
                 getProfileData(loginMain.getUser().getToken());
             }
-            else if(loginMain.getUser().getOk().equalsIgnoreCase("false"))
-            {
-                Toast.makeText(this, loginMain.getMessage(), Toast.LENGTH_SHORT).show();
 
-                sendRegisterData(firstname, lastname, "", Email, "", "", Type, SocialID);
-            }
-
-            /*JSONObject jsonObject = new JSONObject(Response);
-
-            String status = jsonObject.getString("status");
-
-            if (status.equalsIgnoreCase("404")) {
-               *//* Intent startMainActivity = new Intent(getApplicationContext(), RegisterActivity.class);
-                startMainActivity.putExtra("SocialID", SocialID);
-                startMainActivity.putExtra("Name", Name);
-                startMainActivity.putExtra("Email", Email);
-                startMainActivity.putExtra("Type", Type);
-                startMainActivity.putExtra("firstname", firstname);
-                startMainActivity.putExtra("lastname", lastname);
-                startActivity(startMainActivity);*//*
-
-                sendRegisterData(firstname, lastname, "", Email, "", "", Type, SocialID);
-            }
-
-            if (status.equalsIgnoreCase("500")) {
-                String message = jsonObject.getString("message");
-                Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-                user_name.setText("");
-                password.setText("");
-            }
-
-            if (status.equalsIgnoreCase("200")) {
-                Intent startMainActivity = new Intent(getApplicationContext(), DashboardActivity.class);
-                startActivity(startMainActivity);
-
-                finish();
-
-                SharedPrefUtil.setUser(getApplicationContext(), Response.toString());
-            }*/
 
         } catch (Exception jse) {
             Log.i(TAG, jse.getMessage());
@@ -526,35 +555,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
             });
 
-        /*JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
-                url, jsonObject,
-                new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, response.toString());
-                        // pDialog.hide();
-
-                        RegisterResponse(response.toString());
-
-                    }
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-                // hide the progress dialog
-                //pDialog.hide();
-            }
-        });
-
-        jsonObjReq.setRetryPolicy(new DefaultRetryPolicy(
-                5000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        //Adding request to request queue
-        MyApplication.getInstance().addRequestToQueue(jsonObjReq, TAG);*/
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
@@ -583,31 +583,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
 
 
-            /*JSONObject jsonObject = new JSONObject(Response);
-
-            String status = jsonObject.getString("status");
-            //String message = jsonObject.getString("message");
-
-            if (status.equalsIgnoreCase("500")) {
-                JSONArray jsonArray = jsonObject.getJSONArray("errors");
-                String errors = jsonArray.getString(0);
-                Toast.makeText(this, errors, Toast.LENGTH_LONG).show();
-            }
-
-            if (status.equalsIgnoreCase("200")) {
-                Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                        new ResultCallback<Status>() {
-                            @Override
-                            public void onResult(Status status) {
-                                // ...
-                                finish();
-                                Toast.makeText(LoginActivity.this, getString(R.string.user_registered), Toast.LENGTH_SHORT).show();
-                                Intent i = new Intent(LoginActivity.this, DashboardActivity.class);
-                                startActivity(i);
-                            }
-                        });
-            }*/
-
         } catch (Exception jse) {
             Log.i(TAG, jse.getMessage());
         }
@@ -621,7 +596,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (permission) {
             Log.i("permission", "backPressed");
             if (checkAndRequestPermissions()) {
+                final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
+                if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    IOUtils.buildAlertMessageNoGps(LoginActivity.this);
+                } else {
+                    if (!IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
+                        // LOCATION SERVICE
+                        startService(new Intent(this, LocationServiceNew.class));
+                        Log.e(TAG, "Location service is already running");
+                    }
+                }
             }
         }
 
@@ -683,6 +668,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             && perms.get(android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                         Log.d(TAG, "All permission granted");
                         Toast.makeText(getApplicationContext(), "All permission granted", Toast.LENGTH_LONG).show();
+
+                        final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+                        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                            IOUtils.buildAlertMessageNoGps(LoginActivity.this);
+                        } else {
+                            if (!IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
+                                // LOCATION SERVICE
+                                startService(new Intent(this, LocationServiceNew.class));
+                                Log.e(TAG, "Location service is already running");
+                            }
+                        }
+
                         //showDeviceDetails();
                         // process the normal flow
                         //else any one or both the permissions are not granted
@@ -697,6 +695,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 || ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.CAMERA)) {
                             if (checkAndRequestPermissions()) {
                                 // carry on the normal flow, as the case of  permissions  granted.
+
+                                final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+                                if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                                    IOUtils.buildAlertMessageNoGps(LoginActivity.this);
+                                } else {
+                                    if (!IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
+                                        // LOCATION SERVICE
+                                        startService(new Intent(this, LocationServiceNew.class));
+                                        Log.e(TAG, "Location service is already running");
+                                    }
+                                }
                             }
                         }
                         //permission is denied (and never ask again is  checked)

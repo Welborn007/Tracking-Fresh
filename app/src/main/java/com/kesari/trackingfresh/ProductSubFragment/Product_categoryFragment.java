@@ -1,8 +1,10 @@
 package com.kesari.trackingfresh.ProductSubFragment;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
@@ -79,14 +82,16 @@ public class Product_categoryFragment extends Fragment {
 
             String category_id = args.getString("category_id");
 
-            Log.i("Subcategory_url", Constants.Product_Desc + category_id);
+            Log.i("Subcategory_url", Constants.Product_Desc + "?categoryId=" + category_id + "&vehicleId=" + SharedPrefUtil.getNearestVehicle(getActivity()).getData().get(0).getVehicle_id());
+
+            String URL = Constants.Product_Desc + "?categoryId=" + category_id + "&vehicleId=" + SharedPrefUtil.getNearestVehicle(getActivity()).getData().get(0).getVehicle_id();
 
             IOUtils ioUtils = new IOUtils();
 
             Map<String, String> params = new HashMap<String, String>();
             params.put("Authorization", "JWT " + SharedPrefUtil.getToken(getActivity()));
 
-            ioUtils.getGETStringRequestHeader(getActivity(), Constants.Product_Desc + category_id, params, new IOUtils.VolleyCallback() {
+            ioUtils.getGETStringRequestHeader(getActivity(), URL, params, new IOUtils.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
                     Log.i("product_category", result);
@@ -156,7 +161,7 @@ public class Product_categoryFragment extends Fragment {
 
                 viewHolder.weight = (TextView) convertView.findViewById(R.id.weight);
                 viewHolder.price = (TextView) convertView.findViewById(R.id.price);
-
+                viewHolder.quantity = (TextView) convertView.findViewById(R.id.quantity);
                 viewHolder.count = (TextView) convertView.findViewById(R.id.count);
                 viewHolder.plus = (FancyButton) convertView.findViewById(R.id.plus);
                 viewHolder.minus = (FancyButton) convertView.findViewById(R.id.minus);
@@ -177,7 +182,7 @@ public class Product_categoryFragment extends Fragment {
 
                 viewHolder.imageView.setController(IOUtils.getFrescoImageController(activity, product_pojo.getProductImage()));
                 viewHolder.imageView.setHierarchy(IOUtils.getFrescoImageHierarchy(activity));
-
+                viewHolder.quantity.setText(product_pojo.getAvailableQuantity() + " quantity");
                 viewHolder.weight.setText(product_pojo.getUnit() + product_pojo.getUnitsOfMeasurement());
                 viewHolder.price.setText("100rs");
 
@@ -200,10 +205,13 @@ public class Product_categoryFragment extends Fragment {
                             addCart_model.setProductDescription(product_pojo.getProductDescription());
                             addCart_model.setProductDetails(product_pojo.getProductDetails());
                             addCart_model.setUnit(product_pojo.getUnit());
+                            addCart_model.setPrice(product_pojo.getSelling_price());
                             addCart_model.setUnitsOfMeasurementId(product_pojo.getUnitsOfMeasurementId());
                             addCart_model.setProductImage(product_pojo.getProductImage());
                             addCart_model.setActive(product_pojo.getActive());
                             addCart_model.setQuantity(1);
+                            addCart_model.setBrand(product_pojo.getBrand());
+                            addCart_model.setAvailableQuantity(product_pojo.getAvailableQuantity());
 
                             myApplication.setProducts(addCart_model);
                         } else {
@@ -219,14 +227,38 @@ public class Product_categoryFragment extends Fragment {
                     public void onClick(View v) {
                         try {
                             int t = Integer.parseInt(viewHolder.count.getText().toString());
-                            viewHolder.count.setText(String.valueOf(t + 1));
+
 
                             //DashboardActivity.updateNotificationsBadge(t + 1);
 
-                            if (!myApplication.IncrementProductQuantity(product_pojo.getProductId())) {
+                            if(t < Integer.parseInt(product_pojo.getAvailableQuantity()))
+                            {
+                                viewHolder.count.setText(String.valueOf(t + 1));
+                                if (!myApplication.IncrementProductQuantity(product_pojo.getProductId())) {
 
-                            } else {
+                                } else {
 
+                                }
+                            }
+                            else
+                            {
+                                final Dialog dialog = new Dialog(activity);
+                                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                dialog.setContentView(R.layout.item_unavailable_dialog);
+                                dialog.setCanceledOnTouchOutside(false);
+                                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                                dialog.show();
+
+                                Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
+                                btnCancel.setText("Oops! Only " + product_pojo.getAvailableQuantity() + " items available!!");
+                                btnCancel.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        dialog.dismiss();
+                                    }
+                                });
+
+                                //Toast.makeText(activity, "Sorry quantity not available in Vehicle!!!", Toast.LENGTH_SHORT).show();
                             }
 
                         } catch (Exception e) {
@@ -285,6 +317,9 @@ public class Product_categoryFragment extends Fragment {
                             in.putExtra("productId", product_pojo.getProductId());
                             in.putExtra("productImage", product_pojo.getProductImage());
                             in.putExtra("active", product_pojo.getActive());
+                            in.putExtra("price",product_pojo.getSelling_price());
+                            in.putExtra("brand",product_pojo.getBrand());
+                            in.putExtra("quantity",product_pojo.getAvailableQuantity());
 
                             //in.putExtra("quantity",String.valueOf(viewHolder.count.getText().toString().trim()));
                             startActivity(in);
@@ -303,7 +338,7 @@ public class Product_categoryFragment extends Fragment {
         }
 
         private class ViewHolder {
-            TextView product_name, weight, price, count;
+            TextView product_name, weight, price, count,quantity;
             SimpleDraweeView imageView;
             FancyButton plus, minus;
             Button addtoCart;

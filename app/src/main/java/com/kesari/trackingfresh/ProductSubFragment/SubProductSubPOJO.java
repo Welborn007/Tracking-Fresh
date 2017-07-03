@@ -30,6 +30,46 @@ public class SubProductSubPOJO {
 
     private String productCategoryId;
 
+    private String price;
+
+    private String selling_price;
+
+    private String quantity;
+
+    private String brand;
+
+    public String getAvailableQuantity() {
+        return quantity;
+    }
+
+    public void setAvailableQuantity(String quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public String getSelling_price() {
+        return selling_price;
+    }
+
+    public void setSelling_price(String selling_price) {
+        this.selling_price = selling_price;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
     public String getProductDescription() {
         return productDescription;
     }

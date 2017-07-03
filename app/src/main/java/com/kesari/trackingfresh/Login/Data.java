@@ -32,6 +32,26 @@ public class Data {
 
     private String mobileNo;
 
+    private String isVarified;
+
+    private String profileImage;
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public String getIsVarified() {
+        return isVarified;
+    }
+
+    public void setIsVarified(String isVarified) {
+        this.isVarified = isVarified;
+    }
+
     public String getLastName() {
         return lastName;
     }
