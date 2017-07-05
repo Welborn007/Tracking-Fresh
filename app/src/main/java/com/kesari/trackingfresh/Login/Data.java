@@ -36,6 +36,16 @@ public class Data {
 
     private String profileImage;
 
+    private String walletAmount;
+
+    public String getWalletAmount() {
+        return walletAmount;
+    }
+
+    public void setWalletAmount(String walletAmount) {
+        this.walletAmount = walletAmount;
+    }
+
     public String getProfileImage() {
         return profileImage;
     }

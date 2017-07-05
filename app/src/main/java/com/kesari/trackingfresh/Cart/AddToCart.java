@@ -113,29 +113,48 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
             relativeLayout = (RelativeLayout) findViewById(R.id.relativelay_reclview);
             valueTV = new TextView(AddToCart.this);
 
-            if (myApplication.getProductsArraylist().isEmpty()) {
+            if(myApplication.getProductsArraylist() != null)
+            {
+                if (myApplication.getProductsArraylist().isEmpty()) {
+                    gridview.setVisibility(View.GONE);
+                    relativeLayout.setVisibility(View.VISIBLE);
+                    valueTV.setText("No Items available in Cart");
+                    valueTV.setGravity(Gravity.CENTER);
+                    valueTV.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+                    ((RelativeLayout) relativeLayout).addView(valueTV);
+                } else {
+                    relativeLayout.setVisibility(View.GONE);
+                    gridview.setVisibility(View.VISIBLE);
+
+                    getProductData();
+                }
+            }
+            else
+            {
                 gridview.setVisibility(View.GONE);
                 relativeLayout.setVisibility(View.VISIBLE);
                 valueTV.setText("No Items available in Cart");
                 valueTV.setGravity(Gravity.CENTER);
                 valueTV.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
                 ((RelativeLayout) relativeLayout).addView(valueTV);
-            } else {
-                relativeLayout.setVisibility(View.GONE);
-                gridview.setVisibility(View.VISIBLE);
-
-                getProductData();
             }
 
             checkOut.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    if (!myApplication.getProductsArraylist().isEmpty()) {
-                       fetchUserAddress();
-                    } else {
+                    try
+                    {
+                        if (!myApplication.getProductsArraylist().isEmpty()) {
+                            fetchUserAddress();
+                        } else {
+                            Toast.makeText(AddToCart.this, "No Items in Cart!!", Toast.LENGTH_SHORT).show();
+                        }
+                    }catch (Exception e)
+                    {
                         Toast.makeText(AddToCart.this, "No Items in Cart!!", Toast.LENGTH_SHORT).show();
                     }
+
                 }
             });
 

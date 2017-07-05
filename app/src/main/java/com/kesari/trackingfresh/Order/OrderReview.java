@@ -171,6 +171,15 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
         {
             orderReviewMainPOJO = gson.fromJson(Response, OrderReviewMainPOJO.class);
 
+            if(orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Pending") || orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Accepted"))
+            {
+                btnSubmit.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                btnSubmit.setVisibility(View.GONE);
+            }
+
             adapterProducts = new OrderReViewRecyclerAdapter(orderReviewMainPOJO.getData().getOrder(),OrderReview.this);
             recListProducts.setAdapter(adapterProducts);
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -165,7 +166,7 @@ public class Product_categoryFragment extends Fragment {
                 viewHolder.count = (TextView) convertView.findViewById(R.id.count);
                 viewHolder.plus = (FancyButton) convertView.findViewById(R.id.plus);
                 viewHolder.minus = (FancyButton) convertView.findViewById(R.id.minus);
-
+                viewHolder.mrp = (TextView) convertView.findViewById(R.id.mrp);
                 viewHolder.addtoCart = (Button) convertView.findViewById(R.id.addtoCart);
                 viewHolder.holder_count = (LinearLayout) convertView.findViewById(R.id.holder_count);
 
@@ -184,7 +185,10 @@ public class Product_categoryFragment extends Fragment {
                 viewHolder.imageView.setHierarchy(IOUtils.getFrescoImageHierarchy(activity));
                 viewHolder.quantity.setText(product_pojo.getAvailableQuantity() + " quantity");
                 viewHolder.weight.setText(product_pojo.getUnit() + product_pojo.getUnitsOfMeasurement());
-                viewHolder.price.setText("100rs");
+                viewHolder.price.setText(product_pojo.getSelling_price() + " Rs");
+
+                viewHolder.mrp.setPaintFlags(viewHolder.mrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                viewHolder.mrp.setText("MRP " + product_pojo.getMRP() + " Rs.");
 
                 viewHolder.addtoCart.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -212,6 +216,7 @@ public class Product_categoryFragment extends Fragment {
                             addCart_model.setQuantity(1);
                             addCart_model.setBrand(product_pojo.getBrand());
                             addCart_model.setAvailableQuantity(product_pojo.getAvailableQuantity());
+                            addCart_model.setMRP(product_pojo.getMRP());
 
                             myApplication.setProducts(addCart_model);
                         } else {
@@ -320,6 +325,7 @@ public class Product_categoryFragment extends Fragment {
                             in.putExtra("price",product_pojo.getSelling_price());
                             in.putExtra("brand",product_pojo.getBrand());
                             in.putExtra("quantity",product_pojo.getAvailableQuantity());
+                            in.putExtra("MRP",product_pojo.getMRP());
 
                             //in.putExtra("quantity",String.valueOf(viewHolder.count.getText().toString().trim()));
                             startActivity(in);
@@ -338,7 +344,7 @@ public class Product_categoryFragment extends Fragment {
         }
 
         private class ViewHolder {
-            TextView product_name, weight, price, count,quantity;
+            TextView product_name, weight, price, count,quantity,mrp;
             SimpleDraweeView imageView;
             FancyButton plus, minus;
             Button addtoCart;

@@ -238,10 +238,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             filter.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    PopupWindow popupwindow_obj = popupDisplay();
-//                popupwindow_obj.showAsDropDown(profile);
-                    popupwindow_obj.showAtLocation(filter, Gravity.TOP| Gravity.RIGHT, 50, 150);
+                    getProfileData();
                 }
             });
 
@@ -302,6 +299,41 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             }, 3000);
 
 
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void getProfileData() {
+        try {
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(DashboardActivity.this));
+
+            ioUtils.getPOSTStringRequestHeader(DashboardActivity.this,Constants.Profile, params, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.i("profile_result",result);
+                    profileDataResponse(result);
+                }
+            });
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void profileDataResponse(String Response)
+    {
+        try
+        {
+            SharedPrefUtil.setUser(getApplicationContext(), Response.toString());
+
+            PopupWindow popupwindow_obj = popupDisplay();
+            popupwindow_obj.showAtLocation(filter, Gravity.TOP| Gravity.RIGHT, 50, 150);
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }

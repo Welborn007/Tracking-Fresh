@@ -38,6 +38,16 @@ public class SubProductSubPOJO {
 
     private String brand;
 
+    private String MRP;
+
+    public String getMRP() {
+        return MRP;
+    }
+
+    public void setMRP(String MRP) {
+        this.MRP = MRP;
+    }
+
     public String getAvailableQuantity() {
         return quantity;
     }

@@ -1,17 +1,25 @@
 package com.kesari.trackingfresh.YourOrders;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.IdRes;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kesari.trackingfresh.Order.OrderReview;
 import com.kesari.trackingfresh.R;
@@ -35,6 +43,7 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
     private List<OrderSubPOJO> OrdersListReView;
     private String TAG = this.getClass().getSimpleName();
     private Context context;
+    String Value;
 
     public OrdersListRecycler_Adapter(List<OrderSubPOJO> OrdersListReView,Context context)
     {
@@ -102,11 +111,19 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
                 holder.order_status.setImageResource(R.drawable.cancel);
                 holder.cancel.setVisibility(View.GONE);
             }
+            else if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("Delivered"))
+            {
+                holder.order_status.setImageResource(R.drawable.delivered);
+                holder.cancel.setVisibility(View.GONE);
+            }
+
 
             holder.cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    updateOrderDetails(OrdersListReView.get(position).get_id(),"Cancelled");
+                    //updateOrderDetails(OrdersListReView.get(position).get_id(),"Cancelled");
+
+                    SelectReasonForCancellation(position);
                 }
             });
 
@@ -158,6 +175,97 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
             order_status = (ImageView) view.findViewById(R.id.order_status);
             cancel = (Button) view.findViewById(R.id.cancel);
         }
+    }
+
+    private void SelectReasonForCancellation(final int position)
+    {
+        try {
+
+            // Create custom dialog object
+            final Dialog dialog = new Dialog(context);
+            // Include dialog.xml file
+            dialog.setContentView(R.layout.cancellation_reasons);
+            // Set dialog title
+            dialog.setTitle("Custom Dialog");
+
+            final RadioGroup reasonGroup = (RadioGroup) dialog.findViewById(R.id.reasonGroup);
+
+            Button cancel = (Button) dialog.findViewById(R.id.cancel);
+            final EditText editText = (EditText) dialog.findViewById(R.id.other);
+
+            reasonGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+
+                    int selectedId= reasonGroup.getCheckedRadioButtonId();
+                    RadioButton radioButton =(RadioButton) dialog.findViewById(selectedId);
+
+                    Value = radioButton.getText().toString();
+
+                    /*if(radioButton.getText().toString().equalsIgnoreCase("Duplicate order"))
+                    {
+
+                    }
+                    else if(radioButton.getText().toString().equalsIgnoreCase("Incorrect order"))
+                    {
+
+                    }
+                    else if(radioButton.getText().toString().equalsIgnoreCase("Change in Quantity"))
+                    {
+
+                    }
+                    else if(radioButton.getText().toString().equalsIgnoreCase("Defective Products"))
+                    {
+
+                    }
+                    else if(radioButton.getText().toString().equalsIgnoreCase("Late Delivery"))
+                    {
+
+                    }
+                    else */
+                    if(radioButton.getText().toString().equalsIgnoreCase("Other"))
+                    {
+                        editText.setVisibility(View.VISIBLE);
+                    }
+                    else
+                    {
+                        editText.setVisibility(View.GONE);
+                    }
+
+                }
+            });
+
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if(!Value.isEmpty())
+                    {
+                        updateOrderDetails(OrdersListReView.get(position).get_id(),"Cancelled");
+                        dialog.dismiss();
+                    }
+                    else
+                    {
+                        Toast.makeText(context, "Select Reason!!!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            Window window = dialog.getWindow();
+            lp.copyFrom(window.getAttributes());
+
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            window.setAttributes(lp);
+
+            dialog.show();
+
+        }catch (Exception e)
+        {
+            Log.i(TAG,"dialog_Mobile");
+        }
+
     }
 
     private void updateOrderDetails(String orderID, String OrderStatus) {

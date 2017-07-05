@@ -37,6 +37,8 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.BuildConfig;
 import com.kesari.trackingfresh.Cart.AddToCart;
+import com.kesari.trackingfresh.CheckNearestVehicleAvailability.CheckVehicleActivity;
+import com.kesari.trackingfresh.Login.LoginActivity;
 import com.kesari.trackingfresh.Login.ProfileMain;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.R;
@@ -113,13 +115,11 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
             Email = (TextView) findViewById(R.id.Email);
             customer_name = (TextView) findViewById(R.id.customer_name);
 
-            Phonenumber.setText(SharedPrefUtil.getUser(ProfileActivity.this).getData().getMobileNo());
-            Email.setText(SharedPrefUtil.getUser(ProfileActivity.this).getData().getEmailId());
-            customer_name.setText(SharedPrefUtil.getUser(ProfileActivity.this).getData().getFirstName() + " " + SharedPrefUtil.getUser(ProfileActivity.this).getData().getLastName());
-
             photo_edit = (ImageView) findViewById(R.id.photo_edit);
             profile_edit = (ImageView) findViewById(R.id.profile_edit);
             profile_image = (CircleImageView) findViewById(R.id.profile_image);
+
+            getProfileData();
 
             profile_edit.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -154,6 +154,47 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
                 }
             }
 
+            myApplication = (MyApplication) getApplicationContext();
+
+            updateNotificationsBadge(myApplication.getProductsArraylist().size());
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void getProfileData() {
+        try {
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(ProfileActivity.this));
+
+            ioUtils.getPOSTStringRequestHeader(ProfileActivity.this,Constants.Profile, params, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.i("profile_result",result);
+                    profileDataResponse(result);
+                }
+            });
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void profileDataResponse(String Response)
+    {
+        try
+        {
+            SharedPrefUtil.setUser(getApplicationContext(), Response.toString());
+
+            Phonenumber.setText(SharedPrefUtil.getUser(ProfileActivity.this).getData().getMobileNo());
+            Email.setText(SharedPrefUtil.getUser(ProfileActivity.this).getData().getEmailId());
+            customer_name.setText(SharedPrefUtil.getUser(ProfileActivity.this).getData().getFirstName() + " " + SharedPrefUtil.getUser(ProfileActivity.this).getData().getLastName());
+
             if(SharedPrefUtil.getUser(ProfileActivity.this).getData().getProfileImage() != null)
             {
                 Picasso
@@ -161,19 +202,6 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
                         .load(SharedPrefUtil.getUser(ProfileActivity.this).getData().getProfileImage())
                         .into(profile_image);
             }
-
-            myApplication = (MyApplication) getApplicationContext();
-
-            updateNotificationsBadge(myApplication.getProductsArraylist().size());
-
-           /* scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
-
-            // This schedule a task to run every 10 minutes:
-            scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
-                public void run() {
-                    updateNotificationsBadge(myApplication.getProductsArraylist().size());
-                }
-            }, 0, 1, TimeUnit.SECONDS);*/
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());

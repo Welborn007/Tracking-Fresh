@@ -38,6 +38,16 @@ public class AddCart_model {
 
     private String availableQuantity;
 
+    private String MRP;
+
+    public String getMRP() {
+        return MRP;
+    }
+
+    public void setMRP(String MRP) {
+        this.MRP = MRP;
+    }
+
     public String getAvailableQuantity() {
         return availableQuantity;
     }

@@ -112,8 +112,14 @@ public class LocationServiceNew extends Service implements LocationListener,
     }
 
     protected void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-        Log.d(TAG, "Location update stopped .......................");
+        try {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+            Log.d(TAG, "Location update stopped .......................");
+        }catch (Exception e)
+        {
+            Log.d(TAG, "Location Exception .......................");
+        }
+
     }
 
     private void newLocation(Location location) {
@@ -140,7 +146,14 @@ public class LocationServiceNew extends Service implements LocationListener,
     @Override
     public void onDestroy() {
         super.onDestroy();
-        stopLocationUpdates();
+
+        try
+        {
+            stopLocationUpdates();
+        }catch (Exception e)
+        {
+            Log.d(TAG, "Location Exception .......................");
+        }
     }
 
     @Override

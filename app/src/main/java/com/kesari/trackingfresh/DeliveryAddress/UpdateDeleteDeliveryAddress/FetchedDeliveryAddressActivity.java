@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -36,6 +37,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -43,15 +45,16 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
 
     private String TAG = this.getClass().getSimpleName();
 
-    List<AddressPOJO> addressArrayList = new ArrayList<>();
+    public static List<AddressPOJO> addressArrayList = new ArrayList<>();
 
-    private Gson gson;
-    private FetchAddressPOJO fetchAddressPOJO;
+    public static Gson gson;
+    public static FetchAddressPOJO fetchAddressPOJO;
     private NetworkUtilsReceiver networkUtilsReceiver;
-    private RecyclerView recListFecthedDeliveryAddress;
+    public static RecyclerView recListFecthedDeliveryAddress;
     private LinearLayoutManager AddressLayoutManager;
-    private RecyclerView.Adapter adapterAddress;
+    public static RecyclerView.Adapter adapterAddress;
     private Button btnSubmit;
+    public static  boolean default_address = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +103,7 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
                     })
             );
 
-            fetchUserAddress();
+            fetchUserAddress(FetchedDeliveryAddressActivity.this,TAG);
 
             final LocationManager locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
 
@@ -123,7 +126,7 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
         }
     }
 
-    private void fetchUserAddress() {
+    public static void fetchUserAddress(final Context context, final String TAG) {
         try {
 
             String url = Constants.FetchAddress;
@@ -131,14 +134,14 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
             IOUtils ioUtils = new IOUtils();
 
             Map<String, String> params = new HashMap<String, String>();
-            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(FetchedDeliveryAddressActivity.this));
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(context));
 
-            ioUtils.getGETStringRequestHeader(FetchedDeliveryAddressActivity.this, url, params, new IOUtils.VolleyCallback() {
+            ioUtils.getGETStringRequestHeader(context, url, params, new IOUtils.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
                     Log.d(TAG, result.toString());
 
-                    fetchUserAddressResponse(result);
+                    fetchUserAddressResponse(result,context,TAG);
                 }
             });
 
@@ -147,20 +150,40 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
         }
     }
 
-    private void fetchUserAddressResponse(String Response) {
+    public static void fetchUserAddressResponse(String Response,Context context, final String TAG) {
         try {
 
+            default_address = false;
             fetchAddressPOJO = gson.fromJson(Response, FetchAddressPOJO.class);
 
             if (fetchAddressPOJO.getData().isEmpty()) {
-                Intent intent = new Intent(FetchedDeliveryAddressActivity.this, Add_DeliveryAddress.class);
-                startActivity(intent);
+                Intent intent = new Intent(context, Add_DeliveryAddress.class);
+                context.startActivity(intent);
             } else {
 
                 addressArrayList = fetchAddressPOJO.getData();
 
-                adapterAddress = new UpdateDeleteDeliveryAddress_RecyclerAdpater(fetchAddressPOJO.getData(),FetchedDeliveryAddressActivity.this);
+                adapterAddress = new UpdateDeleteDeliveryAddress_RecyclerAdpater(fetchAddressPOJO.getData(),context);
                 recListFecthedDeliveryAddress.setAdapter(adapterAddress);
+
+                for (Iterator<AddressPOJO> it = addressArrayList.iterator(); it.hasNext(); ) {
+                    AddressPOJO addressPOJO = it.next();
+
+                    if (addressPOJO.isDefault())
+                    {
+                        default_address = true;
+                    }
+                    else
+                    {
+
+                    }
+
+                }
+
+                if(!default_address)
+                {
+                    FireToast.customSnackbar(context, "Default address not set!", "");
+                }
 
             }
 
@@ -221,11 +244,41 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
             if(Message.equalsIgnoreCase("Updated Successfully"))
             {
                 adapterAddress.notifyDataSetChanged();
-                fetchUserAddress();
+                fetchUserAddress(FetchedDeliveryAddressActivity.this,TAG);
             }
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+
+                if(default_address)
+                {
+                    finish();
+                }
+                else
+                {
+                    FireToast.customSnackbar(FetchedDeliveryAddressActivity.this, "Default address not set!", "");
+                }
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(default_address)
+        {
+            finish();
+        }
+        else
+        {
+            FireToast.customSnackbar(FetchedDeliveryAddressActivity.this, "Default address not set!", "");
         }
     }
 

@@ -238,6 +238,7 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
     private void fetchUserAddressResponse(String Response) {
         try {
 
+            default_address = false;
             fetchAddressPOJO = gson.fromJson(Response, FetchAddressPOJO.class);
 
             if (fetchAddressPOJO.getData().isEmpty()) {
@@ -271,6 +272,7 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
                     intent.putExtra("default_address","false");
                     startActivity(intent);
                     FireToast.customSnackbar(Default_DeliveryAddress.this, "Default address not set!", "");
+                    default_address = false;
                 }
 
             }

@@ -60,7 +60,7 @@ import static com.kesari.trackingfresh.Utilities.IOUtils.setBadgeCount;
 public class DetailsActivity extends AppCompatActivity implements BaseSliderView.OnSliderClickListener, NetworkUtilsReceiver.NetworkResponseInt {
 
     private SliderLayout mDemoSlider;
-    TextView discount, count;
+    TextView mrp, count;
     FancyButton plus, minus, delete;
     LinearLayout holder_count;
     Button gotoCart, addtoCart, checkOut;
@@ -88,6 +88,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
     private String productCategoryId = "";
     private String availableQuantity = "";
     private String brand = "";
+    private String MRP = "";
     private NetworkUtilsReceiver networkUtilsReceiver;
     MyApplication myApplication;
     List<AddressPOJO> addressArrayList = new ArrayList<>();
@@ -146,6 +147,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             productPrice = getIntent().getStringExtra("price");
             availableQuantity = getIntent().getStringExtra("quantity");
             brand = getIntent().getStringExtra("brand");
+            MRP = getIntent().getStringExtra("MRP");
 
             initCollapsingToolbar();
             //Image Slider
@@ -185,8 +187,9 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             mDemoSlider.setDuration(4000);
 
             //View Binding
-            discount = (TextView) findViewById(R.id.discount);
-            discount.setPaintFlags(discount.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            mrp = (TextView) findViewById(R.id.mrp);
+            mrp.setPaintFlags(mrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            mrp.setText("MRP " + MRP + " Rs.");
             plus = (FancyButton) findViewById(R.id.plus);
             minus = (FancyButton) findViewById(R.id.minus);
             delete = (FancyButton) findViewById(R.id.delete);
@@ -350,9 +353,15 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
                 @Override
                 public void onClick(View v) {
 
-                    if (!myApplication.getProductsArraylist().isEmpty()) {
-                        fetchUserAddress();
-                    } else {
+                    try
+                    {
+                        if (!myApplication.getProductsArraylist().isEmpty()) {
+                            fetchUserAddress();
+                        } else {
+                            Toast.makeText(DetailsActivity.this, "No Items in Cart!!", Toast.LENGTH_SHORT).show();
+                        }
+                    }catch (Exception e)
+                    {
                         Toast.makeText(DetailsActivity.this, "No Items in Cart!!", Toast.LENGTH_SHORT).show();
                     }
                 }

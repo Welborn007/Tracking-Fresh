@@ -10,9 +10,9 @@
 
     <TextView
         android:id="@+id/cart_count"
-        android:gravity="center"
         android:textColor="@color/white"
-        android:drawablePadding="-190dp"
+        android:drawablePadding="10dp"
+        android:gravity="center_vertical"
         android:drawableLeft="@drawable/ic_addtocart"
         android:textSize="@dimen/text_size"
         android:background="@color/Button_Color"
