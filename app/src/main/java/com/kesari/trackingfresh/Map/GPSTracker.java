@@ -20,7 +20,7 @@ import android.util.Log;
 public class GPSTracker extends Service implements LocationListener {
 
     private final Context context;
-    private static final String TAG = "driver_Parameters";
+    private String TAG = this.getClass().getSimpleName();
     boolean isGPSEnabled = false;
     boolean isNetworkEnabled = false;
     boolean canGetLocation = false;

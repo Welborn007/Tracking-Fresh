@@ -2,6 +2,8 @@ package com.kesari.trackingfresh.network;
 
 import android.app.ActivityManager;
 import android.app.Application;
+import android.content.Context;
+import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 
 import com.android.volley.Request;
@@ -9,9 +11,21 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.kesari.trackingfresh.AddToCart.AddCart_model;
+import com.kesari.trackingfresh.Cart.AddToCart;
+import com.kesari.trackingfresh.DashBoard.DashboardActivity;
+import com.kesari.trackingfresh.DeliveryAddress.DefaultDeliveryAddress.Default_DeliveryAddress;
+import com.kesari.trackingfresh.DetailPage.DetailsActivity;
+import com.kesari.trackingfresh.MyProfile.ProfileActivity;
+import com.kesari.trackingfresh.Order.OrderReview;
+import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
+import com.kesari.trackingfresh.YourOrders.OrderListActivity;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -37,6 +51,26 @@ public class MyApplication extends Application
         Realm.getInstance(configuration);
 
         initFresco();
+
+
+
+        Gson gson = new Gson();
+        Type type = new TypeToken<List<AddCart_model>>(){}.getType();
+        ArrayList<AddCart_model> Products = gson.fromJson(SharedPrefUtil.getKeyUserCartItem(getApplicationContext()), type);
+
+        if(Products != null)
+        {
+            if(!Products.isEmpty())
+            {
+                myProducts = Products;
+            }
+        }
+    }
+
+    @Override
+    protected void attachBaseContext(Context context) {
+        super.attachBaseContext(context);
+        MultiDex.install(this);
     }
 
     private void initFresco() {
@@ -86,7 +120,7 @@ public class MyApplication extends Application
     public void setProducts(AddCart_model Products) {
 
         myProducts.add(Products);
-
+        saveCart();
     }
 
     public String getProductQuantity(String product_id)
@@ -96,11 +130,10 @@ public class MyApplication extends Application
 
         for (AddCart_model item : myProducts) {
             if (item.getProductId().equals(product_id)) {
-
+                saveCart();
                 return String.valueOf(item.getQuantity());
             }
         }
-
         return "0";
     }
 
@@ -111,12 +144,11 @@ public class MyApplication extends Application
 
         for (AddCart_model item : myProducts) {
             if (item.getProductId().equals(product_id)) {
-
-                item.setQuantity(item.getQuantity() + 1);
+                saveCart();
+                //item.setQuantity(item.getQuantity() + 1);
                 return true;
             }
         }
-
         return false;
     }
 
@@ -128,10 +160,10 @@ public class MyApplication extends Application
             if (item.getProductId().equals(product_id)) {
 
                 item.setQuantity(item.getQuantity() + 1);
+                saveCart();
                 return true;
             }
         }
-
         return false;
     }
 
@@ -143,10 +175,10 @@ public class MyApplication extends Application
             if (item.getProductId().equals(product_id)) {
 
                 item.setQuantity(item.getQuantity() - 1);
+                saveCart();
                 return true;
             }
         }
-
         return false;
     }
 
@@ -160,29 +192,50 @@ public class MyApplication extends Application
                 int position = myProducts.indexOf(item);
 
                 myProducts.remove(position);
+                saveCart();
                 return true;
             }
         }
-
         return false;
     }
 
     public void removeProducts(int Position) {
 
         myProducts.remove(Position);
-
+        saveCart();
     }
 
     public void removeProductsItems() {
 
         myProducts.clear();
-
+        saveCart();
     }
 
     public ArrayList<AddCart_model> getProductsArraylist() {
 
         //DashboardActivity.updateNotificationsBadge(myProducts.size());
 
-        return myProducts;
+        Gson gson = new Gson();
+        Type type = new TypeToken<List<AddCart_model>>(){}.getType();
+        ArrayList<AddCart_model> Products = gson.fromJson(SharedPrefUtil.getKeyUserCartItem(getApplicationContext()), type);
+
+        return Products;
+    }
+
+    public void saveCart()
+    {
+        //Set the values
+        Gson gson = new Gson();
+        String jsonText = gson.toJson(myProducts);
+
+        DashboardActivity.updateNotificationsBadge(myProducts.size());
+        AddToCart.updateNotificationsBadge(myProducts.size());
+        Default_DeliveryAddress.updateNotificationsBadge(myProducts.size());
+        DetailsActivity.updateNotificationsBadge(myProducts.size());
+        ProfileActivity.updateNotificationsBadge(myProducts.size());
+        OrderReview.updateNotificationsBadge(myProducts.size());
+        OrderListActivity.updateNotificationsBadge(myProducts.size());
+
+        SharedPrefUtil.setKeyUserCartItem(getApplicationContext(),jsonText);
     }
 }

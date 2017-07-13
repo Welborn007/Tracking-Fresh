@@ -37,8 +37,18 @@
                     />
 
                 <ImageView
+                    android:id="@+id/map_View"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_toLeftOf="@+id/filter"
+                    android:src="@drawable/ic_map_click"
+                    />
+
+                <ImageView
                     android:id="@+id/filter"
                     android:layout_width="35dp"
+                    android:layout_marginLeft="10dp"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:layout_alignParentRight="true"

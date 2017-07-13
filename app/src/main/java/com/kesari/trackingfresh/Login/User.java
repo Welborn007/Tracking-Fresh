@@ -6,6 +6,24 @@ package com.kesari.trackingfresh.Login;
 
 public class User {
 
+    String ok,token;
+
+    public String getOk() {
+        return ok;
+    }
+
+    public void setOk(String ok) {
+        this.ok = ok;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     public String name;
 
     public String email;

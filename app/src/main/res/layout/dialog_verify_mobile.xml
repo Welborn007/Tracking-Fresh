@@ -57,4 +57,12 @@
         android:textAppearance="?android:textAppearanceMedium"
         />
 
+    <RelativeLayout
+        android:id="@+id/snackbar_container"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="50dp"
+        android:layout_below="@+id/confirmNumber"
+         />
+
 </RelativeLayout>

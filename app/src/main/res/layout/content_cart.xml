@@ -10,14 +10,23 @@
 
     <TextView
         android:id="@+id/cart_count"
-        android:gravity="center"
         android:textColor="@color/white"
-        android:drawablePadding="-190dp"
+        android:drawablePadding="10dp"
+        android:gravity="center_vertical"
         android:drawableLeft="@drawable/ic_addtocart"
         android:textSize="@dimen/text_size"
         android:background="@color/Button_Color"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+        android:id="@+id/relativelay_reclview"
+        android:layout_below="@+id/cart_count"
+        android:layout_above="@+id/checkOut"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+    </RelativeLayout>
 
     <GridView
         android:layout_width="match_parent"

@@ -33,7 +33,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:text="Total Payable amount"
+                android:text="Total Payable amount :-"
                 android:textColor="@color/black"
                 android:layout_margin="5dp"
                 android:padding="10dp"
@@ -42,10 +42,21 @@
                 android:layout_height="wrap_content"/>
 
             <TextView
-                android:text="Rs.500"
+                android:id="@+id/price_payable"
+                android:text="500"
                 android:textColor="@color/black"
-                android:layout_margin="5dp"
-                android:padding="10dp"
+                android:layout_marginTop="5dp"
+                android:paddingTop="10dp"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:text="Rs"
+                android:textColor="@color/black"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="2dp"
+                android:paddingTop="10dp"
                 android:textSize="14sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
@@ -56,6 +67,7 @@
             android:background="@drawable/edittext_border"
             android:orientation="vertical"
             android:layout_margin="5dp"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -77,23 +89,28 @@
 
         </LinearLayout>
 
-        <CheckBox
-            android:layoutDirection="rtl"
-            android:paddingLeft="5dp"
-            android:textSize="@dimen/text_size"
-            android:text="Cash On Delivery"
+        <RadioGroup
+            android:id="@+id/payment_group"
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_margin="5dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
 
-        <CheckBox
-            android:layoutDirection="rtl"
-            android:textSize="@dimen/text_size"
-            android:layout_margin="5dp"
-            android:paddingLeft="5dp"
-            android:text="Credit/Debit Card,Net Banking"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            <RadioButton
+                android:id="@+id/cash_on_delivery"
+                android:text="Cash On Delivery"
+                android:textSize="@dimen/text_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <RadioButton
+                android:id="@+id/online_payment"
+                android:textSize="@dimen/text_size"
+                android:text="Credit/Debit Card,Net Banking"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+        </RadioGroup>
 
     </LinearLayout>
 

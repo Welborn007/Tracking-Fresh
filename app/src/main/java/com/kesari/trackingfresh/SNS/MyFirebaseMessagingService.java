@@ -18,7 +18,7 @@ import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.kesari.trackingfresh.ProductPage.DashboardActivity;
+import com.kesari.trackingfresh.CheckNearestVehicleAvailability.CheckVehicleActivity;
 import com.kesari.trackingfresh.R;
 
 import java.util.Random;
@@ -26,7 +26,7 @@ import java.util.Random;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService
 {
-    private static final String TAG = "MyFirebaseMsgService";
+    private String TAG = this.getClass().getSimpleName();
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -43,34 +43,42 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
     //This method is only generating push notification
     //It is same as we did in earlier posts
     private void sendNotification(String messageBody) {
-        Intent intent = new Intent(this, DashboardActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
-                PendingIntent.FLAG_ONE_SHOT);
 
-        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        try
+        {
 
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setContentTitle("Tracking Fresh")
-                .setContentText(messageBody)
-                .setLargeIcon(largeIcon)
-                .setAutoCancel(true)
-                .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent);
+            Intent intent = new Intent(this, CheckVehicleActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
+                    PendingIntent.FLAG_ONE_SHOT);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            notificationBuilder.setSmallIcon(R.drawable.ic_stat_tkf);
-        } else {
-            notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+            Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+
+            Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                    .setContentTitle("Tracking Fresh")
+                    .setContentText(messageBody)
+                    .setLargeIcon(largeIcon)
+                    .setAutoCancel(true)
+                    .setSound(defaultSoundUri)
+                    .setContentIntent(pendingIntent);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                notificationBuilder.setSmallIcon(R.drawable.ic_stat_tkf);
+            } else {
+                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+            }
+
+            NotificationManager notificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+            Random random = new Random();
+            int id = random.nextInt(9999 - 1000) + 1000;
+            notificationManager.notify(id, notificationBuilder.build());
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
         }
-
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        Random random = new Random();
-        int id = random.nextInt(9999 - 1000) + 1000;
-        notificationManager.notify(id, notificationBuilder.build());
     }
 
     /*private void sendNotification(String message) {

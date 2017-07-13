@@ -1,35 +1,27 @@
 {
   "project_info": {
-    "project_number": "829779008060",
-    "firebase_url": "https://tracking-fresh.firebaseio.com",
-    "project_id": "tracking-fresh",
-    "storage_bucket": "tracking-fresh.appspot.com"
+    "project_number": "564733435966",
+    "firebase_url": "https://tracking-fresh-168608.firebaseio.com",
+    "project_id": "tracking-fresh-168608",
+    "storage_bucket": "tracking-fresh-168608.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:829779008060:android:e05aaeb71eccd00f",
+        "mobilesdk_app_id": "1:564733435966:android:e05aaeb71eccd00f",
         "android_client_info": {
           "package_name": "com.kesari.trackingfresh"
         }
       },
       "oauth_client": [
         {
-          "client_id": "829779008060-vnoe62nletkcru131ma7oc1s34107djc.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.kesari.trackingfresh",
-            "certificate_hash": "d7c4e7533483d677fdbc299002c4cfce7252d6ad"
-          }
-        },
-        {
-          "client_id": "829779008060-260rhnc4umoub31f80jile0vjchekcda.apps.googleusercontent.com",
+          "client_id": "564733435966-l7d3imnphle8jvc8c77ll4esfn0uodb9.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA3cXFTCNBmeMQtmM82KaTjBotC5MPPsxY"
+          "current_key": "AIzaSyDoJCSIjyCfQAO_F0NNaPXm_vPxrLhJWXM"
         }
       ],
       "services": {
@@ -37,13 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "829779008060-260rhnc4umoub31f80jile0vjchekcda.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2

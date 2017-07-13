@@ -11,6 +11,7 @@ public class LoginMain {
 
     private User user;
 
+
     public String getMessage ()
     {
         return message;

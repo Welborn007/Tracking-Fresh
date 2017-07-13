@@ -1,7 +1,9 @@
 package com.kesari.trackingfresh.Register;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -19,252 +21,293 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.gson.Gson;
+import com.kesari.trackingfresh.CheckNearestVehicleAvailability.CheckVehicleActivity;
 import com.kesari.trackingfresh.Login.LoginActivity;
+import com.kesari.trackingfresh.Login.LoginMain;
+import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
+import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.ActionClickListener;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt {
 
     EditText first_name, last_name, mobile, email, location, referral_code, password;
     Button btnRegister;
-    private static final String TAG = "Register_Call";
+    private String TAG = this.getClass().getSimpleName();
 
     String SocialID = "", FirstName, LastName, Name, Email, Type = "simple";
     GoogleApiClient mGoogleApiClient;
     private NetworkUtilsReceiver networkUtilsReceiver;
+
+    private Gson gson;
+    LoginMain loginMain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        try
+        {
+
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+            setTitle("Register");
 
         /*Register receiver*/
-        networkUtilsReceiver = new NetworkUtilsReceiver(this);
-        registerReceiver(networkUtilsReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+            networkUtilsReceiver = new NetworkUtilsReceiver(this);
+            registerReceiver(networkUtilsReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
-        first_name = (EditText) findViewById(R.id.first_name);
-        last_name = (EditText) findViewById(R.id.last_name);
-        mobile = (EditText) findViewById(R.id.mobile);
-        email = (EditText) findViewById(R.id.email);
-        location = (EditText) findViewById(R.id.location);
-        referral_code = (EditText) findViewById(R.id.referral_code);
-        password = (EditText) findViewById(R.id.password);
+            gson = new Gson();
 
-        try {
-            SocialID = getIntent().getStringExtra("SocialID");
-            Name = getIntent().getStringExtra("Name");
-            FirstName = getIntent().getStringExtra("firstname");
-            LastName = getIntent().getStringExtra("lastname");
-            Email = getIntent().getStringExtra("Email");
-            Type = getIntent().getStringExtra("Type");
+            final LocationManager locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
 
-            first_name.setText(FirstName);
-            last_name.setText(LastName);
-            email.setText(Email);
-
-        } catch (NullPointerException npe) {
-            Log.i("Null", "Null");
-            SocialID = "";
-            Type = "simple";
-        }
-
-        btnRegister = (Button) findViewById(R.id.btnRegister);
-
-        btnRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String FirstName = first_name.getText().toString();
-                String LastName = last_name.getText().toString();
-                String Mobile = mobile.getText().toString();
-                String Email = email.getText().toString();
-                //String Location = location.getText().toString();
-                String Referral_code = referral_code.getText().toString();
-                String Password = password.getText().toString();
-
-                if (!FirstName.isEmpty() && !LastName.isEmpty() && !Mobile.isEmpty() && !Email.isEmpty() && !Password.isEmpty()) {
-                    if (android.util.Patterns.EMAIL_ADDRESS.matcher(Email).matches() && android.util.Patterns.PHONE.matcher(Mobile).matches()) {
-                        //int mob = Integer.parseInt(Mobile);
-
-                        if (Mobile.length() >= 10) {
-                            if (!NetworkUtils.isNetworkConnectionOn(RegisterActivity.this)) {
-                                FireToast.customSnackbarWithListner(RegisterActivity.this, "No internet access", "Settings", new ActionClickListener() {
-                                    @Override
-                                    public void onActionClicked(Snackbar snackbar) {
-                                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                                    }
-                                });
-                                return;
-                            } else {
-                                sendRegisterData(FirstName, LastName, Mobile, Email, Referral_code, Password, Type, SocialID);
-                            }
-                        } else {
-                            //Toast.makeText(RegisterActivity.this, getString(R.string.less_than_10digit) , Toast.LENGTH_SHORT).show();
-                            mobile.setError(getString(R.string.less_than_10digit));
-                        }
-                    } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(Email).matches()) {
-                        //Toast.makeText(RegisterActivity.this, getString(R.string.proper_email), Toast.LENGTH_SHORT).show();
-                        email.setError(getString(R.string.proper_email));
-                    } else if (!android.util.Patterns.PHONE.matcher(Mobile).matches()) {
-                        //Toast.makeText(RegisterActivity.this, getString(R.string.proper_mobile), Toast.LENGTH_SHORT).show();
-                        mobile.setError(getString(R.string.proper_mobile));
-                    }
-                } else if (FirstName.isEmpty()) {
-                    //Toast.makeText(RegisterActivity.this, getString(R.string.first_name), Toast.LENGTH_SHORT).show();
-                    first_name.setError(getString(R.string.first_name));
-                } else if (LastName.isEmpty()) {
-                    //Toast.makeText(RegisterActivity.this, getString(R.string.last_name), Toast.LENGTH_SHORT).show();
-                    last_name.setError(getString(R.string.last_name));
-                } else if (Mobile.isEmpty()) {
-                    //Toast.makeText(RegisterActivity.this, getString(R.string.mobileno), Toast.LENGTH_SHORT).show();
-                    mobile.setError(getString(R.string.mobileno));
-                } else if (Email.isEmpty()) {
-                    //Toast.makeText(RegisterActivity.this, getString(R.string.email_id), Toast.LENGTH_SHORT).show();
-                    email.setError(getString(R.string.email_id));
+            if ( !locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) )
+            {
+                IOUtils.buildAlertMessageNoGps(RegisterActivity.this);
+            }
+            else
+            {
+                if (!IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
+                    // LOCATION SERVICE
+                    startService(new Intent(this, LocationServiceNew.class));
+                    Log.e(TAG, "Location service is already running");
                 }
+            }
+
+            first_name = (EditText) findViewById(R.id.first_name);
+            last_name = (EditText) findViewById(R.id.last_name);
+            mobile = (EditText) findViewById(R.id.mobile);
+            email = (EditText) findViewById(R.id.email);
+            location = (EditText) findViewById(R.id.location);
+            referral_code = (EditText) findViewById(R.id.referral_code);
+            password = (EditText) findViewById(R.id.password);
+
+            try {
+                SocialID = getIntent().getStringExtra("SocialID");
+                Name = getIntent().getStringExtra("Name");
+                FirstName = getIntent().getStringExtra("firstname");
+                LastName = getIntent().getStringExtra("lastname");
+                Email = getIntent().getStringExtra("Email");
+                Type = getIntent().getStringExtra("Type");
+
+                first_name.setText(FirstName);
+                last_name.setText(LastName);
+                email.setText(Email);
+
+            } catch (NullPointerException npe) {
+                Log.i("Null", "Null");
+                SocialID = "";
+                Type = "simple";
+            }
+
+            btnRegister = (Button) findViewById(R.id.btnRegister);
+
+            btnRegister.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String FirstName = first_name.getText().toString();
+                    String LastName = last_name.getText().toString();
+                    String Mobile = mobile.getText().toString();
+                    String Email = email.getText().toString();
+                    //String Location = location.getText().toString();
+                    String Referral_code = referral_code.getText().toString();
+                    String Password = password.getText().toString();
+
+                    if (!FirstName.isEmpty() && !LastName.isEmpty() && !Mobile.isEmpty() && !Email.isEmpty() && !Password.isEmpty()) {
+                        if (android.util.Patterns.EMAIL_ADDRESS.matcher(Email).matches() && android.util.Patterns.PHONE.matcher(Mobile).matches()) {
+                            //int mob = Integer.parseInt(Mobile);
+
+                            if (Mobile.length() >= 10) {
+                                if (!NetworkUtils.isNetworkConnectionOn(RegisterActivity.this)) {
+                                    FireToast.customSnackbarWithListner(RegisterActivity.this, "No internet access", "Settings", new ActionClickListener() {
+                                        @Override
+                                        public void onActionClicked(Snackbar snackbar) {
+                                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                        }
+                                    });
+                                    return;
+                                } else {
+                                    sendRegisterData(FirstName, LastName, Mobile, Email, Referral_code, Password, Type, SocialID);
+                                }
+                            } else {
+                                //Toast.makeText(RegisterActivity.this, getString(R.string.less_than_10digit) , Toast.LENGTH_SHORT).show();
+                                mobile.setError(getString(R.string.less_than_10digit));
+                            }
+                        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(Email).matches()) {
+                            //Toast.makeText(RegisterActivity.this, getString(R.string.proper_email), Toast.LENGTH_SHORT).show();
+                            email.setError(getString(R.string.proper_email));
+                        } else if (!android.util.Patterns.PHONE.matcher(Mobile).matches()) {
+                            //Toast.makeText(RegisterActivity.this, getString(R.string.proper_mobile), Toast.LENGTH_SHORT).show();
+                            mobile.setError(getString(R.string.proper_mobile));
+                        }
+                    } else if (FirstName.isEmpty()) {
+                        //Toast.makeText(RegisterActivity.this, getString(R.string.first_name), Toast.LENGTH_SHORT).show();
+                        first_name.setError(getString(R.string.first_name));
+                    } else if (LastName.isEmpty()) {
+                        //Toast.makeText(RegisterActivity.this, getString(R.string.last_name), Toast.LENGTH_SHORT).show();
+                        last_name.setError(getString(R.string.last_name));
+                    } else if (Mobile.isEmpty()) {
+                        //Toast.makeText(RegisterActivity.this, getString(R.string.mobileno), Toast.LENGTH_SHORT).show();
+                        mobile.setError(getString(R.string.mobileno));
+                    } else if (Email.isEmpty()) {
+                        //Toast.makeText(RegisterActivity.this, getString(R.string.email_id), Toast.LENGTH_SHORT).show();
+                        email.setError(getString(R.string.email_id));
+                    }
                 /*else if(Location.isEmpty())
                 {
                     Toast.makeText(RegisterActivity.this, getString(R.string.location), Toast.LENGTH_SHORT).show();
                 }*/
-                else if (Password.isEmpty()) {
-                    //Toast.makeText(RegisterActivity.this, getString(R.string.password), Toast.LENGTH_SHORT).show();
-                    password.setError(getString(R.string.password));
+                    else if (Password.isEmpty()) {
+                        //Toast.makeText(RegisterActivity.this, getString(R.string.password), Toast.LENGTH_SHORT).show();
+                        password.setError(getString(R.string.password));
+                    }
                 }
-            }
-        });
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
 
     }
 
 
     public void sendRegisterData(String FirstName, String LastName, String Mobile, String Email, String ReferralCode, String Password, String Type, String SocialID) {
 
-        //String url = "http://192.168.1.10:8000/api/customer/";
+        try
+        {
 
-        String url = Constants.RegisterActivityAPI;
+            String url = Constants.RegisterActivityAPI;
 
-        Log.i("url", url);
+            JSONObject jsonObject = new JSONObject();
 
-        JSONObject jsonObject = new JSONObject();
+            try {
 
-        try {
+                JSONObject postObject = new JSONObject();
 
-            JSONObject postObject = new JSONObject();
+                postObject.put("firstName", FirstName);
+                postObject.put("lastName", LastName);
+                postObject.put("mobileNo", Mobile);
+                postObject.put("emailId", Email);
+                //postObject.put("location",Location);
+                postObject.put("referralCode", ReferralCode);
+                postObject.put("socialId", SocialID);
+                postObject.put("registrationType", Type);
+                postObject.put("password", Password);
 
-            postObject.put("firstName", FirstName);
-            postObject.put("lastName", LastName);
-            postObject.put("mobileNo", Mobile);
-            postObject.put("emailId", Email);
-            //postObject.put("location",Location);
-            postObject.put("referralCode", ReferralCode);
-            postObject.put("socialId", SocialID);
-            postObject.put("registrationType", Type);
-            postObject.put("password", Password);
+                jsonObject.put("post", postObject);
 
-            jsonObject.put("post", postObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-            Log.i("JSON CREATED", jsonObject.toString());
+            IOUtils ioUtils = new IOUtils();
 
-        } catch (JSONException e) {
-            e.printStackTrace();
+            ioUtils.sendJSONObjectRequest(RegisterActivity.this,url, jsonObject, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    RegisterResponse(result.toString());
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
         }
-
-        IOUtils ioUtils = new IOUtils();
-
-        ioUtils.sendJSONObjectRequest(url, jsonObject, new IOUtils.VolleyCallback() {
-            @Override
-            public void onSuccess(String result) {
-                RegisterResponse(result.toString());
-            }
-        });
-
-        /*JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
-                url, jsonObject,
-                new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, response.toString());
-                        // pDialog.hide();
-
-                        RegisterResponse(response.toString());
-
-                    }
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG, "Error: " + error.getMessage());
-                // hide the progress dialog
-                //pDialog.hide();
-            }
-        });
-
-        jsonObjReq.setRetryPolicy(new DefaultRetryPolicy(
-                5000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        //Adding request to request queue
-        MyApplication.getInstance().addRequestToQueue(jsonObjReq, TAG);*/
 
     }
 
     public void RegisterResponse(String Response) {
         try {
 
-            JSONObject jsonObject = new JSONObject(Response);
+            loginMain = gson.fromJson(Response, LoginMain.class);
 
-            String status = jsonObject.getString("status");
-            //String message = jsonObject.getString("message");
+            if(loginMain.getUser().getOk().equalsIgnoreCase("true"))
+            {
 
-            if (status.equalsIgnoreCase("500")) {
-                JSONArray jsonArray = jsonObject.getJSONArray("errors");
-                String errors = jsonArray.getString(0);
-                Toast.makeText(this, errors, Toast.LENGTH_LONG).show();
+                SharedPrefUtil.setToken(RegisterActivity.this,loginMain.getUser().getToken());
+                getProfileData(loginMain.getUser().getToken());
+            }
+            else if(loginMain.getUser().getOk().equalsIgnoreCase("false"))
+            {
+                Toast.makeText(this, loginMain.getMessage(), Toast.LENGTH_SHORT).show();
             }
 
-            if (status.equalsIgnoreCase("200")) {
-                Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                        new ResultCallback<Status>() {
-                            @Override
-                            public void onResult(Status status) {
-                                // ...
-                                finish();
-                                Toast.makeText(RegisterActivity.this, getString(R.string.user_registered), Toast.LENGTH_SHORT).show();
-                                Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
-                                startActivity(i);
-                            }
-                        });
-            }
+        } catch (Exception jse) {
+            Log.i(TAG, jse.getMessage());
+        }
+    }
 
-        } catch (JSONException jse) {
-            Log.i("Exception", jse.getMessage());
+    private void getProfileData(String Token) {
+        try {
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + Token);
+
+            ioUtils.getPOSTStringRequestHeader(RegisterActivity.this,Constants.Profile, params, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.i("profile_result",result);
+
+                    profileDataResponse(result);
+
+                }
+            });
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void profileDataResponse(String Response)
+    {
+        try
+        {
+
+            SharedPrefUtil.setUser(getApplicationContext(), Response.toString());
+            Intent startMainActivity = new Intent(getApplicationContext(), CheckVehicleActivity.class);
+            startActivity(startMainActivity);
+
+            finish();
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
         }
     }
 
     @Override
     protected void onStart() {
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-        mGoogleApiClient.connect();
-        super.onStart();
+
+        try
+        {
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail()
+                    .build();
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                    .build();
+            mGoogleApiClient.connect();
+            super.onStart();
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
     }
 
 
@@ -272,16 +315,23 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
     public void onBackPressed() {
         super.onBackPressed();
 
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        // ...
-                        finish();
-                        Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
-                        startActivity(i);
-                    }
-                });
+        try
+        {
+
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                    new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(Status status) {
+                            // ...
+                            finish();
+                            Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
+                            startActivity(i);
+                        }
+                    });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
     }
 
     @Override
@@ -311,26 +361,48 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        try {
+            unregisterReceiver(networkUtilsReceiver);
+
+            if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
+                // LOCATION SERVICE
+                stopService(new Intent(this, LocationServiceNew.class));
+                Log.e(TAG, "Location service is stopped");
+            }
+
+        }catch (Exception e)
+        {
+            Log.i(TAG,e.getMessage());
+        }
+    }
+
+
+    @Override
     public void NetworkOpen() {
 
     }
 
     @Override
     public void NetworkClose() {
-        if (!NetworkUtils.isNetworkConnectionOn(this)) {
-            FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
-                @Override
-                public void onActionClicked(Snackbar snackbar) {
-                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                }
-            });
-            return;
-        }
-    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(networkUtilsReceiver);
+        try {
+
+            if (!NetworkUtils.isNetworkConnectionOn(this)) {
+                FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+                    @Override
+                    public void onActionClicked(Snackbar snackbar) {
+                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                    }
+                });
+                return;
+            }
+
+        }catch (Exception e)
+        {
+            Log.i(TAG,e.getMessage());
+        }
     }
 }

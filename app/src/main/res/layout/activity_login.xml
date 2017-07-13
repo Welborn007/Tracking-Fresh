@@ -94,6 +94,7 @@
                 android:layout_margin="10dp"
                 android:textSize="@dimen/text_size"
                 android:background="@null"
+                android:drawableRight="@drawable/ic_eye"
                 android:focusable="true"
                 android:hint="@string/PassText"
                 android:textStyle="bold"

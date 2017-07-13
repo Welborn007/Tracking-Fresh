@@ -37,7 +37,7 @@
                 android:maxLines="1"
                 android:scrollHorizontally="true"
                 android:visibility="gone"
-                app:pacv_googleMapsApiKey="AIzaSyCWqw5vGZZrQxWCsVVvNa37yNdGxiUPQAs" />
+                app:pacv_googleMapsApiKey="@string/googleMaps_ServerKey" />
 
             <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -50,24 +50,92 @@
                 card_view:cardCornerRadius="4dp"
                 card_view:cardElevation="4dp">
 
-                <TextView
-                    android:id="@+id/GuestAddress"
+                <LinearLayout
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/edittext_border"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:padding="10dp"
-                    android:text="35 Kms"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size"
-                    android:textStyle="bold" />
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:padding="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <mehdi.sakout.fancybuttons.FancyButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            fancy:fb_borderColor="#FFFFFF"
+                            fancy:fb_borderWidth="1dp"
+                            fancy:fb_iconPosition="right"
+                            android:layout_gravity="center"
+                            fancy:fb_fontIconResource="&#xf111;"
+                            fancy:fb_defaultColor="@android:color/transparent"
+                            fancy:fb_focusColor="#2e5071"
+                            fancy:fb_radius="5dp"
+                            fancy:fb_text=""
+                            fancy:fb_textColor="@color/MoneyGreen"
+                            fancy:fb_textSize="10sp" />
+
+                        <TextView
+                            android:id="@+id/GuestAddress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/edittext_border"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="35 Kms"
+                            android:layout_marginLeft="10dp"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/text_size"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:paddingBottom="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <mehdi.sakout.fancybuttons.FancyButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            fancy:fb_borderColor="#FFFFFF"
+                            fancy:fb_borderWidth="1dp"
+                            android:layout_gravity="center"
+                            fancy:fb_iconPosition="right"
+                            fancy:fb_fontIconResource="&#xf111;"
+                            fancy:fb_defaultColor="@android:color/transparent"
+                            fancy:fb_focusColor="#2e5071"
+                            fancy:fb_radius="5dp"
+                            fancy:fb_text=""
+                            fancy:fb_textColor="@color/orange"
+                            fancy:fb_textSize="10sp" />
+
+                        <TextView
+                            android:id="@+id/kilometre"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="2"
+                            android:layout_marginLeft="10dp"
+                            android:text=""
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/text_size"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
 
                 </android.support.v7.widget.CardView>
 
             <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:map="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/map_container"
+                android:layout_below="@+id/guestCardview"
                 class="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -77,7 +145,7 @@
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 xmlns:fancy="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/subItemCard_view"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_margin="5dp"
@@ -86,32 +154,14 @@
                 card_view:cardElevation="4dp">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/kilometre"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_above="@+id/ETA"
-                        android:ellipsize="end"
-                        android:gravity="center"
-                        android:maxLines="2"
-                        android:padding="5dp"
-                        android:text=""
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/text_size"
-                        android:textStyle="bold" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#ccc" />
 
                     <TextView
                         android:id="@+id/ETA"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
                         android:layout_alignParentRight="true"

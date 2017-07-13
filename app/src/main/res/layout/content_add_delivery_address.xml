@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"/>
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/mapScroll"
         android:layout_above="@+id/confirmAddress"
         android:layout_below="@+id/delivery_text"
         android:layout_width="match_parent"
@@ -150,6 +151,48 @@
                     android:hint="@string/pin_code" />
 
             </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/addressType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size"
+                    android:inputType="text"
+                    android:hint="@string/AddressType" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <CheckBox
+                android:id="@+id/defaultAddress"
+                android:text="Set as Default Address"
+                android:padding="10dp"
+                android:layout_margin="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <RelativeLayout
+                android:id="@+id/map_layout"
+                android:layout_width="match_parent"
+                android:layout_height="300dp">
+
+                <fragment
+                    android:id="@+id/map_container_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"/>
+
+
+                <ImageView
+                    android:id="@+id/transparent_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@android:color/transparent" />
+
+            </RelativeLayout>
 
         </LinearLayout>
 
