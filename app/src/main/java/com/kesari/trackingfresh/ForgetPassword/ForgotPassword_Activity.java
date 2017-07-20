@@ -10,21 +10,39 @@ import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.R;
+import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
+import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.ActionClickListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class ForgotPassword_Activity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt {
 
     private String TAG = this.getClass().getSimpleName();
     private NetworkUtilsReceiver networkUtilsReceiver;
+
+    private EditText mobile,email;
+    private Button btnSubmit;
+    private String input;
+
+    boolean mobileBoolean = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +50,55 @@ public class ForgotPassword_Activity extends AppCompatActivity implements Networ
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_forgot_password_);
+
+        Toast.makeText(this, "Forget Password", Toast.LENGTH_SHORT).show();
+
+        mobile = (EditText) findViewById(R.id.mobile);
+        email = (EditText) findViewById(R.id.email);
+        btnSubmit = (Button) findViewById(R.id.btnSubmit);
+
+
+        mobile.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                email.setText("");
+
+                mobileBoolean = true;
+            }
+        });
+
+        email.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                mobile.setText("");
+
+                mobileBoolean = false;
+            }
+        });
+
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(mobileBoolean)
+                {
+                    input = mobile.getText().toString().trim();
+                }
+                else
+                {
+                    input = email.getText().toString().trim();
+                }
+
+                if (!input.isEmpty())
+                {
+                    sendData(input);
+                }else {
+
+                    Toast.makeText(ForgotPassword_Activity.this, "Enter mobile or email!!", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
 
         try {
 
@@ -55,6 +122,76 @@ public class ForgotPassword_Activity extends AppCompatActivity implements Networ
             Log.i(TAG, e.getMessage());
         }
 
+    }
+
+    public void sendData(String filter){
+
+        try
+        {
+
+            String url = Constants.ForgetPassword ;
+
+            Log.i("url", url);
+
+            JSONObject jsonObject = new JSONObject();
+
+            try {
+
+                JSONObject postObject = new JSONObject();
+
+                postObject.put("filter",filter);
+
+                jsonObject.put("post", postObject);
+
+                Log.i("JSON CREATED", jsonObject.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(ForgotPassword_Activity.this));
+
+            IOUtils ioUtils = new IOUtils();
+
+            ioUtils.sendJSONObjectRequestHeader(ForgotPassword_Activity.this, url,params, jsonObject, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+
+                    Log.i(TAG+" RESPONSE",result);
+
+                    ForgotPasswordResponse(result);
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+
+    }
+
+    private void ForgotPasswordResponse(String Response)
+    {
+        //{"message":"OTP Send On Email :welborn@kesari.in"}
+
+        try
+        {
+            JSONObject jsonObject = new JSONObject(Response);
+
+            String message = jsonObject.getString("message");
+
+            if(message != null)
+            {
+                if(!message.isEmpty())
+                {
+                    Intent in = new Intent(ForgotPassword_Activity.this,ResetForgotPasswordActivity.class);
+                    startActivity(in);
+                }
+            }
+        }catch (Exception e)
+        {
+            Log.i(TAG,e.getMessage());
+        }
     }
 
     @Override

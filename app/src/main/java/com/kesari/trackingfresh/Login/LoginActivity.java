@@ -9,7 +9,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -23,6 +25,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -62,7 +65,6 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.CheckNearestVehicleAvailability.CheckVehicleActivity;
-import com.kesari.trackingfresh.ForgetPassword.ForgotPassword_Activity;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Register.RegisterActivity;
@@ -81,6 +83,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -136,7 +140,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             registerReceiver(networkUtilsReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
             gson = new Gson();
-
+            //printHashKey(LoginActivity.this);
             btnLogin = (Button) findViewById(R.id.btnLogin);
             btnSignup = (Button) findViewById(R.id.btnSignup);
             btnForget = (TextView) findViewById(R.id.btnForget);
@@ -226,8 +230,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             btnForget.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent startMainActivity = new Intent(getApplicationContext(), ForgotPassword_Activity.class);
-                    startActivity(startMainActivity);
+                    /*Intent startMainActivity = new Intent(getApplicationContext(), ForgotPassword_Activity.class);
+                    startActivity(startMainActivity);*/
                 }
             });
 
@@ -1062,6 +1066,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
+        }
+    }
+
+    public void printHashKey(Context pContext) {
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo("com.kesari.trackingfresh", PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                String hashKey = new String(Base64.encode(md.digest(), 0));
+                Log.i(TAG, "printHashKey() Hash Key: " + hashKey);
+            }
+        } catch (NoSuchAlgorithmException e) {
+            Log.e(TAG, "printHashKey()", e);
+        } catch (Exception e) {
+            Log.e(TAG, "printHashKey()", e);
         }
     }
 

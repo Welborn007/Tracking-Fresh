@@ -31,9 +31,11 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.vision.text.Line;
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.BuildConfig;
 import com.kesari.trackingfresh.Cart.AddToCart;
@@ -97,6 +99,8 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
     //ScheduledExecutorService scheduleTaskExecutor;
     MyApplication myApplication;
     public static int mNotificationsCount = 0;
+    TextView refferal;
+    LinearLayout referral_holder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +122,8 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
             photo_edit = (ImageView) findViewById(R.id.photo_edit);
             profile_edit = (ImageView) findViewById(R.id.profile_edit);
             profile_image = (CircleImageView) findViewById(R.id.profile_image);
+            referral_holder = (LinearLayout) findViewById(R.id.referral_holder);
+            refferal = (TextView) findViewById(R.id.refferal);
 
             getProfileData();
 
@@ -194,6 +200,19 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
             Phonenumber.setText(SharedPrefUtil.getUser(ProfileActivity.this).getData().getMobileNo());
             Email.setText(SharedPrefUtil.getUser(ProfileActivity.this).getData().getEmailId());
             customer_name.setText(SharedPrefUtil.getUser(ProfileActivity.this).getData().getFirstName() + " " + SharedPrefUtil.getUser(ProfileActivity.this).getData().getLastName());
+
+            if(SharedPrefUtil.getUser(ProfileActivity.this).getData() != null)
+            {
+                if(!SharedPrefUtil.getUser(ProfileActivity.this).getData().getReferralCode().isEmpty())
+                {
+                    refferal.setText(SharedPrefUtil.getUser(ProfileActivity.this).getData().getReferralCode());
+                    referral_holder.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    referral_holder.setVisibility(View.GONE);
+                }
+            }
 
             if(SharedPrefUtil.getUser(ProfileActivity.this).getData().getProfileImage() != null)
             {

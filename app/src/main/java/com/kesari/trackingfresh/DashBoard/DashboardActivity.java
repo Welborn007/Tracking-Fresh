@@ -7,9 +7,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.graphics.drawable.LayerDrawable;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -55,6 +52,7 @@ import com.kesari.trackingfresh.OTP.OTP;
 import com.kesari.trackingfresh.OTP.SendOtpPOJO;
 import com.kesari.trackingfresh.ProductMainFragment.Product_Fragment;
 import com.kesari.trackingfresh.R;
+import com.kesari.trackingfresh.TKCash.TKWalletActivity;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
@@ -72,8 +70,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -257,6 +253,16 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 }
             }
 
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    getVerifiedMobileNumber(SharedPrefUtil.getToken(DashboardActivity.this));
+
+                }
+            }, 3000);
+
             Product_Fragment product_fragment = new Product_Fragment();
 
             FragmentManager manager = getSupportFragmentManager();
@@ -287,16 +293,6 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
 
                 }
             }, 3000);*/
-
-            final Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                    getVerifiedMobileNumber(SharedPrefUtil.getToken(DashboardActivity.this));
-
-                }
-            }, 3000);
 
 
         } catch (Exception e) {
@@ -524,7 +520,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
         }
     }
 
-    private void SetDefaultAddress()
+   /* private void SetDefaultAddress()
     {
         // Create custom dialog object
         final Dialog dialog = new Dialog(DashboardActivity.this);
@@ -615,7 +611,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
 
         dialog.show();
 
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -694,6 +690,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
 
         TextView my_account = (TextView) view.findViewById(R.id.my_account);
         TextView my_orders = (TextView) view.findViewById(R.id.my_orders);
+        TextView tkcash = (TextView) view.findViewById(R.id.tkcash);
 
         my_account.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -707,6 +704,14 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(DashboardActivity.this, OrderListActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        tkcash.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DashboardActivity.this, TKWalletActivity.class);
                 startActivity(intent);
             }
         });

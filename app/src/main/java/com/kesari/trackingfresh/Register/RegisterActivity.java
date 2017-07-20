@@ -48,12 +48,13 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
     Button btnRegister;
     private String TAG = this.getClass().getSimpleName();
 
-    String SocialID = "", FirstName, LastName, Name, Email, Type = "simple";
+    String SocialID = "", FirstName, LastName, Name, Email, Type = "simple",Mobile,Referral_code,Password;
     GoogleApiClient mGoogleApiClient;
     private NetworkUtilsReceiver networkUtilsReceiver;
 
     private Gson gson;
     LoginMain loginMain;
+    Boolean duplicateMobile = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,13 +122,13 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
             btnRegister.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String FirstName = first_name.getText().toString();
-                    String LastName = last_name.getText().toString();
-                    String Mobile = mobile.getText().toString();
-                    String Email = email.getText().toString();
+                    FirstName = first_name.getText().toString();
+                    LastName = last_name.getText().toString();
+                    Mobile = mobile.getText().toString();
+                    Email = email.getText().toString();
                     //String Location = location.getText().toString();
-                    String Referral_code = referral_code.getText().toString();
-                    String Password = password.getText().toString();
+                    Referral_code = referral_code.getText().toString();
+                    Password = password.getText().toString();
 
                     if (!FirstName.isEmpty() && !LastName.isEmpty() && !Mobile.isEmpty() && !Email.isEmpty() && !Password.isEmpty()) {
                         if (android.util.Patterns.EMAIL_ADDRESS.matcher(Email).matches() && android.util.Patterns.PHONE.matcher(Mobile).matches()) {
@@ -143,7 +144,21 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
                                     });
                                     return;
                                 } else {
-                                    sendRegisterData(FirstName, LastName, Mobile, Email, Referral_code, Password, Type, SocialID);
+
+                                    verifyDuplicateMobileAndRegister(mobile.getText().toString().trim());
+
+                                    /*if(duplicateMobile)
+                                    {
+                                        //mobile.setError("Not Found");
+                                        Toast.makeText(RegisterActivity.this, "User Registered", Toast.LENGTH_SHORT).show();
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(RegisterActivity.this, "Mobile No. Already Registered", Toast.LENGTH_SHORT).show();
+                                        //mobile.setError("Mobile No. Already Registered");
+                                    }*/
+
+                                    //sendRegisterData(FirstName, LastName, Mobile, Email, Referral_code, Password, Type, SocialID);
                                 }
                             } else {
                                 //Toast.makeText(RegisterActivity.this, getString(R.string.less_than_10digit) , Toast.LENGTH_SHORT).show();
@@ -180,12 +195,98 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
                 }
             });
 
+            mobile.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if(!hasFocus)
+                    {
+                        verifyDuplicateMobile(mobile.getText().toString().trim());
+                    }
+                }
+            });
+
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
 
     }
 
+    public void verifyDuplicateMobile(String number)
+    {
+        String url = Constants.VerifyDuplicate + number;
+
+        IOUtils ioUtils = new IOUtils();
+
+        ioUtils.getGETStringRequest(RegisterActivity.this,url, new IOUtils.VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+                verifyMobileResponse(result);
+            }
+        });
+    }
+
+    private void verifyMobileResponse(String Response)
+    {
+        try
+        {
+            JSONObject jsonObject = new JSONObject(Response);
+            String message = jsonObject.getString("message");
+
+            if(message.equalsIgnoreCase("Found"))
+            {
+                duplicateMobile = false;
+                mobile.setError("Mobile No. Already Registered");
+                Toast.makeText(this, "Mobile No. Already Registered", Toast.LENGTH_SHORT).show();
+            }
+            else if(message.equalsIgnoreCase("Not Found"))
+            {
+                duplicateMobile = true;
+            }
+
+        }catch (Exception e)
+        {
+
+        }
+    }
+
+    public void verifyDuplicateMobileAndRegister(String number)
+    {
+        String url = Constants.VerifyDuplicate + number;
+
+        IOUtils ioUtils = new IOUtils();
+
+        ioUtils.getGETStringRequest(RegisterActivity.this,url, new IOUtils.VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+                verifyMobileResponseAndRegister(result);
+            }
+        });
+    }
+
+    private void verifyMobileResponseAndRegister(String Response)
+    {
+        try
+        {
+            JSONObject jsonObject = new JSONObject(Response);
+            String message = jsonObject.getString("message");
+
+            if(message.equalsIgnoreCase("Found"))
+            {
+                duplicateMobile = false;
+                mobile.setError("Mobile No. Already Registered");
+                Toast.makeText(this, "Mobile No. Already Registered", Toast.LENGTH_SHORT).show();
+            }
+            else if(message.equalsIgnoreCase("Not Found"))
+            {
+                duplicateMobile = true;
+                sendRegisterData(FirstName, LastName, Mobile, Email, Referral_code, Password, Type, SocialID);
+            }
+
+        }catch (Exception e)
+        {
+
+        }
+    }
 
     public void sendRegisterData(String FirstName, String LastName, String Mobile, String Email, String ReferralCode, String Password, String Type, String SocialID) {
 

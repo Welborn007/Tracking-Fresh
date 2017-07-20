@@ -65,6 +65,7 @@
         android:background="#ccc"/>
 
     <TextView
+        android:id="@+id/tkcash"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/ic_tk_cash"

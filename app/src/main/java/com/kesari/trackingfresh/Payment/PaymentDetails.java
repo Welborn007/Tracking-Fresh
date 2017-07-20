@@ -19,8 +19,11 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +32,7 @@ import com.kesari.trackingfresh.CheckNearestVehicleAvailability.NearestVehicleMa
 import com.kesari.trackingfresh.ConfirmOrder.OrderAddPojo;
 import com.kesari.trackingfresh.DashBoard.DashboardActivity;
 import com.kesari.trackingfresh.DashBoard.VerifyMobilePOJO;
+import com.kesari.trackingfresh.Login.ProfileMain;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.OTP.OTP;
 import com.kesari.trackingfresh.OTP.SendOtpPOJO;
@@ -54,23 +58,35 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import mehdi.sakout.fancybuttons.FancyButton;
+
 public class PaymentDetails extends AppCompatActivity implements PaymentResultListener,NetworkUtilsReceiver.NetworkResponseInt{
 
     Button btnSubmit;
     private String TAG = this.getClass().getSimpleName();
     private NetworkUtilsReceiver networkUtilsReceiver;
-    private TextView price_payable;
+    private TextView price_payable,price_total;
     private RadioButton cash_on_delivery,online_payment;
+    private RadioGroup payment_group;
     //private String OrderID = "";
     MyApplication myApplication;
     OrderAddPojo orderAddPojo;
     private Gson gson;
-    boolean online = false,cod =false;
+    boolean online = false,cod =false, wallet = false,walletOnly = false;
     VerifyMobilePOJO verifyMobilePOJO;
     SendOtpPOJO sendOtpPOJO;
     Dialog dialog;
     private ViewGroup mSnackbarContainer;
     NearestVehicleMainPOJO nearestVehicleMainPOJO;
+    CheckBox walletCash;
+    ProfileMain profileMain;
+    String walletAmount = "";
+    int amountTotal,walletTotal;
+    boolean TKFCash = false;
+
+    EditText promocodeText;
+    Button promocodeSubmit;
+    FancyButton cancel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,16 +127,48 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
              */
             Checkout.preload(getApplicationContext());
 
+            price_total = (TextView) findViewById(R.id.price_total);
             price_payable = (TextView) findViewById(R.id.price_payable);
             cash_on_delivery = (RadioButton) findViewById(R.id.cash_on_delivery);
             online_payment = (RadioButton) findViewById(R.id.online_payment);
-
+            walletCash = (CheckBox) findViewById(R.id.walletCash);
             btnSubmit = (Button) findViewById(R.id.btnSubmit);
+            payment_group = (RadioGroup) findViewById(R.id.payment_group);
+
+            promocodeSubmit = (Button) findViewById(R.id.promocodeSubmit);
+            promocodeText = (EditText) findViewById(R.id.promocodeText);
+            cancel = (FancyButton) findViewById(R.id.cancel);
+
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    promocodeText.setText("");
+                    price_payable.setText(getIntent().getStringExtra("amount"));
+                }
+            });
+
+            promocodeSubmit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(!promocodeText.getText().toString().isEmpty())
+                    {
+                        sendPromocode(promocodeText.getText().toString().trim(),price_payable.getText().toString().trim());
+                    }
+                    else
+                    {
+                        promocodeText.setError("Enter Promocode!");
+                    }
+                }
+            });
 
             try
             {
 
+                price_total.setText(getIntent().getStringExtra("amount"));
                 price_payable.setText(getIntent().getStringExtra("amount"));
+                amountTotal = Integer.parseInt(getIntent().getStringExtra("amount"));
+
+                walletCash.setText("Use cash from wallet" + " [ " + SharedPrefUtil.getUser(PaymentDetails.this).getData().getWalletAmount() + " Rs ]");
                 //OrderID = getIntent().getStringExtra("orderID");
 
             }catch (NullPointerException npe)
@@ -132,24 +180,60 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 @Override
                 public void onClick(View v) {
 
-                    if(online_payment.isChecked())
+                    if(price_payable.getText().toString().equalsIgnoreCase("0"))
                     {
                         getVerifiedMobileNumber(SharedPrefUtil.getToken(PaymentDetails.this));
-                        //addOrderListFromCart();
-                        online = true;
-                    }
-                    else if(cash_on_delivery.isChecked())
-                    {
-                        getVerifiedMobileNumber(SharedPrefUtil.getToken(PaymentDetails.this));
-                        //addOrderListFromCart();
-                        cod = true;
+                        walletOnly = true;
                     }
                     else
                     {
-                        Toast.makeText(PaymentDetails.this, "Select Payment Mode!!", Toast.LENGTH_SHORT).show();
+                        if(online_payment.isChecked())
+                        {
+                            getVerifiedMobileNumber(SharedPrefUtil.getToken(PaymentDetails.this));
+                            //addOrderListFromCart();
+                            online = true;
+                        }
+                        else if(cash_on_delivery.isChecked())
+                        {
+                            getVerifiedMobileNumber(SharedPrefUtil.getToken(PaymentDetails.this));
+                            //addOrderListFromCart();
+                            cod = true;
+                        }
+                        else
+                        {
+                            Toast.makeText(PaymentDetails.this, "Select Payment Mode!!", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 /*Intent intent = new Intent(PaymentDetails.this, OrderReview.class);
                 startActivity(intent);*/
+                }
+            });
+
+            walletCash.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                    promocodeText.setText("");
+
+                    if(isChecked)
+                    {
+                        getProfileData();
+                        TKFCash = true;
+                    }
+                    else
+                    {
+                        wallet = false;
+                        TKFCash = false;
+
+                        walletCash.setText("Use cash from wallet");
+                        walletAmount = "";
+                        price_payable.setText(getIntent().getStringExtra("amount"));
+                        amountTotal = Integer.parseInt(getIntent().getStringExtra("amount"));
+                        walletCash.setText("Use cash from wallet" + " [ " + SharedPrefUtil.getUser(PaymentDetails.this).getData().getWalletAmount() + " Rs ]");
+
+                        payment_group.setVisibility(View.VISIBLE);
+
+                    }
                 }
             });
 
@@ -157,6 +241,143 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
             Log.i(TAG, e.getMessage());
         }
 
+    }
+
+    private void sendPromocode(String Promocode,String Total)
+    {
+        try
+        {
+
+            String url = Constants.PromocodeValidity ;
+
+            Log.i("url", url);
+
+            JSONObject jsonObject = new JSONObject();
+
+            try {
+
+                JSONObject postObject = new JSONObject();
+
+                postObject.put("total", Total);
+                postObject.put("promoCode", Promocode.trim());
+
+                jsonObject.put("post", postObject);
+
+                Log.i("JSON CREATED", jsonObject.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(PaymentDetails.this));
+
+            IOUtils ioUtils = new IOUtils();
+
+            ioUtils.sendJSONObjectRequestHeader(PaymentDetails.this, url,params, jsonObject, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    PromocodeResponse(result);
+                    Log.i(TAG,result);
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+
+    }
+
+    private void PromocodeResponse(String response)
+    {
+
+        try
+        {
+            // {"newTotal":60}
+
+            JSONObject jsonObject = new JSONObject(response);
+            String newTotal = jsonObject.getString("newTotal");
+            price_payable.setText(newTotal);
+
+        }catch (Exception e)
+        {
+
+        }
+    }
+
+    private void getProfileData() {
+        try {
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(PaymentDetails.this));
+
+            ioUtils.getPOSTStringRequestHeader(PaymentDetails.this,Constants.Profile, params, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.i("profile_result",result);
+                    profileDataResponse(result);
+                }
+            });
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void profileDataResponse(String Response)
+    {
+        try
+        {
+            SharedPrefUtil.setUser(getApplicationContext(), Response.toString());
+
+            profileMain = gson.fromJson(Response,ProfileMain.class);
+
+            if(profileMain.getData().getWalletAmount() != null)
+            {
+                if(!profileMain.getData().getWalletAmount().isEmpty() || !profileMain.getData().getWalletAmount().equalsIgnoreCase("0"))
+                {
+                    wallet = true;
+                    if(amountTotal > Integer.parseInt(profileMain.getData().getWalletAmount()))
+                    {
+                        walletTotal = Integer.parseInt(profileMain.getData().getWalletAmount());
+                        amountTotal = amountTotal - walletTotal;
+                        price_payable.setText(String.valueOf(amountTotal));
+                        walletCash.setText("Use cash from wallet" + " [ " + String.valueOf(0) + " Rs ]");
+                    }
+                    else
+                    {
+                        walletTotal = Integer.parseInt(profileMain.getData().getWalletAmount());
+                        walletTotal = walletTotal - amountTotal;
+                        price_payable.setText(String.valueOf(0));
+                        walletCash.setText("Use cash from wallet" + " [ " + String.valueOf(walletTotal) + " Rs ]");
+                    }
+
+                    walletAmount = profileMain.getData().getWalletAmount();
+                }
+                else
+                {
+                    walletCash.setText("Use cash from wallet" + " [ 0 Rs ]");
+                    walletAmount = "0";
+                    wallet = false;
+                }
+
+                if(price_payable.getText().toString().equalsIgnoreCase("0"))
+                {
+                    payment_group.setVisibility(View.GONE);
+                }
+            }
+            else
+            {
+                walletAmount = "";
+                wallet = false;
+            }
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
     }
 
     private void getVerifiedMobileNumber(String Token)
@@ -455,6 +676,12 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
                 postObject.put("orders",cartItemsArray);
                 postObject.put("total_price",getIntent().getStringExtra("amount"));
+
+                if(TKFCash)
+                {
+                    postObject.put("walletAmount",walletAmount);
+                }
+
                 postObject.put("vehicleId",SharedPrefUtil.getNearestVehicle(PaymentDetails.this).getData().get(0).getVehicle_id());
                 jsonObject.put("post", postObject);
 
@@ -491,17 +718,43 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
             if(!orderAddPojo.getMessage().get_id().isEmpty())
             {
-                if(online)
+
+                if(wallet)
                 {
-                    startPayment(orderAddPojo.getMessage().get_id(),getIntent().getStringExtra("amount"));
-                    Toast.makeText(PaymentDetails.this, "Online Payment", Toast.LENGTH_SHORT).show();
+
+                    if(walletOnly)
+                    {
+                        Toast.makeText(PaymentDetails.this, "Wallet Payment!!", Toast.LENGTH_SHORT).show();
+                        updateOrderDetails(orderAddPojo.getMessage().get_id(),"Wallet","");
+                    }
+                    else if(online)
+                    {
+                        startPayment(orderAddPojo.getMessage().get_id(),getIntent().getStringExtra("amount"));
+                        Toast.makeText(PaymentDetails.this, "Online Payment & Wallet", Toast.LENGTH_SHORT).show();
+                    }
+                    else if(cod)
+                    {
+                        Toast.makeText(PaymentDetails.this, "Cash On Delivery & Wallet!!", Toast.LENGTH_SHORT).show();
+                        updateOrderDetails(orderAddPojo.getMessage().get_id(),"COD,Wallet","");
+                    }
+
+                }
+                else
+                {
+                    if(online)
+                    {
+                        startPayment(orderAddPojo.getMessage().get_id(),getIntent().getStringExtra("amount"));
+                        Toast.makeText(PaymentDetails.this, "Online Payment", Toast.LENGTH_SHORT).show();
+                    }
+
+                    if(cod)
+                    {
+                        Toast.makeText(PaymentDetails.this, "Cash On Delivery!!", Toast.LENGTH_SHORT).show();
+                        updateOrderDetails(orderAddPojo.getMessage().get_id(),"COD","");
+                    }
                 }
 
-                if(cod)
-                {
-                    Toast.makeText(PaymentDetails.this, "Cash On Delivery!!", Toast.LENGTH_SHORT).show();
-                    updateOrderDetails(orderAddPojo.getMessage().get_id(),"COD","");
-                }
+
             }
             else
             {
@@ -555,7 +808,8 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
              * Amount is always passed in PAISE
              * Eg: "500" = Rs 5.00
              */
-            options.put("amount", "100");
+            int orderWallet = Integer.parseInt(price_payable.getText().toString()) * 100;
+            options.put("amount", String.valueOf(orderWallet));
 
             checkout.open(activity, options);
         } catch(Exception e) {
@@ -572,7 +826,15 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
         Log.i("Payment","Success");
         Log.i("PaymentID",razorpayPaymentID);
 
-        updateOrderDetails(orderAddPojo.getMessage().get_id(),"Online Payment",razorpayPaymentID);
+        if(wallet)
+        {
+            updateOrderDetails(orderAddPojo.getMessage().get_id(),"Online Payment,Wallet",razorpayPaymentID);
+        }
+        else
+        {
+            updateOrderDetails(orderAddPojo.getMessage().get_id(),"Online Payment",razorpayPaymentID);
+        }
+
     }
 
     @Override
@@ -666,12 +928,25 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 postObject.put("status","Pending");
                 postObject.put("payment_Mode",payment_mode);
 
-                if(!payment_mode.equalsIgnoreCase("COD"))
+                if(payment_mode.equalsIgnoreCase("Wallet"))
+                {
+                    postObject.put("payment_Status","Received");
+                }
+                else if(payment_mode.equalsIgnoreCase("Online Payment"))
                 {
                     postObject.put("payment_Status","Received");
                     postObject.put("payment_Id",paymentId);
                 }
-                else
+                else if(payment_mode.equalsIgnoreCase("Online Payment,Wallet"))
+                {
+                    postObject.put("payment_Status","Received");
+                    postObject.put("payment_Id",paymentId);
+                }
+                else if(payment_mode.equalsIgnoreCase("COD,Wallet"))
+                {
+                    postObject.put("payment_Status","Pending");
+                }
+                else if(payment_mode.equalsIgnoreCase("COD"))
                 {
                     postObject.put("payment_Status","Pending");
                 }

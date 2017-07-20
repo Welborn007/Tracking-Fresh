@@ -3,11 +3,10 @@ package com.kesari.trackingfresh.CheckNearestVehicleAvailability;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.location.*;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -34,9 +33,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class CheckVehicleActivity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt{
 
@@ -83,7 +80,7 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
                     Log.e(TAG, "Location service is already running");
                 }
 
-                scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
+                /*scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
 
                 // This schedule a task to run every 10 minutes:
                 scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
@@ -100,7 +97,9 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
                         }
 
                     }
-                }, 0, 10, TimeUnit.SECONDS);
+                }, 0, 10, TimeUnit.SECONDS);*/
+
+                sendLATLONVehicle();
             }
 
         } catch (Exception e) {
@@ -144,7 +143,7 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
             ioUtils.sendJSONObjectRequestHeader(CheckVehicleActivity.this, url,params, jsonObject, new IOUtils.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
-                    scheduleTaskExecutor.shutdown();
+                    //scheduleTaskExecutor.shutdown();
                     NearestVehicleResponse(result);
                 }
             });
@@ -168,15 +167,17 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
                 avi.setVisibility(View.GONE);
                 SharedPrefUtil.setNearestVehicle(CheckVehicleActivity.this,"");
 
-                final Handler handler = new Handler();
+                Intent intent = new Intent(CheckVehicleActivity.this, DashboardActivity.class);
+                startActivity(intent);
+                finish();
+
+                /*final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Intent intent = new Intent(CheckVehicleActivity.this, DashboardActivity.class);
-                        startActivity(intent);
-                        finish();
+
                     }
-                }, 5000);
+                }, 5000);*/
             }
             else
             {
