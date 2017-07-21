@@ -394,6 +394,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 JSONObject postObject = new JSONObject();
 
                 postObject.put("socialId", SocialID);
+                postObject.put("registrationType",Type);
 
                 jsonObject.put("post", postObject);
 
@@ -470,7 +471,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             if(errorString.equalsIgnoreCase("User not found"))
             {
-                sendRegisterData(firstname, lastname, "", Email, "", "", Type, SocialID);
+                sendRegisterData(firstname, lastname,  Email, Type, SocialID);
             }
 
             FireToast.customSnackbar(context, errorString,"");
@@ -482,7 +483,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             if(errorPOJO.getMessage().equalsIgnoreCase("User not found"))
             {
-                sendRegisterData(firstname, lastname, "", Email, "", "", Type, SocialID);
+                sendRegisterData(firstname, lastname,  Email, Type, SocialID);
             }
         }
         else
@@ -515,7 +516,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    public void sendRegisterData(String FirstName, String LastName, String Mobile, String Email, String ReferralCode, String Password, String Type, String SocialID) {
+    public void sendRegisterData(String FirstName, String LastName, String Email, String Type, String SocialID) {
 
         try
         {
@@ -534,13 +535,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 postObject.put("firstName", FirstName);
                 postObject.put("lastName", LastName);
-                postObject.put("mobileNo", Mobile);
+                //postObject.put("mobileNo", Mobile);
                 postObject.put("emailId", Email);
                 //postObject.put("location",Location);
-                postObject.put("referralCode", ReferralCode);
+                //postObject.put("referralCode", ReferralCode);
                 postObject.put("socialId", SocialID);
                 postObject.put("registrationType", Type);
-                postObject.put("password", Password);
+                //postObject.put("password", Password);
 
                 jsonObject.put("post", postObject);
 

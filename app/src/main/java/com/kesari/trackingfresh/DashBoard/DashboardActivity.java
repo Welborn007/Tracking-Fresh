@@ -172,7 +172,6 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                         .into(profile_image);
             }
 
-
             profile_holder = (RelativeLayout) header.findViewById(R.id.profile_holder);
             help_holder = (RelativeLayout) header.findViewById(R.id.help_holder);
             route_holder = (RelativeLayout) header.findViewById(R.id.route_holder);
@@ -219,18 +218,6 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 }
             });
 
-            logo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                /*Product_Fragment product_fragment = new Product_Fragment();
-
-                FragmentManager manager = getSupportFragmentManager();
-                FragmentTransaction transaction = manager.beginTransaction();
-                transaction.replace(R.id.fragment_holder, product_fragment);
-                transaction.commit();*/
-                }
-            });
-
             filter.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -271,29 +258,6 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             transaction.commit();
 
             updateNotificationsBadge(myApplication.getProductsArraylist().size());
-
-            //updateNotificationsBadge(4);
-
-            /*scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
-
-            // This schedule a task to run every 10 minutes:
-            scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
-                public void run() {
-                    updateNotificationsBadge(myApplication.getProductsArraylist().size());
-                }
-            }, 0, 1, TimeUnit.SECONDS);
-
-
-            final Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                    getVerifiedMobileNumber(SharedPrefUtil.getToken(DashboardActivity.this));
-
-                }
-            }, 3000);*/
-
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());

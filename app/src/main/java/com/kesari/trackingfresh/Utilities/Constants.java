@@ -15,85 +15,85 @@ public interface Constants {
     String LIVEIP = "52.66.75.55:8000";
 
     //Login API
-    String LoginActivityAPI = "http://" + StagingIP + "/api/customer/login";
+    String LoginActivityAPI = "http://" + LIVEIP + "/api/customer/login";
 
     //Register API
-    String RegisterActivityAPI = "http://" + StagingIP + "/api/customer/";
+    String RegisterActivityAPI = "http://" + LIVEIP + "/api/customer/";
 
     //Driver Location API - Product_Fragment
-    //String LocationAPI = "http://"+ StagingIP +"/api/vehicle_positions/by_driver_id/dr001";
+    //String LocationAPI = "http://"+ LIVEIP +"/api/vehicle_positions/by_driver_id/dr001";
 
     //Nearest Vehicle Check
-    String CheckNearestVehicle = "http://" + StagingIP + "/api/vehicle_positions/nearest/";
+    String CheckNearestVehicle = "http://" + LIVEIP + "/api/vehicle_positions/nearest/";
 
     //Product Category
-    String Product_Category = "http://" + StagingIP + "/api/productCategory/vehicle/list?vehicleId=";
+    String Product_Category = "http://" + LIVEIP + "/api/productCategory/vehicle/list?vehicleId=";
 
     //Product Desc
-    String Product_Desc = "http://" + StagingIP + "/api/product/byCategory/";
+    String Product_Desc = "http://" + LIVEIP + "/api/product/byCategory/";
 
     //Verify Mobile No. // Params - User ID // Get String Request
-    String VerifyMobile = "http://" + StagingIP + "/api/customer/isMobile/";
+    String VerifyMobile = "http://" + LIVEIP + "/api/customer/isMobile/";
 
     //Send OTP // Params - mobileNo , User ID // JSON Object Request
-    String SendOTP = "http://" + StagingIP + "/api/OTP/sendOtp/";
+    String SendOTP = "http://" + LIVEIP + "/api/OTP/sendOtp/";
 
     //Match OTP // Params - otp , mobileNo, User ID
-    String MatchOTP  = "http://" + StagingIP + "/api/OTP/matchOtp";
+    String MatchOTP  = "http://" + LIVEIP + "/api/OTP/matchOtp";
 
     //Profile
-    String Profile = "http://" + StagingIP +"/api/customer/profile";
+    String Profile = "http://" + LIVEIP +"/api/customer/profile";
 
     //Profile Edit
-    String ProfileEdit = "http://" + StagingIP + "/api/customer/";
+    String ProfileEdit = "http://" + LIVEIP + "/api/customer/";
 
     //Profile Image Upload
-    String ProfileImagePath = "http://" + StagingIP + "/api/upload";
+    String ProfileImagePath = "http://" + LIVEIP + "/api/upload";
 
     //Add Delivery Address
-    String NewAddress = "http://" + StagingIP + "/api/address/add";
+    String NewAddress = "http://" + LIVEIP + "/api/address/add";
 
     //Fetch Address
-    String FetchAddress =  "http://" + StagingIP + "/api/address/";
+    String FetchAddress =  "http://" + LIVEIP + "/api/address/";
 
     //Update Address
-    String UpdateAddress = "http://" + StagingIP + "/api/address/update/";
+    String UpdateAddress = "http://" + LIVEIP + "/api/address/update/";
 
     //Delete Address
-    String DeleteAddress = "http://" + StagingIP + "/api/address/delete/";
+    String DeleteAddress = "http://" + LIVEIP + "/api/address/delete/";
 
     //Get Fare
-    String GetFare = "http://" + StagingIP + "/api/order/getfare";
+    String GetFare = "http://" + LIVEIP + "/api/order/getfare";
 
     //Order List From Cart
-    String AddOrder = "http://" + StagingIP + "/api/order/add";
+    String AddOrder = "http://" + LIVEIP + "/api/order/add";
 
     //Get Order List
-    String OrderList = "http://" + StagingIP + "/api/order/orderList";
+    String OrderList = "http://" + LIVEIP + "/api/order/orderList";
 
     //Update Order after payment Put Request
-    String UpdateOrder = "http://" + StagingIP + "/api/order/update";
+    String UpdateOrder = "http://" + LIVEIP + "/api/order/update";
 
     //get Order details from order id
-    String OrderDetails = "http://"+ StagingIP +"/api/order/";
+    String OrderDetails = "http://"+ LIVEIP +"/api/order/";
 
     //Wallet All Transactions
-    String AllWalletTransactions = "http://"+ StagingIP + "/api/userWallet/";
+    String AllWalletTransactions = "http://"+ LIVEIP + "/api/userWallet/";
 
     //Wallet Paid Transactions
-    String PaidWalletTransactions = "http://"+ StagingIP + "/api/userWallet/?operation=minus";
+    String PaidWalletTransactions = "http://"+ LIVEIP + "/api/userWallet/?operation=minus";
 
     //Wallet Received Transactions
-    String ReceivedWalletTransactions = "http://"+ StagingIP + "/api/userWallet/?operation=add";
+    String ReceivedWalletTransactions = "http://"+ LIVEIP + "/api/userWallet/?operation=add";
 
     //Check Promocode Validity
-    String PromocodeValidity = "http://"+ StagingIP + "/api/promoCode/validate";
+    String PromocodeValidity = "http://"+ LIVEIP + "/api/promoCode/validate";
 
     //TODO Forget Password
-    String ForgetPassword = "http://"+ StagingIP + "/api/customer/forgotPassword";
+    String ForgetPassword = "http://"+ LIVEIP + "/api/customer/forgotPassword";
 
     //Verify Duplicate Mobile No
-    String VerifyDuplicate = "http://"+ StagingIP + "/api/customer/mobile/";
+    String VerifyDuplicate = "http://"+ LIVEIP + "/api/customer/mobile/";
 
     // Milliseconds per second
     public static final int MILLISECONDS_PER_SECOND = 1000;

@@ -181,7 +181,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Refferral Code"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="10dp"
                     android:layout_gravity="center"
                     android:textColor="@color/Gray"
                     android:textSize="22sp"
@@ -191,7 +191,7 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:padding="10dp"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="10dp"
                     android:background="@drawable/border_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
@@ -208,6 +208,23 @@
                         />
 
                 </LinearLayout>
+
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:id="@+id/Share"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    fancy:fb_borderColor="#FFFFFF"
+                    fancy:fb_borderWidth="1dp"
+                    fancy:fb_iconPosition="right"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    fancy:fb_text=""
+                    fancy:fb_fontIconResource="&#xf1e0;"
+                    fancy:fb_defaultColor="@color/full_trans"
+                    fancy:fb_focusColor="#2e5071"
+                    fancy:fb_radius="5dp"
+                    fancy:fb_textColor="@color/Gray"
+                    fancy:fb_textSize="18sp" />
 
             </LinearLayout>
 

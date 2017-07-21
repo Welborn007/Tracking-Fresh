@@ -80,6 +80,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import mehdi.sakout.fancybuttons.FancyButton;
 
 import static com.kesari.trackingfresh.Utilities.IOUtils.setBadgeCount;
 
@@ -101,6 +102,7 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
     public static int mNotificationsCount = 0;
     TextView refferal;
     LinearLayout referral_holder;
+    FancyButton Share;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,8 +126,21 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
             profile_image = (CircleImageView) findViewById(R.id.profile_image);
             referral_holder = (LinearLayout) findViewById(R.id.referral_holder);
             refferal = (TextView) findViewById(R.id.refferal);
+            Share = (FancyButton) findViewById(R.id.Share);
 
             getProfileData();
+
+            Share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    String shareBodyText = "https://play.google.com/store/apps/details?id=com.kesari.trackingfresh" + "\n\n" + "Referral Code - " + SharedPrefUtil.getUser(ProfileActivity.this).getData().getReferralCode();
+                    intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Referral Code");
+                    intent.putExtra(android.content.Intent.EXTRA_TEXT, shareBodyText);
+                    startActivity(Intent.createChooser(intent, "Choose sharing method"));
+                }
+            });
 
             profile_edit.setOnClickListener(new View.OnClickListener() {
                 @Override

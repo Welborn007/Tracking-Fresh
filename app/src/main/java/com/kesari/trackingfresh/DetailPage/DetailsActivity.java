@@ -97,6 +97,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
     private FetchAddressPOJO fetchAddressPOJO;
     public static int mNotificationsCount = 0;
     // ScheduledExecutorService scheduleTaskExecutor;
+    FancyButton Share;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -204,6 +205,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             checkOut = (Button) findViewById(R.id.checkOut);
             product_category = (TextView) findViewById(R.id.product_category);
             title_productname = (TextView) findViewById(R.id.title_productname);
+            Share = (FancyButton) findViewById(R.id.Share);
 
             addtoCart = (Button) findViewById(R.id.addtoCart);
             holder_count = (LinearLayout) findViewById(R.id.holder_count);
@@ -223,6 +225,18 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
                 holder_count.setVisibility(View.GONE);
                 addtoCart.setVisibility(View.VISIBLE);
             }*/
+
+            Share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    String shareBodyText = productImage + "\n\n" + productName;
+                    intent.putExtra(android.content.Intent.EXTRA_SUBJECT, productName);
+                    intent.putExtra(android.content.Intent.EXTRA_TEXT, shareBodyText);
+                    startActivity(Intent.createChooser(intent, "Choose sharing method"));
+                }
+            });
 
             addtoCart.setOnClickListener(new View.OnClickListener() {
                 @Override
