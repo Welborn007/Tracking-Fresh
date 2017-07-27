@@ -19,7 +19,12 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.kesari.trackingfresh.CheckNearestVehicleAvailability.CheckVehicleActivity;
+import com.kesari.trackingfresh.Login.LoginActivity;
 import com.kesari.trackingfresh.R;
+import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Random;
 
@@ -27,6 +32,7 @@ import java.util.Random;
 public class MyFirebaseMessagingService extends FirebaseMessagingService
 {
     private String TAG = this.getClass().getSimpleName();
+    private Intent intent;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -37,17 +43,45 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
         //MainActivity.myMsg = remoteMessage.getNotification().getBody();
 
         //Calling method to generate notification
-        sendNotification(remoteMessage.getNotification().getBody());
+        //sendNotification(remoteMessage.getNotification().getBody());
+
+        try {
+
+            JSONObject resultMessage = new JSONObject(remoteMessage.getData());
+
+            String message_json = resultMessage.getString("message");
+
+            Log.i("message_json",message_json);
+
+            sendNotification(message_json);
+
+        }catch (JSONException je)
+        {
+
+        }
     }
 
     //This method is only generating push notification
     //It is same as we did in earlier posts
     private void sendNotification(String messageBody) {
-
         try
         {
 
-            Intent intent = new Intent(this, CheckVehicleActivity.class);
+            if (SharedPrefUtil.getToken(this) != null) {
+                if(!SharedPrefUtil.getToken(this).isEmpty())
+                {
+                    intent = new Intent(this, CheckVehicleActivity.class);
+                }
+                else
+                {
+                    intent = new Intent(this, LoginActivity.class);
+                }
+            }
+            else
+            {
+                intent = new Intent(this, LoginActivity.class);
+            }
+
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                     PendingIntent.FLAG_ONE_SHOT);
@@ -69,6 +103,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
                 notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
             }
 
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.notif_banner);
+            //bitmap = Bitmap.createScaledBitmap(bitmap, 500, 350, false);
+
+            notificationBuilder.setStyle(new NotificationCompat.BigPictureStyle()
+                    .bigPicture(bitmap));
+
             NotificationManager notificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -80,44 +120,4 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
             Log.i(TAG, e.getMessage());
         }
     }
-
-    /*private void sendNotification(String message) {
-        Intent myIntent = null;
-
-        myIntent = new Intent();
-        myIntent.setClass(getApplicationContext(), News.class);
-
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, myIntent, PendingIntent.FLAG_ONE_SHOT);
-
-        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.notification_largeicon);
-
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setContentTitle("Vasai Birds")
-                .setLargeIcon(largeIcon)
-                .setAutoCancel(true)
-                .setContentText("New News Available!!!")
-                .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            notificationBuilder.setSmallIcon(R.drawable.ic_stat_vb);
-        } else {
-            notificationBuilder.setSmallIcon(R.drawable.ic_stat_vb);
-        }
-
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.notification_image);
-        bitmap = Bitmap.createScaledBitmap(bitmap, 500, 350, false);
-
-        notificationBuilder.setStyle(new NotificationCompat.BigPictureStyle()
-                .bigPicture(bitmap)).setSubText(message);
-
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        Random random = new Random();
-        int id = random.nextInt(9999 - 1000) + 1000;
-        notificationManager.notify(id, notificationBuilder.build());
-
-    }*/
 }

@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:background="@android:color/white"
     tools:showIn="@layout/activity_order_review"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:layout_height="match_parent">
 
@@ -278,6 +279,103 @@
                     android:layout_marginLeft="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/BikerHolder"
+                android:visibility="gone"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:text="Biker Assigned Details"
+                    android:textColor="@color/white"
+                    android:drawablePadding="-190dp"
+                    android:padding="10dp"
+                    android:textSize="@dimen/text_size"
+                    android:background="@color/Button_Color"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <LinearLayout
+                    android:padding="5dp"
+                    android:id="@+id/bikerNameHolder"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Biker "
+                        android:layout_gravity="center"
+                        android:textColor="@color/Gray"
+                        android:textSize="@dimen/text_size"
+                        />
+
+                    <TextView
+                        android:id="@+id/bikerName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:textStyle="bold"
+                        android:layout_gravity="center"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" will deliver the order."
+                        android:layout_marginLeft="5dp"
+                        android:layout_gravity="center"
+                        android:textColor="@color/Gray"
+                        android:textSize="@dimen/text_size"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    android:layout_margin="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:text="Call"
+                        android:layout_centerHorizontal="true"
+                        android:id="@+id/btnCall"
+                        android:background="@drawable/rounded_btn"
+                        android:textSize="@dimen/text_size"
+                        android:layout_weight="1"
+                        android:textStyle="bold"
+                        android:textColor="@color/TextColor"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        />
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:text="Support"
+                        android:layout_centerHorizontal="true"
+                        android:id="@+id/btnSupport"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/rounded_btn"
+                        android:textSize="@dimen/text_size"
+                        android:layout_weight="1"
+                        android:textStyle="bold"
+                        android:textColor="@color/TextColor"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        />
+
+                </LinearLayout>
 
             </LinearLayout>
 

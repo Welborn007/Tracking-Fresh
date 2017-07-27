@@ -33,16 +33,60 @@
                 app:civ_border_width="2dp"
                 app:civ_border_color="@android:color/transparent"/>
 
-            <TextView
-                android:id="@+id/name_Login"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_gravity="center"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:text="Guest"
-                />
+                android:layout_marginLeft="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/name_Login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:text="Guest"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Wallet Balance"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size"
+                    />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="₹"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:textSize="28sp"
+                        />
+
+                    <TextView
+                        android:id="@+id/walletAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textStyle="bold"
+                        android:layout_marginLeft="10sp"
+                        android:textColor="@color/white"
+                        android:textSize="28sp"
+                        />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
@@ -160,6 +204,54 @@
                     android:textColor="@color/black"
                     android:layout_toRightOf="@+id/my_orders"
                     android:padding="20dp"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <ImageView
+                    android:src="@drawable/ic_arrow"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerInParent="true"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content" />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginRight="5dp"
+                android:background="#ccc"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/refer_earn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/referral_code"
+                    android:src="@drawable/ic_refer"
+                    android:layout_alignParentLeft="true"
+                    android:paddingLeft="5dp"
+                    android:layout_centerInParent="true"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:text="@string/refer_earn"
+                    android:textColor="@color/black"
+                    android:layout_toRightOf="@+id/referral_code"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp"
+                    android:paddingLeft="15dp"
                     android:gravity="center"
                     android:textStyle="bold"
                     android:textSize="@dimen/text_size"
@@ -372,6 +464,7 @@
             android:layout_height="wrap_content">
 
             <RelativeLayout
+                android:id="@+id/legalHolder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 

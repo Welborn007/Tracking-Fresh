@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.DeliveryAddress.AddDeliveryAddress.Add_DeliveryAddress;
@@ -97,7 +98,14 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
 
                            AddressPOJO addressPOJO = addressArrayList.get(position);
 
-                            updateDeliveryAddress(addressPOJO.get_id(),position);
+                            if(!addressPOJO.isDefault())
+                            {
+                                updateDeliveryAddress(addressPOJO.get_id(),position);
+                            }
+                            else
+                            {
+                                Toast.makeText(FetchedDeliveryAddressActivity.this, "Address already set default", Toast.LENGTH_SHORT).show();
+                            }
 
                         }
                     })

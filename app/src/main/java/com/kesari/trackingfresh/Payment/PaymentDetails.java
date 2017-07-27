@@ -906,6 +906,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 Intent intent = new Intent(PaymentDetails.this, DashboardActivity.class);
                 startActivity(intent);
                 finish();
+                myApplication.removeProductsItems();
             }
 
         } catch (Exception e) {

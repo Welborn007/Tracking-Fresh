@@ -37,6 +37,8 @@
                     android:id="@+id/first_name"
                     android:layout_width="match_parent"
                     android:textSize="@dimen/text_size"
+                    android:inputType="textPersonName"
+                    android:imeOptions="actionNext"
                     android:layout_height="wrap_content"
                     android:hint="@string/first_name" />
 
@@ -50,6 +52,8 @@
                     android:id="@+id/last_name"
                     android:layout_width="match_parent"
                     android:textSize="@dimen/text_size"
+                    android:inputType="textPersonName"
+                    android:imeOptions="actionNext"
                     android:layout_height="wrap_content"
                     android:hint="@string/last_name" />
 
@@ -63,6 +67,7 @@
                     android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:textSize="@dimen/text_size"
+                    android:imeOptions="actionDone"
                     android:inputType="textEmailAddress"
                     android:layout_height="wrap_content"
                     android:hint="@string/Email_id" />

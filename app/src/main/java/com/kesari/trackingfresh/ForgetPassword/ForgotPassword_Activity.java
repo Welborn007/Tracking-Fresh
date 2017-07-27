@@ -91,7 +91,28 @@ public class ForgotPassword_Activity extends AppCompatActivity implements Networ
 
                 if (!input.isEmpty())
                 {
-                    sendData(input);
+                    if(mobileBoolean)
+                    {
+                        if (android.util.Patterns.PHONE.matcher(input).matches()) {
+                            sendData(input);
+                        }
+                        else
+                        {
+                            mobile.setError(getString(R.string.proper_mobile));
+                        }
+                    }
+                    else
+                    {
+                        if (android.util.Patterns.EMAIL_ADDRESS.matcher(input).matches()) {
+                            sendData(input);
+                        }
+                        else
+                        {
+                            email.setError(getString(R.string.proper_email));
+                        }
+                    }
+
+                    //Toast.makeText(ForgotPassword_Activity.this, "Sent", Toast.LENGTH_SHORT).show();
                 }else {
 
                     Toast.makeText(ForgotPassword_Activity.this, "Enter mobile or email!!", Toast.LENGTH_SHORT).show();
@@ -139,7 +160,14 @@ public class ForgotPassword_Activity extends AppCompatActivity implements Networ
 
                 JSONObject postObject = new JSONObject();
 
-                postObject.put("filter",filter);
+                if(mobileBoolean)
+                {
+                    postObject.put("mobileNo",filter);
+                }
+                else
+                {
+                    postObject.put("email",filter);
+                }
 
                 jsonObject.put("post", postObject);
 
@@ -184,8 +212,14 @@ public class ForgotPassword_Activity extends AppCompatActivity implements Networ
             {
                 if(!message.isEmpty())
                 {
-                    Intent in = new Intent(ForgotPassword_Activity.this,ResetForgotPasswordActivity.class);
-                    startActivity(in);
+                   mobile.setText("");
+                    email.setText("");
+                    mobileBoolean = false;
+                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    Toast.makeText(this, "Sorry request failed!!!", Toast.LENGTH_SHORT).show();
                 }
             }
         }catch (Exception e)

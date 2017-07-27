@@ -200,7 +200,10 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
                 public void onFocusChange(View v, boolean hasFocus) {
                     if(!hasFocus)
                     {
-                        verifyDuplicateMobile(mobile.getText().toString().trim());
+                        if(!mobile.getText().toString().isEmpty())
+                        {
+                            verifyDuplicateMobile(mobile.getText().toString().trim());
+                        }
                     }
                 }
             });

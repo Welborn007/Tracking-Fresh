@@ -49,6 +49,7 @@ import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
+import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.MyApplication;
@@ -815,6 +816,11 @@ public class IOUtils {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                         context.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        if (!IOUtils.isServiceRunning(LocationServiceNew.class, context)) {
+                            // LOCATION SERVICE
+                            context.startService(new Intent(context, LocationServiceNew.class));
+                            Log.e("IOUTILS", "Location service is already running");
+                        }
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {

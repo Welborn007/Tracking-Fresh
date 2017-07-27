@@ -35,6 +35,16 @@ public class OrderReviewDataPOJO {
 
     private String payment_Id;
 
+    private OrderBikerDetails biker;
+
+    public OrderBikerDetails getBiker() {
+        return biker;
+    }
+
+    public void setBiker(OrderBikerDetails biker) {
+        this.biker = biker;
+    }
+
     private List<OrderReviewProductPOJO> orders = new ArrayList<OrderReviewProductPOJO>();
 
     public String getStatus() {

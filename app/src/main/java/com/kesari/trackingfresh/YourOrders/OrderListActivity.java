@@ -31,12 +31,6 @@ import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.ActionClickListener;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -169,65 +163,6 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
             Log.i("OrderListActivity", e.getMessage());
         }
     }
-
-    public void getData() {
-        try {
-            JSONArray jsonArray = new JSONArray(loadJSONFromAsset());
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-
-                JSONObject jo_inside = jsonArray.getJSONObject(i);
-
-                JSON_POJO js = new JSON_POJO();
-
-                String location_name = jo_inside.getString("location_name");
-                Double latitude = jo_inside.getDouble("latitude");
-                Double longitude = jo_inside.getDouble("longitude");
-                String id = jo_inside.getString("id");
-                String customer_name = jo_inside.getString("customer_name");
-                String payment_mode = jo_inside.getString("payment_mode");
-                String payment_confirmation = jo_inside.getString("payment_confirmation");
-                String order_status = jo_inside.getString("order_status");
-
-                //getMapsApiDirectionsUrl(latitude,longitude);
-
-                js.setId(id);
-                js.setLatitude(latitude);
-                js.setLongitude(longitude);
-                js.setLocation_name(location_name);
-                js.setCustomer_name(customer_name);
-                js.setPayment_mode(payment_mode);
-                js.setPayment_confirmation(payment_confirmation);
-                js.setOrder_status(order_status);
-                /*js.setDistance(distance);
-                js.setTime(duration);*/
-
-                jsonIndiaModelList.add(js);
-
-            }
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public String loadJSONFromAsset() {
-        String json = null;
-        try {
-            InputStream is = getAssets().open("mock_orderlist");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

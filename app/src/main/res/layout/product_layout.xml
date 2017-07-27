@@ -96,7 +96,7 @@
                 android:id="@+id/holder_count"
                 android:orientation="horizontal"
                 android:visibility="gone"
-                android:background="@drawable/linear_layout_border"
+                android:background="@drawable/linear_red_border_layout"
                 android:layout_marginRight="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp">
@@ -151,10 +151,6 @@
                 android:textAppearance="?android:textAppearanceMedium"
                 />
 
-
         </LinearLayout>
-
-
     </LinearLayout>
-
 </LinearLayout>

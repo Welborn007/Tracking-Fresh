@@ -45,6 +45,8 @@
                         android:layout_width="match_parent"
                         android:textSize="@dimen/text_size"
                         android:textColor="@color/white"
+                        android:imeOptions="actionNext"
+                        android:inputType="textPersonName"
                         android:layout_height="wrap_content"
                         android:hint="@string/first_name" />
 
@@ -61,6 +63,8 @@
                         android:id="@+id/last_name"
                         android:layout_width="match_parent"
                         android:textSize="@dimen/text_size"
+                        android:inputType="textPersonName"
+                        android:imeOptions="actionNext"
                         android:textColor="@color/white"
                         android:layout_height="wrap_content"
                         android:hint="@string/last_name" />
@@ -144,6 +148,8 @@
                     android:layout_width="match_parent"
                     android:textSize="@dimen/text_size"
                     android:textColor="@color/white"
+                    android:inputType="text"
+                    android:imeOptions="actionDone"
                     android:layout_height="wrap_content"
                     android:hint="@string/referral_code" />
 

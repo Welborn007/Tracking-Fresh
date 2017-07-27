@@ -159,9 +159,16 @@
             android:name=".TKCash.TKWalletActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ForgetPassword.ResetForgotPasswordActivity"
+        <activity
+            android:name=".ReferEarn.ReferralCodeActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" ></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".HelpAndFAQ.HelpActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".Legal.LegalActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

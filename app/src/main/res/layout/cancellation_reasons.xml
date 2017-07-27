@@ -27,65 +27,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <RadioGroup
-            android:id="@+id/reasonGroup"
-            android:orientation="vertical"
+        <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:id="@+id/recyclerView"
+            android:scrollbars="vertical"
+            android:background="@color/LightGray">
+        </android.support.v7.widget.RecyclerView>
 
-            <RadioButton
-                android:id="@+id/rb1"
-                android:text="Duplicate order"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <RadioButton
-                android:id="@+id/rb2"
-                android:text="Incorrect order"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <RadioButton
-                android:id="@+id/rb3"
-                android:text="Change in Quantity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <RadioButton
-                android:id="@+id/rb4"
-                android:text="Defective Products"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <RadioButton
-                android:id="@+id/rb5"
-                android:text="Late Delivery"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <RadioButton
-                android:id="@+id/rb6"
-                android:text="Other"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <EditText
-                android:id="@+id/other"
-                android:hint="Please Specify reason..."
-                android:visibility="gone"
-                android:layout_margin="5dp"
-                android:layout_width="match_parent"
-                android:textSize="14sp"
-                android:layout_height="wrap_content" />
-
-        </RadioGroup>
+        <EditText
+            android:id="@+id/other"
+            android:hint="Please Specify reason..."
+            android:layout_margin="5dp"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:textSize="14sp"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Cancel"
+        android:text="Submit"
         android:layout_margin="5dp"
         android:layout_below="@+id/holder"
         android:id="@+id/cancel"

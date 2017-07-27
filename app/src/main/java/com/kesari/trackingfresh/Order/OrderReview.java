@@ -6,6 +6,7 @@ import android.content.IntentFilter;
 import android.graphics.drawable.LayerDrawable;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
@@ -17,10 +18,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.Cart.AddToCart;
+import com.kesari.trackingfresh.HelpAndFAQ.HelpActivity;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.OrderTracking.OrderBikerTrackingActivity;
 import com.kesari.trackingfresh.R;
@@ -49,8 +52,10 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
     private Gson gson;
     OrderReviewMainPOJO orderReviewMainPOJO;
     private RecyclerView.Adapter adapterProducts;
-    TextView total_price,payment_status,payment_mode,fullName,buildingName,landmark,address,mobileNo;
-    Button btnSubmit;
+    TextView total_price,payment_status,payment_mode,fullName,buildingName,landmark,address,mobileNo,bikerName;
+    Button btnSubmit,btnCall,btnSupport;
+
+    LinearLayout BikerHolder;
 
     //ScheduledExecutorService scheduleTaskExecutor;
     MyApplication myApplication;
@@ -90,9 +95,22 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
             address = (TextView) findViewById(R.id.address);
             mobileNo = (TextView) findViewById(R.id.mobileNo);
 
+            BikerHolder = (LinearLayout) findViewById(R.id.BikerHolder);
+            bikerName = (TextView) findViewById(R.id.bikerName);
+            btnCall = (Button) findViewById(R.id.btnCall);
+            btnSupport = (Button) findViewById(R.id.btnSupport);
+
             btnSubmit = (Button) findViewById(R.id.btnSubmit);
 
             final String orderID = getIntent().getStringExtra("orderID");
+
+            btnSupport.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(OrderReview.this, HelpActivity.class);
+                    startActivity(intent);
+                }
+            });
 
             btnSubmit.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -125,15 +143,6 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
             myApplication = (MyApplication) getApplicationContext();
 
             updateNotificationsBadge(myApplication.getProductsArraylist().size());
-
-            /*scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
-
-            // This schedule a task to run every 10 minutes:
-            scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
-                public void run() {
-                    updateNotificationsBadge(myApplication.getProductsArraylist().size());
-                }
-            }, 0, 1, TimeUnit.SECONDS);*/
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
@@ -183,14 +192,6 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
             adapterProducts = new OrderReViewRecyclerAdapter(orderReviewMainPOJO.getData().getOrder(),OrderReview.this);
             recListProducts.setAdapter(adapterProducts);
 
-            payment_status = (TextView) findViewById(R.id.payment_status);
-            payment_mode = (TextView) findViewById(R.id.payment_mode);
-            fullName = (TextView) findViewById(R.id.fullName);
-            buildingName = (TextView) findViewById(R.id.buildingName);
-            landmark = (TextView) findViewById(R.id.landmark);
-            address = (TextView) findViewById(R.id.address);
-            mobileNo = (TextView) findViewById(R.id.mobileNo);
-
             total_price.setText(orderReviewMainPOJO.getData().getTotal_price() + " .Rs");
 
             if(orderReviewMainPOJO.getData().getPayment_Status() != null)
@@ -208,6 +209,22 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
             landmark.setText(orderReviewMainPOJO.getData().getAddress().getLandmark());
             address.setText(orderReviewMainPOJO.getData().getAddress().getCity() + ", " + orderReviewMainPOJO.getData().getAddress().getState() + ", " + orderReviewMainPOJO.getData().getAddress().getPincode());
             mobileNo.setText(orderReviewMainPOJO.getData().getAddress().getMobileNo());
+
+            if(orderReviewMainPOJO.getData().getBiker() != null)
+            {
+                BikerHolder.setVisibility(View.VISIBLE);
+                bikerName.setText(orderReviewMainPOJO.getData().getBiker().getBikerName());
+
+                btnCall.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String phone = orderReviewMainPOJO.getData().getBiker().getMobileNo();
+                        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
+                        startActivity(intent);
+                    }
+                });
+            }
+
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());

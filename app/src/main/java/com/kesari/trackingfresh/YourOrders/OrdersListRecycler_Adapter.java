@@ -3,8 +3,8 @@ package com.kesari.trackingfresh.YourOrders;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.IdRes;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,15 +16,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.kesari.trackingfresh.Order.OrderReview;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
+import com.kesari.trackingfresh.Utilities.RecyclerItemClickListener;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 
 import org.json.JSONException;
@@ -33,6 +33,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by kesari-Aniket on 8/1/16.
@@ -43,7 +45,12 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
     private List<OrderSubPOJO> OrdersListReView;
     private String TAG = this.getClass().getSimpleName();
     private Context context;
-    String Value;
+    String ReasonsValue = "";
+    RecyclerView recyclerView;
+    private CancelReasonMainPOJO cancelReasonMainPOJO;
+    Gson gson;
+    private CancelReasons_RecyclerAdapter cancelReasons_recyclerAdapter;
+    String ReasonData = "";
 
     public OrdersListRecycler_Adapter(List<OrderSubPOJO> OrdersListReView,Context context)
     {
@@ -91,39 +98,56 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
 
             holder.total_price.setText(OrdersListReView.get(position).getTotal_price());
 
+
             if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("Rejected"))
             {
+                holder.cancelHolder.setVisibility(View.VISIBLE);
                 holder.order_status.setImageResource(R.drawable.rejected);
                 holder.cancel.setVisibility(View.GONE);
             }
             else if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("Accepted"))
             {
+                holder.cancelHolder.setVisibility(View.GONE);
                 holder.order_status.setImageResource(R.drawable.accepted);
                 holder.cancel.setVisibility(View.VISIBLE);
             }
             else if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("Pending"))
             {
+                holder.cancelHolder.setVisibility(View.GONE);
                 holder.order_status.setImageResource(R.drawable.pending);
                 holder.cancel.setVisibility(View.VISIBLE);
             }
             else if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("Cancelled"))
             {
+                holder.cancelHolder.setVisibility(View.VISIBLE);
                 holder.order_status.setImageResource(R.drawable.cancel);
                 holder.cancel.setVisibility(View.GONE);
             }
             else if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("Delivered"))
             {
+                holder.cancelHolder.setVisibility(View.GONE);
                 holder.order_status.setImageResource(R.drawable.delivered);
                 holder.cancel.setVisibility(View.GONE);
             }
 
+            if(OrdersListReView.get(position).getRemarks() != null)
+            {
+                if(!OrdersListReView.get(position).getRemarks().isEmpty())
+                {
+                    holder.cancelReason.setText(OrdersListReView.get(position).getRemarks());
+                    holder.cancelHolder.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    holder.cancelHolder.setVisibility(View.GONE);
+                }
+            }
 
             holder.cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //updateOrderDetails(OrdersListReView.get(position).get_id(),"Cancelled");
 
-                    SelectReasonForCancellation(position);
+                    fetchCancellationReasons(context,position);
                 }
             });
 
@@ -151,10 +175,10 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
 
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder
     {
-        TextView order_number,customer_name,payment_confirm,payment_mode,time_txt,distance_txt,total_price;
+        TextView order_number,customer_name,payment_confirm,payment_mode,total_price,cancelReason;
         CardView subItemCard_view;
         ImageView order_status;
-        LinearLayout payment_confirmHolder,payment_modeHolder;
+        LinearLayout payment_confirmHolder,payment_modeHolder,cancelHolder;
         Button cancel;
 
         public RecyclerViewHolder(View view)
@@ -164,22 +188,48 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
             customer_name = (TextView)view.findViewById(R.id.customer_name);
             payment_confirm = (TextView)view.findViewById(R.id.payment_confirm);
             payment_mode = (TextView)view.findViewById(R.id.payment_mode);
-            distance_txt = (TextView) view.findViewById(R.id.distance_txt);
-            time_txt = (TextView) view.findViewById(R.id.time_txt);
             subItemCard_view = (CardView) view.findViewById(R.id.subItemCard_view);
             total_price = (TextView) view.findViewById(R.id.total_price);
+            cancelReason = (TextView) view.findViewById(R.id.cancelReason);
 
             payment_confirmHolder = (LinearLayout) view.findViewById(R.id.payment_confirmHolder);
             payment_modeHolder = (LinearLayout) view.findViewById(R.id.payment_modeHolder);
+            cancelHolder = (LinearLayout) view.findViewById(R.id.cancelHolder);
 
             order_status = (ImageView) view.findViewById(R.id.order_status);
             cancel = (Button) view.findViewById(R.id.cancel);
         }
     }
 
-    private void SelectReasonForCancellation(final int position)
-    {
+    private void fetchCancellationReasons(final Context context, final int pos) {
         try {
+
+            String url = Constants.CancellationReasons;
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(context));
+
+            ioUtils.getGETStringRequestHeader(context, url, params, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG, result.toString());
+                    CancelReasonsResponse(result,pos);
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void CancelReasonsResponse(String Reasons, final int position)
+    {
+        try
+        {
+            gson = new Gson();
+            cancelReasonMainPOJO = gson.fromJson(Reasons,CancelReasonMainPOJO.class);
 
             // Create custom dialog object
             final Dialog dialog = new Dialog(context);
@@ -188,65 +238,56 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
             // Set dialog title
             dialog.setTitle("Custom Dialog");
 
-            final RadioGroup reasonGroup = (RadioGroup) dialog.findViewById(R.id.reasonGroup);
-
             Button cancel = (Button) dialog.findViewById(R.id.cancel);
             final EditText editText = (EditText) dialog.findViewById(R.id.other);
 
-            reasonGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+            recyclerView = (RecyclerView) dialog.findViewById(R.id.recyclerView);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+            recyclerView.setHasFixedSize(true);
+            linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            recyclerView.setLayoutManager(linearLayoutManager);
 
-                    int selectedId= reasonGroup.getCheckedRadioButtonId();
-                    RadioButton radioButton =(RadioButton) dialog.findViewById(selectedId);
+            recyclerView.addOnItemTouchListener(
+                    new RecyclerItemClickListener(getApplicationContext(), new RecyclerItemClickListener.OnItemClickListener() {
+                        @Override public void onItemClick(View view, int position) {
 
-                    Value = radioButton.getText().toString();
+                            ReasonData = cancelReasonMainPOJO.getData().get(position).getReason();
 
-                    /*if(radioButton.getText().toString().equalsIgnoreCase("Duplicate order"))
-                    {
+                            if(ReasonData.equalsIgnoreCase("Other"))
+                            {
+                                editText.setVisibility(View.VISIBLE);
+                            }
+                            else
+                            {
+                                editText.setVisibility(View.GONE);
+                                ReasonsValue = cancelReasonMainPOJO.getData().get(position).getReason();
+                            }
+                        }
+                    })
+            );
 
-                    }
-                    else if(radioButton.getText().toString().equalsIgnoreCase("Incorrect order"))
-                    {
-
-                    }
-                    else if(radioButton.getText().toString().equalsIgnoreCase("Change in Quantity"))
-                    {
-
-                    }
-                    else if(radioButton.getText().toString().equalsIgnoreCase("Defective Products"))
-                    {
-
-                    }
-                    else if(radioButton.getText().toString().equalsIgnoreCase("Late Delivery"))
-                    {
-
-                    }
-                    else */
-                    if(radioButton.getText().toString().equalsIgnoreCase("Other"))
-                    {
-                        editText.setVisibility(View.VISIBLE);
-                    }
-                    else
-                    {
-                        editText.setVisibility(View.GONE);
-                    }
-
-                }
-            });
+            cancelReasons_recyclerAdapter = new CancelReasons_RecyclerAdapter(cancelReasonMainPOJO.getData(), context);
+            recyclerView.setAdapter(cancelReasons_recyclerAdapter);
+            cancelReasons_recyclerAdapter.notifyDataSetChanged();
 
             cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    if(!Value.isEmpty())
+                    if(ReasonData.equalsIgnoreCase("Other"))
                     {
-                        updateOrderDetails(OrdersListReView.get(position).get_id(),"Cancelled");
+                        ReasonsValue = editText.getText().toString().trim();
+                    }
+
+                    if(!ReasonsValue.isEmpty())
+                    {
+                        updateOrderDetails(OrdersListReView.get(position).get_id(),"Cancelled",ReasonsValue);
+                        //Toast.makeText(context, ReasonsValue, Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                     }
                     else
                     {
-                        Toast.makeText(context, "Select Reason!!!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Please mention reason!!!", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -261,14 +302,13 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
 
             dialog.show();
 
-        }catch (Exception e)
+        }catch (Exception w)
         {
-            Log.i(TAG,"dialog_Mobile");
+            w.printStackTrace();
         }
-
     }
 
-    private void updateOrderDetails(String orderID, String OrderStatus) {
+    private void updateOrderDetails(String orderID, String OrderStatus,String Remarks) {
         try {
 
             String url = Constants.UpdateOrder;
@@ -281,6 +321,7 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
 
                 postObject.put("id", orderID);
                 postObject.put("status",OrderStatus);
+                postObject.put("remarks",Remarks);
 
                 jsonObject.put("post", postObject);
 
@@ -321,6 +362,8 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
             if(message.equalsIgnoreCase("Updated Successfull!!"))
             {
                 OrderListActivity.getOrderList(context);
+                ReasonsValue = "";
+                ReasonData = "";
             }
 
         } catch (Exception e) {

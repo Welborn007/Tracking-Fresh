@@ -35,12 +35,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.vision.text.Line;
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.BuildConfig;
 import com.kesari.trackingfresh.Cart.AddToCart;
-import com.kesari.trackingfresh.CheckNearestVehicleAvailability.CheckVehicleActivity;
-import com.kesari.trackingfresh.Login.LoginActivity;
+import com.kesari.trackingfresh.DashBoard.VerifyMobilePOJO;
 import com.kesari.trackingfresh.Login.ProfileMain;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.R;
@@ -75,9 +73,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import mehdi.sakout.fancybuttons.FancyButton;
@@ -101,8 +96,9 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
     MyApplication myApplication;
     public static int mNotificationsCount = 0;
     TextView refferal;
-    LinearLayout referral_holder;
-    FancyButton Share;
+    LinearLayout referral_holder,phoneHolder;
+    FancyButton Share,verifiedStatus;
+    VerifyMobilePOJO verifyMobilePOJO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +123,8 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
             referral_holder = (LinearLayout) findViewById(R.id.referral_holder);
             refferal = (TextView) findViewById(R.id.refferal);
             Share = (FancyButton) findViewById(R.id.Share);
+            verifiedStatus = (FancyButton) findViewById(R.id.verifiedStatus);
+            phoneHolder = (LinearLayout) findViewById(R.id.phoneHolder);
 
             getProfileData();
 
@@ -212,7 +210,24 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
         {
             SharedPrefUtil.setUser(getApplicationContext(), Response.toString());
 
-            Phonenumber.setText(SharedPrefUtil.getUser(ProfileActivity.this).getData().getMobileNo());
+            if(SharedPrefUtil.getUser(ProfileActivity.this).getData().getMobileNo() != null)
+            {
+                phoneHolder.setVisibility(View.VISIBLE);
+                if(!SharedPrefUtil.getUser(ProfileActivity.this).getData().getMobileNo().isEmpty())
+                {
+                    phoneHolder.setVisibility(View.VISIBLE);
+                    Phonenumber.setText(SharedPrefUtil.getUser(ProfileActivity.this).getData().getMobileNo());
+                }
+                else
+                {
+                    phoneHolder.setVisibility(View.GONE);
+                }
+            }
+            else
+            {
+                phoneHolder.setVisibility(View.GONE);
+            }
+
             Email.setText(SharedPrefUtil.getUser(ProfileActivity.this).getData().getEmailId());
             customer_name.setText(SharedPrefUtil.getUser(ProfileActivity.this).getData().getFirstName() + " " + SharedPrefUtil.getUser(ProfileActivity.this).getData().getLastName());
 
@@ -222,6 +237,7 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
                 {
                     refferal.setText(SharedPrefUtil.getUser(ProfileActivity.this).getData().getReferralCode());
                     referral_holder.setVisibility(View.VISIBLE);
+                    getVerifiedMobileNumber();
                 }
                 else
                 {
@@ -235,6 +251,58 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
                         .with(ProfileActivity.this)
                         .load(SharedPrefUtil.getUser(ProfileActivity.this).getData().getProfileImage())
                         .into(profile_image);
+            }
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void getVerifiedMobileNumber()
+    {
+        try
+        {
+
+            String url = Constants.VerifyMobile + SharedPrefUtil.getUser(ProfileActivity.this).getData().get_id();
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(ProfileActivity.this));
+
+            ioUtils.getGETStringRequestHeader(ProfileActivity.this, url , params , new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG, result.toString());
+
+                    VerifyResponse(result);
+
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void VerifyResponse(String Response)
+    {
+        try
+        {
+
+            verifyMobilePOJO = gson.fromJson(Response, VerifyMobilePOJO.class);
+
+            if(verifyMobilePOJO.getMessage().equalsIgnoreCase("Mobile number not found"))
+            {
+                verifiedStatus.setVisibility(View.GONE);
+            }
+            else if(verifyMobilePOJO.getMessage().equalsIgnoreCase("Mobile not Verified"))
+            {
+                verifiedStatus.setVisibility(View.GONE);
+            }
+            else if(verifyMobilePOJO.getMessage().equalsIgnoreCase("Mobile Verified"))
+            {
+                verifiedStatus.setVisibility(View.VISIBLE);
             }
 
         } catch (Exception e) {

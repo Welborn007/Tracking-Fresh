@@ -32,6 +32,16 @@ public class OrderSubPOJO {
 
     private String editedAt;
 
+    private String remarks;
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
     public String getPayment_Mode() {
         return payment_Mode;
     }

@@ -45,6 +45,8 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.Cart.AddToCart;
+import com.kesari.trackingfresh.HelpAndFAQ.HelpActivity;
+import com.kesari.trackingfresh.Legal.LegalActivity;
 import com.kesari.trackingfresh.Login.LoginActivity;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.MyProfile.ProfileActivity;
@@ -52,6 +54,7 @@ import com.kesari.trackingfresh.OTP.OTP;
 import com.kesari.trackingfresh.OTP.SendOtpPOJO;
 import com.kesari.trackingfresh.ProductMainFragment.Product_Fragment;
 import com.kesari.trackingfresh.R;
+import com.kesari.trackingfresh.ReferEarn.ReferralCodeActivity;
 import com.kesari.trackingfresh.TKCash.TKWalletActivity;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
@@ -106,7 +109,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
     String subAdminArea = "";
     String subLocality = "";
     MyApplication myApplication ;
-    RelativeLayout my_orders_holder,profile_holder,help_holder,route_holder;
+    RelativeLayout my_orders_holder,profile_holder,help_holder,route_holder,refer_earn,legalHolder;
 
     private Gson gson;
     VerifyMobilePOJO verifyMobilePOJO;
@@ -115,6 +118,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
     private ViewGroup mSnackbarContainer;
     CircleImageView profile_image;
     //ScheduledExecutorService scheduleTaskExecutor;
+    TextView walletAmount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +152,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             filter = (ImageView) findViewById(R.id.filter);
             map_View = (ImageView) findViewById(R.id.map_View);
 
+            getProfileDataOnCreate();
 
             map_View.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -162,19 +167,22 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
 
             my_orders_holder = (RelativeLayout) header.findViewById(R.id.my_orders_holder);
             name_Login = (TextView) header.findViewById(R.id.name_Login);
-            profile_image = (CircleImageView) header.findViewById(R.id.profile_image);
-
-            if(SharedPrefUtil.getUser(DashboardActivity.this).getData().getProfileImage() != null)
-            {
-                Picasso
-                        .with(DashboardActivity.this)
-                        .load(SharedPrefUtil.getUser(DashboardActivity.this).getData().getProfileImage())
-                        .into(profile_image);
-            }
 
             profile_holder = (RelativeLayout) header.findViewById(R.id.profile_holder);
             help_holder = (RelativeLayout) header.findViewById(R.id.help_holder);
             route_holder = (RelativeLayout) header.findViewById(R.id.route_holder);
+            refer_earn = (RelativeLayout) header.findViewById(R.id.refer_earn);
+            profile_image = (CircleImageView) header.findViewById(R.id.profile_image);
+            walletAmount = (TextView) header.findViewById(R.id.walletAmount);
+            legalHolder = (RelativeLayout) header.findViewById(R.id.legalHolder);
+
+            refer_earn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(DashboardActivity.this, ReferralCodeActivity.class);
+                    startActivity(intent);
+                }
+            });
 
             route_holder.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -184,21 +192,21 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 }
             });
 
-            try
-            {
-                pref = getApplicationContext().getSharedPreferences("MyPref", 0);
-                name = SharedPrefUtil.getUser(DashboardActivity.this).getData().getFirstName();
-                name_Login.setText(name);
-
-            }catch (Exception e)
-            {
-                name = "Guest";
-            }
+            pref = getApplicationContext().getSharedPreferences("MyPref", 0);
 
             help_holder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Intent intent = new Intent(DashboardActivity.this, HelpActivity.class);
+                    startActivity(intent);
+                }
+            });
 
+            legalHolder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(DashboardActivity.this, LegalActivity.class);
+                    startActivity(intent);
                 }
             });
 
@@ -259,6 +267,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
 
             updateNotificationsBadge(myApplication.getProductsArraylist().size());
 
+
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
@@ -292,8 +301,99 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
         {
             SharedPrefUtil.setUser(getApplicationContext(), Response.toString());
 
+            if(SharedPrefUtil.getUser(DashboardActivity.this).getData().getWalletAmount() != null)
+            {
+                if(!SharedPrefUtil.getUser(DashboardActivity.this).getData().getWalletAmount().isEmpty())
+                {
+                    walletAmount.setText(SharedPrefUtil.getUser(DashboardActivity.this).getData().getWalletAmount());
+                }
+                else
+                {
+                    walletAmount.setText("0");
+                }
+            }
+
+            if(SharedPrefUtil.getUser(DashboardActivity.this).getData().getProfileImage() != null)
+            {
+                        Picasso
+                        .with(DashboardActivity.this)
+                        .load(SharedPrefUtil.getUser(DashboardActivity.this).getData().getProfileImage())
+                        .into(profile_image);
+            }
+
+            try
+            {
+                name = SharedPrefUtil.getUser(DashboardActivity.this).getData().getFirstName();
+                name_Login.setText(name);
+
+            }catch (Exception e)
+            {
+                name = "Guest";
+            }
+
             PopupWindow popupwindow_obj = popupDisplay();
             popupwindow_obj.showAtLocation(filter, Gravity.TOP| Gravity.RIGHT, 50, 150);
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void getProfileDataOnCreate() {
+        try {
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(DashboardActivity.this));
+
+            ioUtils.getPOSTStringRequestHeader(DashboardActivity.this,Constants.Profile, params, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.i("profile_result",result);
+                    profileDataResponseOnCreate(result);
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void profileDataResponseOnCreate(String Response)
+    {
+        try
+        {
+            SharedPrefUtil.setUser(getApplicationContext(), Response.toString());
+
+            if(SharedPrefUtil.getUser(DashboardActivity.this).getData().getWalletAmount() != null)
+            {
+                if(!SharedPrefUtil.getUser(DashboardActivity.this).getData().getWalletAmount().isEmpty())
+                {
+                    walletAmount.setText(SharedPrefUtil.getUser(DashboardActivity.this).getData().getWalletAmount());
+                }
+                else
+                {
+                    walletAmount.setText("0");
+                }
+            }
+
+            if(SharedPrefUtil.getUser(DashboardActivity.this).getData().getProfileImage() != null)
+            {
+                         Picasso
+                        .with(DashboardActivity.this)
+                        .load(SharedPrefUtil.getUser(DashboardActivity.this).getData().getProfileImage())
+                        .into(profile_image);
+            }
+
+            try
+            {
+                name = SharedPrefUtil.getUser(DashboardActivity.this).getData().getFirstName();
+                name_Login.setText(name);
+
+            }catch (Exception e)
+            {
+                name = "Guest";
+            }
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
@@ -705,6 +805,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                                 Toast.makeText(getApplicationContext(),"Logged Out", Toast.LENGTH_SHORT).show();
                                 finish();
                                 Intent i=new Intent(DashboardActivity.this,LoginActivity.class);
+                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(i);
 
                                 editor = pref.edit();

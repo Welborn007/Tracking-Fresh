@@ -108,6 +108,14 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
 
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
+            sendLATLONVehicle();
+        }
+    }
 
     private void sendLATLONVehicle()
     {

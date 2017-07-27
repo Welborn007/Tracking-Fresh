@@ -95,6 +95,9 @@ public interface Constants {
     //Verify Duplicate Mobile No
     String VerifyDuplicate = "http://"+ LIVEIP + "/api/customer/mobile/";
 
+    //Cancellation / Rejection reasons
+    String CancellationReasons = "http://"+ LIVEIP + "/api/order/reason";
+
     // Milliseconds per second
     public static final int MILLISECONDS_PER_SECOND = 1000;
     // Update frequency in seconds

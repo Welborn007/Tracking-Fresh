@@ -65,6 +65,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.CheckNearestVehicleAvailability.CheckVehicleActivity;
+import com.kesari.trackingfresh.ForgetPassword.ForgotPassword_Activity;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Register.RegisterActivity;
@@ -118,7 +119,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
     boolean permission = false;
     EditText user_name, password;
-
+    private Boolean exit = false;
     private Gson gson;
     LoginMain loginMain;
 
@@ -183,7 +184,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             sharedpreferencesLogin = getSharedPreferences(MyPREFERENCES_LOGIN, Context.MODE_PRIVATE);
 
             String token = sharedpreferencesLogin.getString("token", "None");
-            Log.i("token", token);
+            Log.i("Firebasetoken", token);
 
             btnLogin.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -230,8 +231,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             btnForget.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    /*Intent startMainActivity = new Intent(getApplicationContext(), ForgotPassword_Activity.class);
-                    startActivity(startMainActivity);*/
+                    Intent startMainActivity = new Intent(getApplicationContext(), ForgotPassword_Activity.class);
+                    startActivity(startMainActivity);
                 }
             });
 
@@ -474,7 +475,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 sendRegisterData(firstname, lastname,  Email, Type, SocialID);
             }
 
-            FireToast.customSnackbar(context, errorString,"");
+            //FireToast.customSnackbar(context, errorString,"");
 
         }
         else if(errorPOJO.getMessage() != null)
@@ -1183,5 +1184,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (exit) {
+            finish(); // finish activity
+        } else {
+            Toast.makeText(this, "Press Back again to Exit.",
+                    Toast.LENGTH_SHORT).show();
+            exit = true;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    exit = false;
+                }
+            }, 3 * 1000);
+
+        }
+
     }
 }

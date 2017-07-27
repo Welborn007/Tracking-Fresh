@@ -101,6 +101,7 @@
 
             <LinearLayout
                 android:padding="5dp"
+                android:id="@+id/phoneHolder"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -116,7 +117,7 @@
                     fancy:fb_text=""
                     fancy:fb_fontIconResource="&#xf095;"
                     fancy:fb_defaultColor="@color/full_trans"
-                    fancy:fb_focusColor="#2e5071"
+                    fancy:fb_focusColor="@color/full_trans"
                     fancy:fb_radius="5dp"
                     fancy:fb_textColor="@color/Gray"
                     fancy:fb_textSize="18sp" />
@@ -131,6 +132,25 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_size"
                     />
+
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:id="@+id/verifiedStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    fancy:fb_borderColor="#FFFFFF"
+                    fancy:fb_borderWidth="1dp"
+                    fancy:fb_iconPosition="right"
+                    fancy:fb_iconPaddingLeft="10dp"
+                    android:visibility="gone"
+                    fancy:fb_text="Verified"
+                    android:layout_marginLeft="10dp"
+                    fancy:fb_fontIconResource="&#xf00c;"
+                    fancy:fb_defaultColor="@color/full_trans"
+                    fancy:fb_focusColor="@color/full_trans"
+                    fancy:fb_radius="5dp"
+                    fancy:fb_textColor="@color/MoneyGreen"
+                    fancy:fb_textSize="18sp" />
 
             </LinearLayout>
 
@@ -147,13 +167,13 @@
                     android:padding="5dp"
                     fancy:fb_borderColor="#FFFFFF"
                     fancy:fb_borderWidth="1dp"
-                    fancy:fb_iconPosition="right"
-                    fancy:fb_iconPaddingLeft="10dp"
-                    fancy:fb_text=""
-                    fancy:fb_fontIconResource="&#xf0e0;"
                     fancy:fb_defaultColor="@color/full_trans"
-                    fancy:fb_focusColor="#2e5071"
+                    fancy:fb_focusColor="@color/full_trans"
+                    fancy:fb_fontIconResource="&#xf0e0;"
+                    fancy:fb_iconPaddingLeft="10dp"
+                    fancy:fb_iconPosition="right"
                     fancy:fb_radius="5dp"
+                    fancy:fb_text=""
                     fancy:fb_textColor="@color/Gray"
                     fancy:fb_textSize="18sp" />
 
