@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:background="@android:color/white"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     tools:showIn="@layout/activity_default__delivery_address"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:layout_height="match_parent">
@@ -16,6 +17,7 @@
         android:drawablePadding="-190dp"
         android:padding="10dp"
         android:textSize="@dimen/text_size"
+        android:textStyle="bold"
         android:background="@color/Button_Color"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -36,49 +38,45 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_margin="5dp"
-                android:weightSum="2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:text="Your Default Delivery Location"
+                    android:text="Default Delivery Address"
                     android:textColor="@color/black"
                     android:layout_margin="5dp"
                     android:padding="10dp"
-                    android:layout_weight="1.7"
-                    android:textSize="@dimen/text_size"
+                    android:textSize="@dimen/text_size14"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
-                <Button
+                <mehdi.sakout.fancybuttons.FancyButton
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:text="New"
-                    android:layout_margin="5dp"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    fancy:fb_text="New"
+                    android:layout_gravity="center"
                     android:id="@+id/btnNew"
-                    android:layout_gravity="center"
-                    android:layout_weight="0.3"
-                    android:textSize="@dimen/text_size"
-                    android:background="@drawable/rounded_btn"
-                    android:textStyle="bold"
-                    android:textColor="@color/TextColor"
-                    android:textAppearance="?android:textAppearanceMedium"
-                    />
+                    fancy:fb_defaultColor="@color/Button_Color"
+                    fancy:fb_focusColor="@color/colorPrimary"
+                    fancy:fb_radius="5dp"
+                    fancy:fb_textColor="@color/white"
+                    fancy:fb_textSize="18sp" />
 
-                <Button
+                <mehdi.sakout.fancybuttons.FancyButton
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:text="Change"
-                    android:layout_margin="5dp"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    fancy:fb_text="Change"
                     android:id="@+id/btnChange"
-                    android:layout_weight="0.3"
                     android:layout_gravity="center"
-                    android:textSize="@dimen/text_size"
-                    android:background="@drawable/rounded_btn"
-                    android:textStyle="bold"
-                    android:textColor="@color/TextColor"
-                    android:textAppearance="?android:textAppearanceMedium"
-                    />
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    fancy:fb_defaultColor="@color/Button_Color"
+                    fancy:fb_focusColor="@color/colorPrimary"
+                    fancy:fb_radius="5dp"
+                    fancy:fb_textColor="@color/white"
+                    fancy:fb_textSize="18sp" />
 
             </LinearLayout>
 
@@ -94,15 +92,16 @@
                     android:id="@+id/name"
                     android:text="Vaibhav Palyekar"
                     android:textColor="@color/black"
-                    android:padding="10dp"
+                    android:paddingLeft="10dp"
                     android:textSize="@dimen/text_size"
+                    android:textStyle="bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
                 <TextView
                     android:id="@+id/address"
                     android:text="Saket co-op Housing Society, Mira Road"
-                    android:textColor="@color/black"
+                    android:textColor="@color/Gray"
                     android:layout_marginLeft="35dp"
                     android:textSize="14sp"
                     android:layout_width="wrap_content"
@@ -116,7 +115,7 @@
                     <TextView
                         android:id="@+id/city"
                         android:text="Mumbai"
-                        android:textColor="@color/black"
+                        android:textColor="@color/Gray"
                         android:layout_marginLeft="35dp"
                         android:textSize="14sp"
                         android:layout_width="wrap_content"
@@ -125,7 +124,7 @@
                     <TextView
                         android:id="@+id/pincode"
                         android:text="400015"
-                        android:textColor="@color/black"
+                        android:textColor="@color/Gray"
                         android:layout_marginLeft="10dp"
                         android:textSize="14sp"
                         android:layout_width="wrap_content"
@@ -149,18 +148,19 @@
 
     </LinearLayout>
 
-    <Button
+    <mehdi.sakout.fancybuttons.FancyButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="View Order"
-        android:layout_margin="5dp"
+        android:padding="5dp"
+        fancy:fb_text="View Order"
         android:layout_alignParentBottom="true"
         android:id="@+id/btnSubmit"
-        android:textSize="@dimen/text_size"
-        android:background="@drawable/rounded_btn"
-        android:textStyle="bold"
-        android:textColor="@color/TextColor"
-        android:textAppearance="?android:textAppearanceMedium"
-        />
+        android:layout_margin="5dp"
+        fancy:fb_defaultColor="@color/Button_Color"
+        fancy:fb_focusColor="@color/colorPrimary"
+        fancy:fb_radius="5dp"
+        fancy:fb_textColor="@color/white"
+        fancy:fb_textSize="18sp" />
+
 
 </RelativeLayout>

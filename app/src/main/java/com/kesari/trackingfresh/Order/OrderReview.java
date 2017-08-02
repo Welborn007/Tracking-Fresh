@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +18,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -37,8 +37,12 @@ import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.ActionClickListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import mehdi.sakout.fancybuttons.FancyButton;
 
 import static com.kesari.trackingfresh.Utilities.IOUtils.setBadgeCount;
 
@@ -52,14 +56,15 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
     private Gson gson;
     OrderReviewMainPOJO orderReviewMainPOJO;
     private RecyclerView.Adapter adapterProducts;
-    TextView total_price,payment_status,payment_mode,fullName,buildingName,landmark,address,mobileNo,bikerName;
-    Button btnSubmit,btnCall,btnSupport;
+    TextView total_price,payment_status,payment_mode,fullName,buildingName,landmark,address,mobileNo,bikerName,deliveryCharge,orderDate,orderDeliverDate,delivery_textData,orderNo;
+    FancyButton btnSubmit,btnCall,btnSupport;
 
-    LinearLayout BikerHolder;
+    LinearLayout BikerHolder,deliveryDateHolder;
 
     //ScheduledExecutorService scheduleTaskExecutor;
     MyApplication myApplication;
     public static int mNotificationsCount = 0;
+    private SwipeRefreshLayout swipeContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +92,7 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
             recListProducts.setLayoutManager(ProductsLayout);
 
             total_price = (TextView) findViewById(R.id.total_price);
+            deliveryCharge = (TextView) findViewById(R.id.deliveryCharge);
             payment_status = (TextView) findViewById(R.id.payment_status);
             payment_mode = (TextView) findViewById(R.id.payment_mode);
             fullName = (TextView) findViewById(R.id.fullName);
@@ -94,13 +100,18 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
             landmark = (TextView) findViewById(R.id.landmark);
             address = (TextView) findViewById(R.id.address);
             mobileNo = (TextView) findViewById(R.id.mobileNo);
+            orderDate = (TextView) findViewById(R.id.orderDate);
+            orderDeliverDate = (TextView) findViewById(R.id.orderDeliverDate);
+            delivery_textData = (TextView) findViewById(R.id.delivery_textData);
+            orderNo = (TextView) findViewById(R.id.orderNo);
 
             BikerHolder = (LinearLayout) findViewById(R.id.BikerHolder);
+            deliveryDateHolder = (LinearLayout) findViewById(R.id.deliveryDateHolder);
             bikerName = (TextView) findViewById(R.id.bikerName);
-            btnCall = (Button) findViewById(R.id.btnCall);
-            btnSupport = (Button) findViewById(R.id.btnSupport);
+            btnCall = (FancyButton) findViewById(R.id.btnCall);
+            btnSupport = (FancyButton) findViewById(R.id.btnSupport);
 
-            btnSubmit = (Button) findViewById(R.id.btnSubmit);
+            btnSubmit = (FancyButton) findViewById(R.id.btnSubmit);
 
             final String orderID = getIntent().getStringExtra("orderID");
 
@@ -137,6 +148,23 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
                 }
             }
 
+            swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+            // Setup refresh listener which triggers new data loading
+            swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    // Your code to refresh the list here.
+                    // Make sure you call swipeContainer.setRefreshing(false)
+                    // once the network request has completed successfully.
+                    getOrderDetailsfromID();
+                }
+            });
+            // Configure the refreshing colors
+            swipeContainer.setColorSchemeResources(R.color.colorAccent,
+                    android.R.color.holo_green_light,
+                    android.R.color.holo_orange_light,
+                    android.R.color.holo_red_light);
+
             getOrderDetailsfromID();
 
 
@@ -164,7 +192,7 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
                 @Override
                 public void onSuccess(String result) {
                     Log.d(TAG, result.toString());
-
+                    swipeContainer.setRefreshing(false);
                     OrderDetailsResponse(result);
                 }
             });
@@ -193,6 +221,7 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
             recListProducts.setAdapter(adapterProducts);
 
             total_price.setText(orderReviewMainPOJO.getData().getTotal_price() + " .Rs");
+            deliveryCharge.setText(orderReviewMainPOJO.getData().getDelivery_charge() + " .Rs");
 
             if(orderReviewMainPOJO.getData().getPayment_Status() != null)
             {
@@ -209,6 +238,30 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
             landmark.setText(orderReviewMainPOJO.getData().getAddress().getLandmark());
             address.setText(orderReviewMainPOJO.getData().getAddress().getCity() + ", " + orderReviewMainPOJO.getData().getAddress().getState() + ", " + orderReviewMainPOJO.getData().getAddress().getPincode());
             mobileNo.setText(orderReviewMainPOJO.getData().getAddress().getMobileNo());
+            orderNo.setText(orderReviewMainPOJO.getData().getOrderNo());
+
+            SimpleDateFormat sdfInput = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            SimpleDateFormat sdfOutput = new SimpleDateFormat("dd-MM-yyyy");
+            Date d = sdfInput.parse(orderReviewMainPOJO.getData().getCreatedAt());
+            String orderDateFormatted = sdfOutput.format(d);
+            orderDate.setText(orderDateFormatted);
+
+            if(orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Delivered"))
+            {
+                deliveryDateHolder.setVisibility(View.VISIBLE);
+                SimpleDateFormat deliverInput = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                SimpleDateFormat deliverOutput = new SimpleDateFormat("dd-MM-yyyy");
+                Date deliver = deliverInput.parse(orderReviewMainPOJO.getData().getEditedAt());
+                String orderdeliverDateFormatted = deliverOutput.format(deliver);
+                orderDeliverDate.setText(orderdeliverDateFormatted);
+
+                delivery_textData.setText(" delivered the order.");
+            }
+            else
+            {
+                deliveryDateHolder.setVisibility(View.GONE);
+                delivery_textData.setText(" will deliver the order.");
+            }
 
             if(orderReviewMainPOJO.getData().getBiker() != null)
             {

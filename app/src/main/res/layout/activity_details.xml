@@ -32,6 +32,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:theme="@style/ToolbarStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_collapseMode="pin"
+                    android:background="@drawable/header2"
+                    android:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+                </android.support.v7.widget.Toolbar>
+
                 <TextView
                     android:id="@+id/title_productname"
                     android:text="Tomato,1kg"
@@ -39,6 +49,7 @@
                     android:textColor="@color/white"
                     android:padding="15dp"
                     android:textStyle="bold"
+                    android:visibility="gone"
                     android:textSize="@dimen/text_size"
                     android:background="@color/Button_Color"
                     android:layout_width="match_parent"
@@ -49,15 +60,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
                     />
-            </LinearLayout>
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                android:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-            </android.support.v7.widget.Toolbar>
+            </LinearLayout>
 
         </android.support.design.widget.CollapsingToolbarLayout>
 

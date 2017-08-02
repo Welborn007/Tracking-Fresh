@@ -16,7 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -40,6 +39,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import mehdi.sakout.fancybuttons.FancyButton;
+
 public class ConfirmOrderActivity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt{
 
     private String TAG = this.getClass().getSimpleName();
@@ -51,7 +52,7 @@ public class ConfirmOrderActivity extends AppCompatActivity implements NetworkUt
     private Gson gson;
     private RecyclerView.Adapter confirmOrderAdapter;
     private OrderFareMainPOJO orderFareMainPOJO;
-    private Button confirm_Order_pay;
+    private FancyButton confirm_Order_pay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +91,7 @@ public class ConfirmOrderActivity extends AppCompatActivity implements NetworkUt
             order_status = (TextView) findViewById(R.id.order_status);
             order_total = (TextView) findViewById(R.id.order_total);
             delivery_charge = (TextView) findViewById(R.id.delivery_charge);
-            confirm_Order_pay = (Button) findViewById(R.id.btnSubmit);
+            confirm_Order_pay = (FancyButton) findViewById(R.id.btnSubmit);
             recyclerViewConfirmOrder = (RecyclerView) findViewById(R.id.recyclerView);
 
             order_placed_by.setText(getIntent().getStringExtra("OrderPlacedBy"));

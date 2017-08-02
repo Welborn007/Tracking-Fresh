@@ -96,7 +96,10 @@ public interface Constants {
     String VerifyDuplicate = "http://"+ LIVEIP + "/api/customer/mobile/";
 
     //Cancellation / Rejection reasons
-    String CancellationReasons = "http://"+ LIVEIP + "/api/order/reason";
+    String Reasons = "http://"+ LIVEIP + "/api/order/reason?reason=";
+
+    //Send Firebase Token
+    String FirebaseToken =  "http://"+ LIVEIP + "/api/customer/fbt";
 
     // Milliseconds per second
     public static final int MILLISECONDS_PER_SECOND = 1000;

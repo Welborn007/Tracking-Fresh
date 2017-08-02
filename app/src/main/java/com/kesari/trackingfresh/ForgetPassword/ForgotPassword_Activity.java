@@ -7,12 +7,13 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -33,13 +34,15 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import mehdi.sakout.fancybuttons.FancyButton;
+
 public class ForgotPassword_Activity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt {
 
     private String TAG = this.getClass().getSimpleName();
     private NetworkUtilsReceiver networkUtilsReceiver;
 
     private EditText mobile,email;
-    private Button btnSubmit;
+    private FancyButton btnSubmit;
     private String input;
 
     boolean mobileBoolean = false;
@@ -51,11 +54,16 @@ public class ForgotPassword_Activity extends AppCompatActivity implements Networ
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_forgot_password_);
 
-        Toast.makeText(this, "Forget Password", Toast.LENGTH_SHORT).show();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        setTitle("Forget Password");
+        toolbar.setTitleTextColor(ContextCompat.getColor(ForgotPassword_Activity.this,R.color.black));
 
         mobile = (EditText) findViewById(R.id.mobile);
         email = (EditText) findViewById(R.id.email);
-        btnSubmit = (Button) findViewById(R.id.btnSubmit);
+        btnSubmit = (FancyButton) findViewById(R.id.btnSubmit);
 
 
         mobile.setOnFocusChangeListener(new View.OnFocusChangeListener() {

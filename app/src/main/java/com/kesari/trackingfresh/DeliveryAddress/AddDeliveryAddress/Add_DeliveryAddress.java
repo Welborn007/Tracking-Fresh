@@ -20,7 +20,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -51,10 +50,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import mehdi.sakout.fancybuttons.FancyButton;
+
 public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt,OnMapReadyCallback
 {
 
-    Button confirmAddress;
+    FancyButton confirmAddress;
     EditText name,email,mobile,city,state,pincode,flat_no,building_name,landmark,addressType;
     private String TAG = this.getClass().getSimpleName();
     //private GPSTracker gpsTracker;
@@ -124,7 +125,7 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
             }
             supportMapFragment.getMapAsync(this);
 
-            confirmAddress = (Button) findViewById(R.id.confirmAddress);
+            confirmAddress = (FancyButton) findViewById(R.id.confirmAddress);
 
             name = (EditText) findViewById(R.id.name);
             email = (EditText) findViewById(R.id.email);

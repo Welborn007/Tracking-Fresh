@@ -22,7 +22,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -64,7 +63,7 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
     private MyDataAdapter myDataAdapter;
     //List<Product_POJO> product_pojos = new ArrayList<>();
     TextView cart_count;
-    Button checkOut;
+    FancyButton checkOut;
     MyApplication myApplication;
     private RelativeLayout relativeLayout;
     private TextView valueTV;
@@ -109,7 +108,7 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
 
             gridview = (GridView) findViewById(R.id.list);
             cart_count = (TextView) findViewById(R.id.cart_count);
-            checkOut = (Button) findViewById(R.id.checkOut);
+            checkOut = (FancyButton) findViewById(R.id.checkOut);
             relativeLayout = (RelativeLayout) findViewById(R.id.relativelay_reclview);
             valueTV = new TextView(AddToCart.this);
 
@@ -347,11 +346,10 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
                                 final Dialog dialog = new Dialog(activity);
                                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                 dialog.setContentView(R.layout.item_unavailable_dialog);
-                                dialog.setCanceledOnTouchOutside(false);
                                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
                                 dialog.show();
 
-                                Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
+                                FancyButton btnCancel = (FancyButton) dialog.findViewById(R.id.btnCancel);
                                 btnCancel.setText("Oops! Only " + product_pojo.getAvailableQuantity() + " items available!!");
                                 btnCancel.setOnClickListener(new View.OnClickListener() {
                                     @Override

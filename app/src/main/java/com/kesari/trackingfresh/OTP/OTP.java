@@ -18,7 +18,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -41,10 +40,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import mehdi.sakout.fancybuttons.FancyButton;
+
 public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt{
 
     private NetworkUtilsReceiver networkUtilsReceiver;
-    Button send, skip, resend;
+    FancyButton send, skip, resend;
     EditText Otp1,Otp2,Otp3,Otp4;
     private String TAG = this.getClass().getSimpleName();
     Dialog dialog;
@@ -88,8 +89,8 @@ public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.Netwo
                 }
             }
 
-            send = (Button) findViewById(R.id.sendOTP);
-            skip = (Button) findViewById(R.id.skip);
+            send = (FancyButton) findViewById(R.id.sendOTP);
+            skip = (FancyButton) findViewById(R.id.skip);
 
             Otp1 = (EditText) findViewById(R.id.otp1);
             Otp2 = (EditText) findViewById(R.id.otp2);
@@ -190,7 +191,7 @@ public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.Netwo
                 }
             });
 
-            resend = (Button) findViewById(R.id.resendOTP);
+            resend = (FancyButton) findViewById(R.id.resendOTP);
             counter = (TextView) findViewById(R.id.counter);
             number = (TextView) findViewById(R.id.mobinumber);
 

@@ -20,7 +20,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Reasons"
-                android:textColor="@color/DarkGray"
+                android:textColor="@color/black"
                 android:textSize="@dimen/text_size18"
                 android:textStyle="bold" />
 

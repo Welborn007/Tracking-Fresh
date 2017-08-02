@@ -8,13 +8,18 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.Cart.AddToCart;
@@ -54,6 +59,11 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
     MyApplication myApplication;
     public static int mNotificationsCount = 0;
 
+    private static SwipeRefreshLayout swipeContainer;
+
+    public static RelativeLayout relativeLayout;
+    public static TextView valueTV;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +84,25 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
             Orders = new LinearLayoutManager(OrderListActivity.this);
             Orders.setOrientation(LinearLayoutManager.VERTICAL);
             recListOrders.setLayoutManager(Orders);
+
+            relativeLayout = (RelativeLayout) findViewById(R.id.relativelay_reclview);
+
+            swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+            // Setup refresh listener which triggers new data loading
+            swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    // Your code to refresh the list here.
+                    // Make sure you call swipeContainer.setRefreshing(false)
+                    // once the network request has completed successfully.
+                    getOrderList(OrderListActivity.this);
+                }
+            });
+            // Configure the refreshing colors
+            swipeContainer.setColorSchemeResources(R.color.colorAccent,
+                    android.R.color.holo_green_light,
+                    android.R.color.holo_orange_light,
+                    android.R.color.holo_red_light);
 
 
         /*Register receiver*/
@@ -135,6 +164,8 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
                     Log.d("OrderListActivity", result.toString());
 
                     getOrderListResponse(result,context);
+                    swipeContainer.setRefreshing(false);
+
                 }
             });
 
@@ -148,15 +179,31 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
         try
         {
             orderMainPOJO = gson.fromJson(Response, OrderMainPOJO.class);
+            valueTV = new TextView(context);
 
             if(orderMainPOJO.getData().isEmpty())
             {
-                FireToast.customSnackbar(context, "No Orders Found!!!", "");
+                adapterOrders = new OrdersListRecycler_Adapter(orderMainPOJO.getData(),context);
+                recListOrders.setAdapter(adapterOrders);
+                adapterOrders.notifyDataSetChanged();
+
+                recListOrders.setVisibility(View.GONE);
+                relativeLayout.setVisibility(View.VISIBLE);
+                relativeLayout.removeAllViews();
+                valueTV.setText("No Orders Found!!!");
+                valueTV.setGravity(Gravity.CENTER);
+                valueTV.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+                ((RelativeLayout) relativeLayout).addView(valueTV);
+
             }
             else
             {
+                relativeLayout.setVisibility(View.GONE);
+                recListOrders.setVisibility(View.VISIBLE);
+
                 adapterOrders = new OrdersListRecycler_Adapter(orderMainPOJO.getData(),context);
                 recListOrders.setAdapter(adapterOrders);
+                adapterOrders.notifyDataSetChanged();
             }
 
         } catch (Exception e) {

@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
@@ -106,52 +107,50 @@
                 android:layout_below="@+id/counter"
                 android:orientation="horizontal"
                 android:weightSum="3"
+                android:layout_margin="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <Button
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    fancy:fb_text="Verify"
                     android:id="@+id/sendOTP"
-                    android:background="@drawable/rounded_btn"
-                    android:layout_centerHorizontal="true"
-                    android:text="Verify"
                     android:layout_weight="1"
-                    android:textSize="16sp"
-                    android:padding="10dp"
-                    android:textColor="@color/white"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_margin="10dp"
-                    />
+                    fancy:fb_defaultColor="@color/Button_Color"
+                    fancy:fb_focusColor="@color/colorPrimary"
+                    fancy:fb_radius="5dp"
+                    fancy:fb_textColor="@color/white"
+                    fancy:fb_textSize="18sp" />
 
-                <Button
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    fancy:fb_text="Resend OTP"
+                    android:layout_marginLeft="5dp"
                     android:id="@+id/resendOTP"
-                    android:background="@drawable/rounded_btn"
-                    android:layout_below="@+id/sendOTP"
-                    android:layout_width="match_parent"
-                    android:layout_centerHorizontal="true"
-                    android:layout_height="40dp"
-                    android:padding="10dp"
                     android:layout_weight="1"
-                    android:layout_margin="10dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/white"
-                    android:text="Resend OTP"
-                    />
+                    fancy:fb_defaultColor="@color/Button_Color"
+                    fancy:fb_focusColor="@color/colorPrimary"
+                    fancy:fb_radius="5dp"
+                    fancy:fb_textColor="@color/white"
+                    fancy:fb_textSize="18sp" />
 
-                <Button
-                    android:id="@+id/skip"
+                <mehdi.sakout.fancybuttons.FancyButton
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:text="Skip"
-                    android:padding="10dp"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    fancy:fb_text="Skip"
+                    android:id="@+id/skip"
+                    android:layout_marginLeft="5dp"
                     android:layout_weight="1"
-                    android:layout_centerHorizontal="true"
-                    android:layout_margin="10dp"
-                    android:layout_below="@+id/resendOTP"
-                    android:background="@drawable/rounded_btn"
-                    />
+                    fancy:fb_defaultColor="@color/Button_Color"
+                    fancy:fb_focusColor="@color/colorPrimary"
+                    fancy:fb_radius="5dp"
+                    fancy:fb_textColor="@color/white"
+                    fancy:fb_textSize="18sp" />
 
             </LinearLayout>
 

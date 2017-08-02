@@ -16,6 +16,7 @@
         android:textColor="@color/white"
         android:drawablePadding="-190dp"
         android:padding="10dp"
+        android:textStyle="bold"
         android:textSize="@dimen/text_size"
         android:background="@color/Button_Color"
         android:layout_width="match_parent"
@@ -140,18 +141,31 @@
                 android:id="@+id/promocodeText"
                 android:hint="PROMOCODE"
                 android:textSize="18sp"
+                android:drawablePadding="10dp"
                 android:inputType="textCapCharacters"
-                android:layout_marginRight="5dp"
+                android:layout_marginRight="25dp"
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
-            <Button
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                fancy:fb_text="Apply"
+                android:layout_margin="5dp"
                 android:id="@+id/promocodeSubmit"
+                fancy:fb_defaultColor="@color/Button_Color"
+                fancy:fb_focusColor="@color/colorPrimary"
+                fancy:fb_radius="5dp"
+                fancy:fb_textColor="@color/white"
+                fancy:fb_textSize="18sp" />
+
+            <Button
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:text="Apply"
-                android:layout_margin="5dp"
+                android:visibility="gone"
                 android:padding="5dp"
                 android:layout_alignParentBottom="true"
                 android:textSize="@dimen/text_size"
@@ -167,6 +181,7 @@
                 fancy:fb_textColor="@color/black"
                 fancy:fb_borderColor="@color/Gray"
                 fancy:fb_defaultColor="#00000000"
+                android:visibility="gone"
                 fancy:fb_focusColor="@color/colorHighlight"
                 fancy:fb_textSize="8sp"
                 fancy:fb_text=""
@@ -256,13 +271,26 @@
 
     </LinearLayout>
 
+
+    <mehdi.sakout.fancybuttons.FancyButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_margin="5dp"
+        fancy:fb_text="Place Order"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/btnSubmit"
+        fancy:fb_defaultColor="@color/Button_Color"
+        fancy:fb_focusColor="@color/colorPrimary"
+        fancy:fb_radius="5dp"
+        fancy:fb_textColor="@color/white"
+        fancy:fb_textSize="18sp" />
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Place Order"
-        android:layout_margin="5dp"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/btnSubmit"
+        android:visibility="gone"
         android:textSize="@dimen/text_size"
         android:background="@drawable/rounded_btn"
         android:textStyle="bold"

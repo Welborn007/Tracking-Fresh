@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:paddingBottom="10dp"
     android:layout_width="match_parent"
@@ -154,13 +155,26 @@
 
     </android.support.v4.widget.NestedScrollView>
 
+    <mehdi.sakout.fancybuttons.FancyButton
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        fancy:fb_text="Confirm Address"
+        android:id="@+id/confirmAddress"
+        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"
+        fancy:fb_defaultColor="@color/Button_Color"
+        fancy:fb_focusColor="@color/colorPrimary"
+        fancy:fb_radius="5dp"
+        fancy:fb_textColor="@color/white"
+        fancy:fb_textSize="18sp" />
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Confirm Address"
         android:layout_margin="5dp"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/confirmAddress"
+        android:visibility="gone"
         android:textSize="@dimen/text_size"
         android:background="@drawable/rounded_btn"
         android:textStyle="bold"

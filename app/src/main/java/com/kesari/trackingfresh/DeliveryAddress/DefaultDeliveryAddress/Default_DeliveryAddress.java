@@ -20,12 +20,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.AddToCart.AddCart_model;
@@ -58,12 +58,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import mehdi.sakout.fancybuttons.FancyButton;
+
 import static com.kesari.trackingfresh.Utilities.IOUtils.setBadgeCount;
 
 public class Default_DeliveryAddress extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt{
 
     private NetworkUtilsReceiver networkUtilsReceiver;
-    Button btnSubmit,btnChange,btnNew;
+    FancyButton btnSubmit,btnChange,btnNew;
     //private GPSTracker gpsTracker;
     private Location Current_Origin;
     private String TAG = this.getClass().getSimpleName();
@@ -134,9 +136,9 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
                 }
             }
 
-            btnSubmit = (Button) findViewById(R.id.btnSubmit);
-            btnChange = (Button) findViewById(R.id.btnChange);
-            btnNew = (Button) findViewById(R.id.btnNew);
+            btnSubmit = (FancyButton) findViewById(R.id.btnSubmit);
+            btnChange = (FancyButton) findViewById(R.id.btnChange);
+            btnNew = (FancyButton) findViewById(R.id.btnNew);
 
             name = (TextView) findViewById(R.id.name);
             address = (TextView) findViewById(R.id.address);
@@ -185,7 +187,21 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
 
                     if(default_address)
                     {
-                        addOrderListFromCart();
+                        if(SharedPrefUtil.getNearestVehicle(Default_DeliveryAddress.this) != null)
+                        {
+                            if(!SharedPrefUtil.getNearestVehicle(Default_DeliveryAddress.this).getData().get(0).getVehicle_id().isEmpty())
+                            {
+                                addOrderListFromCart();
+                            }
+                            else
+                            {
+                                Toast.makeText(Default_DeliveryAddress.this, "Sorry Vehicle Left!!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        else
+                        {
+                            Toast.makeText(Default_DeliveryAddress.this, "Sorry Vehicle Left!!", Toast.LENGTH_SHORT).show();
+                        }
                     }
                     else
                     {
@@ -307,6 +323,7 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
                     cartItemsObjedct.put("productName",myApplication.getProductsArraylist().get(i).getProductName());
                     cartItemsObjedct.put("quantity",myApplication.getProductsArraylist().get(i).getQuantity());
                     cartItemsObjedct.put("price",myApplication.getProductsArraylist().get(i).getPrice());
+                    cartItemsObjedct.put("productImage",myApplication.getProductsArraylist().get(i).getProductImage());
                     //cartItemsObjedct.put("active",myApplication.getProductsArraylist().get(i).getActive());
                     cartItemsArray.put(cartItemsObjedct);
                 }
@@ -449,7 +466,7 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
 
             TextView delivery_text;
             EditText name,email,mobile,flat_no,building_name,landmark,city,state,pincode;
-            Button confirmAddress;
+            FancyButton confirmAddress;
 
             delivery_text = (TextView) dialog.findViewById(R.id.delivery_text);
             name = (EditText) dialog.findViewById(R.id.name);
@@ -462,7 +479,7 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
             state = (EditText) dialog.findViewById(R.id.state);
             pincode = (EditText) dialog.findViewById(R.id.pincode);
 
-            confirmAddress = (Button) dialog.findViewById(R.id.confirmAddress);
+            confirmAddress = (FancyButton) dialog.findViewById(R.id.confirmAddress);
 
             delivery_text.setText("Set new Default Delivery Address");
             name.setText(SharedPrefUtil.getUser(Default_DeliveryAddress.this).getData().getFirstName() + " " + SharedPrefUtil.getUser(Default_DeliveryAddress.this).getData().getLastName());

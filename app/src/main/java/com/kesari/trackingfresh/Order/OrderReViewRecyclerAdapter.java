@@ -45,6 +45,7 @@ public class OrderReViewRecyclerAdapter extends RecyclerView.Adapter<OrderReView
             holder.product_name.setText(OrdersListReView.get(position).getProductName());
             holder.quantity.setText(OrdersListReView.get(position).getQuantity());
             holder.price.setText(OrdersListReView.get(position).getPrice());
+            holder.subtotal.setText(OrdersListReView.get(position).getSub_total());
 
             holder.images.setController(IOUtils.getFrescoImageController(context,OrdersListReView.get(position).getProductImage()));
             holder.images.setHierarchy(IOUtils.getFrescoImageHierarchy(context));
@@ -62,7 +63,7 @@ public class OrderReViewRecyclerAdapter extends RecyclerView.Adapter<OrderReView
 
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder
     {
-        TextView product_name,quantity,price;
+        TextView product_name,quantity,price,subtotal;
         SimpleDraweeView images;
 
         public RecyclerViewHolder(View view)
@@ -71,6 +72,7 @@ public class OrderReViewRecyclerAdapter extends RecyclerView.Adapter<OrderReView
             product_name = (TextView)view.findViewById(R.id.product_name);
             quantity = (TextView)view.findViewById(R.id.quantity);
             price = (TextView)view.findViewById(R.id.price);
+            subtotal = (TextView) view.findViewById(R.id.subtotal);
 
             images = (SimpleDraweeView) view.findViewById(R.id.images);
         }

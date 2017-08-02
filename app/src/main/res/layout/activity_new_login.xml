@@ -9,8 +9,9 @@
 
     <android.support.v7.widget.Toolbar android:id="@+id/toolbar"
         android:layout_marginTop="24dp"
+        android:theme="@style/ToolbarStyle"
         android:layout_width="match_parent" android:layout_height="?attr/actionBarSize"
-        android:background="@color/white" app:popupTheme="@style/AppTheme.PopupOverlay" >
+        android:background="@drawable/header2" app:popupTheme="@style/AppTheme.PopupOverlay" >
 
         <RelativeLayout
             android:layout_width="match_parent"

@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:background="@android:color/white"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     tools:showIn="@layout/activity_order_biker_tracking"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:layout_height="match_parent">
@@ -164,21 +165,21 @@
 
             </android.support.v7.widget.CardView>
 
-            <Button
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="View Order Details"
+                android:padding="5dp"
+                fancy:fb_text="View Order Details"
+                android:id="@+id/btnSubmit"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="5dp"
-                android:id="@+id/btnSubmit"
                 android:layout_alignParentBottom="true"
-                android:textSize="@dimen/text_size"
-                android:background="@drawable/rounded_btn"
-                android:textStyle="bold"
-                android:textColor="@color/TextColor"
-                android:textAppearance="?android:textAppearanceMedium"
-                />
+                fancy:fb_defaultColor="@color/Button_Color"
+                fancy:fb_focusColor="@color/colorPrimary"
+                fancy:fb_radius="5dp"
+                fancy:fb_textColor="@color/white"
+                fancy:fb_textSize="18sp" />
 
         </RelativeLayout>
 

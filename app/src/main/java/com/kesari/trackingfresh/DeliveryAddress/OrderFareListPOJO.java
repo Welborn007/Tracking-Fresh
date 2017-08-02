@@ -14,7 +14,15 @@ public class OrderFareListPOJO {
 
     private String quantity;
 
-    private String productId,productName;
+    private String productId,productName,productImage;
+
+    public String getProductImage() {
+        return productImage;
+    }
+
+    public void setProductImage(String productImage) {
+        this.productImage = productImage;
+    }
 
     public String getPrice() {
         return price;

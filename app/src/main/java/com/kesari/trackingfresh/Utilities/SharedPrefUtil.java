@@ -20,6 +20,7 @@ public class SharedPrefUtil {
     private static String KEY_LONGI = "longitude";
 
     public static String KEY_USER_TOKEN = "token";
+    public static String KEY_FIREBASE_TOKEN = "firebase_token";
     public static String KEY_USER_CART_ITEM = "cart";
 
     private static String KEY_VEHICLE = "vehicle";
@@ -52,6 +53,18 @@ public class SharedPrefUtil {
     public static String getToken(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         String Token = preferences.getString(KEY_USER_TOKEN, "");
+
+        return Token;
+    }
+
+    public static void setFirebaseToken(Context context, String Token) {
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        preferences.edit().putString(KEY_FIREBASE_TOKEN, Token).apply();
+    }
+
+    public static String getFirebaseToken(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        String Token = preferences.getString(KEY_FIREBASE_TOKEN, "");
 
         return Token;
     }
@@ -115,7 +128,7 @@ public class SharedPrefUtil {
 
     public static void setClear(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        preferences.edit().remove(KEY_USER).remove(KEY_USER_TOKEN).remove(KEY_USER_CART_ITEM).remove(KEY_VEHICLE).remove(KEY_LAT_DEFAULT).remove(KEY_LONGI_DEFAULT).commit();
+        preferences.edit().remove(KEY_USER).remove(KEY_USER_TOKEN).remove(KEY_USER_CART_ITEM).remove(KEY_VEHICLE).remove(KEY_LAT_DEFAULT).remove(KEY_LONGI_DEFAULT).remove(KEY_FIREBASE_TOKEN).commit();
     }
 
 

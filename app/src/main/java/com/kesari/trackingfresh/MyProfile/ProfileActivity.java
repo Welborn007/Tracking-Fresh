@@ -325,7 +325,7 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
 
             TextView delivery_text;
             final EditText first_name,last_name,email,referral_code/*,mobile,flat_no,building_name,landmark,city,state,pincode*/;
-            Button confirmAddress;
+            FancyButton confirmAddress;
 
             delivery_text = (TextView) dialog.findViewById(R.id.delivery_text);
             first_name = (EditText) dialog.findViewById(R.id.first_name);
@@ -340,7 +340,7 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
             state = (EditText) dialog.findViewById(R.id.state);
             pincode = (EditText) dialog.findViewById(R.id.pincode);*/
 
-            confirmAddress = (Button) dialog.findViewById(R.id.confirmAddress);
+            confirmAddress = (FancyButton) dialog.findViewById(R.id.confirmAddress);
 
             delivery_text.setText("Edit Profile");
             first_name.setText(SharedPrefUtil.getUser(ProfileActivity.this).getData().getFirstName());

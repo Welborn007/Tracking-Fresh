@@ -32,7 +32,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -91,9 +90,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import mehdi.sakout.fancybuttons.FancyButton;
+
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener, NetworkUtilsReceiver.NetworkResponseInt {
 
-    Button btnLogin, btnSignup;
+    FancyButton btnLogin, btnSignup;
     TextView btnForget;
     ImageView Fbbtn, Googlebtn;
     private NetworkUtilsReceiver networkUtilsReceiver;
@@ -142,8 +143,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             gson = new Gson();
             //printHashKey(LoginActivity.this);
-            btnLogin = (Button) findViewById(R.id.btnLogin);
-            btnSignup = (Button) findViewById(R.id.btnSignup);
+            btnLogin = (FancyButton) findViewById(R.id.btnLogin);
+            btnSignup = (FancyButton) findViewById(R.id.btnSignup);
             btnForget = (TextView) findViewById(R.id.btnForget);
 
             user_name = (EditText) findViewById(R.id.user_name);

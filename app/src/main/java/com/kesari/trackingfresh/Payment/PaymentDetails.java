@@ -12,13 +12,15 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -27,6 +29,13 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.CheckNearestVehicleAvailability.NearestVehicleMainPOJO;
 import com.kesari.trackingfresh.ConfirmOrder.OrderAddPojo;
@@ -39,6 +48,7 @@ import com.kesari.trackingfresh.OTP.SendOtpPOJO;
 import com.kesari.trackingfresh.OrderTracking.OrderBikerTrackingActivity;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
+import com.kesari.trackingfresh.Utilities.ErrorPOJO;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.VehicleRoute.RouteActivity;
@@ -62,7 +72,7 @@ import mehdi.sakout.fancybuttons.FancyButton;
 
 public class PaymentDetails extends AppCompatActivity implements PaymentResultListener,NetworkUtilsReceiver.NetworkResponseInt{
 
-    Button btnSubmit;
+    FancyButton btnSubmit;
     private String TAG = this.getClass().getSimpleName();
     private NetworkUtilsReceiver networkUtilsReceiver;
     private TextView price_payable,price_total;
@@ -85,8 +95,11 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
     boolean TKFCash = false;
 
     EditText promocodeText;
-    Button promocodeSubmit;
+    FancyButton promocodeSubmit;
     FancyButton cancel;
+
+    ErrorPOJO errorPOJO;
+    boolean clearDrawable = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,14 +145,66 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
             cash_on_delivery = (RadioButton) findViewById(R.id.cash_on_delivery);
             online_payment = (RadioButton) findViewById(R.id.online_payment);
             walletCash = (CheckBox) findViewById(R.id.walletCash);
-            btnSubmit = (Button) findViewById(R.id.btnSubmit);
+            btnSubmit = (FancyButton) findViewById(R.id.btnSubmit);
             payment_group = (RadioGroup) findViewById(R.id.payment_group);
 
-            promocodeSubmit = (Button) findViewById(R.id.promocodeSubmit);
+            promocodeSubmit = (FancyButton) findViewById(R.id.promocodeSubmit);
             promocodeText = (EditText) findViewById(R.id.promocodeText);
             cancel = (FancyButton) findViewById(R.id.cancel);
 
-            cancel.setOnClickListener(new View.OnClickListener() {
+            promocodeText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if(promocodeText.getText().toString().trim().isEmpty())
+                    {
+                        promocodeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                        clearDrawable = false;
+                    }
+                    else
+                    {
+                        promocodeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear, 0);
+                        clearDrawable = true;
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
+
+            promocodeText.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    final int DRAWABLE_LEFT = 0;
+                    final int DRAWABLE_TOP = 1;
+                    final int DRAWABLE_RIGHT = 2;
+                    final int DRAWABLE_BOTTOM = 3;
+
+                    if(event.getAction() == MotionEvent.ACTION_UP) {
+                        if(clearDrawable)
+                        {
+                            if(event.getRawX() >= (promocodeText.getRight() - promocodeText.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                                // your action here
+                                promocodeText.setText("");
+                                price_payable.setText(getIntent().getStringExtra("amount"));
+                                promocodeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                                clearDrawable = false;
+
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                }
+            });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     promocodeText.setText("");
@@ -156,7 +221,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                     }
                     else
                     {
-                        promocodeText.setError("Enter Promocode!");
+                        Toast.makeText(PaymentDetails.this, "Enter Promocode!", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -243,7 +308,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
     }
 
-    private void sendPromocode(String Promocode,String Total)
+    private void sendPromocode(final String Promocode, String Total)
     {
         try
         {
@@ -269,22 +334,87 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 e.printStackTrace();
             }
 
-            Map<String, String> params = new HashMap<String, String>();
+            final Map<String, String> params = new HashMap<String, String>();
             params.put("Authorization", "JWT " + SharedPrefUtil.getToken(PaymentDetails.this));
 
-            IOUtils ioUtils = new IOUtils();
+            JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                    url, jsonObject,
+                    new Response.Listener<JSONObject>() {
 
-            ioUtils.sendJSONObjectRequestHeader(PaymentDetails.this, url,params, jsonObject, new IOUtils.VolleyCallback() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d("response", response.toString());
+                            //dialog.dismiss();
+                            PromocodeResponse(response.toString());
+                        }
+                    }, new Response.ErrorListener() {
+
                 @Override
-                public void onSuccess(String result) {
-                    PromocodeResponse(result);
-                    Log.i(TAG,result);
-                }
-            });
+                public void onErrorResponse(VolleyError error) {
+                    //VolleyLog.d("Error", "Error: " + error.getMessage());
+                    //dialog.dismiss();
 
+                    try{
+                        String json = null;
+                        NetworkResponse response = error.networkResponse;
+                        json = new String(response.data);
+                        Log.d("Error", json);
+
+                        ErrorResponse(json,PaymentDetails.this);
+
+                    }catch (Exception e)
+                    {
+                        //Log.d("Error", e.getMessage());
+                        FireToast.customSnackbar(PaymentDetails.this, "Oops Something Went Wrong!!", "");
+                    }
+                }
+            })
+
+            {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                /*Map<String, String> params = new HashMap<String, String>();
+                params.put("User-Agent", "Nintendo Gameboy");*/
+
+                    return params;
+                }
+            };;
+
+            jsonObjReq.setRetryPolicy(new DefaultRetryPolicy(
+                    30000,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+            //Adding request to request queue
+            MyApplication.getInstance().addRequestToQueue(jsonObjReq, "");
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
+
+    }
+
+    private void ErrorResponse(String Response,Context context)
+    {
+        gson = new Gson();
+        errorPOJO = gson.fromJson(Response, ErrorPOJO.class);
+
+        if(errorPOJO.getErrors() != null)
+        {
+            String[] error = errorPOJO.getErrors();
+            String errorString = error[0];
+
+            Toast.makeText(context, errorString, Toast.LENGTH_SHORT).show();
+
+        }
+        else if(errorPOJO.getMessage() != null)
+        {
+            Toast.makeText(context, errorPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            Toast.makeText(context, "Oops Something Went Wrong!!", Toast.LENGTH_SHORT).show();
+        }
+
 
     }
 
@@ -492,7 +622,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
                 dialog.show();
 
-                Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
+                FancyButton btnCancel = (FancyButton) dialog.findViewById(R.id.btnCancel);
                 btnCancel.setText("No Nearby Vehicle for the Delivery Address. Check Nearby Vehicle Route!");
                 btnCancel.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -528,10 +658,10 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
             dialog.setTitle("Custom Dialog");
 
             final EditText mobile;
-            Button confirmNumber;
+            FancyButton confirmNumber;
 
             mobile = (EditText) dialog.findViewById(R.id.mobile);
-            confirmNumber = (Button) dialog.findViewById(R.id.confirmNumber);
+            confirmNumber = (FancyButton) dialog.findViewById(R.id.confirmNumber);
 
             mSnackbarContainer = (ViewGroup) dialog.findViewById(R.id.snackbar_container);
 

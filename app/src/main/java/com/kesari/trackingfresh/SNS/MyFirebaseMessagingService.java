@@ -39,7 +39,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
         //Displaying data in log
         //It is optional
         Log.d(TAG, "From: " + remoteMessage.getFrom());
-        Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
+        Log.d(TAG, "Notification Message Data: " + remoteMessage.getData());
+        //Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
         //MainActivity.myMsg = remoteMessage.getNotification().getBody();
 
         //Calling method to generate notification
@@ -49,7 +50,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 
             JSONObject resultMessage = new JSONObject(remoteMessage.getData());
 
-            String message_json = resultMessage.getString("message");
+            String message_json = resultMessage.getString("score");
 
             Log.i("message_json",message_json);
 

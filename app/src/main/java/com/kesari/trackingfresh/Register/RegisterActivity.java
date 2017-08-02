@@ -7,12 +7,12 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -42,10 +42,12 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import mehdi.sakout.fancybuttons.FancyButton;
+
 public class RegisterActivity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt {
 
     EditText first_name, last_name, mobile, email, location, referral_code, password;
-    Button btnRegister;
+    FancyButton btnRegister;
     private String TAG = this.getClass().getSimpleName();
 
     String SocialID = "", FirstName, LastName, Name, Email, Type = "simple",Mobile,Referral_code,Password;
@@ -69,6 +71,7 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
             setTitle("Register");
+            toolbar.setTitleTextColor(ContextCompat.getColor(RegisterActivity.this,R.color.black));
 
         /*Register receiver*/
             networkUtilsReceiver = new NetworkUtilsReceiver(this);
@@ -117,7 +120,7 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
                 Type = "simple";
             }
 
-            btnRegister = (Button) findViewById(R.id.btnRegister);
+            btnRegister = (FancyButton) findViewById(R.id.btnRegister);
 
             btnRegister.setOnClickListener(new View.OnClickListener() {
                 @Override

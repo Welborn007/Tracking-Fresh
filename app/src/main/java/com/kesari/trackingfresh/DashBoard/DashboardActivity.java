@@ -29,7 +29,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
@@ -76,6 +75,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import mehdi.sakout.fancybuttons.FancyButton;
 
 import static com.kesari.trackingfresh.Utilities.IOUtils.setBadgeCount;
 
@@ -265,8 +265,61 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             transaction.replace(R.id.fragment_holder, product_fragment);
             transaction.commit();
 
+            Log.i("Cust_Auth",SharedPrefUtil.getToken(DashboardActivity.this));
+
+            try
+            {
+                if(SharedPrefUtil.getFirebaseToken(DashboardActivity.this) != null)
+                {
+                    Log.i("FirebaseTOKEN",SharedPrefUtil.getFirebaseToken(DashboardActivity.this));
+                    sendToken(SharedPrefUtil.getFirebaseToken(DashboardActivity.this));
+                }
+            }catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+
             updateNotificationsBadge(myApplication.getProductsArraylist().size());
 
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void sendToken(String TOKEN) {
+        try {
+
+            String url = Constants.FirebaseToken;
+
+            JSONObject jsonObject = new JSONObject();
+
+            try {
+
+                JSONObject postObject = new JSONObject();
+
+                postObject.put("FBT", TOKEN);
+
+                jsonObject.put("post", postObject);
+
+                Log.i("JSON CREATED", jsonObject.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(DashboardActivity.this));
+
+            ioUtils.sendJSONObjectPutRequestHeader(DashboardActivity.this, url, params, jsonObject, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG, result.toString());
+
+                }
+            });
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
@@ -467,10 +520,10 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             dialog.setTitle("Custom Dialog");
 
             final EditText mobile;
-            Button confirmNumber;
+            FancyButton confirmNumber;
 
             mobile = (EditText) dialog.findViewById(R.id.mobile);
-            confirmNumber = (Button) dialog.findViewById(R.id.confirmNumber);
+            confirmNumber = (FancyButton) dialog.findViewById(R.id.confirmNumber);
 
             mSnackbarContainer = (ViewGroup) dialog.findViewById(R.id.snackbar_container);
 
@@ -790,7 +843,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                     .into(imgUserimage);
         }
 
-        Button logout = (Button) view.findViewById(R.id.btnLogout);
+        FancyButton logout = (FancyButton) view.findViewById(R.id.btnLogout);
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -847,7 +900,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
     @Override
     public void onBackPressed() {
         if (exit) {
-            finish(); // finish activity
+            finishAffinity(); // finish activity
         } else {
             Product_Fragment.map_Holder.setVisibility(View.VISIBLE);
             Product_Fragment.frameLayout.setVisibility(View.GONE);

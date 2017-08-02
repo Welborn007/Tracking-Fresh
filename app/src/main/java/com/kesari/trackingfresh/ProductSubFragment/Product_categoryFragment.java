@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -167,7 +166,7 @@ public class Product_categoryFragment extends Fragment {
                 viewHolder.plus = (FancyButton) convertView.findViewById(R.id.plus);
                 viewHolder.minus = (FancyButton) convertView.findViewById(R.id.minus);
                 viewHolder.mrp = (TextView) convertView.findViewById(R.id.mrp);
-                viewHolder.addtoCart = (Button) convertView.findViewById(R.id.addtoCart);
+                viewHolder.addtoCart = (FancyButton) convertView.findViewById(R.id.addtoCart);
                 viewHolder.holder_count = (LinearLayout) convertView.findViewById(R.id.holder_count);
 
                 convertView.setTag(viewHolder);
@@ -250,11 +249,10 @@ public class Product_categoryFragment extends Fragment {
                                 final Dialog dialog = new Dialog(activity);
                                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                 dialog.setContentView(R.layout.item_unavailable_dialog);
-                                dialog.setCanceledOnTouchOutside(false);
                                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
                                 dialog.show();
 
-                                Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
+                                FancyButton btnCancel = (FancyButton) dialog.findViewById(R.id.btnCancel);
                                 btnCancel.setText("Oops! Only " + product_pojo.getAvailableQuantity() + " items available!!");
                                 btnCancel.setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -347,7 +345,7 @@ public class Product_categoryFragment extends Fragment {
             TextView product_name, weight, price, count,quantity,mrp;
             SimpleDraweeView imageView;
             FancyButton plus, minus;
-            Button addtoCart;
+            FancyButton addtoCart;
             LinearLayout holder_count;
         }
     }

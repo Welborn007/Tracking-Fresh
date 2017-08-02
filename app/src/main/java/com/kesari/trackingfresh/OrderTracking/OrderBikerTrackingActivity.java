@@ -21,7 +21,6 @@ import android.text.Html;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -67,6 +66,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import mehdi.sakout.fancybuttons.FancyButton;
+
 public class OrderBikerTrackingActivity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt,OnMapReadyCallback {
 
     private NetworkUtilsReceiver networkUtilsReceiver;
@@ -89,7 +90,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
     private static final String TAG_LONGITUDE = "longitude";
 
     TextView kilometre, GuestAddress,ETA;
-    Button btnSubmit;
+    FancyButton btnSubmit;
     private Gson gson;
     NearestVehicleMainPOJO nearestVehicleMainPOJO;
     String[] geoArray;
@@ -132,7 +133,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
             ETA = (TextView) findViewById(R.id.ETA);
             GuestAddress = (TextView) findViewById(R.id.GuestAddress);
 
-            btnSubmit = (Button) findViewById(R.id.btnSubmit);
+            btnSubmit = (FancyButton) findViewById(R.id.btnSubmit);
 
             OrderID = getIntent().getStringExtra("orderID");
             getOrderDetailsfromID();

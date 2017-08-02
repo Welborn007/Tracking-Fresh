@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -20,7 +21,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,7 +63,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
     TextView mrp, count;
     FancyButton plus, minus, delete;
     LinearLayout holder_count;
-    Button gotoCart, addtoCart, checkOut;
+    FancyButton gotoCart, addtoCart, checkOut;
     TextView price, percent, disclaimer, related_searches, package_contents, product_description, product_category, title_productname;
     private String TAG = this.getClass().getSimpleName();
     private String productDescription = "";
@@ -110,6 +110,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.setTitleTextColor(ContextCompat.getColor(DetailsActivity.this,R.color.black));
 
             /*Register receiver*/
             networkUtilsReceiver = new NetworkUtilsReceiver(this);
@@ -161,10 +162,10 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             url_maps.put("Tomato3", "http://media.treehugger.com/assets/images/2012/08/Ramon-Gonzalez-Tomatoes.jpg.650x0_q70_crop-smart.jpg");
             url_maps.put("Tomato4", "http://venturesafrica.com/wp-content/uploads/2016/05/tomatoes-in-baskets.jpg");*/
 
-            url_maps.put("Tomato1", productImage);
-            url_maps.put("Tomato2", productImage);
-            url_maps.put("Tomato3", productImage);
-            url_maps.put("Tomato4", productImage);
+            url_maps.put("", productImage);
+            url_maps.put("", productImage);
+            url_maps.put("", productImage);
+            url_maps.put("", productImage);
 
             for (String name : url_maps.keySet()) {
                 TextSliderView textSliderView = new TextSliderView(this);
@@ -201,13 +202,13 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             package_contents = (TextView) findViewById(R.id.package_contents);
             product_description = (TextView) findViewById(R.id.product_description);
             count = (TextView) findViewById(R.id.count);
-            gotoCart = (Button) findViewById(R.id.gotoCart);
-            checkOut = (Button) findViewById(R.id.checkOut);
+            gotoCart = (FancyButton) findViewById(R.id.gotoCart);
+            checkOut = (FancyButton) findViewById(R.id.checkOut);
             product_category = (TextView) findViewById(R.id.product_category);
             title_productname = (TextView) findViewById(R.id.title_productname);
             Share = (FancyButton) findViewById(R.id.Share);
 
-            addtoCart = (Button) findViewById(R.id.addtoCart);
+            addtoCart = (FancyButton) findViewById(R.id.addtoCart);
             holder_count = (LinearLayout) findViewById(R.id.holder_count);
 
             //Setting value
@@ -215,6 +216,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             package_contents.setText(productDescription + "," + unit + unitsOfMeasurement);
             product_category.setText(productCategory);
             title_productname.setText(productName);
+            setTitle(productName);
 
             price.setText("Price Rs. " + productPrice);
 
@@ -265,6 +267,9 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
                         addCart_model.setProductImage(productImage);
                         addCart_model.setActive(active);
                         addCart_model.setQuantity(1);
+                        addCart_model.setBrand(brand);
+                        addCart_model.setAvailableQuantity(availableQuantity);
+                        addCart_model.setMRP(MRP);
 
                         myApplication.setProducts(addCart_model);
 
@@ -296,11 +301,10 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
                             final Dialog dialog = new Dialog(DetailsActivity.this);
                             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                             dialog.setContentView(R.layout.item_unavailable_dialog);
-                            dialog.setCanceledOnTouchOutside(false);
                             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
                             dialog.show();
 
-                            Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
+                            FancyButton btnCancel = (FancyButton) dialog.findViewById(R.id.btnCancel);
                             btnCancel.setText("Oops! Only " + availableQuantity + " items available!!");
                             btnCancel.setOnClickListener(new View.OnClickListener() {
                                 @Override

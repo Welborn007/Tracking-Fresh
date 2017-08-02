@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,9 +29,13 @@ import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import mehdi.sakout.fancybuttons.FancyButton;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -74,7 +77,13 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
 
             holder.order_number.setText(String.valueOf(position + 1));
             holder.customer_name.setText(OrdersListReView.get(position).getCreatedBy());
+            holder.orderNo.setText(OrdersListReView.get(position).getOrderNo());
 
+            SimpleDateFormat sdfInput = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            SimpleDateFormat sdfOutput = new SimpleDateFormat("dd-MM-yyyy");
+            Date d = sdfInput.parse(OrdersListReView.get(position).getCreatedAt());
+            String orderDateFormatted = sdfOutput.format(d);
+            holder.orderDate.setText(orderDateFormatted);
 
             if(OrdersListReView.get(position).getPayment_Status() == null)
             {
@@ -101,12 +110,14 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
 
             if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("Rejected"))
             {
-                holder.cancelHolder.setVisibility(View.VISIBLE);
+                holder.cancelHolder.setVisibility(View.GONE);
+                holder.rejectHolder.setVisibility(View.VISIBLE);
                 holder.order_status.setImageResource(R.drawable.rejected);
                 holder.cancel.setVisibility(View.GONE);
             }
             else if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("Accepted"))
             {
+                holder.rejectHolder.setVisibility(View.GONE);
                 holder.cancelHolder.setVisibility(View.GONE);
                 holder.order_status.setImageResource(R.drawable.accepted);
                 holder.cancel.setVisibility(View.VISIBLE);
@@ -114,32 +125,48 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
             else if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("Pending"))
             {
                 holder.cancelHolder.setVisibility(View.GONE);
+                holder.rejectHolder.setVisibility(View.GONE);
                 holder.order_status.setImageResource(R.drawable.pending);
                 holder.cancel.setVisibility(View.VISIBLE);
             }
             else if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("Cancelled"))
             {
                 holder.cancelHolder.setVisibility(View.VISIBLE);
+                holder.rejectHolder.setVisibility(View.GONE);
                 holder.order_status.setImageResource(R.drawable.cancel);
                 holder.cancel.setVisibility(View.GONE);
             }
             else if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("Delivered"))
             {
                 holder.cancelHolder.setVisibility(View.GONE);
+                holder.rejectHolder.setVisibility(View.GONE);
                 holder.order_status.setImageResource(R.drawable.delivered);
                 holder.cancel.setVisibility(View.GONE);
             }
 
-            if(OrdersListReView.get(position).getRemarks() != null)
+            if(OrdersListReView.get(position).getCancelReason() != null)
             {
-                if(!OrdersListReView.get(position).getRemarks().isEmpty())
+                if(!OrdersListReView.get(position).getCancelReason().isEmpty())
                 {
-                    holder.cancelReason.setText(OrdersListReView.get(position).getRemarks());
+                    holder.cancelReason.setText(OrdersListReView.get(position).getCancelReason());
                     holder.cancelHolder.setVisibility(View.VISIBLE);
                 }
                 else
                 {
                     holder.cancelHolder.setVisibility(View.GONE);
+                }
+            }
+
+            if(OrdersListReView.get(position).getRejectReason() != null)
+            {
+                if(!OrdersListReView.get(position).getRejectReason().isEmpty())
+                {
+                    holder.rejectReason.setText(OrdersListReView.get(position).getRejectReason());
+                    holder.rejectHolder.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    holder.rejectHolder.setVisibility(View.GONE);
                 }
             }
 
@@ -175,11 +202,11 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
 
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder
     {
-        TextView order_number,customer_name,payment_confirm,payment_mode,total_price,cancelReason;
+        TextView order_number,customer_name,payment_confirm,payment_mode,total_price,cancelReason,rejectReason,orderDate,orderNo;
         CardView subItemCard_view;
         ImageView order_status;
-        LinearLayout payment_confirmHolder,payment_modeHolder,cancelHolder;
-        Button cancel;
+        LinearLayout payment_confirmHolder,payment_modeHolder,cancelHolder,rejectHolder;
+        FancyButton cancel;
 
         public RecyclerViewHolder(View view)
         {
@@ -191,20 +218,24 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
             subItemCard_view = (CardView) view.findViewById(R.id.subItemCard_view);
             total_price = (TextView) view.findViewById(R.id.total_price);
             cancelReason = (TextView) view.findViewById(R.id.cancelReason);
+            rejectReason = (TextView) view.findViewById(R.id.rejectReason);
+            orderDate = (TextView) view.findViewById(R.id.orderDate);
+            orderNo = (TextView) view.findViewById(R.id.orderNo);
 
             payment_confirmHolder = (LinearLayout) view.findViewById(R.id.payment_confirmHolder);
             payment_modeHolder = (LinearLayout) view.findViewById(R.id.payment_modeHolder);
             cancelHolder = (LinearLayout) view.findViewById(R.id.cancelHolder);
+            rejectHolder = (LinearLayout) view.findViewById(R.id.rejectHolder);
 
             order_status = (ImageView) view.findViewById(R.id.order_status);
-            cancel = (Button) view.findViewById(R.id.cancel);
+            cancel = (FancyButton) view.findViewById(R.id.cancel);
         }
     }
 
     private void fetchCancellationReasons(final Context context, final int pos) {
         try {
 
-            String url = Constants.CancellationReasons;
+            String url = Constants.Reasons + "cancel";
 
             IOUtils ioUtils = new IOUtils();
 
@@ -238,7 +269,7 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
             // Set dialog title
             dialog.setTitle("Custom Dialog");
 
-            Button cancel = (Button) dialog.findViewById(R.id.cancel);
+            FancyButton cancel = (FancyButton) dialog.findViewById(R.id.cancel);
             final EditText editText = (EditText) dialog.findViewById(R.id.other);
 
             recyclerView = (RecyclerView) dialog.findViewById(R.id.recyclerView);
@@ -321,7 +352,7 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
 
                 postObject.put("id", orderID);
                 postObject.put("status",OrderStatus);
-                postObject.put("remarks",Remarks);
+                postObject.put("cancelReason",Remarks);
 
                 jsonObject.put("post", postObject);
 
