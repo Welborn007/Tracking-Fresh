@@ -993,6 +993,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
                 postObject.put("id", orderID);
                 postObject.put("status",OrderStatus);
+                postObject.put("cancelReason","Payment Failure");
 
                 jsonObject.put("post", postObject);
 

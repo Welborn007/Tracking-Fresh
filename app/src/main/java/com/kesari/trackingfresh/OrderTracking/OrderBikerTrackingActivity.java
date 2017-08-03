@@ -284,7 +284,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                             }
                         });
                     }
-                }, 0, 5, TimeUnit.SECONDS);
+                }, 0, 3, TimeUnit.SECONDS);
             }
 
         /*ScheduledExecutorService scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
@@ -438,7 +438,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                 }, DURATION - 500);
 
                 map.addMarker(new MarkerOptions().position(Delivery_Origin)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_home))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_customer))
                         .title("Origin"));
 
                 //float bearing = (float) bearing(convertLatLngToLocation(oldLocation),convertLatLngToLocation(newLocation))

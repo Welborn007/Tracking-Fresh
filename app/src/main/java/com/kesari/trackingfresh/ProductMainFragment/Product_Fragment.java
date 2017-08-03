@@ -525,7 +525,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 }, DURATION - 500);
 
                 map.addMarker(new MarkerOptions().position(Current_Origin)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_home))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_customer))
                         .title("Origin"));
 
             }
@@ -778,6 +778,21 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 kilometre.setText("Vehicle Not Available");
                 SharedPrefUtil.setNearestVehicle(getActivity(),"");
                 //scheduleTaskExecutor.shutdown();
+
+                map.setTrafficEnabled(true);
+
+                CameraPosition cameraPosition = new CameraPosition.Builder().
+                        target(Current_Origin).
+                        tilt(0).
+                        zoom(18).
+                        bearing(0).
+                        build();
+
+                map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+                map.addMarker(new MarkerOptions().position(Current_Origin)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_customer))
+                        .title("Origin"));
             }
 
         } catch (Exception e) {
