@@ -1,5 +1,7 @@
 package com.kesari.trackingfresh.Order;
 
+import com.kesari.trackingfresh.CheckNearestVehicleAvailability.Geo;
+
 /**
  * Created by kesari on 26/07/17.
  */
@@ -11,6 +13,16 @@ public class OrderBikerDetails {
     private String bikeNo;
     private String bikerName;
     private String mobileNo;
+
+    private Geo geo;
+
+    public Geo getGeo() {
+        return geo;
+    }
+
+    public void setGeo(Geo geo) {
+        this.geo = geo;
+    }
 
     public String get_id() {
         return _id;

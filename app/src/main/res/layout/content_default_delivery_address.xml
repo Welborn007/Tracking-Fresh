@@ -90,7 +90,6 @@
 
                 <TextView
                     android:id="@+id/name"
-                    android:text="Vaibhav Palyekar"
                     android:textColor="@color/black"
                     android:paddingLeft="10dp"
                     android:textSize="@dimen/text_size"
@@ -100,7 +99,6 @@
 
                 <TextView
                     android:id="@+id/address"
-                    android:text="Saket co-op Housing Society, Mira Road"
                     android:textColor="@color/Gray"
                     android:layout_marginLeft="35dp"
                     android:textSize="14sp"
@@ -114,7 +112,6 @@
 
                     <TextView
                         android:id="@+id/city"
-                        android:text="Mumbai"
                         android:textColor="@color/Gray"
                         android:layout_marginLeft="35dp"
                         android:textSize="14sp"
@@ -123,7 +120,6 @@
 
                     <TextView
                         android:id="@+id/pincode"
-                        android:text="400015"
                         android:textColor="@color/Gray"
                         android:layout_marginLeft="10dp"
                         android:textSize="14sp"

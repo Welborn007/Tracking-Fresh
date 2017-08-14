@@ -101,6 +101,9 @@ public interface Constants {
     //Send Firebase Token
     String FirebaseToken =  "http://"+ StagingIP + "/api/customer/fbt";
 
+    //Vehicle Route
+    String VehicleRoute = "http://"+ StagingIP + "/api/customer/getVehicleRoutes/";
+
     // Milliseconds per second
     public static final int MILLISECONDS_PER_SECOND = 1000;
     // Update frequency in seconds

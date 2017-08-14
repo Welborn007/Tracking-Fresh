@@ -426,12 +426,25 @@
                     <RatingBar
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
+                        android:layout_margin="5dp"
+                        android:isIndicator="false"
+                        android:layout_gravity="center"
+                        android:progressTint="@android:color/holo_red_dark"
                         style="?android:attr/ratingBarStyleIndicator"
                         android:numStars="5"
                         android:id="@+id/ratingBar"
                        />
+
+                    <TextView
+                        android:id="@+id/feedbackTxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:textStyle="bold"
+                        android:layout_gravity="center"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size"
+                        />
 
                     <android.support.design.widget.TextInputLayout
                         android:layout_marginLeft="5dp"
@@ -443,7 +456,7 @@
                             android:id="@+id/feedback_remark"
                             android:layout_width="match_parent"
                             android:textSize="@dimen/text_size"
-                            android:textColor="@color/white"
+                            android:textColor="@color/black"
                             android:inputType="text"
                             android:layout_height="wrap_content"
                             android:hint="Feedback" />

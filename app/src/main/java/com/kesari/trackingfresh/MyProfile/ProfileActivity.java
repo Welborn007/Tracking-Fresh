@@ -39,6 +39,11 @@ import com.google.gson.Gson;
 import com.kesari.trackingfresh.BuildConfig;
 import com.kesari.trackingfresh.Cart.AddToCart;
 import com.kesari.trackingfresh.DashBoard.VerifyMobilePOJO;
+import com.kesari.trackingfresh.DeliveryAddress.AddDeliveryAddress.Add_DeliveryAddress;
+import com.kesari.trackingfresh.DeliveryAddress.AddressPOJO;
+import com.kesari.trackingfresh.DeliveryAddress.DefaultDeliveryAddress.Default_DeliveryAddress;
+import com.kesari.trackingfresh.DeliveryAddress.DefaultDeliveryAddress.FetchAddressPOJO;
+import com.kesari.trackingfresh.DeliveryAddress.UpdateDeleteDeliveryAddress.FetchedDeliveryAddressActivity;
 import com.kesari.trackingfresh.Login.ProfileMain;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.R;
@@ -69,8 +74,11 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -99,6 +107,11 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
     LinearLayout referral_holder,phoneHolder;
     FancyButton Share,verifiedStatus;
     VerifyMobilePOJO verifyMobilePOJO;
+    private FetchAddressPOJO fetchAddressPOJO;
+    List<AddressPOJO> addressArrayList = new ArrayList<>();
+    boolean default_address = false;
+
+    TextView city,pincode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +138,10 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
             Share = (FancyButton) findViewById(R.id.Share);
             verifiedStatus = (FancyButton) findViewById(R.id.verifiedStatus);
             phoneHolder = (LinearLayout) findViewById(R.id.phoneHolder);
+
+            address = (TextView) findViewById(R.id.address);
+            city = (TextView) findViewById(R.id.city);
+            pincode = (TextView) findViewById(R.id.pincode);
 
             getProfileData();
 
@@ -173,9 +190,74 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
                 }
             }
 
+            fetchUserAddress();
             myApplication = (MyApplication) getApplicationContext();
 
             updateNotificationsBadge(myApplication.getProductsArraylist().size());
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void fetchUserAddress() {
+        try {
+
+            String url = Constants.FetchAddress;
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(ProfileActivity.this));
+
+            ioUtils.getGETStringRequestHeader(ProfileActivity.this, url, params, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG, result.toString());
+
+                    fetchUserAddressResponse(result);
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void fetchUserAddressResponse(String Response) {
+        try {
+
+            default_address = false;
+            fetchAddressPOJO = gson.fromJson(Response, FetchAddressPOJO.class);
+
+            if (fetchAddressPOJO.getData().isEmpty()) {
+                Intent intent = new Intent(ProfileActivity.this, Add_DeliveryAddress.class);
+                startActivity(intent);
+            } else {
+
+                addressArrayList = fetchAddressPOJO.getData();
+
+                for (Iterator<AddressPOJO> it = addressArrayList.iterator(); it.hasNext(); ) {
+                    AddressPOJO addressPOJO = it.next();
+
+                    if (addressPOJO.isDefault())
+                    {
+                        address.setText(addressPOJO.getFlat_No() + ", " + addressPOJO.getBuildingName() + ", " + addressPOJO.getLandmark());
+                        city.setText(addressPOJO.getCity());
+                        pincode.setText(addressPOJO.getPincode());
+
+                        default_address = true;
+                    }
+
+                }
+
+                if(!default_address)
+                {
+
+                    default_address = false;
+                }
+
+            }
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());

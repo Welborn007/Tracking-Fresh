@@ -114,6 +114,19 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
                 holder.rejectHolder.setVisibility(View.VISIBLE);
                 holder.order_status.setImageResource(R.drawable.rejected);
                 holder.cancel.setVisibility(View.GONE);
+
+                if(OrdersListReView.get(position).getRejectReason() != null)
+                {
+                    if(!OrdersListReView.get(position).getRejectReason().isEmpty())
+                    {
+                        holder.rejectReason.setText(OrdersListReView.get(position).getRejectReason());
+                        holder.rejectHolder.setVisibility(View.VISIBLE);
+                    }
+                    else
+                    {
+                        holder.rejectHolder.setVisibility(View.GONE);
+                    }
+                }
             }
             else if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("Accepted"))
             {
@@ -135,6 +148,19 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
                 holder.rejectHolder.setVisibility(View.GONE);
                 holder.order_status.setImageResource(R.drawable.cancel);
                 holder.cancel.setVisibility(View.GONE);
+
+                if(OrdersListReView.get(position).getCancelReason() != null)
+                {
+                    if(!OrdersListReView.get(position).getCancelReason().isEmpty())
+                    {
+                        holder.cancelReason.setText(OrdersListReView.get(position).getCancelReason());
+                        holder.cancelHolder.setVisibility(View.VISIBLE);
+                    }
+                    else
+                    {
+                        holder.cancelHolder.setVisibility(View.GONE);
+                    }
+                }
             }
             else if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("Delivered"))
             {
@@ -144,31 +170,6 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
                 holder.cancel.setVisibility(View.GONE);
             }
 
-            if(OrdersListReView.get(position).getCancelReason() != null)
-            {
-                if(!OrdersListReView.get(position).getCancelReason().isEmpty())
-                {
-                    holder.cancelReason.setText(OrdersListReView.get(position).getCancelReason());
-                    holder.cancelHolder.setVisibility(View.VISIBLE);
-                }
-                else
-                {
-                    holder.cancelHolder.setVisibility(View.GONE);
-                }
-            }
-
-            if(OrdersListReView.get(position).getRejectReason() != null)
-            {
-                if(!OrdersListReView.get(position).getRejectReason().isEmpty())
-                {
-                    holder.rejectReason.setText(OrdersListReView.get(position).getRejectReason());
-                    holder.rejectHolder.setVisibility(View.VISIBLE);
-                }
-                else
-                {
-                    holder.rejectHolder.setVisibility(View.GONE);
-                }
-            }
 
             holder.cancel.setOnClickListener(new View.OnClickListener() {
                 @Override

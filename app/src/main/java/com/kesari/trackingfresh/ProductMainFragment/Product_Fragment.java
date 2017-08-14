@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -68,6 +67,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -78,6 +78,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -127,7 +130,6 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     TextView kilometre, GuestAddress,ETA;
     public static RelativeLayout map_Holder;
     LinearLayout layout_holder,product_holder;
-    FloatingActionButton fab;
     FancyButton product_category;
 
     public static FrameLayout frameLayout;
@@ -145,6 +147,10 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
     NearestVehicleMainPOJO nearestVehicleMainPOJO;
     String[] geoArray;
+
+    boolean isVehiclePresent = true;
+
+    private Socket socket;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -178,24 +184,9 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             map_Holder = (RelativeLayout) V.findViewById(R.id.map_Holder);
             layout_holder = (LinearLayout) V.findViewById(R.id.layout_holder);
             product_holder = (LinearLayout) V.findViewById(R.id.product_holder);
-            fab = (FloatingActionButton) V.findViewById(R.id.fab);
             product_category = (FancyButton) V.findViewById(R.id.product_category);
 
             frameLayout = (FrameLayout) V.findViewById(R.id.fragment_data);
-
-            /*product_category.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(product_holder.getVisibility() == View.VISIBLE)
-                    {
-                        product_holder.setVisibility(View.GONE);
-                    }
-                    else
-                    {
-                        product_holder.setVisibility(View.VISIBLE);
-                    }
-                }
-            });*/
 
             product_category.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
                 public void onSwipeTop() {
@@ -218,6 +209,8 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                     Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
                             R.anim.slide_up);
 
+                    //recyclerView.setAdapter(null);
+
                     product_category.setIconResource(getString(R.string.drop_up));
 
                     product_holder.setVisibility(View.GONE);
@@ -226,33 +219,6 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
             });
 
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
-                            R.anim.slide_down);
-
-                    Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
-                            R.anim.slide_up);
-
-                    if(layout_holder.getVisibility() == View.VISIBLE)
-                    {
-                        layout_holder.setVisibility(View.GONE);
-                        fab.setImageResource(R.drawable.ic_plus);
-                        //IOUtils.slideToBottom(layout_holder);
-                        layout_holder.startAnimation(slide_down);
-                    }
-                    else if(layout_holder.getVisibility() == View.GONE)
-                    {
-                        layout_holder.setVisibility(View.VISIBLE);
-                        fab.setImageResource(R.drawable.ic_minus);
-                        //IOUtils.slideToTop(layout_holder);
-                        layout_holder.startAnimation(slide_up);
-                    }
-
-                }
-            });
 
             GuestAddress.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -389,6 +355,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                         if(!String.valueOf(Current_Origin.latitude).equalsIgnoreCase("0.0")  && !String.valueOf(Current_Origin.longitude).equalsIgnoreCase("0.0"))
                         {
 
+                            //startSocket();
                             String url = Constants.CheckNearestVehicle ;
 
                             Log.i("url", url);
@@ -399,8 +366,8 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
                                 JSONObject postObject = new JSONObject();
 
-                                postObject.put("longitude", SharedPrefUtil.getLocation(getActivity()).getLongitude());
-                                postObject.put("latitude", SharedPrefUtil.getLocation(getActivity()).getLatitude());
+                                postObject.put("longitude", String .valueOf(SharedPrefUtil.getLocation(getActivity()).getLongitude()));
+                                postObject.put("latitude", String.valueOf(SharedPrefUtil.getLocation(getActivity()).getLatitude()));
 
                                 jsonObject.put("post", postObject);
 
@@ -424,7 +391,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                         }
 
                     }
-                }, 0, 15, TimeUnit.SECONDS);
+                }, 0, 5, TimeUnit.SECONDS);
             }
 
 
@@ -443,6 +410,49 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             Log.i(TAG, e.getMessage());
         }
 
+    }
+
+    private void startSocket()
+    {
+        try {
+            socket = IO.socket("http://" +Constants.VaibhavIP);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+
+            @Override
+            public void call(Object... args) {
+                //socket.emit("foo", "hi");
+                //socket.disconnect();
+                Log.i("Send","Data");
+            }
+
+        }).on("vehiclePosition", new Emitter.Listener() {
+
+            @Override
+            public void call(Object... args) {
+
+                JSONObject obj = (JSONObject)args[0];
+                Log.i("Connect",obj.toString());
+
+            }
+
+        }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+
+            @Override
+            public void call(Object... args) {
+                Log.i("DisConnect","Connect");
+            }
+
+        });
+        socket.connect();
+    }
+
+    private void stopSocket()
+    {
+        socket.disconnect();
+        Log.i("SocketService","Disconnected");
     }
 
     private double bearingBetweenLocations(LatLng latLng1, LatLng latLng2) {
@@ -571,6 +581,16 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
         try
         {
+            Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
+                    R.anim.slide_up);
+
+            product_category.setIconResource(getString(R.string.drop_down));
+
+            product_holder.setVisibility(View.VISIBLE);
+            product_holder.startAnimation(slide_up);
+
+            isVehiclePresent = false;
+
             productCategoryMainPojo = gson.fromJson(Response,ProductCategoryMainPojo.class);
 
             product_recyclerAdapter = new Product_RecyclerAdapter(productCategoryMainPojo.getData(), getActivity());
@@ -741,7 +761,12 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             if(!nearestVehicleMainPOJO.getData().isEmpty())
             {
                 SharedPrefUtil.setNearestVehicle(getActivity(),resp);
-                getProductDataListing();
+
+                if(isVehiclePresent)
+                {
+                    getProductDataListing();
+                }
+
                 geoArray = nearestVehicleMainPOJO.getData().get(0).getGeo().getCoordinates();
 
                 Double cust_longitude = Double.parseDouble(geoArray[0]);
@@ -774,6 +799,25 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             }
             else
             {
+                isVehiclePresent = true;
+
+                Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
+                        R.anim.slide_down);
+
+                product_category.setIconResource(getString(R.string.drop_up));
+
+                product_holder.setVisibility(View.GONE);
+                product_holder.startAnimation(slide_down);
+
+                try
+                {
+                    recyclerView.setAdapter(null);
+                    productCategoryMainPojo.getData().clear();
+                }catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+
                 GuestAddress.setText(getCompleteAddressString(Current_Origin.latitude,Current_Origin.longitude));
                 kilometre.setText("Vehicle Not Available");
                 SharedPrefUtil.setNearestVehicle(getActivity(),"");
@@ -824,4 +868,11 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
         return strAdd;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        scheduleTaskExecutor.shutdown();
+        //stopSocket();
+    }
 }

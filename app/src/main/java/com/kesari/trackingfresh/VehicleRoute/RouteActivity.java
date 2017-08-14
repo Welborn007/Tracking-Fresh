@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -34,6 +35,7 @@ import com.kesari.trackingfresh.Map.JSON_POJO;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.Map.PathJSONParser;
 import com.kesari.trackingfresh.R;
+import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.network.FireToast;
@@ -46,11 +48,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class RouteActivity extends AppCompatActivity implements OnMapReadyCallback,NetworkUtilsReceiver.NetworkResponseInt{
@@ -68,6 +71,8 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
     private static final String TAG_LOCATION_NAME = "location_name";
     private static final String TAG_LATITUDE = "latitude";
     private static final String TAG_LONGITUDE = "longitude";
+    private static final String TAG_FROM_TIME = "";
+    private static final String TAG_TO_TIME = "";
 
     private static View view;
     private String TAG = this.getClass().getSimpleName();
@@ -167,27 +172,69 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
                 @Override
                 public boolean onMarkerClick(Marker marker) {
 
+                    return false;
+                }
+            });
+
+
+            map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                @Override
+                public View getInfoWindow(Marker arg0) {
+                    return null;
+                }
+                @Override
+                public View getInfoContents(Marker marker) {
+
+                    View myContentView = getLayoutInflater().inflate(
+                            R.layout.map_infolayout, null);
+
                     try
                     {
                         // Get extra data with marker ID
                         HashMap<String, String> marker_data = extraMarkerInfo.get(marker.getId());
+                        TextView mapLoc = ((TextView) myContentView.findViewById(R.id.mapLoc));
+                        TextView from_time = ((TextView) myContentView.findViewById(R.id.from_time));
+                        TextView to_time = ((TextView) myContentView.findViewById(R.id.to_time));
+                        View viewLine = ((View) myContentView.findViewById(R.id.viewLine));
+                        TextView viewHeader = ((TextView) myContentView.findViewById(R.id.viewHeader));
 
-                        // Getting the data from Map
-                        String latitude = marker_data.get(TAG_LATITUDE);
-                        String longitude = marker_data.get(TAG_LONGITUDE);
-                        String place = marker_data.get(TAG_LOCATION_NAME);
-                        String id = marker_data.get(TAG_ID);
+                        if(!marker.getTitle().equalsIgnoreCase("TKF Vehicle"))
+                        {
+                            // Getting the data from Map
+                            String latitude = marker_data.get(TAG_LATITUDE);
+                            String longitude = marker_data.get(TAG_LONGITUDE);
+                            String place = marker_data.get(TAG_LOCATION_NAME);
+                            String id = marker_data.get(TAG_ID);
+                            String startTime = marker_data.get(TAG_FROM_TIME);
+                            String endTime = marker_data.get(TAG_TO_TIME);
 
+                            from_time.setVisibility(View.VISIBLE);
+                            to_time.setVisibility(View.VISIBLE);
+                            viewLine.setVisibility(View.VISIBLE);
+                            viewHeader.setVisibility(View.VISIBLE);
+
+                            mapLoc.setText(place);
+                            from_time.setText(startTime);
+                            to_time.setText(endTime);
+                        }
+                        else
+                        {
+                            mapLoc.setText("TKF Vehicle");
+                            from_time.setVisibility(View.GONE);
+                            to_time.setVisibility(View.GONE);
+                            viewLine.setVisibility(View.GONE);
+                            viewHeader.setVisibility(View.GONE);
+                        }
 
                     }catch (NullPointerException npe)
                     {
-
+                        npe.printStackTrace();
                     }
 
-
-                    return false;
+                    return myContentView;
                 }
             });
+
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
@@ -199,14 +246,53 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
 
         if(map != null){
 
-            getData();
+            //getData();
+            if(SharedPrefUtil.getNearestVehicle(RouteActivity.this).getData() != null)
+            {
+                if(!SharedPrefUtil.getNearestVehicle(RouteActivity.this).getData().get(0).getVehicle_id().isEmpty())
+                {
+                    getVehicleRoute(SharedPrefUtil.getNearestVehicle(RouteActivity.this).getData().get(0).getVehicle_id());
+                }
+            }
+
+
         }
     }
 
-    public void getData()
+    private void getVehicleRoute(String VehicleID)
+    {
+        try
+        {
+
+            String url = Constants.VehicleRoute + VehicleID;
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(RouteActivity.this));
+
+            ioUtils.getGETStringRequestHeader(RouteActivity.this, url , params , new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG, result.toString());
+                    SetVehicleRouteResponse(result);
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void SetVehicleRouteResponse(String Response)
     {
         try {
-            JSONArray jsonArray = new JSONArray(loadJSONFromAsset());
+
+            JSONObject jsonObject = new JSONObject(Response);
+
+            JSONObject data = jsonObject.getJSONObject("data");
+
+            JSONArray jsonArray = data.getJSONArray("routes");
 
             for (int i = 0; i < jsonArray.length(); i++) {
 
@@ -214,19 +300,23 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
 
                 JSON_POJO js = new JSON_POJO();
 
-                String location_name = jo_inside.getString("location_name");
-                Double latitude = jo_inside.getDouble("latitude");
-                Double longitude = jo_inside.getDouble("longitude");
-                String id = jo_inside.getString("id");
+                String location_name = jo_inside.getString("from_location");
+                Double latitude = jo_inside.getDouble("from_lat");
+                Double longitude = jo_inside.getDouble("from_lng");
+                String id = jo_inside.getString("_id");
+                String startTime = jo_inside.getString("startTime");
+                String endTime = jo_inside.getString("endTime");
 
                 js.setId(id);
                 js.setLatitude(latitude);
                 js.setLongitude(longitude);
                 js.setLocation_name(location_name);
+                js.setStartTime(startTime);
+                js.setEndTime(endTime);
 
                 jsonIndiaModelList.add(js);
 
-                addMarkers(id,location_name,latitude,longitude);
+                addMarkers(id,location_name,latitude,longitude,startTime,endTime);
 
                 if(i > 0 )
                 {
@@ -243,23 +333,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
         }
     }
 
-    public String loadJSONFromAsset() {
-        String json = null;
-        try {
-            InputStream is = getAssets().open("mock_data.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
-    }
-
-    private void addMarkers(String id,String location_name,Double latitude,Double longitude) {
+    private void addMarkers(String id, final String location_name, Double latitude, Double longitude, final String startTime, final String endTime) {
 
         try
         {
@@ -277,6 +351,18 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
                 data.put(TAG_LOCATION_NAME,location_name);
                 data.put(TAG_LATITUDE, String.valueOf(latitude));
                 data.put(TAG_LONGITUDE, String.valueOf(longitude));
+
+                SimpleDateFormat sdfInput = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                SimpleDateFormat sdfOutput = new SimpleDateFormat("hh:mm aa");
+
+                Date d = sdfInput.parse(startTime);
+                String startTimeFormatted = sdfOutput.format(d);
+
+                Date d1 = sdfInput.parse(endTime);
+                String endTimeFormatted = sdfOutput.format(d1);
+
+                data.put(TAG_FROM_TIME,startTimeFormatted);
+                data.put(TAG_TO_TIME,endTimeFormatted);
 
                 extraMarkerInfo.put(marker.getId(),data);
 

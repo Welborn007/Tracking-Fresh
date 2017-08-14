@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -50,15 +51,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 
             JSONObject resultMessage = new JSONObject(remoteMessage.getData());
 
-            String message_json = resultMessage.getString("score");
+            String message_json = resultMessage.getString("message");
 
             Log.i("message_json",message_json);
 
             sendNotification(message_json);
 
+            Toast.makeText(this, "Push Received", Toast.LENGTH_SHORT).show();
+
         }catch (JSONException je)
         {
-
+            Toast.makeText(this, "Push Received", Toast.LENGTH_SHORT).show();
         }
     }
 

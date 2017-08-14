@@ -252,12 +252,12 @@ public class IOUtils {
         //RequestQueue queue = Volley.newRequestQueue(this);
         Log.i("url", url);
 
-        final Dialog dialog = new Dialog(context);
+        /*final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.progressdialog);
         dialog.setCanceledOnTouchOutside(false);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.show();
+        dialog.show();*/
 
         StringRequest postRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>()
@@ -266,7 +266,7 @@ public class IOUtils {
                     public void onResponse(String response) {
                         // response
                         Log.d("Response", response);
-                        dialog.dismiss();
+                        //dialog.dismiss();
                         callback.onSuccess(response);
                     }
                 },
@@ -276,7 +276,7 @@ public class IOUtils {
                     public void onErrorResponse(VolleyError error) {
                         // TODO Auto-generated method stub
                         //Log.d("ERROR","error => "+error.toString());
-                        dialog.dismiss();
+                        //dialog.dismiss();
 
                         try{
                             String json = null;

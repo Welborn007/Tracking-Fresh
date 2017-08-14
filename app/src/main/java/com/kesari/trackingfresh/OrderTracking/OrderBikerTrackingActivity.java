@@ -80,8 +80,9 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
     LatLng oldLocation, newLocation;
     private static final int DURATION = 3000;
     ScheduledExecutorService scheduleTaskExecutor;
+    ScheduledExecutorService scheduledExecutorServiceBiker;
     private GoogleMap map;
-    Marker marker;
+    Marker marker,custMarker;
     HashMap<String, HashMap> extraMarkerInfo = new HashMap<String, HashMap>();
 
     private static final String TAG_ID = "id";
@@ -96,6 +97,8 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
     String[] geoArray;
     String OrderID;
     OrderReviewMainPOJO orderReviewMainPOJO;
+
+    boolean isDirectionSet = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +139,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
             btnSubmit = (FancyButton) findViewById(R.id.btnSubmit);
 
             OrderID = getIntent().getStringExtra("orderID");
-            getOrderDetailsfromID();
+
             btnSubmit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -206,8 +209,57 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
         {
             orderReviewMainPOJO = gson.fromJson(Response, OrderReviewMainPOJO.class);
 
-            Delivery_Origin = new LatLng(Double.parseDouble(orderReviewMainPOJO.getData().getAddress().getLatitude()), Double.parseDouble(orderReviewMainPOJO.getData().getAddress().getLongitude()));
-            oldLocation = Delivery_Origin;
+            /*if(orderReviewMainPOJO.getData().getBiker() != null)
+            {
+                Delivery_Origin = new LatLng(Double.parseDouble(orderReviewMainPOJO.getData().getAddress().getLatitude()), Double.parseDouble(orderReviewMainPOJO.getData().getAddress().getLongitude()));
+                oldLocation = Delivery_Origin;
+
+                map.clear();
+                try {
+
+                    geoArray = orderReviewMainPOJO.getData().getBiker().getGeo().getCoordinates();
+
+                    Double cust_longitude = Double.parseDouble(geoArray[0]);
+                    Double cust_latitude = Double.parseDouble(geoArray[1]);
+
+//                final LatLng startPosition = marker.getPosition();
+                    final LatLng finalPosition = new LatLng(cust_latitude, cust_longitude);
+
+                    LatLng currentPosition = new LatLng(
+                            cust_latitude,
+                            cust_longitude);
+
+                    //marker.setPosition(currentPosition);
+
+                    map.setTrafficEnabled(true);
+
+                    CameraPosition cameraPosition = new CameraPosition.Builder().
+                            target(finalPosition).
+                            tilt(0).
+                            zoom(16).
+                            bearing(0).
+                            build();
+
+                    map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+                    newLocation = currentPosition;
+
+                    addBikerMarkers("1", "TKF Vehicle", cust_latitude, cust_longitude);
+                    getMapsApiDirectionsUrl(cust_latitude, cust_longitude);
+
+                } catch (Exception e) {
+                    //Toast.makeText(getActivity(), "exception", Toast.LENGTH_SHORT).show();
+                    Log.i(TAG, e.getMessage());
+                }
+            }
+            else
+            {*/
+                Delivery_Origin = new LatLng(Double.parseDouble(orderReviewMainPOJO.getData().getAddress().getLatitude()), Double.parseDouble(orderReviewMainPOJO.getData().getAddress().getLongitude()));
+                oldLocation = Delivery_Origin;
+
+                getVehicleLocation();
+            //}
+
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
@@ -251,73 +303,10 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
 
                         Log.i("laittudeText",String.valueOf(Current_Origin.latitude));
 
-                        String url = Constants.CheckNearestVehicle ;
-
-                        Log.i("url", url);
-
-                        JSONObject jsonObject = new JSONObject();
-
-                        try {
-
-                            JSONObject postObject = new JSONObject();
-
-                            postObject.put("longitude", SharedPrefUtil.getLocation(OrderBikerTrackingActivity.this).getLongitude());
-                            postObject.put("latitude", SharedPrefUtil.getLocation(OrderBikerTrackingActivity.this).getLatitude());
-
-                            jsonObject.put("post", postObject);
-
-                            Log.i("JSON CREATED", jsonObject.toString());
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        Map<String, String> params = new HashMap<String, String>();
-                        params.put("Authorization", "JWT " + SharedPrefUtil.getToken(OrderBikerTrackingActivity.this));
-
-                        IOUtils ioUtils = new IOUtils();
-
-                        ioUtils.sendJSONObjectRequestHeader(OrderBikerTrackingActivity.this, url,params, jsonObject, new IOUtils.VolleyCallback() {
-                            @Override
-                            public void onSuccess(String result) {
-                                DriverLocationResponse(result);
-                            }
-                        });
+                        getOrderDetailsfromID();
                     }
                 }, 0, 3, TimeUnit.SECONDS);
             }
-
-        /*ScheduledExecutorService scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
-
-        // This schedule a task to run every 10 minutes:
-        scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
-            public void run() {
-                if (!NetworkUtils.isNetworkConnectionOn(getActivity())) {
-                    FireToast.customSnackbarWithListner(getActivity(), "No internet access", "Settings", new ActionClickListener() {
-                        @Override
-                        public void onActionClicked(Snackbar snackbar) {
-                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                        }
-                    });
-                    return;
-                } else {
-                    //getDriverLocationTask();
-
-                    IOUtils ioUtils = new IOUtils();
-
-                    ioUtils.getGETStringRequest(getActivity(),Constants.LocationAPI, new IOUtils.VolleyCallback() {
-                        @Override
-                        public void onSuccess(String result) {
-                            DriverLocationResponse(result);
-                        }
-                    });
-
-
-                    //DriverLocationResponse(IOUtils.getStringRequest(getActivity(),Constants.LocationAPI));
-                    //getDriverLocationTaskSample();
-                }
-            }
-        }, 0, 3, TimeUnit.SECONDS);*/
 
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
@@ -332,6 +321,42 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
             Log.i(TAG, e.getMessage());
         }
 
+    }
+
+    private void getVehicleLocation()
+    {
+        String url = Constants.CheckNearestVehicle ;
+
+        Log.i("url", url);
+
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+
+            JSONObject postObject = new JSONObject();
+
+            postObject.put("longitude", String .valueOf(SharedPrefUtil.getLocation(OrderBikerTrackingActivity.this).getLongitude()));
+            postObject.put("latitude", String.valueOf(SharedPrefUtil.getLocation(OrderBikerTrackingActivity.this).getLatitude()));
+
+            jsonObject.put("post", postObject);
+
+            Log.i("JSON CREATED", jsonObject.toString());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("Authorization", "JWT " + SharedPrefUtil.getToken(OrderBikerTrackingActivity.this));
+
+        IOUtils ioUtils = new IOUtils();
+
+        ioUtils.sendJSONObjectRequestHeader(OrderBikerTrackingActivity.this, url,params, jsonObject, new IOUtils.VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+                DriverLocationResponse(result);
+            }
+        });
     }
 
     private double bearingBetweenLocations(LatLng latLng1, LatLng latLng2) {
@@ -357,7 +382,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
     }
 
     public void DriverLocationResponse(String resp) {
-        map.clear();
+        //map.clear();
         try {
 
             nearestVehicleMainPOJO = gson.fromJson(resp, NearestVehicleMainPOJO.class);
@@ -399,7 +424,15 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
             newLocation = currentPosition;
 
             addMarkers("1", "TKF Vehicle", cust_latitude, cust_longitude);
-            getMapsApiDirectionsUrl(cust_latitude, cust_longitude);
+
+            if(isDirectionSet)
+            {
+                getMapsApiDirectionsUrl(cust_latitude, cust_longitude);
+            }
+            else
+            {
+                //animateMarker(marker,currentPosition,false);
+            }
 
         } catch (Exception e) {
             //Toast.makeText(getActivity(), "exception", Toast.LENGTH_SHORT).show();
@@ -411,6 +444,10 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
 
         try
         {
+            if(marker!=null && custMarker != null){
+                marker.remove();
+                custMarker.remove();
+            }
 
             final LatLng dest = new LatLng(latitude, longitude);
 
@@ -419,6 +456,52 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
             if (map != null) {
                 marker = map.addMarker(new MarkerOptions().position(dest)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_up_angle))
+                        .rotation((float) bearingBetweenLocations(oldLocation,newLocation))
+                        .title(location_name));
+
+                data.put(TAG_ID, id);
+                data.put(TAG_LOCATION_NAME, location_name);
+                data.put(TAG_LATITUDE, String.valueOf(latitude));
+                data.put(TAG_LONGITUDE, String.valueOf(longitude));
+
+                extraMarkerInfo.put(marker.getId(), data);
+
+                IOUtils.showRipples(dest,map,DURATION);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        IOUtils.showRipples(dest,map,DURATION);
+                    }
+                }, DURATION - 500);
+
+                custMarker = map.addMarker(new MarkerOptions().position(Delivery_Origin)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_customer))
+                        .title("Customer"));
+
+                //float bearing = (float) bearing(convertLatLngToLocation(oldLocation),convertLatLngToLocation(newLocation))
+                //rotateMarker(marker, bearing);
+            }
+
+            oldLocation = newLocation;
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+
+    }
+
+    private void addBikerMarkers(String id, String location_name, Double latitude, Double longitude) {
+
+        try
+        {
+
+            final LatLng dest = new LatLng(latitude, longitude);
+
+            HashMap<String, String> data = new HashMap<String, String>();
+
+            if (map != null) {
+                marker = map.addMarker(new MarkerOptions().position(dest)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_biker))
                         .rotation((float) bearingBetweenLocations(oldLocation,newLocation))
                         .title(location_name));
 
@@ -457,6 +540,11 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
 
         try
         {
+            final LatLng dest = new LatLng(destLatitude, destLongitude);
+
+            map.addMarker(new MarkerOptions().position(dest)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_location_marker_hi))
+                    .title("Origin"));
 
             String waypoints = "waypoints=optimize:true|"
                     + Delivery_Origin.latitude + "," + Delivery_Origin.longitude
@@ -616,6 +704,8 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                 }
 
                 map.addPolyline(polyLineOptions);
+
+                isDirectionSet = false;
 
             } catch (Exception e) {
                 e.printStackTrace();

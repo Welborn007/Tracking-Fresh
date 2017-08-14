@@ -58,7 +58,7 @@
     <color name="orange">#FF5722</color>
     <color name="gray">#9E9E9E</color>
 
-    <color name="red">#F00</color>
+
     <color name="green">#0F0</color>
     <color name="yellow">#FF0</color>
     <integer-array name="color_array">
@@ -118,4 +118,12 @@
     <color name="btn_bg">#277bec</color>
     <color name="txt_font">#4e5572</color>
     <color name="button_green">#66BB6A</color>
+    
+    <!--Client colors-->
+    <color name="mint">#B3DBC0</color>
+    <color name="red">#FE0000</color>
+    <color name="porcelain">#FDF6F6</color>
+    <color name="fresh_blue">#67BACA</color>
+
+
 </resources>

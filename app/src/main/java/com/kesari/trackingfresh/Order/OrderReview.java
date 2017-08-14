@@ -18,8 +18,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.Cart.AddToCart;
@@ -36,6 +39,9 @@ import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.ActionClickListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -65,6 +71,13 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
     MyApplication myApplication;
     public static int mNotificationsCount = 0;
     private SwipeRefreshLayout swipeContainer;
+
+    //Rating View
+    RatingBar ratingBar;
+    LinearLayout FeedbackHolder;
+    TextView feedbackTxt;
+    EditText feedback_remark;
+    FancyButton btnFeedback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,9 +124,33 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
             btnCall = (FancyButton) findViewById(R.id.btnCall);
             btnSupport = (FancyButton) findViewById(R.id.btnSupport);
 
-            btnSubmit = (FancyButton) findViewById(R.id.btnSubmit);
+            ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+            FeedbackHolder = (LinearLayout) findViewById(R.id.FeedbackHolder);
+            feedbackTxt = (TextView) findViewById(R.id.feedbackTxt);
+            feedback_remark = (EditText) findViewById(R.id.feedback_remark);
+            btnFeedback = (FancyButton) findViewById(R.id.btnFeedback);
 
             final String orderID = getIntent().getStringExtra("orderID");
+
+            btnFeedback.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    String RatingtXt = String.valueOf(ratingBar.getRating());
+                    String feedbackTxt = feedback_remark.getText().toString().trim();
+
+                    if(!RatingtXt.equalsIgnoreCase("0.0"))
+                    {
+                        sendRatingsFeedback(orderID,RatingtXt,feedbackTxt);
+                    }
+                    else
+                    {
+                        Toast.makeText(OrderReview.this, "Please Rate!!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+            btnSubmit = (FancyButton) findViewById(R.id.btnSubmit);
 
             btnSupport.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -148,6 +185,8 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
                 }
             }
 
+
+
             swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
             // Setup refresh listener which triggers new data loading
             swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -176,6 +215,48 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
             Log.i(TAG, e.getMessage());
         }
 
+    }
+
+    private void sendRatingsFeedback(String orderID, String Rating,String Feedback) {
+        try {
+
+            String url = Constants.UpdateOrder;
+
+            JSONObject jsonObject = new JSONObject();
+
+            try {
+
+                JSONObject postObject = new JSONObject();
+
+                postObject.put("id", orderID);
+                postObject.put("feedback",Feedback);
+                postObject.put("rating",Rating);
+                postObject.put("status","Delivered");
+
+                jsonObject.put("post", postObject);
+
+                Log.i("JSON CREATED", jsonObject.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(OrderReview.this));
+
+            ioUtils.sendJSONObjectPutRequestHeader(OrderReview.this, url, params, jsonObject, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG, result.toString());
+                    getOrderDetailsfromID();
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
     }
 
     private void getOrderDetailsfromID() {
@@ -278,6 +359,68 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
                 });
             }
 
+            if(orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Delivered"))
+            {
+                FeedbackHolder.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                FeedbackHolder.setVisibility(View.GONE);
+            }
+
+            if(orderReviewMainPOJO.getData().getRating() != null)
+            {
+                if(!orderReviewMainPOJO.getData().getRating().isEmpty())
+                {
+                    ratingBar.setRating(Float.parseFloat(orderReviewMainPOJO.getData().getRating()));
+                    ratingBar.setIsIndicator(true);
+                }
+                else
+                {
+                    ratingBar.setRating(5);
+                }
+            }
+            else
+            {
+                ratingBar.setRating(5);
+            }
+
+
+            if(orderReviewMainPOJO.getData().getFeedback() != null)
+            {
+                if(!orderReviewMainPOJO.getData().getFeedback().isEmpty())
+                {
+                    feedbackTxt.setText(orderReviewMainPOJO.getData().getFeedback());
+                    feedbackTxt.setVisibility(View.VISIBLE);
+                    feedback_remark.setVisibility(View.GONE);
+                }
+                else
+                {
+                    feedback_remark.setVisibility(View.VISIBLE);
+                    feedbackTxt.setVisibility(View.GONE);
+                }
+            }
+            else
+            {
+                feedback_remark.setVisibility(View.VISIBLE);
+                feedbackTxt.setVisibility(View.GONE);
+            }
+
+            if(orderReviewMainPOJO.getData().getRating() != null && orderReviewMainPOJO.getData().getFeedback() != null)
+            {
+                if(!orderReviewMainPOJO.getData().getFeedback().isEmpty() && !orderReviewMainPOJO.getData().getRating().isEmpty())
+                {
+                    btnFeedback.setVisibility(View.GONE);
+                }
+                else
+                {
+                    btnFeedback.setVisibility(View.VISIBLE);
+                }
+            }
+            else
+            {
+                btnFeedback.setVisibility(View.VISIBLE);
+            }
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
