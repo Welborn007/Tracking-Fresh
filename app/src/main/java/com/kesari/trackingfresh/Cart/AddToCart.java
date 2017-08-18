@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -280,8 +281,8 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
                 viewHolder.price = (TextView) convertView.findViewById(R.id.price);
 
                 viewHolder.count = (TextView) convertView.findViewById(R.id.count);
-                viewHolder.plus = (FancyButton) convertView.findViewById(R.id.plus);
-                viewHolder.minus = (FancyButton) convertView.findViewById(R.id.minus);
+                viewHolder.plus = (Button) convertView.findViewById(R.id.plus);
+                viewHolder.minus = (Button) convertView.findViewById(R.id.minus);
                 viewHolder.delete = (FancyButton) convertView.findViewById(R.id.delete);
 
                 viewHolder.quantity_price = (TextView) convertView.findViewById(R.id.quantity_price);
@@ -424,7 +425,8 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
         private class ViewHolder {
             TextView product_name, weight, price, count,quantity_price;
             SimpleDraweeView imageView;
-            FancyButton plus, minus, delete;
+            Button plus, minus;
+            FancyButton delete;
         }
     }
 

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#e5e5e5</color>
-    <color name="colorPrimaryDark">#D50000</color>
+    <color name="colorPrimaryDark">#FE0000</color>
+    <!--<color name="colorPrimaryDark">#D50000</color>-->
     <color name="colorAccent">#E91E63</color>
 
     <color name="colorHighlight">#B6B6B6</color>
@@ -35,8 +36,8 @@
     <color name="colorEdittextBackground">#f1f1f1</color>
     <color name="colorImageviewBackground">#33e5e5e5</color>
     <color name="Skip">#a9a8a8</color>
-    <color name="Button_Color">#d40f14</color>
-
+    <!--<color name="Button_Color">#d40f14</color>-->
+    <color name="Button_Color">#FE0000</color>
 
     <color name="ButtonColor">#26a69a</color>
     <color name="Red">#f44336</color>

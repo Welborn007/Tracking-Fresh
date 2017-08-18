@@ -163,7 +163,7 @@
         android:id="@+id/confirmAddress"
         android:layout_centerInParent="true"
         android:layout_alignParentBottom="true"
-        fancy:fb_defaultColor="@color/Button_Color"
+        fancy:fb_defaultColor="@color/fresh_blue"
         fancy:fb_focusColor="@color/colorPrimary"
         fancy:fb_radius="5dp"
         fancy:fb_textColor="@color/white"

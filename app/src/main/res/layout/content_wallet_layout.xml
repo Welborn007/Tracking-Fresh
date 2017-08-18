@@ -78,7 +78,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:layout_gravity="center"
-                android:textColor="@color/blue"
+                android:textColor="@color/fresh_blue"
                 android:textSize="@dimen/text_size"
                 />
 
@@ -95,7 +95,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:layout_gravity="center"
-                android:textColor="@color/blue"
+                android:textColor="@color/fresh_blue"
                 android:textSize="@dimen/text_size"
                 />
 

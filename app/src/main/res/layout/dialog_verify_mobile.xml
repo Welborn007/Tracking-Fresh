@@ -53,7 +53,7 @@
         fancy:fb_text="Confirm"
         android:id="@+id/confirmNumber"
         android:layout_centerInParent="true"
-        fancy:fb_defaultColor="@color/Button_Color"
+        fancy:fb_defaultColor="@color/fresh_blue"
         fancy:fb_focusColor="@color/colorPrimary"
         android:layout_below="@+id/holder"
         fancy:fb_radius="5dp"

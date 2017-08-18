@@ -95,13 +95,20 @@
                 android:id="@+id/holder_count"
                 android:orientation="horizontal"
                 android:visibility="gone"
-                android:background="@drawable/linear_red_border_layout"
                 android:layout_marginRight="10dp"
                 android:layout_width="wrap_content"
-                android:layout_height="30dp">
+                android:layout_height="35dp">
+
+                <Button
+                    android:id="@+id/plus"
+                    android:background="@drawable/cart_circular_drawable"
+                    android:text="+"
+                    android:textColor="@color/Gray"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp" />
 
                 <mehdi.sakout.fancybuttons.FancyButton
-                    android:id="@+id/plus"
+                    android:visibility="gone"
                     fancy:fb_fontIconResource="&#xf067;"
                     fancy:fb_textColor="@color/white"
                     fancy:fb_borderColor="@color/Gray"
@@ -119,12 +126,22 @@
                     android:text="0"
                     android:layout_width="wrap_content"
                     android:gravity="center"
-                    android:textColor="@color/white"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/text_size"
                     android:layout_height="match_parent" />
 
-                <mehdi.sakout.fancybuttons.FancyButton
+                <Button
                     android:id="@+id/minus"
+                    android:background="@drawable/cart_circular_drawable"
+                    android:text="-"
+                    android:textColor="@color/Gray"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp" />
+
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:visibility="gone"
                     fancy:fb_fontIconResource="&#xf068;"
                     fancy:fb_textColor="@color/white"
                     fancy:fb_borderColor="@color/Gray"
@@ -143,24 +160,12 @@
                 android:layout_height="wrap_content"
                 android:padding="5dp"
                 fancy:fb_text="Add to Cart"
-                fancy:fb_defaultColor="@color/Button_Color"
+                fancy:fb_defaultColor="@color/fresh_blue"
                 fancy:fb_focusColor="@color/colorPrimary"
                 android:id="@+id/addtoCart"
                 fancy:fb_radius="5dp"
                 fancy:fb_textColor="@color/white"
                 fancy:fb_textSize="18sp" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:text="Add to Cart"
-                android:textSize="@dimen/text_size"
-                android:visibility="gone"
-                android:background="@drawable/rounded_btn"
-                android:textStyle="bold"
-                android:textColor="@color/TextColor"
-                android:textAppearance="?android:textAppearanceMedium"
-                />
 
         </LinearLayout>
     </LinearLayout>

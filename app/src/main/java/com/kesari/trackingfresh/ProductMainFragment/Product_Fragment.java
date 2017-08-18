@@ -82,6 +82,7 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import mehdi.sakout.fancybuttons.FancyButton;
+import pl.droidsonroids.gif.GifImageView;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -151,6 +152,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     boolean isVehiclePresent = true;
 
     private Socket socket;
+    GifImageView arrow_down,arrow_up;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -166,6 +168,9 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             groceries = (ImageView) V.findViewById(R.id.groceries);
             f1 = (View) V.findViewById(R.id.map_container);
             fragment_data = (FrameLayout) V.findViewById(R.id.fragment_data);
+
+            arrow_down = (GifImageView) V.findViewById(R.id.arrow_down);
+            arrow_up = (GifImageView) V.findViewById(R.id.arrow_up);
 
             gson = new Gson();
 
@@ -196,7 +201,9 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                     Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
                             R.anim.slide_up);
 
-                    product_category.setIconResource(getString(R.string.drop_down));
+                    //product_category.setIconResource(getString(R.string.drop_down));
+                    arrow_down.setVisibility(View.VISIBLE);
+                    arrow_up.setVisibility(View.GONE);
 
                     product_holder.setVisibility(View.VISIBLE);
                     product_holder.startAnimation(slide_up);
@@ -209,9 +216,11 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                     Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
                             R.anim.slide_up);
 
+                    arrow_down.setVisibility(View.GONE);
+                    arrow_up.setVisibility(View.VISIBLE);
                     //recyclerView.setAdapter(null);
 
-                    product_category.setIconResource(getString(R.string.drop_up));
+                    //product_category.setIconResource(getString(R.string.drop_up));
 
                     product_holder.setVisibility(View.GONE);
                     product_holder.startAnimation(slide_down);
@@ -584,7 +593,10 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
                     R.anim.slide_up);
 
-            product_category.setIconResource(getString(R.string.drop_down));
+            //product_category.setIconResource(getString(R.string.drop_down));
+
+            arrow_down.setVisibility(View.VISIBLE);
+            arrow_up.setVisibility(View.GONE);
 
             product_holder.setVisibility(View.VISIBLE);
             product_holder.startAnimation(slide_up);
@@ -804,7 +816,8 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
                         R.anim.slide_down);
 
-                product_category.setIconResource(getString(R.string.drop_up));
+                arrow_down.setVisibility(View.GONE);
+                arrow_up.setVisibility(View.VISIBLE);
 
                 product_holder.setVisibility(View.GONE);
                 product_holder.startAnimation(slide_down);

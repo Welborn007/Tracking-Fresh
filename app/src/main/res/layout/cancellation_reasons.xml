@@ -55,7 +55,7 @@
         android:layout_margin="5dp"
         android:layout_below="@+id/holder"
         android:id="@+id/cancel"
-        fancy:fb_defaultColor="@color/Button_Color"
+        fancy:fb_defaultColor="@color/fresh_blue"
         fancy:fb_focusColor="@color/colorPrimary"
         fancy:fb_radius="5dp"
         fancy:fb_textColor="@color/white"

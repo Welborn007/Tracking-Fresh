@@ -273,7 +273,7 @@
             android:padding="5dp"
             fancy:fb_text="Cancel"
             android:id="@+id/cancel"
-            fancy:fb_defaultColor="@color/Button_Color"
+            fancy:fb_defaultColor="@color/fresh_blue"
             fancy:fb_focusColor="@color/colorPrimary"
             android:layout_marginRight="5dp"
             android:layout_marginBottom="5dp"

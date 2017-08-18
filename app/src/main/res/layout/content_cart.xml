@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
     tools:showIn="@layout/activity_add_to_cart"
-    android:background="@color/white"
+    android:background="@color/LightGray"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:layout_height="match_parent">
 
@@ -40,7 +40,7 @@
         android:layout_margin="5dp"
         android:layout_below="@+id/cart_count"
         android:layout_above="@+id/checkOut"
-        android:background="@color/white"
+        android:background="@color/LightGray"
         android:scrollbars="vertical"
         android:verticalSpacing="5dp"
         android:horizontalSpacing="5dp">
@@ -58,7 +58,7 @@
         android:layout_margin="5dp"
         android:layout_alignParentBottom="true"
         fancy:fb_fontIconResource="&#xf046;]"
-        fancy:fb_defaultColor="@color/Button_Color"
+        fancy:fb_defaultColor="@color/fresh_blue"
         fancy:fb_focusColor="@color/colorPrimary"
         fancy:fb_radius="5dp"
         fancy:fb_textColor="@color/white"

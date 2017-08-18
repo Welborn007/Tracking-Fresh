@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,7 +62,8 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
 
     private SliderLayout mDemoSlider;
     TextView mrp, count;
-    FancyButton plus, minus, delete;
+    Button plus, minus;
+    FancyButton  delete;
     LinearLayout holder_count;
     FancyButton gotoCart, addtoCart, checkOut;
     TextView price, percent, disclaimer, related_searches, package_contents, product_description, product_category, title_productname;
@@ -192,8 +194,8 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             mrp = (TextView) findViewById(R.id.mrp);
             mrp.setPaintFlags(mrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             mrp.setText("MRP " + MRP + " Rs.");
-            plus = (FancyButton) findViewById(R.id.plus);
-            minus = (FancyButton) findViewById(R.id.minus);
+            plus = (Button) findViewById(R.id.plus);
+            minus = (Button) findViewById(R.id.minus);
             delete = (FancyButton) findViewById(R.id.delete);
             price = (TextView) findViewById(R.id.price);
             percent = (TextView) findViewById(R.id.percent);

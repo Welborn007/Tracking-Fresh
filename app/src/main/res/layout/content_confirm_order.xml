@@ -45,8 +45,9 @@
                 android:id="@+id/order_placed_by"
                 android:text="Welborn Machado"
                 android:textColor="@color/black"
+                android:gravity="right"
                 android:textSize="@dimen/text_size"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
         </LinearLayout>
@@ -68,8 +69,9 @@
                 android:id="@+id/order_status"
                 android:text="pending"
                 android:textColor="@color/black"
+                android:gravity="right"
                 android:textSize="@dimen/text_size"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
         </LinearLayout>
@@ -165,9 +167,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/recyclerView"
-            android:layout_margin="5dp"
             android:scrollbars="vertical"
-            android:background="@color/white">
+            android:background="@color/LightGray">
         </android.support.v7.widget.RecyclerView>
 
     </LinearLayout>
@@ -183,43 +184,47 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
                 android:text="Delivery Charge = "
                 android:textColor="@color/Gray"
                 android:textSize="@dimen/text_size14"
+                android:layout_gravity="left"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <TextView
                 android:id="@+id/delivery_charge"
-                android:text=""
+                android:text="10"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_size"
-                android:layout_width="wrap_content"
+                android:gravity="right"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
                 android:text="Order Total = "
                 android:textColor="@color/Gray"
                 android:textSize="@dimen/text_size14"
+                android:layout_gravity="left"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <TextView
                 android:id="@+id/order_total"
-                android:text=""
+                android:text="10"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_size"
-                android:layout_width="wrap_content"
+                android:gravity="right"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
         </LinearLayout>
@@ -233,7 +238,7 @@
         fancy:fb_text="Confirm Order and Pay"
         android:layout_alignParentBottom="true"
         android:id="@+id/btnSubmit"
-        fancy:fb_defaultColor="@color/Button_Color"
+        fancy:fb_defaultColor="@color/fresh_blue"
         fancy:fb_focusColor="@color/colorPrimary"
         fancy:fb_radius="5dp"
         android:layout_margin="5dp"

@@ -196,6 +196,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                                 promocodeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                                 clearDrawable = false;
 
+                                promocodeSubmit.setEnabled(true);
                                 return true;
                             }
                         }
@@ -428,6 +429,8 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
             JSONObject jsonObject = new JSONObject(response);
             String newTotal = jsonObject.getString("newTotal");
             price_payable.setText(newTotal);
+
+            promocodeSubmit.setEnabled(false);
 
         }catch (Exception e)
         {

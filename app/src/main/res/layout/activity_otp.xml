@@ -25,9 +25,20 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:text="We're sending you a One Time Password:"
+                android:id="@+id/verificationHeader"
+                android:text="Verification code"
+                android:textSize="20sp"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="SMS verification code has been sent to:"
                 android:id="@+id/opttext"
                 android:textSize="16sp"
+                android:layout_below="@+id/verificationHeader"
                 android:layout_margin="10dp"
                 android:gravity="center"
                 android:textColor="@color/Gray"
@@ -41,7 +52,7 @@
                 android:textSize="16sp"
                 android:text=""
                 android:textStyle="bold"
-                android:textColor="@color/TextBlackColor"
+                android:textColor="@color/colorPrimaryDark"
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -58,7 +69,7 @@
                 <EditText
                     android:id="@+id/otp1"
                     android:textSize="16sp"
-                    android:inputType="number"
+                    android:inputType="numberPassword"
                     android:maxLength="1"
                     android:gravity="center"
                     android:layout_width="40dp"
@@ -67,7 +78,7 @@
                 <EditText
                     android:id="@+id/otp2"
                     android:textSize="16sp"
-                    android:inputType="number"
+                    android:inputType="numberPassword"
                     android:maxLength="1"
                     android:gravity="center"
                     android:layout_width="40dp"
@@ -76,7 +87,7 @@
                 <EditText
                     android:id="@+id/otp3"
                     android:textSize="16sp"
-                    android:inputType="number"
+                    android:inputType="numberPassword"
                     android:maxLength="1"
                     android:gravity="center"
                     android:layout_width="40dp"
@@ -86,7 +97,7 @@
                     android:id="@+id/otp4"
                     android:textSize="16sp"
                     android:maxLength="1"
-                    android:inputType="number"
+                    android:inputType="numberPassword"
                     android:gravity="center"
                     android:layout_width="40dp"
                     android:layout_height="wrap_content" />
@@ -118,9 +129,9 @@
                     fancy:fb_text="Verify"
                     android:id="@+id/sendOTP"
                     android:layout_weight="1"
-                    fancy:fb_defaultColor="@color/Button_Color"
+                    fancy:fb_defaultColor="@color/fresh_blue"
                     fancy:fb_focusColor="@color/colorPrimary"
-                    fancy:fb_radius="5dp"
+                    fancy:fb_radius="10dp"
                     fancy:fb_textColor="@color/white"
                     fancy:fb_textSize="18sp" />
 
@@ -132,9 +143,9 @@
                     android:layout_marginLeft="5dp"
                     android:id="@+id/resendOTP"
                     android:layout_weight="1"
-                    fancy:fb_defaultColor="@color/Button_Color"
+                    fancy:fb_defaultColor="@color/fresh_blue"
                     fancy:fb_focusColor="@color/colorPrimary"
-                    fancy:fb_radius="5dp"
+                    fancy:fb_radius="10dp"
                     fancy:fb_textColor="@color/white"
                     fancy:fb_textSize="18sp" />
 
@@ -146,9 +157,9 @@
                     android:id="@+id/skip"
                     android:layout_marginLeft="5dp"
                     android:layout_weight="1"
-                    fancy:fb_defaultColor="@color/Button_Color"
+                    fancy:fb_defaultColor="@color/fresh_blue"
                     fancy:fb_focusColor="@color/colorPrimary"
-                    fancy:fb_radius="5dp"
+                    fancy:fb_radius="10dp"
                     fancy:fb_textColor="@color/white"
                     fancy:fb_textSize="18sp" />
 

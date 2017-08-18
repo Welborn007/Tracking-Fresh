@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -163,8 +164,8 @@ public class Product_categoryFragment extends Fragment {
                 viewHolder.price = (TextView) convertView.findViewById(R.id.price);
                 viewHolder.quantity = (TextView) convertView.findViewById(R.id.quantity);
                 viewHolder.count = (TextView) convertView.findViewById(R.id.count);
-                viewHolder.plus = (FancyButton) convertView.findViewById(R.id.plus);
-                viewHolder.minus = (FancyButton) convertView.findViewById(R.id.minus);
+                viewHolder.plus = (Button) convertView.findViewById(R.id.plus);
+                viewHolder.minus = (Button) convertView.findViewById(R.id.minus);
                 viewHolder.mrp = (TextView) convertView.findViewById(R.id.mrp);
                 viewHolder.addtoCart = (FancyButton) convertView.findViewById(R.id.addtoCart);
                 viewHolder.holder_count = (LinearLayout) convertView.findViewById(R.id.holder_count);
@@ -344,7 +345,7 @@ public class Product_categoryFragment extends Fragment {
         private class ViewHolder {
             TextView product_name, weight, price, count,quantity,mrp;
             SimpleDraweeView imageView;
-            FancyButton plus, minus;
+            Button plus, minus;
             FancyButton addtoCart;
             LinearLayout holder_count;
         }
