@@ -8,7 +8,7 @@
         android:id="@+id/guestCardview"
         android:background="@color/white"
         card_view:cardCornerRadius="4dp"
-        card_view:cardElevation="4dp">
+        card_view:cardElevation="1dp">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -17,24 +17,26 @@
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/images"
-            android:layout_margin="10dp"
             android:layout_gravity="center"
-            android:layout_width="130dp"
-            android:layout_height="140dp" />
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
 
 
         <LinearLayout
             android:orientation="vertical"
-            android:layout_marginTop="10dp"
-            android:layout_width="wrap_content"
+            android:gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/product_name"
                 android:text="Product"
-                android:padding="5dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:textColor="@color/black"
-                android:textSize="@dimen/text_size18"
+                android:textSize="@dimen/text_size"
                 android:textStyle="bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -48,15 +50,14 @@
 
             <LinearLayout
                 android:orientation="horizontal"
-                android:padding="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <TextView
                     android:text="Quantity :"
                     android:textColor="@color/gray"
-                    android:textSize="@dimen/text_size"
-                    android:layout_width="100dp"
+                    android:textSize="@dimen/text_size14"
+                    android:layout_width="70dp"
                     android:layout_height="wrap_content"/>
 
                 <TextView
@@ -64,7 +65,7 @@
                     android:text="3"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:textSize="@dimen/text_size"
+                    android:textSize="@dimen/text_size14"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"/>
 
@@ -79,15 +80,14 @@
 
             <LinearLayout
                 android:orientation="horizontal"
-                android:padding="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <TextView
                     android:text="Price :"
                     android:textColor="@color/gray"
-                    android:textSize="@dimen/text_size"
-                    android:layout_width="100dp"
+                    android:textSize="@dimen/text_size14"
+                    android:layout_width="70dp"
                     android:layout_height="wrap_content"/>
 
                 <TextView
@@ -95,7 +95,7 @@
                     android:text="100"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/text_size"
+                    android:textSize="@dimen/text_size14"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"/>
 
@@ -110,15 +110,15 @@
 
             <LinearLayout
                 android:orientation="horizontal"
-                android:padding="5dp"
+                android:gravity="right"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <TextView
                     android:text="SubTotal :"
                     android:textColor="@color/gray"
-                    android:textSize="@dimen/text_size"
-                    android:layout_width="100dp"
+                    android:textSize="@dimen/text_size14"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
                 <TextView
@@ -126,7 +126,7 @@
                     android:text="100"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/text_size"
+                    android:textSize="@dimen/text_size14"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"/>
 

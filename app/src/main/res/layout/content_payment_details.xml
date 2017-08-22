@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"/>
 
             <TextView
-                android:text="Rs"
+                android:text="₹"
                 android:textColor="@color/black"
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="2dp"
@@ -82,7 +82,7 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:text="Available Balance: Rs 200"
+                android:text="Available Balance: ₹ 200"
                 android:textColor="@color/black"
                 android:layout_marginLeft="10dp"
                 android:textSize="14sp"
@@ -220,7 +220,7 @@
                 android:layout_height="wrap_content"/>
 
             <TextView
-                android:text="Rs"
+                android:text="₹"
                 android:textColor="@color/black"
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="2dp"
@@ -258,7 +258,7 @@
                 android:layout_height="wrap_content"/>
 
             <TextView
-                android:text="Rs"
+                android:text="₹"
                 android:textColor="@color/black"
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="2dp"

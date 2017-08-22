@@ -185,10 +185,10 @@ public class Product_categoryFragment extends Fragment {
                 viewHolder.imageView.setHierarchy(IOUtils.getFrescoImageHierarchy(activity));
                 viewHolder.quantity.setText(product_pojo.getAvailableQuantity() + " quantity");
                 viewHolder.weight.setText(product_pojo.getUnit() + product_pojo.getUnitsOfMeasurement());
-                viewHolder.price.setText(product_pojo.getSelling_price() + " Rs");
+                viewHolder.price.setText("₹ " + product_pojo.getSelling_price());
 
                 viewHolder.mrp.setPaintFlags(viewHolder.mrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                viewHolder.mrp.setText("MRP " + product_pojo.getMRP() + " Rs.");
+                viewHolder.mrp.setText("₹ " + product_pojo.getMRP());
 
                 viewHolder.addtoCart.setOnClickListener(new View.OnClickListener() {
                     @Override

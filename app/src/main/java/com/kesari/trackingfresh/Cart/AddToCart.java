@@ -302,10 +302,10 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
                 viewHolder.imageView.setHierarchy(IOUtils.getFrescoImageHierarchy(activity));
 
                 viewHolder.weight.setText(product_pojo.getUnit() + product_pojo.getUnitsOfMeasurement());
-                viewHolder.price.setText(product_pojo.getPrice());
+                viewHolder.price.setText("₹ " + product_pojo.getPrice());
 
                 viewHolder.count.setText(String.valueOf(product_pojo.getQuantity()));
-                viewHolder.quantity_price.setText(String.valueOf(Integer.parseInt(product_pojo.getPrice()) * product_pojo.getQuantity()));
+                viewHolder.quantity_price.setText("₹ " + String.valueOf(Integer.parseInt(product_pojo.getPrice()) * product_pojo.getQuantity()));
 
                 viewHolder.delete.setOnClickListener(new View.OnClickListener() {
                     @Override

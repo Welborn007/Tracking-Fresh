@@ -5,15 +5,14 @@
     android:id="@+id/subItemCard_view"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:layout_alignParentBottom="true"
     android:layout_margin="5dp"
     android:background="@color/LightGray"
     card_view:cardCornerRadius="4dp"
-    card_view:cardElevation="4dp">
+    card_view:cardElevation="1dp">
 
     <LinearLayout
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
         android:orientation="vertical">
 
         <com.facebook.drawee.view.SimpleDraweeView

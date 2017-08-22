@@ -48,7 +48,7 @@
                 android:id="@+id/sourceCardview"
                 android:background="@color/LightGray"
                 card_view:cardCornerRadius="4dp"
-                card_view:cardElevation="4dp">
+                card_view:cardElevation="1dp">
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -106,7 +106,7 @@
                 android:id="@+id/destinationCardview"
                 android:background="@color/LightGray"
                 card_view:cardCornerRadius="4dp"
-                card_view:cardElevation="4dp">
+                card_view:cardElevation="1dp">
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -213,6 +213,9 @@
         android:id="@+id/layout_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:elevation="5dp"
+        android:background="@color/white"
+        android:layout_margin="5dp"
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
@@ -277,142 +280,6 @@
                 android:scrollbars="none"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
             </android.support.v7.widget.RecyclerView>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:visibility="gone"
-                android:orientation="horizontal"
-                android:weightSum="3">
-
-                <ImageView
-                    android:id="@+id/fruits"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/fruit" />
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="#ccc" />
-
-                <ImageView
-                    android:id="@+id/vegetables"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/vegetable" />
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="#ccc" />
-
-                <ImageView
-                    android:id="@+id/groceries"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/groceries" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"
-                android:orientation="horizontal"
-                android:weightSum="3">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/Skip"
-                    android:gravity="center"
-                    android:padding="15dp"
-                    android:text="@string/fruits"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size"
-                    android:visibility="gone" />
-
-                <mehdi.sakout.fancybuttons.FancyButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:padding="5dp"
-                    fancy:fb_borderColor="#ffffff"
-                    fancy:fb_borderWidth="1dp"
-                    fancy:fb_defaultColor="@color/Skip"
-                    fancy:fb_focusColor="#2e5071"
-                    fancy:fb_radius="5dp"
-                    fancy:fb_text="@string/fruits"
-                    fancy:fb_textColor="@color/black"
-                    fancy:fb_textSize="18sp" />
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="#ccc" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@color/Skip"
-                    android:gravity="center"
-                    android:padding="15dp"
-                    android:text="@string/vegetables"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size"
-                    android:visibility="gone" />
-
-                <mehdi.sakout.fancybuttons.FancyButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:padding="5dp"
-                    fancy:fb_borderColor="#ffffff"
-                    fancy:fb_borderWidth="1dp"
-                    fancy:fb_defaultColor="@color/Skip"
-                    fancy:fb_focusColor="#2e5071"
-                    fancy:fb_radius="5dp"
-                    fancy:fb_text="@string/vegetables"
-                    fancy:fb_textColor="@color/black"
-                    fancy:fb_textSize="18sp" />
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="#ccc" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@color/Skip"
-                    android:gravity="center"
-                    android:padding="15dp"
-                    android:text="@string/groceries"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size"
-                    android:visibility="gone" />
-
-                <mehdi.sakout.fancybuttons.FancyButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:padding="5dp"
-                    fancy:fb_borderColor="#ffffff"
-                    fancy:fb_borderWidth="1dp"
-                    fancy:fb_defaultColor="@color/Skip"
-                    fancy:fb_focusColor="#2e5071"
-                    fancy:fb_radius="5dp"
-                    fancy:fb_text="@string/groceries"
-                    fancy:fb_textColor="@color/black"
-                    fancy:fb_textSize="18sp" />
-
-            </LinearLayout>
 
         </LinearLayout>
 

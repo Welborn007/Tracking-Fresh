@@ -44,8 +44,8 @@ public class OrderReViewRecyclerAdapter extends RecyclerView.Adapter<OrderReView
 
             holder.product_name.setText(OrdersListReView.get(position).getProductName());
             holder.quantity.setText(OrdersListReView.get(position).getQuantity());
-            holder.price.setText(OrdersListReView.get(position).getPrice());
-            holder.subtotal.setText(OrdersListReView.get(position).getSub_total());
+            holder.price.setText("₹ " + OrdersListReView.get(position).getPrice());
+            holder.subtotal.setText("₹ " + OrdersListReView.get(position).getSub_total());
 
             holder.images.setController(IOUtils.getFrescoImageController(context,OrdersListReView.get(position).getProductImage()));
             holder.images.setHierarchy(IOUtils.getFrescoImageHierarchy(context));

@@ -29,7 +29,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -116,7 +115,6 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap map;
     /*private MarkerOptions currentPositionMarker = null;
     private Marker currentLocationMarker;*/
-    ImageView fruits, vegetables, groceries;
     View f1;
     FrameLayout fragment_data;
     Marker marker;
@@ -163,9 +161,6 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
         try
         {
 
-            fruits = (ImageView) V.findViewById(R.id.fruits);
-            vegetables = (ImageView) V.findViewById(R.id.vegetables);
-            groceries = (ImageView) V.findViewById(R.id.groceries);
             f1 = (View) V.findViewById(R.id.map_container);
             fragment_data = (FrameLayout) V.findViewById(R.id.fragment_data);
 

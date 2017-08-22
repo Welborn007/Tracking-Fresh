@@ -143,8 +143,8 @@ public class ConfirmOrderActivity extends AppCompatActivity implements NetworkUt
             {
                 //order_placed_by.setText(orderAddPojo.getMessage().getCreatedBy());
                 //order_status.setText(orderAddPojo.getMessage().getStatus());
-                order_total.setText(orderFareMainPOJO.getData().getTotal_price());
-                delivery_charge.setText(orderFareMainPOJO.getData().getDelivery_charge());
+                order_total.setText("₹ " + orderFareMainPOJO.getData().getTotal_price());
+                delivery_charge.setText("₹ " + orderFareMainPOJO.getData().getDelivery_charge());
 
                 confirmOrderAdapter = new ConfirmOrder_RecyclerAdpater(orderFareMainPOJO.getData().getOrders(),ConfirmOrderActivity.this);
                 recyclerViewConfirmOrder.setAdapter(confirmOrderAdapter);

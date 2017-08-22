@@ -129,8 +129,8 @@
                         android:background="@drawable/cart_circular_drawable"
                         android:text="+"
                         android:textColor="@color/Gray"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp" />
+                        android:layout_width="25dp"
+                        android:layout_height="25dp" />
 
                     <mehdi.sakout.fancybuttons.FancyButton
                         fancy:fb_fontIconResource="&#xf067;"
@@ -163,8 +163,8 @@
                         android:background="@drawable/cart_circular_drawable"
                         android:text="-"
                         android:textColor="@color/Gray"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp" />
+                        android:layout_width="25dp"
+                        android:layout_height="25dp" />
 
                     <mehdi.sakout.fancybuttons.FancyButton
                         fancy:fb_fontIconResource="&#xf068;"

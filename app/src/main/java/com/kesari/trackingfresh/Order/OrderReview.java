@@ -301,8 +301,8 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
             adapterProducts = new OrderReViewRecyclerAdapter(orderReviewMainPOJO.getData().getOrder(),OrderReview.this);
             recListProducts.setAdapter(adapterProducts);
 
-            total_price.setText(orderReviewMainPOJO.getData().getTotal_price() + " .Rs");
-            deliveryCharge.setText(orderReviewMainPOJO.getData().getDelivery_charge() + " .Rs");
+            total_price.setText("₹ " + orderReviewMainPOJO.getData().getTotal_price());
+            deliveryCharge.setText("₹ " + orderReviewMainPOJO.getData().getDelivery_charge());
 
             if(orderReviewMainPOJO.getData().getPayment_Status() != null)
             {

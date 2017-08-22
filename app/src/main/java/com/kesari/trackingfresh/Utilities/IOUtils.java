@@ -106,7 +106,7 @@ public class IOUtils {
 
         GenericDraweeHierarchyBuilder builder = new GenericDraweeHierarchyBuilder(context.getResources());
         GenericDraweeHierarchy hierarchy = builder
-                .setActualImageScaleType(ScalingUtils.ScaleType.FIT_XY)
+                .setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER)
                 .build();
 
 

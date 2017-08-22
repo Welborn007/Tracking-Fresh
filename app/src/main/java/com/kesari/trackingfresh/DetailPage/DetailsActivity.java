@@ -193,7 +193,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             //View Binding
             mrp = (TextView) findViewById(R.id.mrp);
             mrp.setPaintFlags(mrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            mrp.setText("MRP " + MRP + " Rs.");
+            mrp.setText("₹ " + MRP);
             plus = (Button) findViewById(R.id.plus);
             minus = (Button) findViewById(R.id.minus);
             delete = (FancyButton) findViewById(R.id.delete);
@@ -220,7 +220,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             title_productname.setText(productName);
             setTitle(productName);
 
-            price.setText("Price Rs. " + productPrice);
+            price.setText("Price ₹ " + productPrice);
 
             /*if (!myApplication.checkifproductexists(productId)) {
                 holder_count.setVisibility(View.VISIBLE);
