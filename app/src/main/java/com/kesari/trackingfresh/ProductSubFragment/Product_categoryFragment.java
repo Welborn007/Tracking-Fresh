@@ -83,9 +83,9 @@ public class Product_categoryFragment extends Fragment {
 
             String category_id = args.getString("category_id");
 
-            Log.i("Subcategory_url", Constants.Product_Desc + "?categoryId=" + category_id + "&vehicleId=" + SharedPrefUtil.getNearestVehicle(getActivity()).getData().get(0).getVehicle_id());
+            Log.i("Subcategory_url", Constants.Product_Desc + "?categoryId=" + category_id + "&vehicleId=" + SharedPrefUtil.getNearestRouteMainPOJO(getActivity()).getData().get(0).getVehicleId());
 
-            String URL = Constants.Product_Desc + "?categoryId=" + category_id + "&vehicleId=" + SharedPrefUtil.getNearestVehicle(getActivity()).getData().get(0).getVehicle_id();
+            String URL = Constants.Product_Desc + "?categoryId=" + category_id + "&vehicleId=" + SharedPrefUtil.getNearestRouteMainPOJO(getActivity()).getData().get(0).getVehicleId();
 
             IOUtils ioUtils = new IOUtils();
 
@@ -199,26 +199,42 @@ public class Product_categoryFragment extends Fragment {
 
 
                         if (!myApplication.checkifproductexists(product_pojo.getProductId())) {
-                            AddCart_model addCart_model = new AddCart_model();
-                            addCart_model.setProductCategory(product_pojo.getProductCategory());
-                            addCart_model.setProductId(product_pojo.getProductId());
-                            addCart_model.setProductName(product_pojo.getProductName());
-                            addCart_model.set_id(product_pojo.get_id());
-                            addCart_model.setUnitsOfMeasurement(product_pojo.getUnitsOfMeasurement());
-                            addCart_model.setProductCategoryId(product_pojo.getProductCategoryId());
-                            addCart_model.setProductDescription(product_pojo.getProductDescription());
-                            addCart_model.setProductDetails(product_pojo.getProductDetails());
-                            addCart_model.setUnit(product_pojo.getUnit());
-                            addCart_model.setPrice(product_pojo.getSelling_price());
-                            addCart_model.setUnitsOfMeasurementId(product_pojo.getUnitsOfMeasurementId());
-                            addCart_model.setProductImage(product_pojo.getProductImage());
-                            addCart_model.setActive(product_pojo.getActive());
-                            addCart_model.setQuantity(1);
-                            addCart_model.setBrand(product_pojo.getBrand());
-                            addCart_model.setAvailableQuantity(product_pojo.getAvailableQuantity());
-                            addCart_model.setMRP(product_pojo.getMRP());
+                            try
+                            {
+                                AddCart_model addCart_model = new AddCart_model();
+                                addCart_model.setProductCategory(product_pojo.getProductCategory());
+                                addCart_model.setProductId(product_pojo.getProductId());
+                                addCart_model.setProductName(product_pojo.getProductName());
+                                addCart_model.set_id(product_pojo.get_id());
+                                addCart_model.setUnitsOfMeasurement(product_pojo.getUnitsOfMeasurement());
+                                addCart_model.setProductCategoryId(product_pojo.getProductCategoryId());
+                                addCart_model.setProductDescription(product_pojo.getProductDescription());
+                                addCart_model.setProductDetails(product_pojo.getProductDetails());
+                                addCart_model.setUnit(product_pojo.getUnit());
+                                addCart_model.setPrice(product_pojo.getSelling_price());
+                                addCart_model.setUnitsOfMeasurementId(product_pojo.getUnitsOfMeasurementId());
 
-                            myApplication.setProducts(addCart_model);
+                                if(product_pojo.getProductImages().isEmpty())
+                                {
+                                    addCart_model.setProductImage(product_pojo.getProductImage());
+                                }
+                                else
+                                {
+                                    addCart_model.setProductImage(product_pojo.getProductImages().get(0).getUrl());
+                                }
+
+                                addCart_model.setActive(product_pojo.getActive());
+                                addCart_model.setQuantity(1);
+                                addCart_model.setBrand(product_pojo.getBrand());
+                                addCart_model.setAvailableQuantity(product_pojo.getAvailableQuantity());
+                                addCart_model.setMRP(product_pojo.getMRP());
+
+                                myApplication.setProducts(addCart_model);
+                            }catch (Exception e)
+                            {
+                                e.printStackTrace();
+                            }
+
                         } else {
                             //Toast.makeText(activity, "Product already present in cart!!", Toast.LENGTH_SHORT).show();
                             viewHolder.count.setText(myApplication.getProductQuantity(product_pojo.getProductId()));
@@ -319,7 +335,20 @@ public class Product_categoryFragment extends Fragment {
                             in.putExtra("unit", product_pojo.getUnit());
                             in.putExtra("unitsOfMeasurementId", product_pojo.getUnitsOfMeasurementId());
                             in.putExtra("productId", product_pojo.getProductId());
-                            in.putExtra("productImage", product_pojo.getProductImage());
+                            if(product_pojo.getProductImages().isEmpty())
+                            {
+                                in.putExtra("productImage", product_pojo.getProductImage());
+                                in.putExtra("productImages","");
+                            }
+                            else
+                            {
+                                in.putExtra("productImage", product_pojo.getProductImages().get(0).getUrl());
+
+                                //Set the values
+                                Gson gson = new Gson();
+                                String jsonText = gson.toJson(product_pojo.getProductImages());
+                                in.putExtra("productImages",jsonText);
+                            }
                             in.putExtra("active", product_pojo.getActive());
                             in.putExtra("price",product_pojo.getSelling_price());
                             in.putExtra("brand",product_pojo.getBrand());

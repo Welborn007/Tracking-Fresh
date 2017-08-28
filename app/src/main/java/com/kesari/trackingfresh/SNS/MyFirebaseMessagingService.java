@@ -15,18 +15,19 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.kesari.trackingfresh.CheckNearestVehicleAvailability.CheckVehicleActivity;
-import com.kesari.trackingfresh.Login.LoginActivity;
 import com.kesari.trackingfresh.R;
-import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
+import com.kesari.trackingfresh.Splash.NewSplash;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Map;
 import java.util.Random;
 
 
@@ -34,14 +35,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 {
     private String TAG = this.getClass().getSimpleName();
     private Intent intent;
+    Bitmap bitmap;
+    String image,message;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         //Displaying data in log
         //It is optional
         Log.d(TAG, "From: " + remoteMessage.getFrom());
-        Log.d(TAG, "Notification Message Data: " + remoteMessage.getData());
-        //Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
+
         //MainActivity.myMsg = remoteMessage.getNotification().getBody();
 
         //Calling method to generate notification
@@ -49,43 +51,46 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
 
         try {
 
-            JSONObject resultMessage = new JSONObject(remoteMessage.getData());
+            Log.d(TAG, "Notification Message Data: " + remoteMessage.getData());
+            //Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
 
-            String message_json = resultMessage.getString("message");
+            Map<String, String> data = remoteMessage.getData();
+            Log.i("message_json",data.toString());
 
-            Log.i("message_json",message_json);
+            if(data.get("result") != null)
+            {
 
-            sendNotification(message_json);
+                JSONObject jsonObject = new JSONObject(data.get("result"));
 
-            Toast.makeText(this, "Push Received", Toast.LENGTH_SHORT).show();
+                message = jsonObject.getString("message");
 
-        }catch (JSONException je)
+                if(jsonObject.has("image"))
+                {
+                    image = jsonObject.getString("image");
+                }
+                else
+                {
+                    image = "";
+                }
+
+                sendNotification(message,image);
+            }
+
+        }catch (Exception je)
         {
-            Toast.makeText(this, "Push Received", Toast.LENGTH_SHORT).show();
+            je.printStackTrace();
+            //Toast.makeText(this, "Push Received", Toast.LENGTH_SHORT).show();
         }
     }
 
     //This method is only generating push notification
     //It is same as we did in earlier posts
-    private void sendNotification(String messageBody) {
+    private void sendNotification(String messageBody,String Image) {
         try
         {
 
-            if (SharedPrefUtil.getToken(this) != null) {
-                if(!SharedPrefUtil.getToken(this).isEmpty())
-                {
-                    intent = new Intent(this, CheckVehicleActivity.class);
-                }
-                else
-                {
-                    intent = new Intent(this, LoginActivity.class);
-                }
-            }
-            else
-            {
-                intent = new Intent(this, LoginActivity.class);
-            }
 
+            intent = new Intent(this, NewSplash.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                     PendingIntent.FLAG_ONE_SHOT);
@@ -107,11 +112,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
                 notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
             }
 
-            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.notif_banner);
-            //bitmap = Bitmap.createScaledBitmap(bitmap, 500, 350, false);
+            if(!Image.isEmpty())
+            {
+                try {
+                    bitmap = BitmapFactory.decodeStream((InputStream) new URL(Image).getContent());
+                    bitmap = Bitmap.createScaledBitmap(bitmap, 350, 150, false);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-            notificationBuilder.setStyle(new NotificationCompat.BigPictureStyle()
-                    .bigPicture(bitmap));
+                notificationBuilder.setStyle(new NotificationCompat.BigPictureStyle()
+                        .bigPicture(bitmap));
+            }
 
             NotificationManager notificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

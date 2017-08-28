@@ -49,6 +49,10 @@ import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.ActionClickListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -73,6 +77,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
     private String productCategory = "";
     //private String __v = "";
     private String productImage = "";
+    private String productImages = "";
     //private String editedAt = "";
     private String productId = "";
     private String unit = "";
@@ -152,24 +157,54 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             availableQuantity = getIntent().getStringExtra("quantity");
             brand = getIntent().getStringExtra("brand");
             MRP = getIntent().getStringExtra("MRP");
+            productImages = getIntent().getStringExtra("productImages");
+
+            Log.i("ImageList",productImages);
 
             initCollapsingToolbar();
             //Image Slider
             mDemoSlider = (SliderLayout) findViewById(R.id.slider);
             mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Default);
 
-            HashMap<String, String> url_maps = new HashMap<String, String>();
-            /*url_maps.put("Tomato1", "http://cdn1-www.wholesomebabyfood.momtastic.com/assets/uploads/2015/04/tomato.jpg");
-            url_maps.put("Tomato2", "https://grist.files.wordpress.com/2009/09/tomato.jpg");
-            url_maps.put("Tomato3", "http://media.treehugger.com/assets/images/2012/08/Ramon-Gonzalez-Tomatoes.jpg.650x0_q70_crop-smart.jpg");
-            url_maps.put("Tomato4", "http://venturesafrica.com/wp-content/uploads/2016/05/tomatoes-in-baskets.jpg");*/
+           if(!productImages.isEmpty())
+            {
+                try
+                {
+                    JSONArray product = new JSONArray(productImages);
 
-            url_maps.put("", productImage);
-            url_maps.put("", productImage);
-            url_maps.put("", productImage);
-            url_maps.put("", productImage);
+                    for(int i = 0; i < product.length(); i++)
+                    {
+                        JSONObject jsonObject = product.getJSONObject(i);
+                        //url_maps.put("", jsonObject.getString("url"));
 
-            for (String name : url_maps.keySet()) {
+                        TextSliderView textSliderView = new TextSliderView(this);
+                        // initialize a SliderLayout
+                        textSliderView
+                                .description("")
+                                .image(jsonObject.getString("url"))
+                                .setScaleType(BaseSliderView.ScaleType.CenterInside)
+                                .setOnSliderClickListener(this);
+
+                        //add your extra information
+                        textSliderView.bundle(new Bundle());
+                        textSliderView.getBundle()
+                                .putString("extra", "");
+
+                        mDemoSlider.addSlider(textSliderView);
+                    }
+                }catch (Exception e)
+                {
+                    //url_maps.put("", productImage);
+                    e.printStackTrace();
+                }
+
+            }
+            else
+            {
+                HashMap<String, String> url_maps = new HashMap<String, String>();
+                url_maps.put("", productImage);
+
+                for (String name : url_maps.keySet()) {
                 TextSliderView textSliderView = new TextSliderView(this);
                 // initialize a SliderLayout
                 textSliderView
@@ -185,6 +220,8 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
 
                 mDemoSlider.addSlider(textSliderView);
             }
+            }
+
             mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Accordion);
             mDemoSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
             mDemoSlider.setCustomAnimation(new DescriptionAnimation());
@@ -266,7 +303,24 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
                         addCart_model.setUnit(unit);
                         addCart_model.setPrice(productPrice);
                         addCart_model.setUnitsOfMeasurementId(unitsOfMeasurementId);
-                        addCart_model.setProductImage(productImage);
+
+                        if(!productImages.isEmpty())
+                        {
+                            try {
+                                JSONArray product = new JSONArray(productImages);
+                                JSONObject jsonObject = product.getJSONObject(0);
+
+                                addCart_model.setProductImage(jsonObject.getString("url"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                        else
+                        {
+                            addCart_model.setProductImage(productImage);
+                        }
+
                         addCart_model.setActive(active);
                         addCart_model.setQuantity(1);
                         addCart_model.setBrand(brand);

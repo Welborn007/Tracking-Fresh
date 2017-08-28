@@ -21,6 +21,7 @@ import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
+import com.kesari.trackingfresh.VehicleNearestRoute.NearestRouteMainPOJO;
 import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
@@ -42,7 +43,8 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
     private String TAG = this.getClass().getSimpleName();
     private NetworkUtilsReceiver networkUtilsReceiver;
     private Gson gson;
-    NearestVehicleMainPOJO nearestVehicleMainPOJO;
+    //NearestVehicleMainPOJO nearestVehicleMainPOJO;
+    NearestRouteMainPOJO nearestRouteMainPOJO;
 
     private Location Current_Location;
     private LatLng Current_Origin;
@@ -122,7 +124,7 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
         try
         {
 
-            String url = Constants.CheckNearestVehicle ;
+            String url = Constants.VehicleNearestRoute ;
 
             Log.i("url", url);
 
@@ -152,7 +154,9 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
                 @Override
                 public void onSuccess(String result) {
                     //scheduleTaskExecutor.shutdown();
-                    NearestVehicleResponse(result);
+                    //NearestVehicleResponse(result);
+
+                    NearestVehicleRouteResponse(result);
                 }
             });
 
@@ -162,7 +166,37 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
 
     }
 
-    private void NearestVehicleResponse(String Response)
+    private void NearestVehicleRouteResponse(String Response)
+    {
+        try
+        {
+            nearestRouteMainPOJO = gson.fromJson(Response, NearestRouteMainPOJO.class);
+
+            if(nearestRouteMainPOJO.getData().isEmpty())
+            {
+                search_text.setText("Sorry! We dont serve on this route");
+                aviFailed.setVisibility(View.VISIBLE);
+                avi.setVisibility(View.GONE);
+                SharedPrefUtil.setNearestRouteMainPOJO(CheckVehicleActivity.this,"");
+
+            }
+            else
+            {
+                SharedPrefUtil.setNearestRouteMainPOJO(CheckVehicleActivity.this,Response);
+                aviFailed.setVisibility(View.GONE);
+                avi.setVisibility(View.VISIBLE);
+
+                Intent intent = new Intent(CheckVehicleActivity.this, DashboardActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+   /* private void NearestVehicleResponse(String Response)
     {
         try
         {
@@ -179,13 +213,13 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
                 startActivity(intent);
                 finish();
 
-                /*final Handler handler = new Handler();
+                *//*final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
 
                     }
-                }, 5000);*/
+                }, 5000);*//*
             }
             else
             {
@@ -201,7 +235,7 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
-    }
+    }*/
 
 
     @Override

@@ -37,7 +37,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.Gson;
-import com.kesari.trackingfresh.CheckNearestVehicleAvailability.NearestVehicleMainPOJO;
 import com.kesari.trackingfresh.ConfirmOrder.OrderAddPojo;
 import com.kesari.trackingfresh.DashBoard.DashboardActivity;
 import com.kesari.trackingfresh.DashBoard.VerifyMobilePOJO;
@@ -51,6 +50,7 @@ import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.ErrorPOJO;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
+import com.kesari.trackingfresh.VehicleNearestRoute.NearestRouteMainPOJO;
 import com.kesari.trackingfresh.VehicleRoute.RouteActivity;
 import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.MyApplication;
@@ -87,7 +87,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
     SendOtpPOJO sendOtpPOJO;
     Dialog dialog;
     private ViewGroup mSnackbarContainer;
-    NearestVehicleMainPOJO nearestVehicleMainPOJO;
+    //NearestVehicleMainPOJO nearestVehicleMainPOJO;
     CheckBox walletCash;
     ProfileMain profileMain;
     String walletAmount = "";
@@ -100,6 +100,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
     ErrorPOJO errorPOJO;
     boolean clearDrawable = false;
+    NearestRouteMainPOJO nearestRouteMainPOJO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -570,7 +571,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
         try
         {
 
-            String url = Constants.CheckNearestVehicle ;
+            String url = Constants.VehicleNearestRoute ;
 
             Log.i("url", url);
 
@@ -613,9 +614,9 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
     {
         try
         {
-            nearestVehicleMainPOJO = gson.fromJson(Response, NearestVehicleMainPOJO.class);
+            nearestRouteMainPOJO = gson.fromJson(Response, NearestRouteMainPOJO.class);
 
-            if(nearestVehicleMainPOJO.getData().isEmpty())
+            if(nearestRouteMainPOJO.getData().isEmpty())
             {
                 final Dialog dialog = new Dialog(PaymentDetails.this);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -815,7 +816,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                     postObject.put("walletAmount",walletAmount);
                 }
 
-                postObject.put("vehicleId",SharedPrefUtil.getNearestVehicle(PaymentDetails.this).getData().get(0).getVehicle_id());
+                postObject.put("vehicleId",SharedPrefUtil.getNearestRouteMainPOJO(PaymentDetails.this).getData().get(0).getVehicleId());
                 jsonObject.put("post", postObject);
 
                 Log.i("JSON CREATED", jsonObject.toString());

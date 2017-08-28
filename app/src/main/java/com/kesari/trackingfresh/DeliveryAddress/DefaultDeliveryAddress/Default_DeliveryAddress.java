@@ -187,9 +187,9 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
 
                     if(default_address)
                     {
-                        if(SharedPrefUtil.getNearestVehicle(Default_DeliveryAddress.this) != null)
+                        if(SharedPrefUtil.getNearestRouteMainPOJO(Default_DeliveryAddress.this) != null)
                         {
-                            if(!SharedPrefUtil.getNearestVehicle(Default_DeliveryAddress.this).getData().get(0).getVehicle_id().isEmpty())
+                            if(!SharedPrefUtil.getNearestRouteMainPOJO(Default_DeliveryAddress.this).getData().get(0).getVehicleId().isEmpty())
                             {
                                 addOrderListFromCart();
                             }
@@ -334,7 +334,7 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
 */
                 postObject.put("orders",cartItemsArray);
                 //postObject.put("total_price","1100");
-                postObject.put("vehicleId",SharedPrefUtil.getNearestVehicle(Default_DeliveryAddress.this).getData().get(0).getVehicle_id());
+                postObject.put("vehicleId",SharedPrefUtil.getNearestRouteMainPOJO(Default_DeliveryAddress.this).getData().get(0).getVehicleId());
                 jsonObject.put("post", postObject);
 
                 Log.i("JSON CREATED", jsonObject.toString());

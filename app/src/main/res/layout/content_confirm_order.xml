@@ -86,7 +86,7 @@
             android:id="@+id/guestCardview"
             android:background="@color/white"
             card_view:cardCornerRadius="4dp"
-            card_view:cardElevation="4dp">
+            card_view:cardElevation="1dp">
 
             <LinearLayout
                 android:orientation="vertical"
@@ -188,7 +188,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:text="Delivery Charge = "
+                android:text="Delivery Charge "
                 android:textColor="@color/Gray"
                 android:textSize="@dimen/text_size14"
                 android:layout_gravity="left"
@@ -211,7 +211,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:text="Order Total = "
+                android:text="Order Total "
                 android:textColor="@color/Gray"
                 android:textSize="@dimen/text_size14"
                 android:layout_gravity="left"

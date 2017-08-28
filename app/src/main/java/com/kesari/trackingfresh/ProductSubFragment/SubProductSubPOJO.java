@@ -1,5 +1,8 @@
 package com.kesari.trackingfresh.ProductSubFragment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by kesari on 18/05/17.
  */
@@ -39,6 +42,24 @@ public class SubProductSubPOJO {
     private String brand;
 
     private String MRP;
+
+    private List<ProductImagesPOJO> productImages = new ArrayList<ProductImagesPOJO>();
+
+    public String getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
+    }
+
+    public List<ProductImagesPOJO> getProductImages() {
+        return productImages;
+    }
+
+    public void setProductImages(List<ProductImagesPOJO> productImages) {
+        this.productImages = productImages;
+    }
 
     public String getMRP() {
         return MRP;

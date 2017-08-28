@@ -8,6 +8,8 @@ import android.location.LocationManager;
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.CheckNearestVehicleAvailability.NearestVehicleMainPOJO;
 import com.kesari.trackingfresh.Login.ProfileMain;
+import com.kesari.trackingfresh.ProductMainFragment.SocketLiveMainPOJO;
+import com.kesari.trackingfresh.VehicleNearestRoute.NearestRouteMainPOJO;
 
 /**
  * Created by kesari on 26/04/17.
@@ -24,7 +26,8 @@ public class SharedPrefUtil {
     public static String KEY_USER_CART_ITEM = "cart";
 
     private static String KEY_VEHICLE = "vehicle";
-
+    private static String KEY_VEHICLE_NEARESTROUTE = "vehicle_route";
+    private static String KEY_VEHICLE_SOCKET = "vehicle_socket";
     private static String KEY_LAT_DEFAULT = "latitude_def";
     private static String KEY_LONGI_DEFAULT = "longitude_def";
 
@@ -126,9 +129,43 @@ public class SharedPrefUtil {
 
     }
 
+    public static NearestRouteMainPOJO getNearestRouteMainPOJO(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        String data = preferences.getString(KEY_VEHICLE_NEARESTROUTE, null);
+        Gson gson = new Gson();
+        if (data == null)
+            return null;
+        else
+            return gson.fromJson(data, NearestRouteMainPOJO.class);
+    }
+
+
+    public static void setNearestRouteMainPOJO(Context context, String value) {
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        preferences.edit().putString(KEY_VEHICLE_NEARESTROUTE, value).apply();
+
+    }
+
+    public static SocketLiveMainPOJO getSocketLiveMainPOJO(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        String data = preferences.getString(KEY_VEHICLE_SOCKET, null);
+        Gson gson = new Gson();
+        if (data == null)
+            return null;
+        else
+            return gson.fromJson(data, SocketLiveMainPOJO.class);
+    }
+
+
+    public static void setSocketLiveMainPOJO(Context context, String value) {
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        preferences.edit().putString(KEY_VEHICLE_SOCKET, value).apply();
+
+    }
+
     public static void setClear(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        preferences.edit().remove(KEY_USER).remove(KEY_USER_TOKEN).remove(KEY_USER_CART_ITEM).remove(KEY_VEHICLE).remove(KEY_LAT_DEFAULT).remove(KEY_LONGI_DEFAULT).remove(KEY_FIREBASE_TOKEN).commit();
+        preferences.edit().remove(KEY_USER).remove(KEY_USER_TOKEN).remove(KEY_USER_CART_ITEM).remove(KEY_VEHICLE).remove(KEY_VEHICLE_NEARESTROUTE).remove(KEY_VEHICLE_SOCKET).remove(KEY_LAT_DEFAULT).remove(KEY_LONGI_DEFAULT).remove(KEY_FIREBASE_TOKEN).commit();
     }
 
 

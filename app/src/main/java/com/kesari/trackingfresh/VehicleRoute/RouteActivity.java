@@ -30,14 +30,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.gson.Gson;
 import com.kesari.trackingfresh.Map.HttpConnection;
 import com.kesari.trackingfresh.Map.JSON_POJO;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.Map.PathJSONParser;
+import com.kesari.trackingfresh.ProductMainFragment.SocketLiveMainPOJO;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
+import com.kesari.trackingfresh.VehicleNearestRoute.NearestRouteMainPOJO;
 import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
@@ -48,6 +51,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -55,6 +59,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
+
+import static com.kesari.trackingfresh.OrderTracking.OrderBikerTrackingActivity.animateMarker;
 
 public class RouteActivity extends AppCompatActivity implements OnMapReadyCallback,NetworkUtilsReceiver.NetworkResponseInt{
 
@@ -76,8 +86,14 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
 
     private static View view;
     private String TAG = this.getClass().getSimpleName();
-
+    private Gson gson;
     private NetworkUtilsReceiver networkUtilsReceiver;
+    NearestRouteMainPOJO nearestRouteMainPOJO;
+    private Socket socket;
+    Marker markerVehicle;
+    SocketLiveMainPOJO scoketLiveMainPOJO;
+    String[] geoArray;
+    LatLng oldLocation, newLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +110,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
         /*Register receiver*/
             networkUtilsReceiver = new NetworkUtilsReceiver(this);
             registerReceiver(networkUtilsReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+            gson = new Gson();
 
             final LocationManager locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
 
@@ -246,16 +263,201 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
 
         if(map != null){
 
+            sendLATLONVehicle();
+            startSocket();
+
             //getData();
-            if(SharedPrefUtil.getNearestVehicle(RouteActivity.this).getData() != null)
+            /*if(SharedPrefUtil.getNearestRouteMainPOJO(RouteActivity.this).getData() != null)
             {
-                if(!SharedPrefUtil.getNearestVehicle(RouteActivity.this).getData().get(0).getVehicle_id().isEmpty())
+                if(!SharedPrefUtil.getNearestRouteMainPOJO(RouteActivity.this).getData().get(0).getVehicleId().isEmpty())
                 {
-                    getVehicleRoute(SharedPrefUtil.getNearestVehicle(RouteActivity.this).getData().get(0).getVehicle_id());
+                    getVehicleRoute(SharedPrefUtil.getNearestRouteMainPOJO(RouteActivity.this).getData().get(0).getVehicleId());
                 }
+            }*/
+        }
+    }
+
+    private void sendLATLONVehicle()
+    {
+        try
+        {
+
+            String url = Constants.VehicleNearestRoute ;
+
+            Log.i("url", url);
+
+            JSONObject jsonObject = new JSONObject();
+
+            try {
+
+                JSONObject postObject = new JSONObject();
+
+                postObject.put("longitude", SharedPrefUtil.getLocation(RouteActivity.this).getLongitude());
+                postObject.put("latitude", SharedPrefUtil.getLocation(RouteActivity.this).getLatitude());
+
+                jsonObject.put("post", postObject);
+
+                Log.i("JSON CREATED", jsonObject.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
 
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(RouteActivity.this));
 
+            IOUtils ioUtils = new IOUtils();
+
+            ioUtils.sendJSONObjectRequestHeader(RouteActivity.this, url,params, jsonObject, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    //scheduleTaskExecutor.shutdown();
+                    //NearestVehicleResponse(result);
+
+                    NearestVehicleRouteResponse(result);
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+
+    }
+
+    private void NearestVehicleRouteResponse(String Response)
+    {
+        try
+        {
+            nearestRouteMainPOJO = gson.fromJson(Response, NearestRouteMainPOJO.class);
+
+            if(nearestRouteMainPOJO.getData().isEmpty())
+            {
+                SharedPrefUtil.setNearestRouteMainPOJO(RouteActivity.this,"");
+            }
+            else
+            {
+                SharedPrefUtil.setNearestRouteMainPOJO(RouteActivity.this,Response);
+                getVehicleRoute(SharedPrefUtil.getNearestRouteMainPOJO(RouteActivity.this).getData().get(0).getVehicleId());
+            }
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void startSocket()
+    {
+        try {
+            socket = IO.socket(Constants.VehicleLiveLocation);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+
+            @Override
+            public void call(Object... args) {
+
+                try
+                {
+                    JSONObject obj = new JSONObject();
+                    obj.put("hello", "server");
+                    obj.put("binary", new byte[42]);
+                    socket.emit("vehiclePosition", obj);
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+                //socket.disconnect();
+                Log.i("Send","Data " + socket.id());
+            }
+
+        }).on("vehiclePosition", new Emitter.Listener() {
+
+            @Override
+            public void call(Object... args) {
+
+                final JSONObject obj = (JSONObject)args[0];
+                Log.i("Connect",obj.toString());
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        DriverSocketLiveLocationResponse(obj.toString());
+                    }
+                });
+            }
+
+        }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+
+            @Override
+            public void call(Object... args) {
+                Log.i("DisConnect","Connect");
+            }
+
+        });
+        socket.connect();
+    }
+
+    private void stopSocket()
+    {
+        socket.disconnect();
+        Log.i("SocketService","Disconnected");
+    }
+
+    public void DriverSocketLiveLocationResponse(String resp) {
+        //map.clear();
+        try {
+
+            scoketLiveMainPOJO = gson.fromJson(resp, SocketLiveMainPOJO.class);
+            nearestRouteMainPOJO = SharedPrefUtil.getNearestRouteMainPOJO(RouteActivity.this);
+
+
+            if(nearestRouteMainPOJO.getData() != null)
+            {
+                if(!nearestRouteMainPOJO.getData().isEmpty())
+                {
+
+                    if(scoketLiveMainPOJO.getData() != null)
+                    {
+                        String NearestVehicleRouteID = nearestRouteMainPOJO.getData().get(0).getVehicleId();
+                        String SocketVehicleID = scoketLiveMainPOJO.getData().getVehicle_id();
+
+                        if(NearestVehicleRouteID.equalsIgnoreCase(SocketVehicleID))
+                        {
+                            if(markerVehicle != null)
+                            {
+                                    /*marker.setPosition(currentPosition);
+                                    marker.setRotation((float) bearingBetweenLocations(oldLocation,newLocation));*/
+
+                                geoArray = scoketLiveMainPOJO.getData().getGeo().getCoordinates();
+
+                                Double cust_longitude = Double.parseDouble(geoArray[0]);
+                                Double cust_latitude = Double.parseDouble(geoArray[1]);
+
+                                newLocation = new LatLng(cust_latitude, cust_longitude);
+
+                                final LatLng finalPosition = new LatLng(cust_latitude, cust_longitude);
+
+                                LatLng currentPosition = new LatLng(
+                                        cust_latitude,
+                                        cust_longitude);
+
+                                animateMarker(map,markerVehicle,finalPosition,false);
+                                markerVehicle.setRotation((float) bearingBetweenLocations(oldLocation,newLocation));
+
+                                oldLocation = newLocation;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+
+            }
+
+        } catch (Exception e) {
+            //Toast.makeText(getActivity(), "exception", Toast.LENGTH_SHORT).show();
+            Log.i(TAG, e.getMessage());
         }
     }
 
@@ -337,6 +539,9 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
 
         try
         {
+            if(markerVehicle!=null){
+                markerVehicle.remove();
+            }
 
             LatLng dest = new LatLng(latitude, longitude);
 
@@ -366,10 +571,18 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
 
                 extraMarkerInfo.put(marker.getId(),data);
 
-                map.addMarker(new MarkerOptions().position(Current_Origin)
+                nearestRouteMainPOJO = SharedPrefUtil.getNearestRouteMainPOJO(RouteActivity.this);
+
+                String[] geoArray = nearestRouteMainPOJO.getData().get(0).getDist().getLocation().getCoordinates();
+
+                newLocation = new LatLng(Double.parseDouble(geoArray[1]),Double.parseDouble(geoArray[0]));
+
+                markerVehicle = map.addMarker(new MarkerOptions().position(newLocation)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_red_car))
                         .title("TKF Vehicle"));
             }
+
+            oldLocation = newLocation;
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
@@ -513,6 +726,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
 
         try {
             unregisterReceiver(networkUtilsReceiver);
+            stopSocket();
 
             if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
                 // LOCATION SERVICE
@@ -551,5 +765,27 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
         {
             Log.i(TAG,e.getMessage());
         }
+    }
+
+    private double bearingBetweenLocations(LatLng latLng1, LatLng latLng2) {
+
+        double PI = 3.14159;
+        double lat1 = latLng1.latitude * PI / 180;
+        double long1 = latLng1.longitude * PI / 180;
+        double lat2 = latLng2.latitude * PI / 180;
+        double long2 = latLng2.longitude * PI / 180;
+
+        double dLon = (long2 - long1);
+
+        double y = Math.sin(dLon) * Math.cos(lat2);
+        double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1)
+                * Math.cos(lat2) * Math.cos(dLon);
+
+        double brng = Math.atan2(y, x);
+
+        brng = Math.toDegrees(brng);
+        brng = (brng + 360) % 360;
+
+        return brng;
     }
 }

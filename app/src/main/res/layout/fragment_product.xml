@@ -171,7 +171,7 @@
                 android:layout_margin="5dp"
                 android:background="@color/LightGray"
                 card_view:cardCornerRadius="4dp"
-                card_view:cardElevation="4dp">
+                card_view:cardElevation="1dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -214,13 +214,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="5dp"
-        android:background="@color/white"
+        android:background="@drawable/radius_white"
         android:layout_margin="5dp"
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
         <RelativeLayout
-            android:background="@color/mint"
+            android:background="@drawable/radius_mint"
             android:layout_width="match_parent"
             android:layout_height="35dp">
 

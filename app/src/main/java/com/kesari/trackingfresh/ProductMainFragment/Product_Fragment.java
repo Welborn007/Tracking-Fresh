@@ -3,10 +3,12 @@ package com.kesari.trackingfresh.ProductMainFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,7 +46,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
-import com.kesari.trackingfresh.CheckNearestVehicleAvailability.NearestVehicleMainPOJO;
 import com.kesari.trackingfresh.Map.HttpConnection;
 import com.kesari.trackingfresh.Map.PathJSONParser;
 import com.kesari.trackingfresh.ProductSubFragment.Product_categoryFragment;
@@ -55,6 +56,7 @@ import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.OnSwipeTouchListener;
 import com.kesari.trackingfresh.Utilities.RecyclerItemClickListener;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
+import com.kesari.trackingfresh.VehicleNearestRoute.NearestRouteMainPOJO;
 import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.nispok.snackbar.Snackbar;
@@ -144,13 +146,16 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     private static final int DURATION = 3000;
     ScheduledExecutorService scheduleTaskExecutor;
 
-    NearestVehicleMainPOJO nearestVehicleMainPOJO;
+   // NearestVehicleMainPOJO nearestVehicleMainPOJO;
+    NearestRouteMainPOJO nearestRouteMainPOJO;
+    SocketLiveMainPOJO scoketLiveMainPOJO;
     String[] geoArray;
 
     boolean isVehiclePresent = true;
 
     private Socket socket;
     GifImageView arrow_down,arrow_up;
+    Bitmap bitmap;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -227,7 +232,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             GuestAddress.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    //sendNotification("Hello World","https://d3r8gwkgo0io6y.cloudfront.net/upload/assets/Kesari-Tours.png");
                 }
             });
 
@@ -345,7 +350,19 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             }
             else
             {
+                startSocket();
+                setVehicleEmpty();
+
                 scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
+
+                // This schedule a task to run every 10 minutes:
+                scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
+                    public void run() {
+                        getVehicleLocation();
+                    }
+                }, 0, 60, TimeUnit.SECONDS);
+
+                /*scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
 
                 // This schedule a task to run every 10 minutes:
                 scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
@@ -395,7 +412,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                         }
 
                     }
-                }, 0, 5, TimeUnit.SECONDS);
+                }, 0, 5, TimeUnit.SECONDS);*/
             }
 
 
@@ -416,10 +433,72 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
     }
 
+    private void getVehicleLocation()
+    {
+        String url = Constants.VehicleNearestRoute ;
+
+        Log.i("url", url);
+
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+
+            JSONObject postObject = new JSONObject();
+
+            postObject.put("longitude", String .valueOf(SharedPrefUtil.getLocation(getActivity()).getLongitude()));
+            postObject.put("latitude", String.valueOf(SharedPrefUtil.getLocation(getActivity()).getLatitude()));
+
+            jsonObject.put("post", postObject);
+
+            Log.i("JSON CREATED", jsonObject.toString());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("Authorization", "JWT " + SharedPrefUtil.getToken(getActivity()));
+
+        IOUtils ioUtils = new IOUtils();
+
+        ioUtils.sendJSONObjectRequestHeader(getActivity(), url,params, jsonObject, new IOUtils.VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+                VehicleNearestRouteResponse(result);
+            }
+        });
+    }
+
+    private void VehicleNearestRouteResponse(String Response)
+    {
+        try
+        {
+            nearestRouteMainPOJO = gson.fromJson(Response, NearestRouteMainPOJO.class);
+
+            if(nearestRouteMainPOJO.getData().isEmpty())
+            {
+
+                SharedPrefUtil.setNearestRouteMainPOJO(getActivity(),"");
+                setVehicleEmpty();
+            }
+            else
+            {
+                SharedPrefUtil.setNearestRouteMainPOJO(getActivity(),Response);
+                getProductDataListing();
+            }
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+
+        //SharedPrefUtil.setNearestRouteMainPOJO(getActivity(),Response);
+
+    }
+
     private void startSocket()
     {
         try {
-            socket = IO.socket("http://" +Constants.VaibhavIP);
+            socket = IO.socket(Constants.VehicleLiveLocation);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -427,9 +506,18 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
             @Override
             public void call(Object... args) {
-                //socket.emit("foo", "hi");
+
+                try
+                {
+                    JSONObject obj = new JSONObject();
+                    obj.put("hello", "server");
+                    obj.put("binary", new byte[42]);
+                    socket.emit("vehiclePosition", obj);
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
                 //socket.disconnect();
-                Log.i("Send","Data");
+                Log.i("Send","Data " + socket.id());
             }
 
         }).on("vehiclePosition", new Emitter.Listener() {
@@ -437,9 +525,15 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void call(Object... args) {
 
-                JSONObject obj = (JSONObject)args[0];
+                final JSONObject obj = (JSONObject)args[0];
                 Log.i("Connect",obj.toString());
 
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        DriverSocketLiveLocationResponse(obj.toString());
+                    }
+                });
             }
 
         }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
@@ -563,7 +657,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             Map<String, String> params = new HashMap<String, String>();
             params.put("Authorization", "JWT " + SharedPrefUtil.getToken(getActivity()));
 
-            String URL = Constants.Product_Category + SharedPrefUtil.getNearestVehicle(getActivity()).getData().get(0).getVehicle_id();
+            String URL = Constants.Product_Category + SharedPrefUtil.getNearestRouteMainPOJO(getActivity()).getData().get(0).getVehicleId();
 
             ioUtils.getGETStringRequestHeader(getActivity(),URL, params, new IOUtils.VolleyCallback() {
                 @Override
@@ -759,7 +853,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     }
 
 
-    public void DriverLocationResponse(String resp) {
+    /*public void DriverLocationResponse(String resp) {
         map.clear();
         try {
 
@@ -851,7 +945,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             //Toast.makeText(getActivity(), "exception", Toast.LENGTH_SHORT).show();
             Log.i(TAG, e.getMessage());
         }
-    }
+    }*/
 
     private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
         String strAdd = "";
@@ -876,11 +970,153 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
         return strAdd;
     }
 
+    public void DriverSocketLiveLocationResponse(String resp) {
+        map.clear();
+        try {
+
+            scoketLiveMainPOJO = gson.fromJson(resp, SocketLiveMainPOJO.class);
+            nearestRouteMainPOJO = SharedPrefUtil.getNearestRouteMainPOJO(getActivity());
+
+
+            if(nearestRouteMainPOJO.getData() != null)
+            {
+                if(!nearestRouteMainPOJO.getData().isEmpty())
+                {
+
+                    if(scoketLiveMainPOJO.getData() != null)
+                    {
+                        String NearestVehicleRouteID = nearestRouteMainPOJO.getData().get(0).getVehicleId();
+                        String SocketVehicleID = scoketLiveMainPOJO.getData().getVehicle_id();
+
+                        if(NearestVehicleRouteID.equalsIgnoreCase(SocketVehicleID))
+                        {
+                            SharedPrefUtil.setSocketLiveMainPOJO(getActivity(),resp);
+
+                            geoArray = scoketLiveMainPOJO.getData().getGeo().getCoordinates();
+
+                            Double cust_longitude = Double.parseDouble(geoArray[0]);
+                            Double cust_latitude = Double.parseDouble(geoArray[1]);
+
+                            Location location = new Location(LocationManager.GPS_PROVIDER);
+                            location.setLatitude(cust_latitude);
+                            location.setLongitude(cust_longitude);
+
+                            if(Current_Location.distanceTo(location) < 5000) {
+                                // bingo!
+                                if(isVehiclePresent)
+                                {
+
+                                }
+
+                                //final LatLng startPosition = marker.getPosition();
+                                final LatLng finalPosition = new LatLng(cust_latitude, cust_longitude);
+
+                                LatLng currentPosition = new LatLng(
+                                        cust_latitude,
+                                        cust_longitude);
+
+                                //marker.setPosition(currentPosition);
+
+                                map.setTrafficEnabled(true);
+
+                                CameraPosition cameraPosition = new CameraPosition.Builder().
+                                        target(finalPosition).
+                                        tilt(60).
+                                        zoom(18).
+                                        bearing(0).
+                                        build();
+
+                                map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+                                newLocation = currentPosition;
+
+                                addMarkers("1", "TKF Vehicle", cust_latitude, cust_longitude);
+                                getMapsApiDirectionsUrl(cust_latitude, cust_longitude);
+                            }else
+                            {
+                                setVehicleEmpty();
+                            }
+                        }
+                        else
+                        {
+                            setVehicleEmpty();
+                        }
+                    }
+                    else
+                    {
+                        setVehicleEmpty();
+                    }
+
+                }else
+                {
+                    setVehicleEmpty();
+                }
+            }
+            else
+            {
+                setVehicleEmpty();
+            }
+
+        } catch (Exception e) {
+            //Toast.makeText(getActivity(), "exception", Toast.LENGTH_SHORT).show();
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void setVehicleEmpty()
+    {
+        isVehiclePresent = true;
+        Current_Location = SharedPrefUtil.getLocation(getActivity());
+        Current_Origin = new LatLng(Current_Location.getLatitude(), Current_Location.getLongitude());
+        Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
+                R.anim.slide_down);
+
+        arrow_down.setVisibility(View.GONE);
+        arrow_up.setVisibility(View.VISIBLE);
+
+        product_holder.setVisibility(View.GONE);
+        product_holder.startAnimation(slide_down);
+
+        try
+        {
+            recyclerView.setAdapter(null);
+            productCategoryMainPojo.getData().clear();
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        GuestAddress.setText(getCompleteAddressString(Current_Origin.latitude,Current_Origin.longitude));
+        kilometre.setText("Vehicle Not Available");
+        //SharedPrefUtil.setNearestVehicle(getActivity(),"");
+        SharedPrefUtil.setSocketLiveMainPOJO(getActivity(),"");
+        //scheduleTaskExecutor.shutdown();
+
+        map.setTrafficEnabled(true);
+
+        CameraPosition cameraPosition = new CameraPosition.Builder().
+                target(Current_Origin).
+                tilt(0).
+                zoom(18).
+                bearing(0).
+                build();
+
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+        map.addMarker(new MarkerOptions().position(Current_Origin)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_customer))
+                .title("Origin"));
+    }
+
+
     @Override
     public void onDestroy() {
         super.onDestroy();
 
+        stopSocket();
         scheduleTaskExecutor.shutdown();
         //stopSocket();
     }
+
+
 }

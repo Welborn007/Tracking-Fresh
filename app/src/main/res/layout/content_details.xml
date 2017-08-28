@@ -352,7 +352,7 @@
                 fancy:fb_iconPosition="right"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                fancy:fb_fontIconResource="&#xf046;]"
+                fancy:fb_fontIconResource="&#xf046;"
                 fancy:fb_defaultColor="@color/fresh_blue"
                 fancy:fb_focusColor="@color/colorPrimary"
                 fancy:fb_radius="5dp"
