@@ -1,4 +1,4 @@
-package com.kesari.trackingfresh.DeliveryAddress.AddDeliveryAddress;
+package com.kesari.trackingfresh.DeliveryAddress.UpdateDeliveryAddress;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -6,9 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -38,7 +35,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
-import com.kesari.trackingfresh.DeliveryAddress.DefaultDeliveryAddress.Default_DeliveryAddress;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
@@ -55,51 +51,54 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import mehdi.sakout.fancybuttons.FancyButton;
 
-public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt,OnMapReadyCallback
-{
+public class UpdateDeliveryAddressActivity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt,OnMapReadyCallback {
+
+    String _id,fullName,email_Id,mobileNo,flat_No,buildingName,landmark,city,state,address_Type,pincodeTxt;
+    boolean isDefault;
 
     FancyButton confirmAddress;
-    EditText name,email,mobile,city,state,pincode,flat_no,building_name,landmark,addressType;
+    EditText name,email,mobile,cityTxt,stateTxt,pincode,flat_no,building_name,landmarkTxt,addressType;
     private String TAG = this.getClass().getSimpleName();
     //private GPSTracker gpsTracker;
-    private Location Current_Origin;
+    //private Location Current_Origin;
     private NetworkUtilsReceiver networkUtilsReceiver;
-    String FullName = "";
-    String city_geo = "";
-    String state_geo = "";
-    String country_geo = "";
-    String addressZero = "";
-    String addressOne = "";
-    String addressTwo = "";
-    String Country = "";
-    String FeatureName = "";
-    String AdminArea = "";
-    String CountryCode = "";
-    String Locality = "";
-    String postalCode = "";
-    String subAdminArea = "";
-    String subLocality = "";
     CheckBox defaultAddress;
-    private Gson gson;
-    private AddAddressPOJO addAddressPOJO;
     private SupportMapFragment supportMapFragment;
 
     String Latitude,Longitude;
     NestedScrollView nestedScrollView;
     private LatLng Current_Location;
     Marker marker;
+    private Gson gson;
     NearestRouteMainPOJO nearestRouteMainPOJO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_delivery_address);
+        setContentView(R.layout.activity_update_delivery_address);
+
+        _id = getIntent().getStringExtra("_id");
+        fullName = getIntent().getStringExtra("fullName");
+        email_Id = getIntent().getStringExtra("email_Id");
+        mobileNo = getIntent().getStringExtra("mobileNo");
+        flat_No = getIntent().getStringExtra("flat_No");
+        buildingName = getIntent().getStringExtra("buildingName");
+        landmark = getIntent().getStringExtra("landmark");
+        city = getIntent().getStringExtra("city");
+        state = getIntent().getStringExtra("state");
+        address_Type = getIntent().getStringExtra("address_Type");
+        Latitude = getIntent().getStringExtra("latitude");
+        Longitude = getIntent().getStringExtra("longitude");
+        pincodeTxt = getIntent().getStringExtra("pincode");
+        isDefault = getIntent().getBooleanExtra("isDefault",true);
+
+        sendLATLONVehicle(Latitude,Longitude);
+
+        gson = new Gson();
 
         try
         {
@@ -112,13 +111,11 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
             networkUtilsReceiver = new NetworkUtilsReceiver(this);
             registerReceiver(networkUtilsReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
-            gson = new Gson();
-
             final LocationManager locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
 
             if ( !locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) )
             {
-                IOUtils.buildAlertMessageNoGps(Add_DeliveryAddress.this);
+                IOUtils.buildAlertMessageNoGps(UpdateDeliveryAddressActivity.this);
             }
             else
             {
@@ -143,13 +140,13 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
             email = (EditText) findViewById(R.id.email);
             mobile = (EditText) findViewById(R.id.mobile);
 
-            city = (EditText) findViewById(R.id.city);
-            state = (EditText) findViewById(R.id.state);
+            cityTxt = (EditText) findViewById(R.id.city);
+            stateTxt = (EditText) findViewById(R.id.state);
             pincode = (EditText) findViewById(R.id.pincode);
 
             flat_no = (EditText) findViewById(R.id.flat_no);
             building_name = (EditText) findViewById(R.id.building_name);
-            landmark = (EditText) findViewById(R.id.landmark);
+            landmarkTxt = (EditText) findViewById(R.id.landmark);
             addressType = (EditText) findViewById(R.id.addressType);
             defaultAddress = (CheckBox) findViewById(R.id.defaultAddress);
             nestedScrollView = (NestedScrollView) findViewById(R.id.mapScroll);
@@ -183,68 +180,30 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
                 }
             });
 
-            //gpsTracker = new GPSTracker(Add_DeliveryAddress.this);
+            try
+            {
+                name.setText(fullName);
+                email.setText(email_Id);
+                mobile.setText(mobileNo);
+                cityTxt.setText(city);
+                stateTxt.setText(state);
+                pincode.setText(pincodeTxt);
+                flat_no.setText(flat_No);
+                building_name.setText(buildingName);
+                landmarkTxt.setText(landmark);
+                addressType.setText(address_Type);
 
-            Current_Origin = SharedPrefUtil.getLocation(Add_DeliveryAddress.this);
+                if(isDefault)
+                {
+                    defaultAddress.setChecked(true);
+                }
+                else
+                {
+                    defaultAddress.setChecked(false);
+                }
 
-            Double Lat = Current_Origin.getLatitude();
-            Double Long = Current_Origin.getLongitude();
-
-            FullName = SharedPrefUtil.getUser(Add_DeliveryAddress.this).getData().getFirstName() + " " + SharedPrefUtil.getUser(Add_DeliveryAddress.this).getData().getLastName();
-
-            name.setText(FullName);
-            email.setText(SharedPrefUtil.getUser(Add_DeliveryAddress.this).getData().getEmailId());
-            mobile.setText(SharedPrefUtil.getUser(Add_DeliveryAddress.this).getData().getMobileNo());
-
-            Latitude = String.valueOf(SharedPrefUtil.getLocation(Add_DeliveryAddress.this).getLatitude());
-            Longitude = String.valueOf(SharedPrefUtil.getLocation(Add_DeliveryAddress.this).getLongitude());
-
-            sendLATLONVehicle(Latitude,Longitude);
-
-            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-            List<Address> addresses = null;
-            try {
-                addresses = geocoder.getFromLocation(Lat, Long, 1);
-
-                addressZero = addresses.get(0).getAddressLine(0);
-                addressOne = addresses.get(0).getAddressLine(1);
-                addressTwo = addresses.get(0).getAddressLine(2);
-                Country = addresses.get(0).getCountryName();
-                FeatureName = addresses.get(0).getFeatureName();
-                //String AddressLine = addresses.get(0).getAddressLine(0);
-                AdminArea = addresses.get(0).getAdminArea();
-                CountryCode = addresses.get(0).getCountryCode();
-                Locality = addresses.get(0).getLocality();
-                //String phone = addresses.get(0).getPhone();
-                postalCode = addresses.get(0).getPostalCode();
-                //String premises = addresses.get(0).getPremises();
-                subAdminArea = addresses.get(0).getSubAdminArea();
-                subLocality = addresses.get(0).getSubLocality();
-
-                city_geo = Locality;
-                state_geo = AdminArea;
-                country_geo = Country;
-
-                pincode.setText(postalCode);
-                city.setText(subLocality + " , " + city_geo);
-                state.setText(state_geo);
-
-                Log.i("addressZero",addressZero);
-                Log.i("addressOne",addressOne);
-                Log.i("addressTwo",addressTwo);
-                Log.i("Country",Country);
-                Log.i("FeatureName",FeatureName);
-                Log.i("AdminArea",AdminArea);
-                Log.i("CountryCode",CountryCode);
-                Log.i("Locality",Locality);
-                Log.i("postalCode",postalCode);
-                Log.i("subAdminArea",subAdminArea);
-                Log.i("subLocality",subLocality);
-                Log.i("city_geo",city_geo);
-                Log.i("state_geo",state_geo);
-                Log.i("country_geo",country_geo);
-
-            } catch (Exception e) {
+            }catch (Exception e)
+            {
                 e.printStackTrace();
             }
 
@@ -257,9 +216,9 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
                     String MobileNum = mobile.getText().toString().trim();
                     String FlatNum = flat_no.getText().toString().trim();
                     String BuildingName = building_name.getText().toString().trim();
-                    String Landmark = landmark.getText().toString().trim();
-                    String City = city.getText().toString().trim();
-                    String State = state.getText().toString().trim();
+                    String Landmark = landmarkTxt.getText().toString().trim();
+                    String City = cityTxt.getText().toString().trim();
+                    String State = stateTxt.getText().toString().trim();
                     String Pincode = pincode.getText().toString().trim();
                     String AddressType = addressType.getText().toString().trim();
                     String DefaultAddress = "false";
@@ -275,7 +234,7 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
 
                     if(!FullName.isEmpty() && !EmailID.isEmpty() && !MobileNum.isEmpty() && !FlatNum.isEmpty() && !BuildingName.isEmpty() && !Landmark.isEmpty() && !City.isEmpty() && !State.isEmpty() && !Pincode.isEmpty() && !AddressType.isEmpty() && !Latitude.isEmpty() && !Longitude.isEmpty())
                     {
-                        AddNewAddress(FullName,EmailID,MobileNum,FlatNum,BuildingName,Landmark,City,State,Pincode,AddressType,DefaultAddress);
+                        UpdateAddress(_id,FullName,EmailID,MobileNum,FlatNum,BuildingName,Landmark,City,State,Pincode,AddressType,DefaultAddress);
                     }
                     else if(FullName.isEmpty())
                     {
@@ -299,15 +258,15 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
                     }
                     else if(Landmark.isEmpty())
                     {
-                        landmark.setError(getString(R.string.Landmark));
+                        landmarkTxt.setError(getString(R.string.Landmark));
                     }
                     else if(City.isEmpty())
                     {
-                        city.setError(getString(R.string.City));
+                        cityTxt.setError(getString(R.string.City));
                     }
                     else if(State.isEmpty())
                     {
-                        state.setError(getString(R.string.State));
+                        stateTxt.setError(getString(R.string.State));
                     }
                     else if(Pincode.isEmpty())
                     {
@@ -319,7 +278,7 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
                     }
                     else if(Latitude.isEmpty() || Longitude.isEmpty())
                     {
-                        Toast.makeText(Add_DeliveryAddress.this, "Please Set Your Location On Map!!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UpdateDeliveryAddressActivity.this, "Please Set Your Location On Map!!", Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -337,8 +296,8 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
         try
         {
 
-            if (ActivityCompat.checkSelfPermission(Add_DeliveryAddress.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(Add_DeliveryAddress.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(UpdateDeliveryAddressActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(UpdateDeliveryAddressActivity.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
 
@@ -350,15 +309,14 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
 
                     Latitude = String.valueOf(latLng.latitude);
                     Longitude = String.valueOf(latLng.longitude);
-
                     sendLATLONVehicle(Latitude,Longitude);
 
                     marker.setPosition(latLng);
                 }
             });
 
-            Current_Origin = SharedPrefUtil.getLocation(Add_DeliveryAddress.this);
-            Current_Location = new LatLng(Current_Origin.getLatitude(), Current_Origin.getLongitude());
+            //Current_Origin = SharedPrefUtil.getLocation(UpdateDeliveryAddressActivity.this);
+            Current_Location = new LatLng(Double.parseDouble(Latitude),Double.parseDouble(Longitude));
 
             CameraPosition cameraPosition = new CameraPosition.Builder().
                     target(Current_Location).
@@ -384,13 +342,12 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
 
                     Latitude = String.valueOf(marker.getPosition().latitude);
                     Longitude = String.valueOf(marker.getPosition().longitude);
-
                     sendLATLONVehicle(Latitude,Longitude);
                 }
             });
 
 
-            marker = googleMap.addMarker(new MarkerOptions().position(Current_Location).icon(BitmapDescriptorFactory .fromResource(R.drawable.ic_location_marker_hi)).draggable(true));
+            marker = googleMap.addMarker(new MarkerOptions().position(Current_Location).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_location_marker_hi)).draggable(true));
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
@@ -425,11 +382,11 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
             }
 
             Map<String, String> params = new HashMap<String, String>();
-            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(Add_DeliveryAddress.this));
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(UpdateDeliveryAddressActivity.this));
 
             IOUtils ioUtils = new IOUtils();
 
-            ioUtils.sendJSONObjectRequestHeader(Add_DeliveryAddress.this, url,params, jsonObject, new IOUtils.VolleyCallback() {
+            ioUtils.sendJSONObjectRequestHeader(UpdateDeliveryAddressActivity.this, url,params, jsonObject, new IOUtils.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
                     NearestVehicleResponse(result);
@@ -450,7 +407,7 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
 
             if(nearestRouteMainPOJO.getData().isEmpty())
             {
-                final Dialog dialog = new Dialog(Add_DeliveryAddress.this);
+                final Dialog dialog = new Dialog(UpdateDeliveryAddressActivity.this);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.item_unavailable_dialog);
                 dialog.setCanceledOnTouchOutside(true);
@@ -472,7 +429,7 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
             }
             else
             {
-                Toast.makeText(Add_DeliveryAddress.this, "Location Set!!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(UpdateDeliveryAddressActivity.this, "Location Set!!", Toast.LENGTH_SHORT).show();
             }
 
         } catch (Exception e) {
@@ -480,12 +437,12 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
         }
     }
 
-    private void AddNewAddress(String fullName,String emailId,String mobileNo,String flat_no,String buildingName,String landmark,String city,String state,String pincode,String address_Type,String isDefault)
+    private void UpdateAddress(String addressID,String fullName,String emailId,String mobileNo,String flat_no,String buildingName,String landmark,String city,String state,String pincode,String address_Type,String isDefault)
     {
         try
         {
 
-            String url = Constants.NewAddress ;
+            String url = Constants.UpdateAddress ;
 
             Log.i("url", url);
 
@@ -494,7 +451,7 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
             try {
 
                 JSONObject postObject = new JSONObject();
-
+                postObject.put("id", addressID);
                 postObject.put("fullName", fullName);
                 postObject.put("email_Id", emailId);
                 postObject.put("mobileNo", mobileNo);
@@ -519,14 +476,14 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
             }
 
             Map<String, String> params = new HashMap<String, String>();
-            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(Add_DeliveryAddress.this));
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(UpdateDeliveryAddressActivity.this));
 
             IOUtils ioUtils = new IOUtils();
 
-            ioUtils.sendJSONObjectRequestHeader(Add_DeliveryAddress.this, url,params, jsonObject, new IOUtils.VolleyCallback() {
+            ioUtils.sendJSONObjectPutRequestHeader(UpdateDeliveryAddressActivity.this, url,params, jsonObject, new IOUtils.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
-                    Log.i("AddressAdded",result);
+                    Log.i("AddressUpdated",result);
 
                     AddAddressResponse(result);
                 }
@@ -542,16 +499,12 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
     {
         try
         {
+            JSONObject jsonObject = new JSONObject(Response);
 
-            addAddressPOJO = gson.fromJson(Response,AddAddressPOJO.class);
+            String Message = jsonObject.getString("message");
 
-            if(!addAddressPOJO.getAddress().get_id().isEmpty())
+            if(Message.equalsIgnoreCase("Updated Successfully"))
             {
-                Intent intent = new Intent(Add_DeliveryAddress.this,Default_DeliveryAddress.class);
-                intent.putExtra("FullName",FullName);
-                intent.putExtra("city",subLocality + " , " + city_geo);
-                intent.putExtra("postalCode",postalCode);
-                startActivity(intent);
                 finish();
             }
 
@@ -615,5 +568,4 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
             Log.i(TAG,e.getMessage());
         }
     }
-
 }

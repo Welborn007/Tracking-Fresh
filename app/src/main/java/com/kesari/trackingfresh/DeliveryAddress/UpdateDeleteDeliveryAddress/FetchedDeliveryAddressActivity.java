@@ -13,7 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -25,7 +24,6 @@ import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
-import com.kesari.trackingfresh.Utilities.RecyclerItemClickListener;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.NetworkUtils;
@@ -92,11 +90,11 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
             AddressLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             recListFecthedDeliveryAddress.setLayoutManager(AddressLayoutManager);
 
-            recListFecthedDeliveryAddress.addOnItemTouchListener(
+            /*recListFecthedDeliveryAddress.addOnItemTouchListener(
                     new RecyclerItemClickListener(getApplicationContext(), new RecyclerItemClickListener.OnItemClickListener() {
                         @Override public void onItemClick(View view, int position) {
 
-                           AddressPOJO addressPOJO = addressArrayList.get(position);
+                           *//*AddressPOJO addressPOJO = addressArrayList.get(position);
 
                             if(!addressPOJO.isDefault())
                             {
@@ -105,13 +103,13 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
                             else
                             {
                                 Toast.makeText(FetchedDeliveryAddressActivity.this, "Address already set default", Toast.LENGTH_SHORT).show();
-                            }
+                            }*//*
 
+                            //Toast.makeText(FetchedDeliveryAddressActivity.this, "Clicked Whole", Toast.LENGTH_SHORT).show();
                         }
                     })
-            );
+            );*/
 
-            fetchUserAddress(FetchedDeliveryAddressActivity.this,TAG);
 
             final LocationManager locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
 
@@ -132,6 +130,13 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        fetchUserAddress(FetchedDeliveryAddressActivity.this,TAG);
     }
 
     public static void fetchUserAddress(final Context context, final String TAG) {
@@ -190,7 +195,8 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
 
                 if(!default_address)
                 {
-                    FireToast.customSnackbar(context, "Default address not set!", "");
+                    //FireToast.customSnackbar(context, "Default address not set!", "");
+                    Toast.makeText(context,"Default address not set!", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -200,7 +206,7 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
         }
     }
 
-    private void updateDeliveryAddress(String addressID, final int position) {
+    public static void updateDeliveryAddress(String addressID, final int position, final Context context) {
         try {
 
             String url = Constants.UpdateAddress;
@@ -225,22 +231,22 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
             IOUtils ioUtils = new IOUtils();
 
             Map<String, String> params = new HashMap<String, String>();
-            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(FetchedDeliveryAddressActivity.this));
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(context));
 
-            ioUtils.sendJSONObjectPutRequestHeader(FetchedDeliveryAddressActivity.this, url, params, jsonObject, new IOUtils.VolleyCallback() {
+            ioUtils.sendJSONObjectPutRequestHeader(context, url, params, jsonObject, new IOUtils.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
-                    Log.d(TAG, result.toString());
-                    updateDeliveryAddressResponse(result,position);
+                    Log.d("Address Update", result.toString());
+                    updateDeliveryAddressResponse(result,position,context);
                 }
             });
 
         } catch (Exception e) {
-            Log.i(TAG, e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    private void updateDeliveryAddressResponse(String Response,int pos)
+    public static void updateDeliveryAddressResponse(String Response,int pos,Context context)
     {
         try
         {
@@ -252,11 +258,11 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
             if(Message.equalsIgnoreCase("Updated Successfully"))
             {
                 adapterAddress.notifyDataSetChanged();
-                fetchUserAddress(FetchedDeliveryAddressActivity.this,TAG);
+                fetchUserAddress(context,"Address Update");
             }
 
         } catch (Exception e) {
-            Log.i(TAG, e.getMessage());
+            e.printStackTrace();
         }
     }
 

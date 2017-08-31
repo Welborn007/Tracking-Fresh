@@ -41,7 +41,7 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_marginLeft="10dp"
-                android:layout_toLeftOf="@+id/delete"
+                android:layout_toLeftOf="@+id/button_Holder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -95,22 +95,48 @@
 
             </LinearLayout>
 
-            <mehdi.sakout.fancybuttons.FancyButton
-                android:id="@+id/delete"
-                fancy:fb_fontIconResource="&#xf014;"
-                fancy:fb_textColor="@color/Gray"
-                fancy:fb_borderColor="@color/Gray"
-                fancy:fb_defaultColor="#00000000"
-                fancy:fb_focusColor="@color/colorHighlight"
-                fancy:fb_textSize="10sp"
-                fancy:fb_text=""
+            <LinearLayout
+                android:id="@+id/button_Holder"
+                android:orientation="vertical"
                 android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:layout_gravity="center"
-                android:padding="5dp"
                 android:layout_marginLeft="10dp"
+                android:layout_alignParentRight="true"
+                android:weightSum="2"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content">
+
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:id="@+id/delete"
+                    fancy:fb_fontIconResource="&#xf014;"
+                    fancy:fb_textColor="@color/Gray"
+                    fancy:fb_borderColor="@color/Gray"
+                    fancy:fb_defaultColor="#00000000"
+                    fancy:fb_focusColor="@color/colorHighlight"
+                    fancy:fb_textSize="10sp"
+                    android:layout_weight="1"
+                    fancy:fb_text=""
+                    android:layout_gravity="top"
+                    android:padding="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"/>
+
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:id="@+id/edit"
+                    fancy:fb_fontIconResource="&#xf044;"
+                    fancy:fb_textColor="@color/Gray"
+                    fancy:fb_borderColor="@color/Gray"
+                    fancy:fb_defaultColor="#00000000"
+                    android:layout_weight="1"
+                    android:layout_marginTop="10dp"
+                    fancy:fb_focusColor="@color/colorHighlight"
+                    fancy:fb_textSize="10sp"
+                    fancy:fb_text=""
+                    android:layout_gravity="bottom"
+                    android:padding="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"/>
+
+            </LinearLayout>
 
         </RelativeLayout>
 

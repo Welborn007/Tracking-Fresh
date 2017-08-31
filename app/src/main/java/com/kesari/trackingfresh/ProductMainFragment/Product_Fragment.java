@@ -232,7 +232,13 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             GuestAddress.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //sendNotification("Hello World","https://d3r8gwkgo0io6y.cloudfront.net/upload/assets/Kesari-Tours.png");
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //sendNotification("Hello World","https://d3r8gwkgo0io6y.cloudfront.net/upload/assets/Kesari-Tours.png");
+                        }
+                    });
                 }
             });
 

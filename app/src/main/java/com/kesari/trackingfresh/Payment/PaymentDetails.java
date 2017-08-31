@@ -627,7 +627,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 dialog.show();
 
                 FancyButton btnCancel = (FancyButton) dialog.findViewById(R.id.btnCancel);
-                btnCancel.setText("Sorry the vehicle is not available at the delivery address you have selected. Please add or change the delivery address!!");
+                btnCancel.setText("Sorry! We don't serve on this delivery address you have selected. Please add or change the delivery address!!");
                 btnCancel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

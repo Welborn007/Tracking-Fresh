@@ -163,10 +163,15 @@
             android:name=".ReferEarn.ReferralCodeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".HelpAndFAQ.HelpActivity"
+        <activity
+            android:name=".HelpAndFAQ.HelpActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".Legal.LegalActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Legal.LegalActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".DeliveryAddress.UpdateDeliveryAddress.UpdateDeliveryAddressActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>

@@ -174,11 +174,14 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
 
             if(nearestRouteMainPOJO.getData().isEmpty())
             {
-                search_text.setText("Sorry! We dont serve on this route");
+                search_text.setText("Sorry! We don't serve on this route currently");
                 aviFailed.setVisibility(View.VISIBLE);
                 avi.setVisibility(View.GONE);
                 SharedPrefUtil.setNearestRouteMainPOJO(CheckVehicleActivity.this,"");
 
+                Intent intent = new Intent(CheckVehicleActivity.this, DashboardActivity.class);
+                startActivity(intent);
+                finish();
             }
             else
             {

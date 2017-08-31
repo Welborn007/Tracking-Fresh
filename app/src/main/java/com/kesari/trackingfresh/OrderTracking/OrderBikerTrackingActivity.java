@@ -113,9 +113,14 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
     OrderReviewMainPOJO orderReviewMainPOJO;
 
     boolean isDirectionSet = true;
-    private Socket socket;
+    private Socket socket,socketBiker;
     NearestRouteMainPOJO nearestRouteMainPOJO;
     SocketLiveMainPOJO scoketLiveMainPOJO;
+    BikerSocketLivePOJO bikerSocketLivePOJO;
+
+    boolean connectedVehicle = false;
+    boolean connectedBiker = false;
+    boolean bikerAssigned;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -226,56 +231,40 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
         {
             orderReviewMainPOJO = gson.fromJson(Response, OrderReviewMainPOJO.class);
 
-            /*if(orderReviewMainPOJO.getData().getBiker() != null)
+            if(orderReviewMainPOJO.getData().getBiker() != null)
             {
                 Delivery_Origin = new LatLng(Double.parseDouble(orderReviewMainPOJO.getData().getAddress().getLatitude()), Double.parseDouble(orderReviewMainPOJO.getData().getAddress().getLongitude()));
                 oldLocation = Delivery_Origin;
 
-                map.clear();
-                try {
-
-                    geoArray = orderReviewMainPOJO.getData().getBiker().getGeo().getCoordinates();
-
-                    Double cust_longitude = Double.parseDouble(geoArray[0]);
-                    Double cust_latitude = Double.parseDouble(geoArray[1]);
-
-//                final LatLng startPosition = marker.getPosition();
-                    final LatLng finalPosition = new LatLng(cust_latitude, cust_longitude);
-
-                    LatLng currentPosition = new LatLng(
-                            cust_latitude,
-                            cust_longitude);
-
-                    //marker.setPosition(currentPosition);
-
-                    map.setTrafficEnabled(true);
-
-                    CameraPosition cameraPosition = new CameraPosition.Builder().
-                            target(finalPosition).
-                            tilt(0).
-                            zoom(16).
-                            bearing(0).
-                            build();
-
-                    map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-                    newLocation = currentPosition;
-
-                    addBikerMarkers("1", "TKF Vehicle", cust_latitude, cust_longitude);
-                    getMapsApiDirectionsUrl(cust_latitude, cust_longitude);
-
-                } catch (Exception e) {
-                    //Toast.makeText(getActivity(), "exception", Toast.LENGTH_SHORT).show();
-                    Log.i(TAG, e.getMessage());
+                if(connectedVehicle)
+                {
+                 stopSocket();
                 }
+
+                if(!connectedBiker)
+                {
+                    startBikerSocket();
+                }
+
+                getVehicleLocation();
             }
             else
-            {*/
+            {
                 Delivery_Origin = new LatLng(Double.parseDouble(orderReviewMainPOJO.getData().getAddress().getLatitude()), Double.parseDouble(orderReviewMainPOJO.getData().getAddress().getLongitude()));
                 oldLocation = Delivery_Origin;
 
+                if(connectedBiker)
+                {
+                    stopBikerSocket();
+                }
+
+                if(!connectedVehicle)
+                {
+                    startSocket();
+                }
+
                 getVehicleLocation();
-            //}
+            }
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
@@ -365,6 +354,8 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                     e.printStackTrace();
                 }
                 //socket.disconnect();
+
+                connectedVehicle = true;
                 Log.i("Send","Data " + socket.id());
             }
 
@@ -389,6 +380,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
             @Override
             public void call(Object... args) {
                 Log.i("DisConnect","Connect");
+                connectedVehicle = false;
             }
 
         });
@@ -398,6 +390,70 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
     private void stopSocket()
     {
         socket.disconnect();
+        connectedVehicle = false;
+        Log.i("SocketService","Disconnected");
+    }
+
+    private void startBikerSocket()
+    {
+        try {
+            socketBiker = IO.socket(Constants.BikerLiveLocation);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        socketBiker.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+
+            @Override
+            public void call(Object... args) {
+
+                try
+                {
+                    JSONObject obj = new JSONObject();
+                    obj.put("hello", "server");
+                    obj.put("binary", new byte[42]);
+                    socketBiker.emit("bikerPosition", obj);
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+                //socket.disconnect();
+
+                connectedBiker = true;
+                Log.i("Send","Data " + socketBiker.id());
+            }
+
+        }).on("bikerPosition", new Emitter.Listener() {
+
+            @Override
+            public void call(Object... args) {
+
+                final JSONObject obj = (JSONObject)args[0];
+                Log.i("Connect",obj.toString());
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        BikerSocketLiveLocationResponse(obj.toString());
+                        //DriverSocketLiveLocationResponse(obj.toString());
+                    }
+                });
+            }
+
+        }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+
+            @Override
+            public void call(Object... args) {
+                Log.i("DisConnect","Connect");
+                connectedBiker = false;
+            }
+
+        });
+        socketBiker.connect();
+    }
+
+    private void stopBikerSocket()
+    {
+        socketBiker.disconnect();
+        connectedBiker = false;
         Log.i("SocketService","Disconnected");
     }
 
@@ -517,8 +573,6 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
 
                                 newLocation = currentPosition;
 
-
-
                                 if(isDirectionSet)
                                 {
                                     addMarkers("1", "TKF Vehicle", cust_latitude, cust_longitude);
@@ -531,6 +585,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                                     marker.setRotation((float) bearingBetweenLocations(oldLocation,newLocation));*/
 
                                     animateMarker(map,marker,finalPosition,false);
+                                    marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_up_angle));
                                     marker.setRotation((float) bearingBetweenLocations(oldLocation,newLocation));
 
                                     oldLocation = newLocation;
@@ -562,55 +617,96 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                 setVehicleEmpty();
             }
 
+        } catch (Exception e) {
+            //Toast.makeText(getActivity(), "exception", Toast.LENGTH_SHORT).show();
+            Log.i(TAG, e.getMessage());
+        }
+    }
 
-            /*nearestVehicleMainPOJO = gson.fromJson(resp, NearestVehicleMainPOJO.class);
+    public void BikerSocketLiveLocationResponse(String resp) {
+        //map.clear();
+        try {
 
-            if(nearestVehicleMainPOJO.getData().isEmpty())
-            {
-                Intent intent = new Intent(OrderBikerTrackingActivity.this, CheckVehicleActivity.class);
-                startActivity(intent);
-                finish();
-            }
-            else
-            {
-                geoArray = nearestVehicleMainPOJO.getData().get(0).getGeo().getCoordinates();
-            }
+            bikerSocketLivePOJO = gson.fromJson(resp, BikerSocketLivePOJO.class);
 
-            Double cust_longitude = Double.parseDouble(geoArray[0]);
-            Double cust_latitude = Double.parseDouble(geoArray[1]);
+            nearestRouteMainPOJO = SharedPrefUtil.getNearestRouteMainPOJO(OrderBikerTrackingActivity.this);
 
-//                final LatLng startPosition = marker.getPosition();
-            final LatLng finalPosition = new LatLng(cust_latitude, cust_longitude);
 
-            LatLng currentPosition = new LatLng(
-                    cust_latitude,
-                    cust_longitude);
+                    if(bikerSocketLivePOJO.getData() != null)
+                    {
+                        String NearestVehicleRouteID = orderReviewMainPOJO.getData().getBiker().get_id();
+                        String SocketVehicleID = bikerSocketLivePOJO.getData().getBiker_id();
 
-            //marker.setPosition(currentPosition);
+                        if(NearestVehicleRouteID.equalsIgnoreCase(SocketVehicleID))
+                        {
+                            SharedPrefUtil.setSocketLiveMainPOJO(OrderBikerTrackingActivity.this,resp);
 
-            map.setTrafficEnabled(true);
+                            geoArray = bikerSocketLivePOJO.getData().getGeo().getCoordinates();
 
-            CameraPosition cameraPosition = new CameraPosition.Builder().
-                    target(finalPosition).
-                    tilt(0).
-                    zoom(16).
-                    bearing(0).
-                    build();
+                            Double cust_longitude = Double.parseDouble(geoArray[0]);
+                            Double cust_latitude = Double.parseDouble(geoArray[1]);
 
-            map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                            Location location = new Location(LocationManager.GPS_PROVIDER);
+                            location.setLatitude(cust_latitude);
+                            location.setLongitude(cust_longitude);
 
-            newLocation = currentPosition;
+                            if(Current_Location.distanceTo(location) < 5000) {
 
-            addMarkers("1", "TKF Vehicle", cust_latitude, cust_longitude);
+                                //final LatLng startPosition = marker.getPosition();
+                                final LatLng finalPosition = new LatLng(cust_latitude, cust_longitude);
 
-            if(isDirectionSet)
-            {
-                getMapsApiDirectionsUrl(cust_latitude, cust_longitude);
-            }
-            else
-            {
-                //animateMarker(marker,currentPosition,false);
-            }*/
+                                LatLng currentPosition = new LatLng(
+                                        cust_latitude,
+                                        cust_longitude);
+
+                                map.setTrafficEnabled(true);
+
+                                CameraPosition cameraPosition = new CameraPosition.Builder().
+                                        target(finalPosition).
+                                        tilt(60).
+                                        zoom(18).
+                                        bearing(0).
+                                        build();
+
+                                map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+                                newLocation = currentPosition;
+
+                                if(isDirectionSet)
+                                {
+                                    addBikerMarkers("1", "TKF Vehicle", cust_latitude, cust_longitude);
+                                    getMapsApiDirectionsUrl(cust_latitude, cust_longitude);
+                                }
+
+                                if(marker != null)
+                                {
+                                    /*marker.setPosition(currentPosition);
+                                    marker.setRotation((float) bearingBetweenLocations(oldLocation,newLocation));*/
+
+                                    animateMarker(map,marker,finalPosition,false);
+                                    marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_biker));
+                                    marker.setRotation((float) bearingBetweenLocations(oldLocation,newLocation));
+
+                                    oldLocation = newLocation;
+                                }
+
+                                //getMapsApiDirectionsUrl(cust_latitude, cust_longitude);
+                            }else
+                            {
+                                setVehicleEmpty();
+                            }
+                        }
+                        else
+                        {
+                            setVehicleEmpty();
+                        }
+                    }
+                    else
+                    {
+                        setVehicleEmpty();
+                    }
+
+
 
         } catch (Exception e) {
             //Toast.makeText(getActivity(), "exception", Toast.LENGTH_SHORT).show();
@@ -760,6 +856,10 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
 
         try
         {
+            if(marker!=null && custMarker != null){
+                marker.remove();
+                custMarker.remove();
+            }
 
             final LatLng dest = new LatLng(latitude, longitude);
 
@@ -987,7 +1087,16 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
         try {
             unregisterReceiver(networkUtilsReceiver);
 
-            stopSocket();
+
+            if(connectedVehicle)
+            {
+                stopSocket();
+            }
+
+           if(connectedBiker)
+           {
+               stopBikerSocket();
+           }
 
             if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
                 // LOCATION SERVICE

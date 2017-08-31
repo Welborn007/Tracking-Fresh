@@ -90,7 +90,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
         {
 
 
-            intent = new Intent(this, NewSplash.class);
+            Intent intent = new Intent(this, NewSplash.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                     PendingIntent.FLAG_ONE_SHOT);
@@ -100,8 +100,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
             Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                     .setContentTitle("Tracking Fresh")
-                    .setContentText(messageBody)
-                    .setLargeIcon(largeIcon)
+                    //.setContentText(messageBody)
+                    //.setLargeIcon(largeIcon)
                     .setAutoCancel(true)
                     .setSound(defaultSoundUri)
                     .setContentIntent(pendingIntent);
@@ -124,7 +124,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
                 }
 
                 notificationBuilder.setStyle(new NotificationCompat.BigPictureStyle()
-                        .bigPicture(bitmap));
+                        .bigPicture(bitmap)).setSubText(messageBody);
+            }
+            else
+            {
+                notificationBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody)).setContentText(messageBody);
             }
 
             NotificationManager notificationManager =
@@ -135,7 +139,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
             notificationManager.notify(id, notificationBuilder.build());
 
         } catch (Exception e) {
-            Log.i(TAG, e.getMessage());
+            e.printStackTrace();
         }
     }
 }
