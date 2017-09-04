@@ -51,6 +51,38 @@
         android:layout_height="1dp"
         android:background="#ccc"/>
 
+    <LinearLayout
+        android:id="@+id/change_password"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:src="@drawable/ic_password_key"
+            android:layout_marginLeft="5dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reset Password"
+            android:gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_gravity="center"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            />
+
+    </LinearLayout>
+
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#ccc"/>
+
     <TextView
         android:id="@+id/my_orders"
         android:layout_width="match_parent"

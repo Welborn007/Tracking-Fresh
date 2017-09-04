@@ -220,6 +220,8 @@ public class UpdateDeleteDeliveryAddress_RecyclerAdpater extends RecyclerView.Ad
             if(Message.equalsIgnoreCase("removed Successfully!"))
             {
                 FetchedDeliveryAddressActivity.fetchUserAddress(context,"AdapterAddress");
+                AddressPOJOs.remove(pos);
+                notifyDataSetChanged();
             }
 
         } catch (Exception e) {

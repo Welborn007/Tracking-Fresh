@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.Crashlytics;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.google.gson.Gson;
@@ -27,6 +28,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
@@ -51,8 +53,7 @@ public class MyApplication extends Application
         Realm.getInstance(configuration);
 
         initFresco();
-
-
+        Fabric.with(this, new Crashlytics());
 
         Gson gson = new Gson();
         Type type = new TypeToken<List<AddCart_model>>(){}.getType();

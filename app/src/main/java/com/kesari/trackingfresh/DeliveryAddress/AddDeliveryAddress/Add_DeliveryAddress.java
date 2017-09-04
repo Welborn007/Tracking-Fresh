@@ -545,14 +545,21 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
 
             addAddressPOJO = gson.fromJson(Response,AddAddressPOJO.class);
 
-            if(!addAddressPOJO.getAddress().get_id().isEmpty())
+            if(getIntent().getStringExtra("value") != null)
             {
-                Intent intent = new Intent(Add_DeliveryAddress.this,Default_DeliveryAddress.class);
-                intent.putExtra("FullName",FullName);
-                intent.putExtra("city",subLocality + " , " + city_geo);
-                intent.putExtra("postalCode",postalCode);
-                startActivity(intent);
                 finish();
+            }
+            else
+            {
+                if(!addAddressPOJO.getAddress().get_id().isEmpty())
+                {
+                    Intent intent = new Intent(Add_DeliveryAddress.this,Default_DeliveryAddress.class);
+                    intent.putExtra("FullName",FullName);
+                    intent.putExtra("city",subLocality + " , " + city_geo);
+                    intent.putExtra("postalCode",postalCode);
+                    startActivity(intent);
+                    finish();
+                }
             }
 
         } catch (Exception e) {

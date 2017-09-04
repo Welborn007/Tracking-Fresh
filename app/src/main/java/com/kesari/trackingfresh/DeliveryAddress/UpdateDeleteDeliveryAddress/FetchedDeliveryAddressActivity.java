@@ -172,6 +172,9 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
             if (fetchAddressPOJO.getData().isEmpty()) {
                 Intent intent = new Intent(context, Add_DeliveryAddress.class);
                 context.startActivity(intent);
+
+                adapterAddress = new UpdateDeleteDeliveryAddress_RecyclerAdpater(fetchAddressPOJO.getData(),context);
+                recListFecthedDeliveryAddress.setAdapter(adapterAddress);
             } else {
 
                 addressArrayList = fetchAddressPOJO.getData();

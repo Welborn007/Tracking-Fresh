@@ -190,7 +190,7 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
                 }
             }
 
-            fetchUserAddress();
+
             myApplication = (MyApplication) getApplicationContext();
 
             updateNotificationsBadge(myApplication.getProductsArraylist().size());
@@ -198,6 +198,12 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fetchUserAddress();
     }
 
     private void fetchUserAddress() {
@@ -231,8 +237,16 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
             fetchAddressPOJO = gson.fromJson(Response, FetchAddressPOJO.class);
 
             if (fetchAddressPOJO.getData().isEmpty()) {
-                Intent intent = new Intent(ProfileActivity.this, Add_DeliveryAddress.class);
-                startActivity(intent);
+                address.setText("Address Not Set");
+
+                address.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(ProfileActivity.this, Add_DeliveryAddress.class);
+                        intent.putExtra("value","Profile");
+                        startActivity(intent);
+                    }
+                });
             } else {
 
                 addressArrayList = fetchAddressPOJO.getData();

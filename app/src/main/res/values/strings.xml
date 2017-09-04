@@ -78,4 +78,8 @@
 
     <string name="vehicle_searching">Please wait while we are checking nearby vehicle.....</string>
 
+    <string name="passwordYour">Enter Your Old Password</string>
+    <string name="newPassword">Enter New Password</string>
+    <string name="confirmNewPassword">Confirm New Password</string>
+
 </resources>

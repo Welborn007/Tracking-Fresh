@@ -40,6 +40,9 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="0736b1c8cd418d92fbe8137780b997d2ac5f4f20" />
 
         <activity
             android:name=".Splash.SplashActivity"
@@ -171,7 +174,11 @@
             android:name=".Legal.LegalActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".DeliveryAddress.UpdateDeliveryAddress.UpdateDeliveryAddressActivity"
+        <activity
+            android:name=".DeliveryAddress.UpdateDeliveryAddress.UpdateDeliveryAddressActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ChangePassword.ChangePasswordActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>

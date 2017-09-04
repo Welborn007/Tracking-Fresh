@@ -116,6 +116,10 @@ public interface Constants {
 
     String VehicleNearestRoute = "http://"+ StagingIP +  "/api/vehicleTimeTable/nearestRoute";
 
+    //Change Password
+
+    String changePassword = "http://"+ StagingIP + "/api/customer/changePassword";
+
     // Milliseconds per second
     public static final int MILLISECONDS_PER_SECOND = 1000;
     // Update frequency in seconds

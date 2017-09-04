@@ -66,7 +66,7 @@ import io.socket.emitter.Emitter;
 
 import static com.kesari.trackingfresh.OrderTracking.OrderBikerTrackingActivity.animateMarker;
 
-public class RouteActivity extends AppCompatActivity implements OnMapReadyCallback,NetworkUtilsReceiver.NetworkResponseInt{
+public class RouteActivity extends AppCompatActivity implements OnMapReadyCallback, NetworkUtilsReceiver.NetworkResponseInt {
 
     private Context mContext;
     private MapFragment supportMapFragment;
@@ -100,8 +100,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route);
 
-        try
-        {
+        try {
 
             final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
@@ -112,14 +111,11 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
             registerReceiver(networkUtilsReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
             gson = new Gson();
 
-            final LocationManager locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+            final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-            if ( !locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) )
-            {
+            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 IOUtils.buildAlertMessageNoGps(RouteActivity.this);
-            }
-            else
-            {
+            } else {
                 if (!IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
                     // LOCATION SERVICE
                     startService(new Intent(this, LocationServiceNew.class));
@@ -149,8 +145,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
 
         //getData();
 
-        try
-        {
+        try {
 
             map = googleMap;
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -199,14 +194,14 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
                 public View getInfoWindow(Marker arg0) {
                     return null;
                 }
+
                 @Override
                 public View getInfoContents(Marker marker) {
 
                     View myContentView = getLayoutInflater().inflate(
                             R.layout.map_infolayout, null);
 
-                    try
-                    {
+                    try {
                         // Get extra data with marker ID
                         HashMap<String, String> marker_data = extraMarkerInfo.get(marker.getId());
                         TextView mapLoc = ((TextView) myContentView.findViewById(R.id.mapLoc));
@@ -215,8 +210,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
                         View viewLine = ((View) myContentView.findViewById(R.id.viewLine));
                         TextView viewHeader = ((TextView) myContentView.findViewById(R.id.viewHeader));
 
-                        if(!marker.getTitle().equalsIgnoreCase("TKF Vehicle"))
-                        {
+                        if (!marker.getTitle().equalsIgnoreCase("TKF Vehicle")) {
                             // Getting the data from Map
                             String latitude = marker_data.get(TAG_LATITUDE);
                             String longitude = marker_data.get(TAG_LONGITUDE);
@@ -233,9 +227,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
                             mapLoc.setText(place);
                             from_time.setText(startTime);
                             to_time.setText(endTime);
-                        }
-                        else
-                        {
+                        } else {
                             mapLoc.setText("TKF Vehicle");
                             from_time.setVisibility(View.GONE);
                             to_time.setVisibility(View.GONE);
@@ -243,8 +235,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
                             viewHeader.setVisibility(View.GONE);
                         }
 
-                    }catch (NullPointerException npe)
-                    {
+                    } catch (NullPointerException npe) {
                         npe.printStackTrace();
                     }
 
@@ -259,9 +250,9 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
 
     }
 
-    public void updateCurrentLocationMarker(Location currentLatLng){
+    public void updateCurrentLocationMarker(Location currentLatLng) {
 
-        if(map != null){
+        if (map != null) {
 
             sendLATLONVehicle();
             startSocket();
@@ -277,12 +268,10 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
         }
     }
 
-    private void sendLATLONVehicle()
-    {
-        try
-        {
+    private void sendLATLONVehicle() {
+        try {
 
-            String url = Constants.VehicleNearestRoute ;
+            String url = Constants.VehicleNearestRoute;
 
             Log.i("url", url);
 
@@ -308,7 +297,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
 
             IOUtils ioUtils = new IOUtils();
 
-            ioUtils.sendJSONObjectRequestHeader(RouteActivity.this, url,params, jsonObject, new IOUtils.VolleyCallback() {
+            ioUtils.sendJSONObjectRequestHeader(RouteActivity.this, url, params, jsonObject, new IOUtils.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
                     //scheduleTaskExecutor.shutdown();
@@ -324,19 +313,14 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
 
     }
 
-    private void NearestVehicleRouteResponse(String Response)
-    {
-        try
-        {
+    private void NearestVehicleRouteResponse(String Response) {
+        try {
             nearestRouteMainPOJO = gson.fromJson(Response, NearestRouteMainPOJO.class);
 
-            if(nearestRouteMainPOJO.getData().isEmpty())
-            {
-                SharedPrefUtil.setNearestRouteMainPOJO(RouteActivity.this,"");
-            }
-            else
-            {
-                SharedPrefUtil.setNearestRouteMainPOJO(RouteActivity.this,Response);
+            if (nearestRouteMainPOJO.getData().isEmpty()) {
+                SharedPrefUtil.setNearestRouteMainPOJO(RouteActivity.this, "");
+            } else {
+                SharedPrefUtil.setNearestRouteMainPOJO(RouteActivity.this, Response);
                 getVehicleRoute(SharedPrefUtil.getNearestRouteMainPOJO(RouteActivity.this).getData().get(0).getVehicleId());
             }
 
@@ -345,8 +329,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
         }
     }
 
-    private void startSocket()
-    {
+    private void startSocket() {
         try {
             socket = IO.socket(Constants.VehicleLiveLocation);
         } catch (URISyntaxException e) {
@@ -357,17 +340,16 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
             @Override
             public void call(Object... args) {
 
-                try
-                {
+                try {
                     JSONObject obj = new JSONObject();
                     obj.put("hello", "server");
                     obj.put("binary", new byte[42]);
                     socket.emit("vehiclePosition", obj);
-                }catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 //socket.disconnect();
-                Log.i("Send","Data " + socket.id());
+                Log.i("Send", "Data " + socket.id());
             }
 
         }).on("vehiclePosition", new Emitter.Listener() {
@@ -375,8 +357,8 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
             @Override
             public void call(Object... args) {
 
-                final JSONObject obj = (JSONObject)args[0];
-                Log.i("Connect",obj.toString());
+                final JSONObject obj = (JSONObject) args[0];
+                Log.i("Connect", obj.toString());
 
                 runOnUiThread(new Runnable() {
                     @Override
@@ -390,17 +372,16 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
 
             @Override
             public void call(Object... args) {
-                Log.i("DisConnect","Connect");
+                Log.i("DisConnect", "Connect");
             }
 
         });
         socket.connect();
     }
 
-    private void stopSocket()
-    {
+    private void stopSocket() {
         socket.disconnect();
-        Log.i("SocketService","Disconnected");
+        Log.i("SocketService", "Disconnected");
     }
 
     public void DriverSocketLiveLocationResponse(String resp) {
@@ -411,20 +392,15 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
             nearestRouteMainPOJO = SharedPrefUtil.getNearestRouteMainPOJO(RouteActivity.this);
 
 
-            if(nearestRouteMainPOJO.getData() != null)
-            {
-                if(!nearestRouteMainPOJO.getData().isEmpty())
-                {
+            if (nearestRouteMainPOJO.getData() != null) {
+                if (!nearestRouteMainPOJO.getData().isEmpty()) {
 
-                    if(scoketLiveMainPOJO.getData() != null)
-                    {
+                    if (scoketLiveMainPOJO.getData() != null) {
                         String NearestVehicleRouteID = nearestRouteMainPOJO.getData().get(0).getVehicleId();
                         String SocketVehicleID = scoketLiveMainPOJO.getData().getVehicle_id();
 
-                        if(NearestVehicleRouteID.equalsIgnoreCase(SocketVehicleID))
-                        {
-                            if(markerVehicle != null)
-                            {
+                        if (NearestVehicleRouteID.equalsIgnoreCase(SocketVehicleID)) {
+                            if (markerVehicle != null) {
                                     /*marker.setPosition(currentPosition);
                                     marker.setRotation((float) bearingBetweenLocations(oldLocation,newLocation));*/
 
@@ -441,17 +417,15 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
                                         cust_latitude,
                                         cust_longitude);
 
-                                animateMarker(map,markerVehicle,finalPosition,false);
-                                markerVehicle.setRotation((float) bearingBetweenLocations(oldLocation,newLocation));
+                                animateMarker(map, markerVehicle, finalPosition, false);
+                                markerVehicle.setRotation((float) bearingBetweenLocations(oldLocation, newLocation));
 
                                 oldLocation = newLocation;
                             }
                         }
                     }
                 }
-            }
-            else
-            {
+            } else {
 
             }
 
@@ -461,10 +435,8 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
         }
     }
 
-    private void getVehicleRoute(String VehicleID)
-    {
-        try
-        {
+    private void getVehicleRoute(String VehicleID) {
+        try {
 
             String url = Constants.VehicleRoute + VehicleID;
 
@@ -473,7 +445,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
             Map<String, String> params = new HashMap<String, String>();
             params.put("Authorization", "JWT " + SharedPrefUtil.getToken(RouteActivity.this));
 
-            ioUtils.getGETStringRequestHeader(RouteActivity.this, url , params , new IOUtils.VolleyCallback() {
+            ioUtils.getGETStringRequestHeader(RouteActivity.this, url, params, new IOUtils.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
                     Log.d(TAG, result.toString());
@@ -486,8 +458,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
         }
     }
 
-    private void SetVehicleRouteResponse(String Response)
-    {
+    private void SetVehicleRouteResponse(String Response) {
         try {
 
             JSONObject jsonObject = new JSONObject(Response);
@@ -518,14 +489,11 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
 
                 jsonIndiaModelList.add(js);
 
-                addMarkers(id,location_name,latitude,longitude,startTime,endTime);
+                addMarkers(id, location_name, latitude, longitude, startTime, endTime);
 
-                if(i > 0 )
-                {
-                    getMapsApiDirectionsUrl(latitude,longitude);
-                }
-                else
-                {
+                if (i > 0) {
+                    getMapsApiDirectionsUrl(latitude, longitude);
+                } else {
                     Old_Origin = new LatLng(latitude, longitude);
                 }
             }
@@ -537,9 +505,8 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
 
     private void addMarkers(String id, final String location_name, Double latitude, Double longitude, final String startTime, final String endTime) {
 
-        try
-        {
-            if(markerVehicle!=null){
+        try {
+            if (markerVehicle != null) {
                 markerVehicle.remove();
             }
 
@@ -552,8 +519,8 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_location_marker_hi))
                         .title(location_name));
 
-                data.put(TAG_ID,id);
-                data.put(TAG_LOCATION_NAME,location_name);
+                data.put(TAG_ID, id);
+                data.put(TAG_LOCATION_NAME, location_name);
                 data.put(TAG_LATITUDE, String.valueOf(latitude));
                 data.put(TAG_LONGITUDE, String.valueOf(longitude));
 
@@ -566,16 +533,16 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
                 Date d1 = sdfInput.parse(endTime);
                 String endTimeFormatted = sdfOutput.format(d1);
 
-                data.put(TAG_FROM_TIME,startTimeFormatted);
-                data.put(TAG_TO_TIME,endTimeFormatted);
+                data.put(TAG_FROM_TIME, startTimeFormatted);
+                data.put(TAG_TO_TIME, endTimeFormatted);
 
-                extraMarkerInfo.put(marker.getId(),data);
+                extraMarkerInfo.put(marker.getId(), data);
 
                 nearestRouteMainPOJO = SharedPrefUtil.getNearestRouteMainPOJO(RouteActivity.this);
 
                 String[] geoArray = nearestRouteMainPOJO.getData().get(0).getDist().getLocation().getCoordinates();
 
-                newLocation = new LatLng(Double.parseDouble(geoArray[1]),Double.parseDouble(geoArray[0]));
+                newLocation = new LatLng(Double.parseDouble(geoArray[1]), Double.parseDouble(geoArray[0]));
 
                 markerVehicle = map.addMarker(new MarkerOptions().position(newLocation)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_red_car))
@@ -591,8 +558,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
 
     public void getMapsApiDirectionsUrl(Double destLatitude, Double destLongitude) {
 
-        try
-        {
+        try {
 
             String waypoints = "waypoints=optimize:true|"
                     + Old_Origin.latitude + "," + Old_Origin.longitude
@@ -604,8 +570,8 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
             String params = waypoints + "&" + sensor + "&" + key;
             String output = "json";
             String url = "https://maps.googleapis.com/maps/api/directions/"
-                    + output + "?"+"origin="+Old_Origin.latitude + "," + Old_Origin.longitude+"&destination="+destLatitude + ","
-                    + destLongitude +"&" + params;
+                    + output + "?" + "origin=" + Old_Origin.latitude + "," + Old_Origin.longitude + "&destination=" + destLatitude + ","
+                    + destLongitude + "&" + params;
 
             ReadTask downloadTask = new ReadTask();
             downloadTask.execute(url);
@@ -636,7 +602,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            Log.i("ReadTaskResult",result);
+            Log.i("ReadTaskResult", result);
             new ParserTask().execute(result);
         }
     }
@@ -682,11 +648,11 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
                         double lng = Double.parseDouble(point.get("lng"));
                         LatLng position = new LatLng(lat, lng);
 
-                        if(j==0){    // Get distance from the list
-                            distance = (String)point.get("distance");
+                        if (j == 0) {    // Get distance from the list
+                            distance = (String) point.get("distance");
                             continue;
-                        }else if(j==1){ // Get duration from the list
-                            duration = (String)point.get("duration");
+                        } else if (j == 1) { // Get duration from the list
+                            duration = (String) point.get("duration");
                             continue;
                         }
 
@@ -702,8 +668,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
                 }
 
                 map.addPolyline(polyLineOptions);
-            }catch (Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -734,9 +699,8 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
                 Log.e(TAG, "Location service is stopped");
             }
 
-        }catch (Exception e)
-        {
-            Log.i(TAG,e.getMessage());
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
         }
     }
 
@@ -761,9 +725,8 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
                 return;
             }
 
-        }catch (Exception e)
-        {
-            Log.i(TAG,e.getMessage());
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
         }
     }
 
