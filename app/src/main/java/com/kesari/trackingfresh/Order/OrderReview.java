@@ -62,7 +62,7 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
     private Gson gson;
     OrderReviewMainPOJO orderReviewMainPOJO;
     private RecyclerView.Adapter adapterProducts;
-    TextView total_price,payment_status,payment_mode,fullName,buildingName,landmark,address,mobileNo,bikerName,deliveryCharge,orderDate,orderDeliverDate,delivery_textData,orderNo;
+    TextView total_price,payment_status,payment_mode,fullName,buildingName,landmark,address,mobileNo,bikerName,deliveryCharge,orderDate,orderDeliverDate,delivery_textData,orderNo,orderType;
     FancyButton btnSubmit,btnCall,btnSupport;
 
     LinearLayout BikerHolder,deliveryDateHolder;
@@ -117,6 +117,7 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
             orderDeliverDate = (TextView) findViewById(R.id.orderDeliverDate);
             delivery_textData = (TextView) findViewById(R.id.delivery_textData);
             orderNo = (TextView) findViewById(R.id.orderNo);
+            orderType = (TextView) findViewById(R.id.orderType);
 
             BikerHolder = (LinearLayout) findViewById(R.id.BikerHolder);
             deliveryDateHolder = (LinearLayout) findViewById(R.id.deliveryDateHolder);
@@ -298,6 +299,52 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
                 btnSubmit.setVisibility(View.GONE);
             }
 
+            if(orderReviewMainPOJO.getData().getPickUp() != null)
+            {
+                if(orderReviewMainPOJO.getData().getPickUp().equalsIgnoreCase("true"))
+                {
+                    orderType.setText("Pick Up");
+                }
+                else
+                {
+                    orderType.setText("Delivery");
+
+                    if(orderReviewMainPOJO.getData().getBiker() != null)
+                    {
+                        BikerHolder.setVisibility(View.VISIBLE);
+                        bikerName.setText(orderReviewMainPOJO.getData().getBiker().getBikerName());
+
+                        btnCall.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                String phone = orderReviewMainPOJO.getData().getBiker().getMobileNo();
+                                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
+                                startActivity(intent);
+                            }
+                        });
+                    }
+                }
+            }
+            else
+            {
+                orderType.setText("Delivery");
+
+                if(orderReviewMainPOJO.getData().getBiker() != null)
+                {
+                    BikerHolder.setVisibility(View.VISIBLE);
+                    bikerName.setText(orderReviewMainPOJO.getData().getBiker().getBikerName());
+
+                    btnCall.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String phone = orderReviewMainPOJO.getData().getBiker().getMobileNo();
+                            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
+                            startActivity(intent);
+                        }
+                    });
+                }
+            }
+
             adapterProducts = new OrderReViewRecyclerAdapter(orderReviewMainPOJO.getData().getOrder(),OrderReview.this);
             recListProducts.setAdapter(adapterProducts);
 
@@ -342,21 +389,6 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
             {
                 deliveryDateHolder.setVisibility(View.GONE);
                 delivery_textData.setText(" will deliver the order.");
-            }
-
-            if(orderReviewMainPOJO.getData().getBiker() != null)
-            {
-                BikerHolder.setVisibility(View.VISIBLE);
-                bikerName.setText(orderReviewMainPOJO.getData().getBiker().getBikerName());
-
-                btnCall.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String phone = orderReviewMainPOJO.getData().getBiker().getMobileNo();
-                        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
-                        startActivity(intent);
-                    }
-                });
             }
 
             if(orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Delivered"))

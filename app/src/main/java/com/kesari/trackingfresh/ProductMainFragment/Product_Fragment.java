@@ -973,6 +973,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            strAdd = "Unable to fetch location";
         }
         return strAdd;
     }

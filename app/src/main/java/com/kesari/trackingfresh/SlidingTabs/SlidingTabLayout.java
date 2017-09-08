@@ -114,11 +114,11 @@ public class SlidingTabLayout extends HorizontalScrollView
     }
 
     /**
-     * Set the {@link android.support.v4.view.ViewPager.OnPageChangeListener}. When using {@link SlidingTabLayout} you are
-     * required to set any {@link android.support.v4.view.ViewPager.OnPageChangeListener} through this method. This is so
+     * Set the {@link ViewPager.OnPageChangeListener}. When using {@link SlidingTabLayout} you are
+     * required to set any {@link ViewPager.OnPageChangeListener} through this method. This is so
      * that the layout can update it's scroll position correctly.
      *
-     * @see android.support.v4.view.ViewPager#setOnPageChangeListener(android.support.v4.view.ViewPager.OnPageChangeListener)
+     * @see ViewPager#setOnPageChangeListener(ViewPager.OnPageChangeListener)
      */
     public void setOnPageChangeListener(ViewPager.OnPageChangeListener listener)
     {
@@ -162,7 +162,7 @@ public class SlidingTabLayout extends HorizontalScrollView
      */
     protected TextView createDefaultTabView(Context context) {
         TextView textView = new TextView(context);
-        /*boolean tabletSize = getResources().getBoolean(R.bool.tablet);
+        boolean tabletSize = getResources().getBoolean(R.bool.tablet);
         if (tabletSize) {
 
             textView.setGravity(Gravity.CENTER);
@@ -177,13 +177,7 @@ public class SlidingTabLayout extends HorizontalScrollView
             textView.setTypeface(Typeface.DEFAULT_BOLD);
             textView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 
-        }*/
-
-        textView.setGravity(Gravity.CENTER);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, TAB_VIEW_TEXT_SIZE_SP);
-        textView.setTypeface(Typeface.DEFAULT_BOLD);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             // If we're running on Honeycomb or newer, then we can use the Theme's
             // selectableItemBackground to ensure that the View has a pressed state

@@ -72,12 +72,9 @@ import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.ErrorPOJO;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -90,6 +87,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener, NetworkUtilsReceiver.NetworkResponseInt {
@@ -199,13 +197,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     if (!UserName.isEmpty() && !Password.isEmpty()) {
                         if (!NetworkUtils.isNetworkConnectionOn(LoginActivity.this)) {
-                            FireToast.customSnackbarWithListner(LoginActivity.this, "No internet access", "Settings", new ActionClickListener() {
+
+                            new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText("No internet access")
+                                    .setContentText("Check Settings!")
+                                    .setConfirmText("Settings")
+                                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sDialog) {
+                                            sDialog.dismissWithAnimation();
+                                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                        }
+                                    })
+                                    .show();
+
+                          /*  FireToast.customSnackbarWithListner(LoginActivity.this, "No internet access", "Settings", new ActionClickListener() {
                                 @Override
                                 public void onActionClicked(Snackbar snackbar) {
                                     startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                                 }
                             });
-                            return;
+                            return;*/
                         } else {
                             sendSimpleLoginData(UserName, Password);
                         }
@@ -481,7 +493,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
         else if(errorPOJO.getMessage() != null)
         {
-            FireToast.customSnackbar(context, errorPOJO.getMessage(),"");
+            //FireToast.customSnackbar(context, errorPOJO.getMessage(),"");
+
+            new SweetAlertDialog(context)
+                    .setTitleText(errorPOJO.getMessage())
+                    .show();
 
             if(errorPOJO.getMessage().equalsIgnoreCase("User not found"))
             {
@@ -490,7 +506,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
         else
         {
-            FireToast.customSnackbar(context, "Oops Something Went Wrong!!","");
+            //FireToast.customSnackbar(context, "Oops Something Went Wrong!!","");
+
+            new SweetAlertDialog(context)
+                    .setTitleText("Oops Something Went Wrong!!")
+                    .show();
         }
 
 
@@ -824,13 +844,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.Googlebtn:
 
                 if (!NetworkUtils.isNetworkConnectionOn(LoginActivity.this)) {
-                    FireToast.customSnackbarWithListner(LoginActivity.this, "No internet access", "Settings", new ActionClickListener() {
+                    /*FireToast.customSnackbarWithListner(LoginActivity.this, "No internet access", "Settings", new ActionClickListener() {
                         @Override
                         public void onActionClicked(Snackbar snackbar) {
                             startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                         }
                     });
-                    return;
+                    return;*/
+
+                    new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("No Internet access")
+                            .setContentText("Check Settings!")
+                            .setConfirmText("Settings")
+                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sDialog) {
+                                    sDialog.dismissWithAnimation();
+                                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                }
+                            })
+                            .show();
                 } else {
                     signIn();
                 }
@@ -840,13 +873,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.Fbbtn:
 
                 if (!NetworkUtils.isNetworkConnectionOn(LoginActivity.this)) {
-                    FireToast.customSnackbarWithListner(LoginActivity.this, "No internet access", "Settings", new ActionClickListener() {
+                    /*FireToast.customSnackbarWithListner(LoginActivity.this, "No internet access", "Settings", new ActionClickListener() {
                         @Override
                         public void onActionClicked(Snackbar snackbar) {
                             startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                         }
                     });
-                    return;
+                    return;*/
+                    new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("No Internet access")
+                            .setContentText("Check Settings!")
+                            .setConfirmText("Settings")
+                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sDialog) {
+                                    sDialog.dismissWithAnimation();
+                                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                }
+                            })
+                            .show();
                 } else {
                     if (isLoggedIn()) {
                         LoginManager.getInstance().logOut();
@@ -919,13 +964,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 String registration_Type = "facebook";
 
                                 if (!NetworkUtils.isNetworkConnectionOn(LoginActivity.this)) {
-                                    FireToast.customSnackbarWithListner(LoginActivity.this, "No internet access", "Settings", new ActionClickListener() {
+                                    /*FireToast.customSnackbarWithListner(LoginActivity.this, "No internet access", "Settings", new ActionClickListener() {
                                         @Override
                                         public void onActionClicked(Snackbar snackbar) {
                                             startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                                         }
                                     });
-                                    return;
+                                    return;*/
+
+                                    new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.WARNING_TYPE)
+                                            .setTitleText("No internet access")
+                                            .setContentText("Check Settings!")
+                                            .setConfirmText("Settings")
+                                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                @Override
+                                                public void onClick(SweetAlertDialog sDialog) {
+                                                    sDialog.dismissWithAnimation();
+                                                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                                }
+                                            })
+                                            .show();
+
                                 } else {
                                     sendSocialLoginData(id, name, email, registration_Type, firstname, lastname);
                                 }
@@ -1023,13 +1082,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 String registration_Type = "google";
 
                 if (!NetworkUtils.isNetworkConnectionOn(LoginActivity.this)) {
-                    FireToast.customSnackbarWithListner(LoginActivity.this, "No internet access", "Settings", new ActionClickListener() {
+                   /* FireToast.customSnackbarWithListner(LoginActivity.this, "No internet access", "Settings", new ActionClickListener() {
                         @Override
                         public void onActionClicked(Snackbar snackbar) {
                             startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                         }
                     });
-                    return;
+                    return;*/
+
+                    new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("No internet access")
+                            .setContentText("Check Settings!")
+                            .setConfirmText("Settings")
+                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sDialog) {
+                                    sDialog.dismissWithAnimation();
+                                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                }
+                            })
+                            .show();
                 } else {
                     sendSocialLoginData(id, name, email, registration_Type, personGivenName, personFamilyName);
                 }
@@ -1160,13 +1232,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void NetworkClose() {
         if (!NetworkUtils.isNetworkConnectionOn(this)) {
-            FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+            /*FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
                 @Override
                 public void onActionClicked(Snackbar snackbar) {
                     startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                 }
             });
-            return;
+            return;*/
+
+            new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText("No internet access")
+                    .setContentText("Check Settings!")
+                    .setConfirmText("Settings")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            sDialog.dismissWithAnimation();
+                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                        }
+                    })
+                    .show();
         }
     }
 

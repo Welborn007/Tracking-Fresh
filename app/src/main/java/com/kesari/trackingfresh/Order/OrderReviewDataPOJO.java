@@ -43,6 +43,16 @@ public class OrderReviewDataPOJO {
 
     private String rating;
 
+    private String pickUp;
+
+    public String getPickUp() {
+        return pickUp;
+    }
+
+    public void setPickUp(String pickUp) {
+        this.pickUp = pickUp;
+    }
+
     public String getFeedback() {
         return feedback;
     }

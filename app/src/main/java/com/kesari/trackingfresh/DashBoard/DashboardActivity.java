@@ -56,6 +56,7 @@ import com.kesari.trackingfresh.OTP.SendOtpPOJO;
 import com.kesari.trackingfresh.ProductMainFragment.Product_Fragment;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.ReferEarn.ReferralCodeActivity;
+import com.kesari.trackingfresh.Settings.SettingsActivity;
 import com.kesari.trackingfresh.TKCash.TKWalletActivity;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
@@ -110,8 +111,8 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
     String postalCode = "";
     String subAdminArea = "";
     String subLocality = "";
-    MyApplication myApplication;
-    RelativeLayout my_orders_holder, profile_holder, help_holder, route_holder, refer_earn, legalHolder;
+    public static MyApplication myApplication;
+    RelativeLayout my_orders_holder, profile_holder, help_holder, route_holder, refer_earn, legalHolder,setting_layout;
 
     private Gson gson;
     VerifyMobilePOJO verifyMobilePOJO;
@@ -176,6 +177,15 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             profile_image = (CircleImageView) header.findViewById(R.id.profile_image);
             walletAmount = (TextView) header.findViewById(R.id.walletAmount);
             legalHolder = (RelativeLayout) header.findViewById(R.id.legalHolder);
+            setting_layout = (RelativeLayout) header.findViewById(R.id.setting_layout);
+
+            setting_layout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(DashboardActivity.this, SettingsActivity.class);
+                    startActivity(intent);
+                }
+            });
 
             refer_earn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -851,6 +861,8 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 });
 
         SharedPrefUtil.setClear(context);
+
+        myApplication.removeProductsItems();
     }
 
    /* @Override

@@ -15,110 +15,110 @@ public interface Constants {
     String LIVEIP = "52.66.75.55:8000";
 
     //Login API
-    String LoginActivityAPI = "http://" + StagingIP + "/api/customer/login";
+    String LoginActivityAPI = "http://" + GaneshIP + "/api/customer/login";
 
     //Register API
-    String RegisterActivityAPI = "http://" + StagingIP + "/api/customer/";
+    String RegisterActivityAPI = "http://" + GaneshIP + "/api/customer/";
 
     //Driver Location API - Product_Fragment
-    //String LocationAPI = "http://"+ StagingIP +"/api/vehicle_positions/by_driver_id/dr001";
+    //String LocationAPI = "http://"+ GaneshIP +"/api/vehicle_positions/by_driver_id/dr001";
 
     //Nearest Vehicle Check
-    String CheckNearestVehicle = "http://" + StagingIP + "/api/vehicle_positions/nearest/";
+    String CheckNearestVehicle = "http://" + GaneshIP + "/api/vehicle_positions/nearest/";
 
     //Product Category
-    String Product_Category = "http://" + StagingIP + "/api/productCategory/vehicle/list?vehicleId=";
+    String Product_Category = "http://" + GaneshIP + "/api/productCategory/vehicle/list?vehicleId=";
 
     //Product Desc
-    String Product_Desc = "http://" + StagingIP + "/api/product/byCategory/";
+    String Product_Desc = "http://" + GaneshIP + "/api/product/byCategory/";
 
     //Verify Mobile No. // Params - User ID // Get String Request
-    String VerifyMobile = "http://" + StagingIP + "/api/customer/isMobile/";
+    String VerifyMobile = "http://" + GaneshIP + "/api/customer/isMobile/";
 
     //Send OTP // Params - mobileNo , User ID // JSON Object Request
-    String SendOTP = "http://" + StagingIP + "/api/OTP/sendOtp/";
+    String SendOTP = "http://" + GaneshIP + "/api/OTP/sendOtp/";
 
     //Match OTP // Params - otp , mobileNo, User ID
-    String MatchOTP  = "http://" + StagingIP + "/api/OTP/matchOtp";
+    String MatchOTP  = "http://" + GaneshIP + "/api/OTP/matchOtp";
 
     //Profile
-    String Profile = "http://" + StagingIP +"/api/customer/profile";
+    String Profile = "http://" + GaneshIP +"/api/customer/profile";
 
     //Profile Edit
-    String ProfileEdit = "http://" + StagingIP + "/api/customer/";
+    String ProfileEdit = "http://" + GaneshIP + "/api/customer/";
 
     //Profile Image Upload
-    String ProfileImagePath = "http://" + StagingIP + "/api/upload";
+    String ProfileImagePath = "http://" + GaneshIP + "/api/upload";
 
     //Add Delivery Address
-    String NewAddress = "http://" + StagingIP + "/api/address/add";
+    String NewAddress = "http://" + GaneshIP + "/api/address/add";
 
     //Fetch Address
-    String FetchAddress =  "http://" + StagingIP + "/api/address/";
+    String FetchAddress =  "http://" + GaneshIP + "/api/address/";
 
     //Update Address
-    String UpdateAddress = "http://" + StagingIP + "/api/address/update/";
+    String UpdateAddress = "http://" + GaneshIP + "/api/address/update/";
 
     //Delete Address
-    String DeleteAddress = "http://" + StagingIP + "/api/address/delete/";
+    String DeleteAddress = "http://" + GaneshIP + "/api/address/delete/";
 
     //Get Fare
-    String GetFare = "http://" + StagingIP + "/api/order/getfare";
+    String GetFare = "http://" + GaneshIP + "/api/order/getfare";
 
     //Order List From Cart
-    String AddOrder = "http://" + StagingIP + "/api/order/add";
+    String AddOrder = "http://" + GaneshIP + "/api/order/add";
 
     //Get Order List
-    String OrderList = "http://" + StagingIP + "/api/order/orderList";
+    String OrderList = "http://" + GaneshIP + "/api/order/orderList";
 
     //Update Order after payment Put Request
-    String UpdateOrder = "http://" + StagingIP + "/api/order/update";
+    String UpdateOrder = "http://" + GaneshIP + "/api/order/update";
 
     //get Order details from order id
-    String OrderDetails = "http://"+ StagingIP +"/api/order/";
+    String OrderDetails = "http://"+ GaneshIP +"/api/order/";
 
     //Wallet All Transactions
-    String AllWalletTransactions = "http://"+ StagingIP + "/api/userWallet/";
+    String AllWalletTransactions = "http://"+ GaneshIP + "/api/userWallet/";
 
     //Wallet Paid Transactions
-    String PaidWalletTransactions = "http://"+ StagingIP + "/api/userWallet/?operation=minus";
+    String PaidWalletTransactions = "http://"+ GaneshIP + "/api/userWallet/?operation=minus";
 
     //Wallet Received Transactions
-    String ReceivedWalletTransactions = "http://"+ StagingIP + "/api/userWallet/?operation=add";
+    String ReceivedWalletTransactions = "http://"+ GaneshIP + "/api/userWallet/?operation=add";
 
     //Check Promocode Validity
-    String PromocodeValidity = "http://"+ StagingIP + "/api/promoCode/validate";
+    String PromocodeValidity = "http://"+ GaneshIP + "/api/promoCode/validate";
 
     //TODO Forget Password
-    String ForgetPassword = "http://"+ StagingIP + "/api/customer/forgotPassword";
+    String ForgetPassword = "http://"+ GaneshIP + "/api/customer/forgotPassword";
 
     //Verify Duplicate Mobile No
-    String VerifyDuplicate = "http://"+ StagingIP + "/api/customer/mobile/";
+    String VerifyDuplicate = "http://"+ GaneshIP + "/api/customer/mobile/";
 
     //Cancellation / Rejection reasons
-    String Reasons = "http://"+ StagingIP + "/api/order/reason?reason=";
+    String Reasons = "http://"+ GaneshIP + "/api/order/reason?reason=";
 
     //Send Firebase Token
-    String FirebaseToken =  "http://"+ StagingIP + "/api/customer/fbt";
+    String FirebaseToken =  "http://"+ GaneshIP + "/api/customer/fbt";
 
     //Vehicle Route
-    String VehicleRoute = "http://"+ StagingIP + "/api/customer/getVehicleRoutes/";
+    String VehicleRoute = "http://"+ GaneshIP + "/api/customer/getVehicleRoutes/";
 
     //Vehicle Socket Location
 
-    String VehicleLiveLocation = "http://" + StagingIP;
+    String VehicleLiveLocation = "http://" + GaneshIP;
 
     //Biker Socket Location
 
-    String BikerLiveLocation = "http://" + StagingIP;
+    String BikerLiveLocation = "http://" + GaneshIP;
 
     //Vehicle Nearest Route
 
-    String VehicleNearestRoute = "http://"+ StagingIP +  "/api/vehicleTimeTable/nearestRoute";
+    String VehicleNearestRoute = "http://"+ GaneshIP +  "/api/vehicleTimeTable/nearestRoute";
 
     //Change Password
 
-    String changePassword = "http://"+ StagingIP + "/api/customer/changePassword";
+    String changePassword = "http://"+ GaneshIP + "/api/customer/changePassword";
 
     // Milliseconds per second
     public static final int MILLISECONDS_PER_SECOND = 1000;

@@ -53,6 +53,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 import static com.kesari.trackingfresh.Utilities.IOUtils.setBadgeCount;
@@ -112,6 +113,14 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
             checkOut = (FancyButton) findViewById(R.id.checkOut);
             relativeLayout = (RelativeLayout) findViewById(R.id.relativelay_reclview);
             valueTV = new TextView(AddToCart.this);
+
+            if(getIntent().getStringExtra("productRemoved") != null)
+            {
+                new SweetAlertDialog(AddToCart.this, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Oops...")
+                        .setContentText("Some products were not added as Out of Stock!")
+                        .show();
+            }
 
             if(myApplication.getProductsArraylist() != null)
             {

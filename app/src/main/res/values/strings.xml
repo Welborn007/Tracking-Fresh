@@ -82,4 +82,9 @@
     <string name="newPassword">Enter New Password</string>
     <string name="confirmNewPassword">Confirm New Password</string>
 
+    <string-array name="setting">
+        <item>Address</item>
+        <item>Cards</item>
+    </string-array>
+
 </resources>

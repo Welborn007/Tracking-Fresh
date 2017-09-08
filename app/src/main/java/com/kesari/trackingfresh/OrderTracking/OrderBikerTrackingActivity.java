@@ -798,6 +798,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
             }
         } catch (Exception e) {
             e.printStackTrace();
+            strAdd = "Unable to fetch location";
         }
         return strAdd;
     }

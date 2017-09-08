@@ -1,5 +1,10 @@
 package com.kesari.trackingfresh.YourOrders;
 
+import com.kesari.trackingfresh.DeliveryAddress.OrderFareListPOJO;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by kesari on 07/06/17.
  */
@@ -39,6 +44,26 @@ public class OrderSubPOJO {
     private String rejectReason;
 
     private String orderNo;
+
+    private String pickUp;
+
+    public String getPickUp() {
+        return pickUp;
+    }
+
+    public void setPickUp(String pickUp) {
+        this.pickUp = pickUp;
+    }
+
+    private List<OrderFareListPOJO> orders = new ArrayList<OrderFareListPOJO>();
+
+    public List<OrderFareListPOJO> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<OrderFareListPOJO> orders) {
+        this.orders = orders;
+    }
 
     public String getOrderNo() {
         return orderNo;

@@ -102,6 +102,8 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
     MyApplication myApplication;
     public static int mNotificationsCount = 0;
 
+    boolean isPickup = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -154,11 +156,13 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
 
                     if(isChecked)
                     {
-                        address_holder.setVisibility(View.GONE);
+                        //address_holder.setVisibility(View.GONE);
+                        isPickup = true;
                     }
                     else
                     {
-                        address_holder.setVisibility(View.VISIBLE);
+                        //address_holder.setVisibility(View.VISIBLE);
+                        isPickup = false;
                     }
 
                 }
@@ -377,6 +381,7 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
                 Intent intent = new Intent(Default_DeliveryAddress.this, ConfirmOrderActivity.class);
                 intent.putExtra("confirmOrder",Response);
                 intent.putExtra("OrderPlacedBy",OrderPlacedBy);
+                intent.putExtra("isPickup",isPickup);
                 startActivity(intent);
                 //finish();
 

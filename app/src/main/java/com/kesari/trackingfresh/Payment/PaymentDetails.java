@@ -804,12 +804,28 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                     cartItemsObjedct.put("productName",myApplication.getProductsArraylist().get(i).getProductName());
                     cartItemsObjedct.put("quantity",myApplication.getProductsArraylist().get(i).getQuantity());
                     cartItemsObjedct.put("price",myApplication.getProductsArraylist().get(i).getPrice());
-                    //cartItemsObjedct.put("active",myApplication.getProductsArraylist().get(i).getActive());
+                    cartItemsObjedct.put("active",myApplication.getProductsArraylist().get(i).getActive());
+
+                    //Below Items required for repeat orders
+                    cartItemsObjedct.put("productCategory",myApplication.getProductsArraylist().get(i).getProductCategory());
+                    cartItemsObjedct.put("_id",myApplication.getProductsArraylist().get(i).get_id());
+                    cartItemsObjedct.put("unitsOfMeasurement",myApplication.getProductsArraylist().get(i).getUnitsOfMeasurement());
+                    cartItemsObjedct.put("productCategoryId",myApplication.getProductsArraylist().get(i).getProductCategoryId());
+                    cartItemsObjedct.put("productDescription",myApplication.getProductsArraylist().get(i).getProductDescription());
+                    cartItemsObjedct.put("productDetails",myApplication.getProductsArraylist().get(i).getProductDetails());
+                    cartItemsObjedct.put("unit",myApplication.getProductsArraylist().get(i).getUnit());
+                    cartItemsObjedct.put("unitsOfMeasurementId",myApplication.getProductsArraylist().get(i).getUnitsOfMeasurementId());
+                    cartItemsObjedct.put("productImage",myApplication.getProductsArraylist().get(i).getProductImage());
+                    cartItemsObjedct.put("brand",myApplication.getProductsArraylist().get(i).getBrand());
+                    cartItemsObjedct.put("availableQuantity",myApplication.getProductsArraylist().get(i).getAvailableQuantity());
+                    cartItemsObjedct.put("MRP",myApplication.getProductsArraylist().get(i).getMRP());
+
                     cartItemsArray.put(cartItemsObjedct);
                 }
 
                 postObject.put("orders",cartItemsArray);
                 postObject.put("total_price",getIntent().getStringExtra("amount"));
+                postObject.put("pickUp",getIntent().getBooleanExtra("isPickup",false));
 
                 if(TKFCash)
                 {

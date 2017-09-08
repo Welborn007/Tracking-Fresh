@@ -21,6 +21,7 @@ import com.kesari.trackingfresh.DeliveryAddress.DefaultDeliveryAddress.Default_D
 import com.kesari.trackingfresh.DetailPage.DetailsActivity;
 import com.kesari.trackingfresh.MyProfile.ProfileActivity;
 import com.kesari.trackingfresh.Order.OrderReview;
+import com.kesari.trackingfresh.ReferEarn.ReferralCodeActivity;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.YourOrders.OrderListActivity;
 
@@ -236,6 +237,7 @@ public class MyApplication extends Application
         ProfileActivity.updateNotificationsBadge(myProducts.size());
         OrderReview.updateNotificationsBadge(myProducts.size());
         OrderListActivity.updateNotificationsBadge(myProducts.size());
+        ReferralCodeActivity.updateNotificationsBadge(myProducts.size());
 
         SharedPrefUtil.setKeyUserCartItem(getApplicationContext(),jsonText);
     }

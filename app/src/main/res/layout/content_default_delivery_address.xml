@@ -132,13 +132,12 @@
 
         </LinearLayout>
 
-
-
         <CheckBox
             android:id="@+id/pickup"
             android:text="@string/pickupCheckbox"
-            android:layout_margin="5dp"
-            android:visibility="gone"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

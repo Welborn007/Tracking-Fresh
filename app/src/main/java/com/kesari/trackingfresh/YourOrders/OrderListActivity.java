@@ -151,7 +151,24 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
         try
         {
 
-            String url = Constants.OrderList;
+            String url = "";
+
+            if(SharedPrefUtil.getNearestRouteMainPOJO(context) != null)
+            {
+                String VehicleID = SharedPrefUtil.getNearestRouteMainPOJO(context).getData().get(0).getVehicleId();
+
+                Log.i("VEhicleID",VehicleID);
+
+                url = Constants.OrderList + "?vehicleId=" + VehicleID;
+            }
+            else
+            {
+                Log.i("VEhicleID","Not Present");
+
+                url = Constants.OrderList;
+            }
+
+
 
             IOUtils ioUtils = new IOUtils();
 

@@ -117,6 +117,7 @@ public class ConfirmOrderActivity extends AppCompatActivity implements NetworkUt
                     {
                         Intent intent = new Intent(ConfirmOrderActivity.this, PaymentDetails.class);
                         //intent.putExtra("orderID",orderAddPojo.getMessage().get_id());
+                        intent.putExtra("isPickup",getIntent().getBooleanExtra("isPickup",false));
                         intent.putExtra("amount",orderFareMainPOJO.getData().getTotal_price());
                         startActivity(intent);
                         finish();

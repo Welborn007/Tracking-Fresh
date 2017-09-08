@@ -232,6 +232,33 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/OrderTypeHolder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Order type:"
+                        android:textColor="@color/DarkGray"
+                        android:textSize="@dimen/text_size14"
+                        />
+
+                    <TextView
+                        android:id="@+id/orderType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size14"
+                        />
+
+                </LinearLayout>
+
 
             </LinearLayout>
 
@@ -266,6 +293,22 @@
             </LinearLayout>
 
         </LinearLayout>
+
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            fancy:fb_text="Repeat Order"
+            android:id="@+id/repeat"
+            fancy:fb_defaultColor="@color/fresh_blue"
+            fancy:fb_focusColor="@color/colorPrimary"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_toLeftOf="@+id/cancel"
+            android:layout_below="@+id/data_holder"
+            fancy:fb_radius="5dp"
+            fancy:fb_textColor="@color/white"
+            fancy:fb_textSize="18sp" />
 
         <mehdi.sakout.fancybuttons.FancyButton
             android:layout_width="wrap_content"

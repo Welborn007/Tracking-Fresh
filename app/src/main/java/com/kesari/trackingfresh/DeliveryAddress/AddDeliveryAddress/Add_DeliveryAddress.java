@@ -545,7 +545,7 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
 
             addAddressPOJO = gson.fromJson(Response,AddAddressPOJO.class);
 
-            if(getIntent().getStringExtra("value") != null)
+            if(getIntent().getStringExtra("value") != null || getIntent().getStringExtra("SettingAddress") != null)
             {
                 finish();
             }
