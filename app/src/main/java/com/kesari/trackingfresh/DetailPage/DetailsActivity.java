@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -96,6 +97,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
     private String availableQuantity = "";
     private String brand = "";
     private String MRP = "";
+    private String Offer = "";
     private NetworkUtilsReceiver networkUtilsReceiver;
     MyApplication myApplication;
     List<AddressPOJO> addressArrayList = new ArrayList<>();
@@ -105,6 +107,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
     public static int mNotificationsCount = 0;
     // ScheduledExecutorService scheduleTaskExecutor;
     FancyButton Share;
+    ImageView offersImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,6 +161,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             brand = getIntent().getStringExtra("brand");
             MRP = getIntent().getStringExtra("MRP");
             productImages = getIntent().getStringExtra("productImages");
+            Offer = getIntent().getStringExtra("Offer");
 
             Log.i("ImageList",productImages);
 
@@ -165,6 +169,16 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             //Image Slider
             mDemoSlider = (SliderLayout) findViewById(R.id.slider);
             mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Default);
+            offersImage = (ImageView) findViewById(R.id.offersImage);
+
+            if(Offer.equalsIgnoreCase("true"))
+            {
+                offersImage.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                offersImage.setVisibility(View.GONE);
+            }
 
            if(!productImages.isEmpty())
             {

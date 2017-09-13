@@ -11,12 +11,16 @@ import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Settings.Address.AddressSettingsFragment;
 import com.kesari.trackingfresh.Settings.MyCards.CardsSettingFragment;
 import com.kesari.trackingfresh.SlidingTabs.SlidingTabLayout;
+import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
+import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SettingsActivity extends AppCompatActivity {
 
     private SlidingTabLayout tourTabs;
     private ViewPager tourPager;
-
+    CircleImageView profile_image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +33,15 @@ public class SettingsActivity extends AppCompatActivity {
         //tourTabs.setDistributeEvenly(true);
         tourTabs.setViewPager(tourPager);
         tourTabs.setSelectedIndicatorColors(ContextCompat.getColor(SettingsActivity.this,R.color.colorPrimary));
+
+        profile_image = (CircleImageView) findViewById(R.id.profile_image);
+
+        if (SharedPrefUtil.getUser(SettingsActivity.this).getData().getProfileImage() != null) {
+            Picasso
+                    .with(SettingsActivity.this)
+                    .load(SharedPrefUtil.getUser(SettingsActivity.this).getData().getProfileImage())
+                    .into(profile_image);
+        }
     }
 
 

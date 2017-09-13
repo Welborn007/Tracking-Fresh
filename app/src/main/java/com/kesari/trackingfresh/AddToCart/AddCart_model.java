@@ -40,6 +40,16 @@ public class AddCart_model {
 
     private String MRP;
 
+    private String offer;
+
+    public String getOffer() {
+        return offer;
+    }
+
+    public void setOffer(String offer) {
+        this.offer = offer;
+    }
+
     public String getMRP() {
         return MRP;
     }

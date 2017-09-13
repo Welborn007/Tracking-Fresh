@@ -50,6 +50,7 @@ import com.kesari.trackingfresh.HelpAndFAQ.HelpActivity;
 import com.kesari.trackingfresh.Legal.LegalActivity;
 import com.kesari.trackingfresh.Login.LoginActivity;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
+import com.kesari.trackingfresh.MyOffers.MyOffersActivity;
 import com.kesari.trackingfresh.MyProfile.ProfileActivity;
 import com.kesari.trackingfresh.OTP.OTP;
 import com.kesari.trackingfresh.OTP.SendOtpPOJO;
@@ -112,7 +113,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
     String subAdminArea = "";
     String subLocality = "";
     public static MyApplication myApplication;
-    RelativeLayout my_orders_holder, profile_holder, help_holder, route_holder, refer_earn, legalHolder,setting_layout;
+    RelativeLayout my_orders_holder, profile_holder, help_holder, route_holder, refer_earn, legalHolder,setting_layout,my_offers_holder;
 
     private Gson gson;
     VerifyMobilePOJO verifyMobilePOJO;
@@ -178,6 +179,15 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             walletAmount = (TextView) header.findViewById(R.id.walletAmount);
             legalHolder = (RelativeLayout) header.findViewById(R.id.legalHolder);
             setting_layout = (RelativeLayout) header.findViewById(R.id.setting_layout);
+            my_offers_holder = (RelativeLayout) header.findViewById(R.id.my_offers_holder);
+
+            my_offers_holder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(DashboardActivity.this, MyOffersActivity.class);
+                    startActivity(intent);
+                }
+            });
 
             setting_layout.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -43,6 +43,16 @@ public class SubProductSubPOJO {
 
     private String MRP;
 
+    private String offer;
+
+    public String getOffer() {
+        return offer;
+    }
+
+    public void setOffer(String offer) {
+        this.offer = offer;
+    }
+
     private List<ProductImagesPOJO> productImages = new ArrayList<ProductImagesPOJO>();
 
     public String getQuantity() {
