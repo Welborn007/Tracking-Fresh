@@ -15,18 +15,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,6 +30,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 public class ForgotPassword_Activity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt {
@@ -123,7 +120,11 @@ public class ForgotPassword_Activity extends AppCompatActivity implements Networ
                     //Toast.makeText(ForgotPassword_Activity.this, "Sent", Toast.LENGTH_SHORT).show();
                 }else {
 
-                    Toast.makeText(ForgotPassword_Activity.this, "Enter mobile or email!!", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(ForgotPassword_Activity.this, "Enter mobile or email!!", Toast.LENGTH_SHORT).show();
+
+                    new SweetAlertDialog(ForgotPassword_Activity.this)
+                            .setTitleText("Enter mobile or email!!")
+                            .show();
                 }
 
             }
@@ -223,11 +224,19 @@ public class ForgotPassword_Activity extends AppCompatActivity implements Networ
                    mobile.setText("");
                     email.setText("");
                     mobileBoolean = false;
-                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+
+                    new SweetAlertDialog(ForgotPassword_Activity.this)
+                            .setTitleText(message)
+                            .show();
                 }
                 else
                 {
-                    Toast.makeText(this, "Sorry request failed!!!", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "Sorry request failed!!!", Toast.LENGTH_SHORT).show();
+
+                    new SweetAlertDialog(ForgotPassword_Activity.this)
+                            .setTitleText("Sorry request failed!!!")
+                            .show();
                 }
             }
         }catch (Exception e)
@@ -276,13 +285,26 @@ public class ForgotPassword_Activity extends AppCompatActivity implements Networ
         try {
 
             if (!NetworkUtils.isNetworkConnectionOn(this)) {
-                FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+                /*FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
                     @Override
                     public void onActionClicked(Snackbar snackbar) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
-                return;
+                return;*/
+
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
 
         } catch (Exception e) {

@@ -26,7 +26,6 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
@@ -40,12 +39,9 @@ import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -157,11 +153,19 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
                         if (!myApplication.getProductsArraylist().isEmpty()) {
                             fetchUserAddress();
                         } else {
-                            Toast.makeText(AddToCart.this, "No Items in Cart!!", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(AddToCart.this, "No Items in Cart!!", Toast.LENGTH_SHORT).show();
+
+                            new SweetAlertDialog(AddToCart.this)
+                                    .setTitleText("No Items in Cart!!")
+                                    .show();
                         }
                     }catch (Exception e)
                     {
-                        Toast.makeText(AddToCart.this, "No Items in Cart!!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(AddToCart.this, "No Items in Cart!!", Toast.LENGTH_SHORT).show();
+
+                        new SweetAlertDialog(AddToCart.this)
+                                .setTitleText("No Items in Cart!!")
+                                .show();
                     }
 
                 }
@@ -535,13 +539,26 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
         try {
 
             if (!NetworkUtils.isNetworkConnectionOn(this)) {
-                FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+                /*FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
                     @Override
                     public void onActionClicked(Snackbar snackbar) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
-                return;
+                return;*/
+
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
 
         } catch (Exception e) {

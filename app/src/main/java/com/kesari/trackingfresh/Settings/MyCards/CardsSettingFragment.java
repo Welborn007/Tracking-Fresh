@@ -76,9 +76,12 @@ public class CardsSettingFragment extends Fragment {
         myApplication = (MyApplication) getApplicationContext();
         btnSubmit = (Button) view.findViewById(R.id.btnSubmit);
 
-        adapter = new Cards_RecyclerAdpater(myApplication.getCardList(), getActivity());
-        listview.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        if(myApplication.getCardList() != null)
+        {
+            adapter = new Cards_RecyclerAdpater(myApplication.getCardList(), getActivity());
+            listview.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+        }
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -182,9 +185,12 @@ public class CardsSettingFragment extends Fragment {
 
                                 myApplication.addCards(cardPOJO);
 
-                                adapter = new Cards_RecyclerAdpater(myApplication.getCardList(), getActivity());
-                                listview.setAdapter(adapter);
-                                adapter.notifyDataSetChanged();
+                                if(myApplication.getCardList() != null)
+                                {
+                                    adapter = new Cards_RecyclerAdpater(myApplication.getCardList(), getActivity());
+                                    listview.setAdapter(adapter);
+                                    adapter.notifyDataSetChanged();
+                                }
 
                             }
                         }, new Action1<Throwable>() {

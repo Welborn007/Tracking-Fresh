@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -30,11 +29,8 @@ import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,6 +38,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 public class RegisterActivity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt {
@@ -139,13 +136,27 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
 
                             if (Mobile.length() >= 10) {
                                 if (!NetworkUtils.isNetworkConnectionOn(RegisterActivity.this)) {
-                                    FireToast.customSnackbarWithListner(RegisterActivity.this, "No internet access", "Settings", new ActionClickListener() {
+                                    /*FireToast.customSnackbarWithListner(RegisterActivity.this, "No internet access", "Settings", new ActionClickListener() {
                                         @Override
                                         public void onActionClicked(Snackbar snackbar) {
                                             startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                                         }
                                     });
-                                    return;
+                                    return;*/
+
+                                    new SweetAlertDialog(RegisterActivity.this, SweetAlertDialog.NORMAL_TYPE)
+                                            .setTitleText("Oops! No internet access")
+                                            .setContentText("Please Check Settings")
+                                            .setConfirmText("Enable the Internet?")
+                                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                @Override
+                                                public void onClick(SweetAlertDialog sDialog) {
+                                                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                                    sDialog.dismissWithAnimation();
+                                                }
+                                            })
+                                            .show();
+
                                 } else {
 
                                     verifyDuplicateMobileAndRegister(mobile.getText().toString().trim());
@@ -242,7 +253,11 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
             {
                 duplicateMobile = false;
                 mobile.setError("Mobile No. Already Registered");
-                Toast.makeText(this, "Mobile No. Already Registered", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Mobile No. Already Registered", Toast.LENGTH_SHORT).show();
+
+                new SweetAlertDialog(this)
+                        .setTitleText("Mobile No. Already Registered")
+                        .show();
             }
             else if(message.equalsIgnoreCase("Not Found"))
             {
@@ -280,7 +295,11 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
             {
                 duplicateMobile = false;
                 mobile.setError("Mobile No. Already Registered");
-                Toast.makeText(this, "Mobile No. Already Registered", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Mobile No. Already Registered", Toast.LENGTH_SHORT).show();
+
+                new SweetAlertDialog(this)
+                        .setTitleText("Mobile No. Already Registered")
+                        .show();
             }
             else if(message.equalsIgnoreCase("Not Found"))
             {
@@ -351,7 +370,11 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
             }
             else if(loginMain.getUser().getOk().equalsIgnoreCase("false"))
             {
-                Toast.makeText(this, loginMain.getMessage(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, loginMain.getMessage(), Toast.LENGTH_SHORT).show();
+
+                new SweetAlertDialog(this)
+                        .setTitleText(loginMain.getMessage())
+                        .show();
             }
 
         } catch (Exception jse) {
@@ -498,13 +521,26 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
         try {
 
             if (!NetworkUtils.isNetworkConnectionOn(this)) {
-                FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+                /*FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
                     @Override
                     public void onActionClicked(Snackbar snackbar) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
-                return;
+                return;*/
+
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
 
         }catch (Exception e)

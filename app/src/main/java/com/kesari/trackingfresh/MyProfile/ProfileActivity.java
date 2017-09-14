@@ -28,7 +28,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -41,21 +40,16 @@ import com.kesari.trackingfresh.Cart.AddToCart;
 import com.kesari.trackingfresh.DashBoard.VerifyMobilePOJO;
 import com.kesari.trackingfresh.DeliveryAddress.AddDeliveryAddress.Add_DeliveryAddress;
 import com.kesari.trackingfresh.DeliveryAddress.AddressPOJO;
-import com.kesari.trackingfresh.DeliveryAddress.DefaultDeliveryAddress.Default_DeliveryAddress;
 import com.kesari.trackingfresh.DeliveryAddress.DefaultDeliveryAddress.FetchAddressPOJO;
-import com.kesari.trackingfresh.DeliveryAddress.UpdateDeleteDeliveryAddress.FetchedDeliveryAddressActivity;
 import com.kesari.trackingfresh.Login.ProfileMain;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 import com.squareup.picasso.Picasso;
 
 import org.apache.http.entity.mime.HttpMultipartMode;
@@ -82,6 +76,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
 import mehdi.sakout.fancybuttons.FancyButton;
 
@@ -589,13 +584,26 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
         try {
 
             if (!NetworkUtils.isNetworkConnectionOn(this)) {
-                FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+                /*FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
                     @Override
                     public void onActionClicked(Snackbar snackbar) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
-                return;
+                return;*/
+
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
 
         }catch (Exception e)
@@ -858,14 +866,20 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
 
                 if(message.equalsIgnoreCase("uploaded"))
                 {
-                    Toast.makeText(getApplicationContext(), "file uploaded",
-                            Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "file uploaded", Toast.LENGTH_LONG).show();
+                    new SweetAlertDialog(getApplicationContext())
+                            .setTitleText("file uploaded")
+                            .show();
+
                     updateCustomerProfileImage(SharedPrefUtil.getUser(ProfileActivity.this).getData().get_id(),url);
                 }
                 else
                 {
-                    Toast.makeText(getApplicationContext(), "file uploaded failed",
-                            Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "file uploaded failed",Toast.LENGTH_LONG).show();
+
+                    new SweetAlertDialog(getApplicationContext())
+                            .setTitleText("file uploaded failed")
+                            .show();
                 }
 
             } catch (JSONException e) {

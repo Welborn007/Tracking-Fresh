@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.DeliveryAddress.AddDeliveryAddress.Add_DeliveryAddress;
@@ -30,6 +29,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 /**
  * Created by kesari on 06/09/17.
@@ -146,7 +147,11 @@ public class AddressSettingsFragment extends Fragment {
                 if(!default_address)
                 {
                     //FireToast.customSnackbar(context, "Default address not set!", "");
-                    Toast.makeText(context,"Default address not set!", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"Default address not set!", Toast.LENGTH_SHORT).show();
+
+                    new SweetAlertDialog(context)
+                            .setTitleText("Default address not set!")
+                            .show();
                 }
 
             }

@@ -338,7 +338,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
             else if(loginMain.getUser().getOk().equalsIgnoreCase("false"))
             {
-                Toast.makeText(this, loginMain.getMessage(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, loginMain.getMessage(), Toast.LENGTH_SHORT).show();
+                new SweetAlertDialog(this)
+                        .setTitleText(loginMain.getMessage())
+                        .show();
+
                 user_name.setText("");
                 password.setText("");
             }
@@ -606,7 +610,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
             else if(loginMain.getUser().getOk().equalsIgnoreCase("false"))
             {
-                Toast.makeText(this, loginMain.getMessage(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, loginMain.getMessage(), Toast.LENGTH_SHORT).show();
+
+                new SweetAlertDialog(this)
+                        .setTitleText(loginMain.getMessage())
+                        .show();
             }
 
 
