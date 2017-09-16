@@ -115,9 +115,10 @@
                 android:layout_height="wrap_content" />
 
             <LinearLayout
+                android:id="@+id/verifyHolder"
                 android:layout_below="@+id/counter"
                 android:orientation="horizontal"
-                android:weightSum="3"
+                android:weightSum="2"
                 android:layout_margin="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -135,12 +136,39 @@
                     fancy:fb_textColor="@color/white"
                     fancy:fb_textSize="18sp" />
 
+
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    fancy:fb_text="Skip"
+                    android:id="@+id/skip"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    fancy:fb_defaultColor="@color/fresh_blue"
+                    fancy:fb_focusColor="@color/colorPrimary"
+                    fancy:fb_radius="10dp"
+                    fancy:fb_textColor="@color/white"
+                    fancy:fb_textSize="18sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_below="@+id/verifyHolder"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
                 <mehdi.sakout.fancybuttons.FancyButton
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     fancy:fb_text="Resend OTP"
-                    android:layout_marginLeft="5dp"
                     android:id="@+id/resendOTP"
                     android:layout_weight="1"
                     fancy:fb_defaultColor="@color/fresh_blue"
@@ -149,12 +177,19 @@
                     fancy:fb_textColor="@color/white"
                     fancy:fb_textSize="18sp" />
 
+                <TextView
+                    android:text="OR"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
                 <mehdi.sakout.fancybuttons.FancyButton
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    fancy:fb_text="Skip"
-                    android:id="@+id/skip"
+                    fancy:fb_text="Call me"
+                    android:id="@+id/call"
                     android:layout_marginLeft="5dp"
                     android:layout_weight="1"
                     fancy:fb_defaultColor="@color/fresh_blue"

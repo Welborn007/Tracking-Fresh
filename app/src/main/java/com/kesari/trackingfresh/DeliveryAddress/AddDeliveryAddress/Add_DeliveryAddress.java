@@ -26,7 +26,6 @@ import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -476,9 +475,9 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
             {
                 //Toast.makeText(Add_DeliveryAddress.this, "Location Set!!", Toast.LENGTH_SHORT).show();
 
-                new SweetAlertDialog(Add_DeliveryAddress.this)
+                /*new SweetAlertDialog(Add_DeliveryAddress.this)
                         .setTitleText("Location Set!!")
-                        .show();
+                        .show();*/
             }
 
         } catch (Exception e) {

@@ -21,6 +21,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.kesari.trackingfresh.DashBoard.DashboardActivity;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.R;
@@ -43,7 +44,7 @@ import mehdi.sakout.fancybuttons.FancyButton;
 public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt{
 
     private NetworkUtilsReceiver networkUtilsReceiver;
-    FancyButton send, skip, resend;
+    FancyButton send, skip, resend,call;
     EditText Otp1,Otp2,Otp3,Otp4;
     private String TAG = this.getClass().getSimpleName();
     Dialog dialog;
@@ -51,10 +52,12 @@ public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.Netwo
     TextView counter,number;
     String mobile,username;
 
+    private Gson gson;
+
     IntentFilter filter1;
     // Get the object of SmsManager
     final SmsManager sms = SmsManager.getDefault();
-
+    SendOtpPOJO sendOtpPOJO;
     public static final String SMS_RECEIVED_ACTION = "android.net.conn.CONNECTIVITY_CHANGE";
     public static final String SMS_RECEIVED_ACTION1 = "android.provider.Telephony.SMS_RECEIVED";
 
@@ -71,6 +74,8 @@ public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.Netwo
             /*Register receiver*/
             networkUtilsReceiver = new NetworkUtilsReceiver(this);
             registerReceiver(networkUtilsReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
+            gson = new Gson();
 
             final LocationManager locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
 
@@ -190,6 +195,7 @@ public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.Netwo
             });
 
             resend = (FancyButton) findViewById(R.id.resendOTP);
+            call = (FancyButton) findViewById(R.id.call);
             counter = (TextView) findViewById(R.id.counter);
             number = (TextView) findViewById(R.id.mobinumber);
 
@@ -198,12 +204,24 @@ public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.Netwo
             Timer();
 
             resend.setEnabled(false);
+            call.setEnabled(false);
 
             resend.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Timer();
+                    sendMobileNumber(mobile);
                     resend.setEnabled(false);
+                    call.setEnabled(false);
+                }
+            });
+
+            call.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    callVoiceOTP(mobile);
+                    resend.setEnabled(false);
+                    call.setEnabled(false);
                 }
             });
 
@@ -343,6 +361,7 @@ public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.Netwo
                 public void onFinish() {
                     counter.setText("click on 'Resend OTP'");
                     resend.setEnabled(true);
+                    call.setEnabled(true);
                 }
             }.start();
 
@@ -477,6 +496,105 @@ public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.Netwo
         }catch (Exception e)
         {
             Log.i(TAG,e.getMessage());
+        }
+    }
+
+    private void callVoiceOTP(final String MobileNo) {
+        String url = Constants.VoiceOTP;
+
+        Log.i("url", url);
+
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+
+            JSONObject postObject = new JSONObject();
+
+            postObject.put("mobile", MobileNo);
+
+            jsonObject.put("post", postObject);
+
+            Log.i("JSON CREATED", jsonObject.toString());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("Authorization", "JWT " + SharedPrefUtil.getToken(OTP.this));
+
+        IOUtils ioUtils = new IOUtils();
+
+        ioUtils.sendJSONObjectRequestHeader(OTP.this, url, params, jsonObject, new IOUtils.VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+
+                VoiceOTPResponse(result);
+            }
+        });
+    }
+
+    private void VoiceOTPResponse(String Response) {
+        try {
+
+
+            sendOtpPOJO = gson.fromJson(Response, SendOtpPOJO.class);
+
+            if (sendOtpPOJO.getMessage().equalsIgnoreCase("success")) {
+                Timer();
+            }
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void sendMobileNumber(final String MobileNo) {
+        String url = Constants.SendOTP;
+
+        Log.i("url", url);
+
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+
+            JSONObject postObject = new JSONObject();
+
+            postObject.put("mobileNo", MobileNo);
+            postObject.put("id", SharedPrefUtil.getUser(OTP.this).getData().get_id());
+
+            jsonObject.put("post", postObject);
+
+            Log.i("JSON CREATED", jsonObject.toString());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("Authorization", "JWT " + SharedPrefUtil.getToken(OTP.this));
+
+        IOUtils ioUtils = new IOUtils();
+
+        ioUtils.sendJSONObjectRequestHeader(OTP.this, url, params, jsonObject, new IOUtils.VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+
+                OTPResponse(result);
+            }
+        });
+    }
+
+    private void OTPResponse(String Response) {
+        try {
+            sendOtpPOJO = gson.fromJson(Response, SendOtpPOJO.class);
+
+            if (sendOtpPOJO.getMessage().equalsIgnoreCase("Otp Send")) {
+                Timer();
+            }
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
         }
     }
 }

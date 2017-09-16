@@ -179,7 +179,7 @@ public class SharedPrefUtil {
 
     public static void setClear(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        preferences.edit().remove(KEY_USER).remove(KEY_USER_TOKEN).remove(KEY_USER_CART_ITEM).remove(KEY_VEHICLE).remove(KEY_VEHICLE_NEARESTROUTE).remove(KEY_VEHICLE_SOCKET).remove(KEY_LAT_DEFAULT).remove(KEY_LONGI_DEFAULT).remove(KEY_SAVED_CARDS).remove(KEY_FIREBASE_TOKEN).commit();
+        preferences.edit().remove(KEY_USER).remove(KEY_USER_TOKEN).remove(KEY_USER_CART_ITEM).remove(KEY_VEHICLE).remove(KEY_VEHICLE_NEARESTROUTE).remove(KEY_VEHICLE_SOCKET).remove(KEY_LAT_DEFAULT).remove(KEY_LONGI_DEFAULT).remove(KEY_SAVED_CARDS).commit();
     }
 
 

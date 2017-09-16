@@ -238,6 +238,42 @@ public class Product_categoryFragment extends Fragment {
                                     addCart_model.setOffer("false");
                                 }
 
+                                if(product_pojo.getMfgDate() != null)
+                                {
+                                    addCart_model.setMfgDate(product_pojo.getMfgDate());
+                                }
+                                else
+                                {
+                                    addCart_model.setMfgDate("");
+                                }
+
+                                if(product_pojo.getExpDate() != null)
+                                {
+                                    addCart_model.setExpDate(product_pojo.getExpDate());
+                                }
+                                else
+                                {
+                                    addCart_model.setExpDate("");
+                                }
+
+                                if(product_pojo.getQc() != null)
+                                {
+                                    addCart_model.setQc(product_pojo.getQc());
+                                }
+                                else
+                                {
+                                    addCart_model.setQc("");
+                                }
+
+                                if(product_pojo.getBatchNo() != null)
+                                {
+                                    addCart_model.setBatchNo(product_pojo.getBatchNo());
+                                }
+                                else
+                                {
+                                    addCart_model.setBatchNo("");
+                                }
+
                                 myApplication.setProducts(addCart_model);
                             }catch (Exception e)
                             {
@@ -371,6 +407,42 @@ public class Product_categoryFragment extends Fragment {
                             else
                             {
                                 in.putExtra("Offer","false");
+                            }
+
+                            if(product_pojo.getMfgDate() != null)
+                            {
+                                in.putExtra("mfgDate",product_pojo.getMfgDate());
+                            }
+                            else
+                            {
+                                in.putExtra("mfgDate","");
+                            }
+
+                            if(product_pojo.getExpDate() != null)
+                            {
+                                in.putExtra("expDate",product_pojo.getExpDate());
+                            }
+                            else
+                            {
+                                in.putExtra("expDate","");
+                            }
+
+                            if(product_pojo.getQc() != null)
+                            {
+                                in.putExtra("qc",product_pojo.getQc());
+                            }
+                            else
+                            {
+                                in.putExtra("qc","");
+                            }
+
+                            if(product_pojo.getBatchNo() != null)
+                            {
+                                in.putExtra("batchNo",product_pojo.getBatchNo());
+                            }
+                            else
+                            {
+                                in.putExtra("batchNo","");
                             }
 
                             //in.putExtra("quantity",String.valueOf(viewHolder.count.getText().toString().trim()));

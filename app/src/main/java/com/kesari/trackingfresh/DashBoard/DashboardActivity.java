@@ -52,6 +52,7 @@ import com.kesari.trackingfresh.Login.LoginActivity;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.MyOffers.MyOffersActivity;
 import com.kesari.trackingfresh.MyProfile.ProfileActivity;
+import com.kesari.trackingfresh.NotificationList.NotificationListActivity;
 import com.kesari.trackingfresh.OTP.OTP;
 import com.kesari.trackingfresh.OTP.SendOtpPOJO;
 import com.kesari.trackingfresh.ProductMainFragment.Product_Fragment;
@@ -781,6 +782,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
         TextView my_account = (TextView) view.findViewById(R.id.my_account);
         TextView my_orders = (TextView) view.findViewById(R.id.my_orders);
         TextView tkcash = (TextView) view.findViewById(R.id.tkcash);
+        TextView notificationList = (TextView) view.findViewById(R.id.notificationList);
 
         LinearLayout layout = (LinearLayout) view.findViewById(R.id.change_password);
 
@@ -812,6 +814,14 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(DashboardActivity.this, TKWalletActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        notificationList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DashboardActivity.this, NotificationListActivity.class);
                 startActivity(intent);
             }
         });

@@ -42,6 +42,46 @@ public class AddCart_model {
 
     private String offer;
 
+    private String mfgDate;
+
+    private String expDate;
+
+    private String qc;
+
+    private String batchNo;
+
+    public String getMfgDate() {
+        return mfgDate;
+    }
+
+    public void setMfgDate(String mfgDate) {
+        this.mfgDate = mfgDate;
+    }
+
+    public String getExpDate() {
+        return expDate;
+    }
+
+    public void setExpDate(String expDate) {
+        this.expDate = expDate;
+    }
+
+    public String getQc() {
+        return qc;
+    }
+
+    public void setQc(String qc) {
+        this.qc = qc;
+    }
+
+    public String getBatchNo() {
+        return batchNo;
+    }
+
+    public void setBatchNo(String batchNo) {
+        this.batchNo = batchNo;
+    }
+
     public String getOffer() {
         return offer;
     }
