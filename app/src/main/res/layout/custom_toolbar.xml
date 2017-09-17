@@ -15,7 +15,8 @@
         android:id="@+id/backImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_arrow_left" />
+        app:srcCompat="@drawable/ic_arrow_left"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/toolbarTitleTextView"
@@ -31,5 +32,6 @@
         android:id="@+id/closeImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_close_new" />
+        app:srcCompat="@drawable/ic_close_new"
+        android:visibility="gone"/>
 </LinearLayout>

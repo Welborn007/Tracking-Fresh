@@ -32,6 +32,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -92,9 +93,9 @@ import mehdi.sakout.fancybuttons.FancyButton;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener, NetworkUtilsReceiver.NetworkResponseInt {
 
-    FancyButton btnLogin, btnSignup;
+    Button btnLogin, btnSignup;
     TextView btnForget;
-    ImageView Fbbtn, Googlebtn;
+//    ImageView Fbbtn, Googlebtn;
     private NetworkUtilsReceiver networkUtilsReceiver;
     ErrorPOJO errorPOJO;
     private String TAG = this.getClass().getSimpleName();
@@ -121,7 +122,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Boolean exit = false;
     private Gson gson;
     LoginMain loginMain;
-
+    Button faceBookLogin,googleLogin;
+    TextView signupTextView,toolbarTitleTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,15 +143,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             gson = new Gson();
             //printHashKey(LoginActivity.this);
-            btnLogin = (FancyButton) findViewById(R.id.btnLogin);
-            btnSignup = (FancyButton) findViewById(R.id.btnSignup);
+            btnLogin = (Button) findViewById(R.id.btnLogin);
+            btnSignup = (Button) findViewById(R.id.btnSignup);
             btnForget = (TextView) findViewById(R.id.btnForget);
+            signupTextView = (TextView) findViewById(R.id.signupTextView);
 
             user_name = (EditText) findViewById(R.id.user_name);
             password = (EditText) findViewById(R.id.password);
 
 
-            password.setOnTouchListener(new View.OnTouchListener() {
+          /*  password.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     final int DRAWABLE_LEFT = 0;
@@ -178,7 +181,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     }
                     return false;
                 }
-            });
+            });*/
 
             sharedpreferencesLogin = getSharedPreferences(MyPREFERENCES_LOGIN, Context.MODE_PRIVATE);
 
@@ -232,7 +235,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
             });
 
-            btnSignup.setOnClickListener(new View.OnClickListener() {
+            signupTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent startMainActivity = new Intent(getApplicationContext(), RegisterActivity.class);
@@ -784,8 +787,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         {
 
             //Google
-            Googlebtn = (ImageView) findViewById(R.id.Googlebtn);
-            Googlebtn.setOnClickListener(this);
+            googleLogin = (Button) findViewById(R.id.googleLogin);
+            googleLogin.setOnClickListener(this);
             GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestEmail()
                     .build();
@@ -801,8 +804,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
             //Facebook
-            Fbbtn = (ImageView) findViewById(R.id.Fbbtn);
-            Fbbtn.setOnClickListener(this);
+            faceBookLogin = (Button) findViewById(R.id.faceBookLogin);
+            faceBookLogin.setOnClickListener(this);
             loginButton = (LoginButton) findViewById(R.id.login_button);
             loginButton.setReadPermissions("public_profile", "email", "user_friends", "user_birthday");
             callbackManager = CallbackManager.Factory.create();
@@ -849,7 +852,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
 
-            case R.id.Googlebtn:
+            case R.id.googleLogin:
 
                 if (!NetworkUtils.isNetworkConnectionOn(LoginActivity.this)) {
                     /*FireToast.customSnackbarWithListner(LoginActivity.this, "No internet access", "Settings", new ActionClickListener() {
@@ -878,7 +881,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 break;
 
-            case R.id.Fbbtn:
+            case R.id.faceBookLogin:
 
                 if (!NetworkUtils.isNetworkConnectionOn(LoginActivity.this)) {
                     /*FireToast.customSnackbarWithListner(LoginActivity.this, "No internet access", "Settings", new ActionClickListener() {

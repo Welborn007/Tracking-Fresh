@@ -5,7 +5,7 @@
             android:antialias="true"
             android:src="@drawable/splash_bg" />
     </item>
-    <item>
+    <!--<item>
         <color android:color="#a6000000" />
-    </item>
+    </item>-->
 </layer-list>

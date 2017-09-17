@@ -16,8 +16,9 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -45,7 +46,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  */
 
 public class Product_categoryFragment extends Fragment {
-    GridView gridview;
+    ListView listView;
     private MyDataAdapter myDataAdapter;
     private Gson gson;
     private SubProductMainPOJO subProductMainPOJO;
@@ -58,7 +59,10 @@ public class Product_categoryFragment extends Fragment {
 
         View V = inflater.inflate(R.layout.fragment_product_category, container, false);
 
-        gridview = (GridView) V.findViewById(R.id.list);
+        listView = (ListView) V.findViewById(R.id.list);
+/*
+        listView = (GridView) V.findViewById(R.id.list);
+*/
 
         gson = new Gson();
 
@@ -114,7 +118,7 @@ public class Product_categoryFragment extends Fragment {
             subProductMainPOJO = gson.fromJson(Response, SubProductMainPOJO.class);
 
             myDataAdapter = new MyDataAdapter(subProductMainPOJO.getData(), getActivity());
-            gridview.setAdapter(myDataAdapter);
+            listView.setAdapter(myDataAdapter);
             myDataAdapter.notifyDataSetChanged();
 
         } catch (Exception e) {
@@ -167,7 +171,11 @@ public class Product_categoryFragment extends Fragment {
                 viewHolder.plus = (Button) convertView.findViewById(R.id.plus);
                 viewHolder.minus = (Button) convertView.findViewById(R.id.minus);
                 viewHolder.mrp = (TextView) convertView.findViewById(R.id.mrp);
+
+                viewHolder.addtoCart = (ImageView) convertView.findViewById(R.id.addtoCart);
+/*
                 viewHolder.addtoCart = (FancyButton) convertView.findViewById(R.id.addtoCart);
+*/
                 viewHolder.holder_count = (LinearLayout) convertView.findViewById(R.id.holder_count);
 
                 convertView.setTag(viewHolder);
@@ -181,8 +189,9 @@ public class Product_categoryFragment extends Fragment {
 
                 viewHolder.product_name.setText(product_pojo.getProductName());
 
-                viewHolder.imageView.setController(IOUtils.getFrescoImageController(activity, product_pojo.getProductImage()));
-                viewHolder.imageView.setHierarchy(IOUtils.getFrescoImageHierarchy(activity));
+//                viewHolder.imageView.setController(IOUtils.getFrescoImageController(activity, product_pojo.getProductImage()));
+//                viewHolder.imageView.setHierarchy(IOUtils.getFrescoImageHierarchy(activity));
+//                viewHolder.imageView.setImageResource(getResources().getDrawable(R.drawable/**/.fruit));
                 viewHolder.quantity.setText(product_pojo.getAvailableQuantity() + " quantity");
                 viewHolder.weight.setText(product_pojo.getUnit() + product_pojo.getUnitsOfMeasurement());
                 viewHolder.price.setText("₹ " + product_pojo.getSelling_price());
@@ -465,7 +474,7 @@ public class Product_categoryFragment extends Fragment {
             TextView product_name, weight, price, count,quantity,mrp;
             SimpleDraweeView imageView;
             Button plus, minus;
-            FancyButton addtoCart;
+            ImageView addtoCart;
             LinearLayout holder_count;
         }
     }

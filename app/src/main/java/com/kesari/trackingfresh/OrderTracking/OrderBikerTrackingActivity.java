@@ -130,6 +130,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.getBackground().setAlpha(0);
 
             /*Register receiver*/
             networkUtilsReceiver = new NetworkUtilsReceiver(this);

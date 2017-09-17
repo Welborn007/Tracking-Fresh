@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.kesari.trackingfresh.Map.LocationServiceNew;
@@ -39,7 +40,9 @@ public class ForgotPassword_Activity extends AppCompatActivity implements Networ
     private NetworkUtilsReceiver networkUtilsReceiver;
 
     private EditText mobile,email;
-    private FancyButton btnSubmit;
+
+
+    private Button btnSubmit;
     private String input;
 
     boolean mobileBoolean = false;
@@ -57,10 +60,10 @@ public class ForgotPassword_Activity extends AppCompatActivity implements Networ
 
         setTitle("Forget Password");
         toolbar.setTitleTextColor(ContextCompat.getColor(ForgotPassword_Activity.this,R.color.black));
-
+        toolbar.getBackground().setAlpha(0);
         mobile = (EditText) findViewById(R.id.mobile);
         email = (EditText) findViewById(R.id.email);
-        btnSubmit = (FancyButton) findViewById(R.id.btnSubmit);
+        btnSubmit = (Button) findViewById(R.id.btnSubmit);
 
 
         mobile.setOnFocusChangeListener(new View.OnFocusChangeListener() {

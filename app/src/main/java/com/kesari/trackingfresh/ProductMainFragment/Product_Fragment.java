@@ -22,6 +22,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -130,8 +131,8 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     SearchView searchView;
     PlacesAutocompleteTextView placesAutocompleteTextView;
     TextView kilometre, GuestAddress, ETA;
-    public static RelativeLayout map_Holder;
-    LinearLayout layout_holder, product_holder;
+    public static RelativeLayout map_Holder,fragment_holder;
+    public static LinearLayout layout_holder, product_holder;
     FancyButton product_category;
 
     public static FrameLayout frameLayout;
@@ -183,9 +184,15 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
             recyclerView = (RecyclerView) V.findViewById(R.id.product_category_recyclerview);
             recyclerView.setHasFixedSize(true);
-            linearLayoutManager = new LinearLayoutManager(getActivity());
+           /* linearLayoutManager = new LinearLayoutManager(getActivity());
+            linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+*//*
             linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-            recyclerView.setLayoutManager(linearLayoutManager);
+*/
+            /*recyclerView.setLayoutManager(linearLayoutManager);*/
+            recyclerView.setHasFixedSize(true);
+
+            recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
             searchView = (SearchView) V.findViewById(R.id.searchLocation);
             placesAutocompleteTextView = (PlacesAutocompleteTextView) V.findViewById(R.id.places_autocomplete);
@@ -194,6 +201,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             ETA = (TextView) V.findViewById(R.id.ETA);
             GuestAddress = (TextView) V.findViewById(R.id.GuestAddress);
             map_Holder = (RelativeLayout) V.findViewById(R.id.map_Holder);
+            fragment_holder = (RelativeLayout) V.findViewById(R.id.fragment_holder);
             layout_holder = (LinearLayout) V.findViewById(R.id.layout_holder);
             product_holder = (LinearLayout) V.findViewById(R.id.product_holder);
             product_category = (FancyButton) V.findViewById(R.id.product_category);
@@ -255,6 +263,8 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                         public void onItemClick(View view, int position) {
 
                             frameLayout.setVisibility(View.VISIBLE);
+                            fragment_holder.setVisibility(View.VISIBLE);
+                            layout_holder.setVisibility(View.GONE);
 
                             Product_categoryFragment product_categoryFragment = new Product_categoryFragment();
 

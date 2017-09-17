@@ -47,6 +47,7 @@ public class TKWalletActivity extends AppCompatActivity implements NetworkUtilsR
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+            toolbar.getBackground().setAlpha(0);
 
             /*Register receiver*/
             networkUtilsReceiver = new NetworkUtilsReceiver(this);

@@ -121,7 +121,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
     private ViewGroup mSnackbarContainer;
     CircleImageView profile_image;
     //ScheduledExecutorService scheduleTaskExecutor;
-    TextView walletAmount;
+    TextView walletAmount,menuTextView,mapTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,6 +153,31 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             logo = (ImageView) findViewById(R.id.logo);
             filter = (ImageView) findViewById(R.id.filter);
             map_View = (ImageView) findViewById(R.id.map_View);
+            mapTextView = (TextView) findViewById(R.id.mapTextView);
+            menuTextView = (TextView) findViewById(R.id.menuTextView);
+
+            menuTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    menuTextView.setBackgroundColor(getResources().getColor(R.color.MoneyGreen));
+                    mapTextView.setBackgroundColor(getResources().getColor(R.color.whitegray));
+                    Product_Fragment.map_Holder.setVisibility(View.GONE);
+                    Product_Fragment.frameLayout.setVisibility(View.VISIBLE);
+                    Product_Fragment.product_holder.setVisibility(View.VISIBLE);
+                }
+            });
+
+
+            mapTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mapTextView.setBackgroundColor(getResources().getColor(R.color.MoneyGreen));
+                    menuTextView.setBackgroundColor(getResources().getColor(R.color.whitegray));
+                    Product_Fragment.product_holder.setVisibility(View.GONE);
+
+                    Product_Fragment.map_Holder.setVisibility(View.VISIBLE);
+                    Product_Fragment.frameLayout.setVisibility(View.GONE);}
+            });
 
             getProfileDataOnCreate();
 

@@ -64,6 +64,7 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.getBackground().setAlpha(0);
 
             gson = new Gson();
 

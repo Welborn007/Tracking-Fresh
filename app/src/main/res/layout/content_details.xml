@@ -24,23 +24,70 @@
             <View
                 android:background="#ccc"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"/>
+                android:layout_height="1dp"
+                android:visibility="gone"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/addFavourateTextView"
+                    android:text="ADD TO FAVOURATE"
+                    android:gravity="center_vertical"
+                    android:background="@color/whitegray"
+                    android:textColor="@color/Gray"
+                    android:textSize="14dp"
+                    android:textStyle="bold"
+                    android:drawableLeft="@drawable/star"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    />
+                <TextView
+                    android:id="@+id/addtoCart"
+                    android:text="ADD TO CART"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size"
+                    android:textStyle="bold"
+                    android:background="@color/MoneyGreen"
+                    android:padding="10dp"
+                    android:gravity="center_vertical"
+
+                    android:drawableLeft="@drawable/cart"
+                    android:drawablePadding="5dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/price"
+                    android:id="@+id/price1"
                     android:text="Price Rs. 25"
                     android:layout_gravity="center"
                     android:textColor="@color/Button_Color"
                     android:textSize="@dimen/text_size18"
                     android:textStyle="bold"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/mrp"
@@ -74,7 +121,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <mehdi.sakout.fancybuttons.FancyButton
+               <!-- <mehdi.sakout.fancybuttons.FancyButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
@@ -84,7 +131,8 @@
                     fancy:fb_focusColor="@color/colorPrimary"
                     fancy:fb_radius="5dp"
                     fancy:fb_textColor="@color/white"
-                    fancy:fb_textSize="18sp" />
+                    fancy:fb_textSize="18sp"
+                    android:visibility="gone"/>-->
 
                 <ImageView
                     android:id="@+id/offersImage"
@@ -246,7 +294,9 @@
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView"
+                    />
 
                 <TextView
                     android:id="@+id/package_contents"

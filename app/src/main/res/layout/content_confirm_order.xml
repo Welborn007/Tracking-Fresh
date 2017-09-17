@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:background="@android:color/white"
+    android:background="@drawable/background_overlay"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
     tools:showIn="@layout/activity_confirm_order"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -36,7 +36,7 @@
 
             <TextView
                 android:text="Order Placed By : "
-                android:textColor="@color/Gray"
+                android:textColor="@color/white"
                 android:textSize="@dimen/text_size14"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"/>
@@ -60,7 +60,7 @@
 
             <TextView
                 android:text="Order Status : "
-                android:textColor="@color/Gray"
+                android:textColor="@color/white"
                 android:textSize="@dimen/text_size14"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"/>
@@ -168,7 +168,7 @@
             android:layout_height="match_parent"
             android:id="@+id/recyclerView"
             android:scrollbars="vertical"
-            android:background="@color/LightGray">
+            >
         </android.support.v7.widget.RecyclerView>
 
     </LinearLayout>
@@ -189,7 +189,7 @@
 
             <TextView
                 android:text="Delivery Charge "
-                android:textColor="@color/Gray"
+                android:textColor="@color/white"
                 android:textSize="@dimen/text_size14"
                 android:layout_gravity="left"
                 android:layout_width="wrap_content"
@@ -212,7 +212,7 @@
 
             <TextView
                 android:text="Order Total "
-                android:textColor="@color/Gray"
+                android:textColor="@color/white"
                 android:textSize="@dimen/text_size14"
                 android:layout_gravity="left"
                 android:layout_width="wrap_content"

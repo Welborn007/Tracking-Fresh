@@ -94,4 +94,9 @@
     <string name="password_header">Password</string>
     <string name="forgot_password"><u>Forgot Password</u></string>
     <string name="new_register"><u> Sign Up</u></string>
+    <string name="repeat"><u> Repeat</u></string>
+    <string name="repeat_sms"><u> Resend SMS</u></string>
+    <string name="repeat_call"><u> Call Me</u></string>
+    <string name="SMS_verification">Enter Code</string>
+    <string name="from_sms">from sms</string>
 </resources>

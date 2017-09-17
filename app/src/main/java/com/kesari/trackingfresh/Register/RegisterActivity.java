@@ -66,6 +66,7 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.getBackground().setAlpha(0);
 
             setTitle("Register");
             toolbar.setTitleTextColor(ContextCompat.getColor(RegisterActivity.this,R.color.black));

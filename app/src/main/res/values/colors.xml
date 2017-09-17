@@ -14,7 +14,8 @@
     <color name="teal">#26A69A</color>
     <color name="Blue">#2196f3</color>
     <color name="Gray">#757575</color>
-    <color name="MoneyGreen">#4CAF50</color>
+    <color name="whitegray">#EFEEF4</color>
+    <color name="MoneyGreen">#8DC33A</color>
     <color name="bluegray100">#CFD8DC</color>
 
     <color name="LightGray">#E0E0E0</color>
@@ -123,7 +124,10 @@
     <!--Client colors-->
     <color name="mint">#B3DBC0</color>
     <color name="red">#FE0000</color>
+    <color name="porcelain">#a6000000</color>
+<!--
     <color name="porcelain">#FDF6F6</color>
+-->
     <color name="fresh_blue">#67BACA</color>
 
     <color name="arrowColor">#A3A2A2</color>

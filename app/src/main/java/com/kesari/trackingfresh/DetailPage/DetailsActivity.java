@@ -69,7 +69,8 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
     Button plus, minus;
     FancyButton  delete;
     LinearLayout holder_count;
-    FancyButton gotoCart, addtoCart, checkOut;
+    FancyButton gotoCart,  checkOut;
+    TextView addtoCart;
     TextView price, percent, disclaimer, related_searches, package_contents, product_description, product_category, title_productname;
     private String TAG = this.getClass().getSimpleName();
     private String productDescription = "";
@@ -127,6 +128,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             toolbar.setTitleTextColor(ContextCompat.getColor(DetailsActivity.this,R.color.black));
+            toolbar.getBackground().setAlpha(0);
 
             /*Register receiver*/
             networkUtilsReceiver = new NetworkUtilsReceiver(this);
@@ -272,7 +274,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             title_productname = (TextView) findViewById(R.id.title_productname);
             Share = (FancyButton) findViewById(R.id.Share);
 
-            addtoCart = (FancyButton) findViewById(R.id.addtoCart);
+            addtoCart = (TextView) findViewById(R.id.addtoCart);
             holder_count = (LinearLayout) findViewById(R.id.holder_count);
 
             mfgDateTxt = (TextView) findViewById(R.id.mfgDateTxt);

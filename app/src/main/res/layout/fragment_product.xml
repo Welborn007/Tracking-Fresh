@@ -20,7 +20,8 @@
         android:id="@+id/fragment_holder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/layout_holder">
+        android:layout_above="@+id/layout_holder"
+        android:visibility="gone">
 
         <RelativeLayout
             android:id="@+id/map_Holder"
@@ -204,7 +205,8 @@
         <FrameLayout
             android:id="@+id/fragment_data"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            >
 
         </FrameLayout>
 
@@ -217,13 +219,14 @@
         android:elevation="5dp"
         android:background="@drawable/radius_white"
         android:layout_margin="5dp"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
 
         <RelativeLayout
             android:background="@drawable/radius_mint"
             android:layout_width="match_parent"
-            android:layout_height="35dp">
+            android:layout_height="35dp"
+            android:visibility="gone">
 
             <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/product_category"
@@ -237,7 +240,8 @@
                 fancy:fb_focusColor="#2e5071"
                 fancy:fb_text="Product Category"
                 fancy:fb_textColor="@color/white"
-                fancy:fb_textSize="18sp" />
+                fancy:fb_textSize="18sp"
+                />
 
             <RelativeLayout
                 android:id="@+id/arrowHolder"

@@ -83,6 +83,7 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.getBackground().setAlpha(0);
 
             myApplication = (MyApplication) getApplicationContext();
 

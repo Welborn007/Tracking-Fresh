@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:background="@android:color/white"
+    android:background="@drawable/background_overlay"
     tools:showIn="@layout/activity_tkwallet"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:layout_height="match_parent">
@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:text="Total Balance"
             android:layout_gravity="center"
-            android:textColor="@color/black"
+            android:textColor="@color/MoneyGreen"
             android:textSize="@dimen/text_size"
             />
 
@@ -38,7 +38,7 @@
                 android:text="₹"
                 android:textStyle="bold"
                 android:layout_gravity="center"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="28sp"
                 />
 
@@ -50,7 +50,7 @@
                 android:textStyle="bold"
                 android:layout_marginLeft="10sp"
                 android:layout_gravity="center"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="28sp"
                 />
 
@@ -95,7 +95,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:layout_gravity="center"
-                android:textColor="@color/fresh_blue"
+                android:textColor="@color/MoneyGreen"
                 android:textSize="@dimen/text_size"
                 />
 

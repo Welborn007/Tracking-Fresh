@@ -111,6 +111,8 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.getBackground().setAlpha(0);
+
 
             myApplication = (MyApplication) getApplicationContext();
             gson = new Gson();

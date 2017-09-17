@@ -5,7 +5,6 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/white"
     tools:showIn="@layout/activity_referral_code"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:layout_height="match_parent">
@@ -52,7 +51,7 @@
                     android:text="Refferral Code"
                     android:layout_marginLeft="10dp"
                     android:layout_gravity="center"
-                    android:textColor="@color/Gray"
+                    android:textColor="@color/white"
                     android:textSize="22sp"
                     />
 
