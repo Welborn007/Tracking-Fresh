@@ -52,12 +52,9 @@ import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.VehicleNearestRoute.NearestRouteMainPOJO;
 import com.kesari.trackingfresh.VehicleRoute.RouteActivity;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
 
@@ -68,6 +65,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 public class PaymentDetails extends AppCompatActivity implements PaymentResultListener,NetworkUtilsReceiver.NetworkResponseInt{
@@ -223,7 +221,11 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                     }
                     else
                     {
-                        Toast.makeText(PaymentDetails.this, "Enter Promocode!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(PaymentDetails.this, "Enter Promocode!", Toast.LENGTH_SHORT).show();
+
+                        new SweetAlertDialog(PaymentDetails.this)
+                                .setTitleText("Enter Promocode!")
+                                .show();
                     }
                 }
             });
@@ -268,7 +270,11 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                         }
                         else
                         {
-                            Toast.makeText(PaymentDetails.this, "Select Payment Mode!!", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(PaymentDetails.this, "Select Payment Mode!!", Toast.LENGTH_SHORT).show();
+
+                            new SweetAlertDialog(PaymentDetails.this)
+                                    .setTitleText("Select Payment Mode!!")
+                                    .show();
                         }
                     }
                 /*Intent intent = new Intent(PaymentDetails.this, OrderReview.class);
@@ -367,7 +373,11 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                     }catch (Exception e)
                     {
                         //Log.d("Error", e.getMessage());
-                        FireToast.customSnackbar(PaymentDetails.this, "Oops Something Went Wrong!!", "");
+                        //FireToast.customSnackbar(PaymentDetails.this, "Oops Something Went Wrong!!", "");
+
+                        new SweetAlertDialog(PaymentDetails.this)
+                                .setTitleText("Oops Something Went Wrong!!")
+                                .show();
                     }
                 }
             })
@@ -405,16 +415,27 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
             String[] error = errorPOJO.getErrors();
             String errorString = error[0];
 
-            Toast.makeText(context, errorString, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context, errorString, Toast.LENGTH_SHORT).show();
 
+            new SweetAlertDialog(PaymentDetails.this)
+                    .setTitleText(errorString)
+                    .show();
         }
         else if(errorPOJO.getMessage() != null)
         {
-            Toast.makeText(context, errorPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context, errorPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+
+            new SweetAlertDialog(PaymentDetails.this)
+                    .setTitleText(errorPOJO.getMessage())
+                    .show();
         }
         else
         {
-            Toast.makeText(context, "Oops Something Went Wrong!!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context, "Oops Something Went Wrong!!", Toast.LENGTH_SHORT).show();
+
+            new SweetAlertDialog(PaymentDetails.this)
+                    .setTitleText("Oops Something Went Wrong!!")
+                    .show();
         }
 
 
@@ -908,7 +929,11 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
             }
             else
             {
-                FireToast.customSnackbar(PaymentDetails.this, "Order Failed!!", "");
+                //FireToast.customSnackbar(PaymentDetails.this, "Order Failed!!", "");
+
+                new SweetAlertDialog(PaymentDetails.this)
+                        .setTitleText("Order Failed!!")
+                        .show();
             }
 
         } catch (Exception e) {
@@ -1149,7 +1174,11 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
             }
             else
             {
-                Toast.makeText(this, "Payment Failed", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Payment Failed", Toast.LENGTH_SHORT).show();
+
+                new SweetAlertDialog(PaymentDetails.this)
+                        .setTitleText("Payment Failed")
+                        .show();
             }
 
 
@@ -1199,13 +1228,26 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
         try {
 
             if (!NetworkUtils.isNetworkConnectionOn(this)) {
-                FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+                /*FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
                     @Override
                     public void onActionClicked(Snackbar snackbar) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
-                return;
+                return;*/
+
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
 
         }catch (Exception e)

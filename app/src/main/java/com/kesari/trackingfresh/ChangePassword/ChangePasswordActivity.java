@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.DashBoard.DashboardActivity;
@@ -22,12 +21,9 @@ import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,6 +31,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 public class ChangePasswordActivity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt{
@@ -183,11 +180,19 @@ public class ChangePasswordActivity extends AppCompatActivity implements Network
             if(message.equalsIgnoreCase("Password Changed Successfull"))
             {
                 DashboardActivity.LogOutFunc(ChangePasswordActivity.this);
-                Toast.makeText(ChangePasswordActivity.this, "Password Changed!!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ChangePasswordActivity.this, "Password Changed!!", Toast.LENGTH_SHORT).show();
+
+                new SweetAlertDialog(ChangePasswordActivity.this)
+                        .setTitleText("Password Changed!!")
+                        .show();
             }
             else if(message.equalsIgnoreCase("Password Not Matched"))
             {
-                Toast.makeText(ChangePasswordActivity.this, message, Toast.LENGTH_SHORT).show();
+               //Toast.makeText(ChangePasswordActivity.this, message, Toast.LENGTH_SHORT).show();
+
+                new SweetAlertDialog(ChangePasswordActivity.this)
+                        .setTitleText(message)
+                        .show();
             }
 
         }catch (Exception e)
@@ -229,13 +234,26 @@ public class ChangePasswordActivity extends AppCompatActivity implements Network
         try {
 
             if (!NetworkUtils.isNetworkConnectionOn(this)) {
-                FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+                /*FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
                     @Override
                     public void onActionClicked(Snackbar snackbar) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
-                return;
+                return;*/
+
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
 
         }catch (Exception e)

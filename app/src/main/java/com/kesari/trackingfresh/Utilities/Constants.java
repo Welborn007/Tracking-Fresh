@@ -15,110 +15,122 @@ public interface Constants {
     String LIVEIP = "52.66.75.55:8000";
 
     //Login API
-    String LoginActivityAPI = "http://" + GaneshIP + "/api/customer/login";
+    String LoginActivityAPI = "http://" + LIVEIP + "/api/customer/login";
 
     //Register API
-    String RegisterActivityAPI = "http://" + GaneshIP + "/api/customer/";
+    String RegisterActivityAPI = "http://" + LIVEIP + "/api/customer/";
 
     //Driver Location API - Product_Fragment
-    //String LocationAPI = "http://"+ GaneshIP +"/api/vehicle_positions/by_driver_id/dr001";
+    //String LocationAPI = "http://"+ LIVEIP +"/api/vehicle_positions/by_driver_id/dr001";
 
     //Nearest Vehicle Check
-    String CheckNearestVehicle = "http://" + GaneshIP + "/api/vehicle_positions/nearest/";
+    String CheckNearestVehicle = "http://" + LIVEIP + "/api/vehicle_positions/nearest/";
 
     //Product Category
-    String Product_Category = "http://" + GaneshIP + "/api/productCategory/vehicle/list?vehicleId=";
+    String Product_Category = "http://" + LIVEIP + "/api/productCategory/vehicle/list?vehicleId=";
 
     //Product Desc
-    String Product_Desc = "http://" + GaneshIP + "/api/product/byCategory/";
+    String Product_Desc = "http://" + LIVEIP + "/api/product/byCategory/";
 
     //Verify Mobile No. // Params - User ID // Get String Request
-    String VerifyMobile = "http://" + GaneshIP + "/api/customer/isMobile/";
+    String VerifyMobile = "http://" + LIVEIP + "/api/customer/isMobile/";
 
     //Send OTP // Params - mobileNo , User ID // JSON Object Request
-    String SendOTP = "http://" + GaneshIP + "/api/OTP/sendOtp/";
+    String SendOTP = "http://" + LIVEIP + "/api/OTP/sendOtp/";
 
     //Match OTP // Params - otp , mobileNo, User ID
-    String MatchOTP  = "http://" + GaneshIP + "/api/OTP/matchOtp";
+    String MatchOTP  = "http://" + LIVEIP + "/api/OTP/matchOtp";
 
     //Profile
-    String Profile = "http://" + GaneshIP +"/api/customer/profile";
+    String Profile = "http://" + LIVEIP +"/api/customer/profile";
 
     //Profile Edit
-    String ProfileEdit = "http://" + GaneshIP + "/api/customer/";
+    String ProfileEdit = "http://" + LIVEIP + "/api/customer/";
 
     //Profile Image Upload
-    String ProfileImagePath = "http://" + GaneshIP + "/api/upload";
+    String ProfileImagePath = "http://" + LIVEIP + "/api/upload";
 
     //Add Delivery Address
-    String NewAddress = "http://" + GaneshIP + "/api/address/add";
+    String NewAddress = "http://" + LIVEIP + "/api/address/add";
 
     //Fetch Address
-    String FetchAddress =  "http://" + GaneshIP + "/api/address/";
+    String FetchAddress =  "http://" + LIVEIP + "/api/address/";
 
     //Update Address
-    String UpdateAddress = "http://" + GaneshIP + "/api/address/update/";
+    String UpdateAddress = "http://" + LIVEIP + "/api/address/update/";
 
     //Delete Address
-    String DeleteAddress = "http://" + GaneshIP + "/api/address/delete/";
+    String DeleteAddress = "http://" + LIVEIP + "/api/address/delete/";
 
     //Get Fare
-    String GetFare = "http://" + GaneshIP + "/api/order/getfare";
+    String GetFare = "http://" + LIVEIP + "/api/order/getfare";
 
     //Order List From Cart
-    String AddOrder = "http://" + GaneshIP + "/api/order/add";
+    String AddOrder = "http://" + LIVEIP + "/api/order/add";
 
     //Get Order List
-    String OrderList = "http://" + GaneshIP + "/api/order/orderList";
+    String OrderList = "http://" + LIVEIP + "/api/order/orderList";
 
     //Update Order after payment Put Request
-    String UpdateOrder = "http://" + GaneshIP + "/api/order/update";
+    String UpdateOrder = "http://" + LIVEIP + "/api/order/update";
 
     //get Order details from order id
-    String OrderDetails = "http://"+ GaneshIP +"/api/order/";
+    String OrderDetails = "http://"+ LIVEIP +"/api/order/";
 
     //Wallet All Transactions
-    String AllWalletTransactions = "http://"+ GaneshIP + "/api/userWallet/";
+    String AllWalletTransactions = "http://"+ LIVEIP + "/api/userWallet/";
 
     //Wallet Paid Transactions
-    String PaidWalletTransactions = "http://"+ GaneshIP + "/api/userWallet/?operation=minus";
+    String PaidWalletTransactions = "http://"+ LIVEIP + "/api/userWallet/?operation=minus";
 
     //Wallet Received Transactions
-    String ReceivedWalletTransactions = "http://"+ GaneshIP + "/api/userWallet/?operation=add";
+    String ReceivedWalletTransactions = "http://"+ LIVEIP + "/api/userWallet/?operation=add";
 
     //Check Promocode Validity
-    String PromocodeValidity = "http://"+ GaneshIP + "/api/promoCode/validate";
+    String PromocodeValidity = "http://"+ LIVEIP + "/api/promoCode/validate";
 
     //TODO Forget Password
-    String ForgetPassword = "http://"+ GaneshIP + "/api/customer/forgotPassword";
+    String ForgetPassword = "http://"+ LIVEIP + "/api/customer/forgotPassword";
 
     //Verify Duplicate Mobile No
-    String VerifyDuplicate = "http://"+ GaneshIP + "/api/customer/mobile/";
+    String VerifyDuplicate = "http://"+ LIVEIP + "/api/customer/mobile/";
 
     //Cancellation / Rejection reasons
-    String Reasons = "http://"+ GaneshIP + "/api/order/reason?reason=";
+    String Reasons = "http://"+ LIVEIP + "/api/order/reason?reason=";
 
     //Send Firebase Token
-    String FirebaseToken =  "http://"+ GaneshIP + "/api/customer/fbt";
+    String FirebaseToken =  "http://"+ LIVEIP + "/api/customer/fbt";
 
     //Vehicle Route
-    String VehicleRoute = "http://"+ GaneshIP + "/api/customer/getVehicleRoutes/";
+    String VehicleRoute = "http://"+ LIVEIP + "/api/customer/getVehicleRoutes/";
 
     //Vehicle Socket Location
 
-    String VehicleLiveLocation = "http://" + GaneshIP;
+    String VehicleLiveLocation = "http://" + LIVEIP;
 
     //Biker Socket Location
 
-    String BikerLiveLocation = "http://" + GaneshIP;
+    String BikerLiveLocation = "http://" + LIVEIP;
 
     //Vehicle Nearest Route
 
-    String VehicleNearestRoute = "http://"+ GaneshIP +  "/api/vehicleTimeTable/nearestRoute";
+    String VehicleNearestRoute = "http://"+ LIVEIP +  "/api/vehicleTimeTable/nearestRoute";
 
     //Change Password
 
-    String changePassword = "http://"+ GaneshIP + "/api/customer/changePassword";
+    String changePassword = "http://"+ LIVEIP + "/api/customer/changePassword";
+
+    //Offer Products
+
+    String ProductOffers = "http://"+ LIVEIP + "/api/productRate/offer?vehicleId=";
+
+    //Notification List
+
+    String NotificationList = "http://"+ LIVEIP + "/api/customer/pushNotifications";
+
+    //Send Voice OTP
+
+    String VoiceOTP = "http://"+ LIVEIP + "/api/OTP/sendVoiceOtp";
 
     // Milliseconds per second
     public static final int MILLISECONDS_PER_SECOND = 1000;

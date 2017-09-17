@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.kesari.trackingfresh.DeliveryAddress.AddressPOJO;
 import com.kesari.trackingfresh.DeliveryAddress.UpdateDeliveryAddress.UpdateDeliveryAddressActivity;
@@ -27,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
@@ -126,7 +126,11 @@ public class UpdateSettingsAddress_RecyclerAdpater extends RecyclerView.Adapter<
                     }
                     else
                     {
-                        Toast.makeText(context, "Address already set default", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(context, "Address already set default", Toast.LENGTH_SHORT).show();
+
+                        new SweetAlertDialog(context)
+                                .setTitleText("Address already set default")
+                                .show();
                     }
                 }
             });

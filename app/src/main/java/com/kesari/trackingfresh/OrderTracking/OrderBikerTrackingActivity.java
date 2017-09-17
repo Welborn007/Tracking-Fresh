@@ -55,11 +55,8 @@ import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.VehicleNearestRoute.NearestRouteMainPOJO;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -77,6 +74,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -288,13 +286,26 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
             map.setMyLocationEnabled(true);
 
             if (!NetworkUtils.isNetworkConnectionOn(OrderBikerTrackingActivity.this)) {
-                FireToast.customSnackbarWithListner(OrderBikerTrackingActivity.this, "No internet access", "Settings", new ActionClickListener() {
+                /*FireToast.customSnackbarWithListner(OrderBikerTrackingActivity.this, "No internet access", "Settings", new ActionClickListener() {
                     @Override
                     public void onActionClicked(Snackbar snackbar) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
-                return;
+                return;*/
+
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
             else
             {
@@ -1148,13 +1159,26 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
         try {
 
             if (!NetworkUtils.isNetworkConnectionOn(this)) {
-                FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+                /*FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
                     @Override
                     public void onActionClicked(Snackbar snackbar) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
-                return;
+                return;*/
+
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
 
         }catch (Exception e)

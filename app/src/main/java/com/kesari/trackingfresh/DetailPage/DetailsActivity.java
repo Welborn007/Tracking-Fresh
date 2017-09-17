@@ -22,9 +22,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
@@ -42,22 +42,22 @@ import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 import static com.kesari.trackingfresh.Utilities.IOUtils.setBadgeCount;
@@ -96,6 +96,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
     private String availableQuantity = "";
     private String brand = "";
     private String MRP = "";
+    private String Offer = "";
     private NetworkUtilsReceiver networkUtilsReceiver;
     MyApplication myApplication;
     List<AddressPOJO> addressArrayList = new ArrayList<>();
@@ -105,6 +106,14 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
     public static int mNotificationsCount = 0;
     // ScheduledExecutorService scheduleTaskExecutor;
     FancyButton Share;
+    ImageView offersImage;
+
+    private String mfgDate = "";
+    private String expDate = "";
+    private String qc = "";
+    private String batchNo = "";
+
+    TextView mfgDateTxt,expiryDateTxt,qcCertTxt,batchNoTxt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,6 +167,12 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             brand = getIntent().getStringExtra("brand");
             MRP = getIntent().getStringExtra("MRP");
             productImages = getIntent().getStringExtra("productImages");
+            Offer = getIntent().getStringExtra("Offer");
+
+            mfgDate = getIntent().getStringExtra("mfgDate");
+            expDate = getIntent().getStringExtra("expDate");
+            qc = getIntent().getStringExtra("qc");
+            batchNo = getIntent().getStringExtra("batchNo");
 
             Log.i("ImageList",productImages);
 
@@ -165,6 +180,16 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             //Image Slider
             mDemoSlider = (SliderLayout) findViewById(R.id.slider);
             mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Default);
+            offersImage = (ImageView) findViewById(R.id.offersImage);
+
+            if(Offer.equalsIgnoreCase("true"))
+            {
+                offersImage.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                offersImage.setVisibility(View.GONE);
+            }
 
            if(!productImages.isEmpty())
             {
@@ -249,6 +274,32 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
 
             addtoCart = (FancyButton) findViewById(R.id.addtoCart);
             holder_count = (LinearLayout) findViewById(R.id.holder_count);
+
+            mfgDateTxt = (TextView) findViewById(R.id.mfgDateTxt);
+            expiryDateTxt = (TextView) findViewById(R.id.expiryDateTxt);
+            qcCertTxt = (TextView) findViewById(R.id.qcCertTxt);
+            batchNoTxt = (TextView) findViewById(R.id.batchNoTxt);
+
+            SimpleDateFormat sdfInput = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            //SimpleDateFormat sdfOutput = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
+            SimpleDateFormat sdfOutput = new SimpleDateFormat("dd-MM-yyyy");
+
+            if(!mfgDate.isEmpty())
+            {
+                Date d = sdfInput.parse(mfgDate);
+                String formatteddob = sdfOutput.format(d);
+                mfgDateTxt.setText(formatteddob);
+            }
+
+            if(!expDate.isEmpty())
+            {
+                Date d = sdfInput.parse(expDate);
+                String formatteddob = sdfOutput.format(d);
+                expiryDateTxt.setText(formatteddob);
+            }
+
+            qcCertTxt.setText(qc);
+            batchNoTxt.setText(batchNo);
 
             //Setting value
             product_description.setText(productDetails);
@@ -432,11 +483,19 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
                         if (!myApplication.getProductsArraylist().isEmpty()) {
                             fetchUserAddress();
                         } else {
-                            Toast.makeText(DetailsActivity.this, "No Items in Cart!!", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(DetailsActivity.this, "No Items in Cart!!", Toast.LENGTH_SHORT).show();
+
+                            new SweetAlertDialog(DetailsActivity.this)
+                                    .setTitleText("No Items in Cart!!")
+                                    .show();
                         }
                     }catch (Exception e)
                     {
-                        Toast.makeText(DetailsActivity.this, "No Items in Cart!!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(DetailsActivity.this, "No Items in Cart!!", Toast.LENGTH_SHORT).show();
+
+                        new SweetAlertDialog(DetailsActivity.this)
+                                .setTitleText("No Items in Cart!!")
+                                .show();
                     }
                 }
             });
@@ -588,13 +647,26 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
         try {
 
             if (!NetworkUtils.isNetworkConnectionOn(this)) {
-                FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+                /*FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
                     @Override
                     public void onActionClicked(Snackbar snackbar) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
-                return;
+                return;*/
+
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
 
         } catch (Exception e) {

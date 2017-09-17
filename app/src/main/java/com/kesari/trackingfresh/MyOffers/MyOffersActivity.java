@@ -1,16 +1,27 @@
-package com.kesari.trackingfresh.ProductSubFragment;
+package com.kesari.trackingfresh.MyOffers;
 
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.LayerDrawable;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.provider.Settings;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -18,92 +29,154 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.AddToCart.AddCart_model;
+import com.kesari.trackingfresh.Cart.AddToCart;
 import com.kesari.trackingfresh.DetailPage.DetailsActivity;
+import com.kesari.trackingfresh.Map.LocationServiceNew;
+import com.kesari.trackingfresh.ProductSubFragment.SubProductMainPOJO;
+import com.kesari.trackingfresh.ProductSubFragment.SubProductSubPOJO;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.network.MyApplication;
+import com.kesari.trackingfresh.network.NetworkUtils;
+import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import mehdi.sakout.fancybuttons.FancyButton;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
+import static com.kesari.trackingfresh.Utilities.IOUtils.setBadgeCount;
 
-/**
- * Created by kesari on 11/04/17.
- */
+public class MyOffersActivity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt{
 
-public class Product_categoryFragment extends Fragment {
+    private String TAG = this.getClass().getSimpleName();
+    private NetworkUtilsReceiver networkUtilsReceiver;
+
+    public RecyclerView.Adapter adapterOrders;
+    public RecyclerView recListOffers;
+    public LinearLayoutManager Orders;
+    public Gson gson;
+    MyApplication myApplication;
+    public static int mNotificationsCount = 0;
+
+    private  SwipeRefreshLayout swipeContainer;
+    private SubProductMainPOJO subProductMainPOJO;
+    public  RelativeLayout relativeLayout;
+    public  TextView valueTV;
+
     GridView gridview;
     private MyDataAdapter myDataAdapter;
-    private Gson gson;
-    private SubProductMainPOJO subProductMainPOJO;
-    MyApplication myApplication;
-    private String TAG = this.getClass().getSimpleName();
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_my_offers);
 
-        View V = inflater.inflate(R.layout.fragment_product_category, container, false);
+        try
+        {
 
-        gridview = (GridView) V.findViewById(R.id.list);
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        gson = new Gson();
+            gson = new Gson();
 
-        return V;
+            recListOffers = (RecyclerView) findViewById(R.id.recyclerView);
+
+            recListOffers.setHasFixedSize(true);
+            Orders = new LinearLayoutManager(MyOffersActivity.this);
+            Orders.setOrientation(LinearLayoutManager.VERTICAL);
+            recListOffers.setLayoutManager(Orders);
+
+            relativeLayout = (RelativeLayout) findViewById(R.id.relativelay_reclview);
+            gridview = (GridView) findViewById(R.id.list);
+
+            swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+            // Setup refresh listener which triggers new data loading
+            swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    // Your code to refresh the list here.
+                    // Make sure you call swipeContainer.setRefreshing(false)
+                    // once the network request has completed successfully.
+                    getOffersList(MyOffersActivity.this);
+
+                }
+            });
+            // Configure the refreshing colors
+            swipeContainer.setColorSchemeResources(R.color.colorAccent,
+                    android.R.color.holo_green_light,
+                    android.R.color.holo_orange_light,
+                    android.R.color.holo_red_light);
+
+
+            /*Register receiver*/
+            networkUtilsReceiver = new NetworkUtilsReceiver(this);
+            registerReceiver(networkUtilsReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
+            final LocationManager locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+
+            if ( !locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) )
+            {
+                IOUtils.buildAlertMessageNoGps(MyOffersActivity.this);
+            }
+            else
+            {
+                if (!IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
+                    // LOCATION SERVICE
+                    startService(new Intent(this, LocationServiceNew.class));
+                    Log.e(TAG, "Location service is already running");
+                }
+            }
+
+            getOffersList(MyOffersActivity.this);
+
+            myApplication = (MyApplication) getApplicationContext();
+            if(myApplication.getProductsArraylist() != null)
+            {
+                updateNotificationsBadge(myApplication.getProductsArraylist().size());
+            }
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void getOffersList(final Context context)
+    {
+        try
+        {
 
-        getProductData();
-
-        myApplication = (MyApplication) getApplicationContext();
-    }
-
-
-    public void getProductData() {
-
-        try {
-
-            Bundle args = getArguments();
-
-            String category_id = args.getString("category_id");
-
-            Log.i("Subcategory_url", Constants.Product_Desc + "?categoryId=" + category_id + "&vehicleId=" + SharedPrefUtil.getNearestRouteMainPOJO(getActivity()).getData().get(0).getVehicleId());
-
-            String URL = Constants.Product_Desc + "?categoryId=" + category_id + "&vehicleId=" + SharedPrefUtil.getNearestRouteMainPOJO(getActivity()).getData().get(0).getVehicleId();
+            String url = Constants.ProductOffers + SharedPrefUtil.getNearestRouteMainPOJO(MyOffersActivity.this).getData().get(0).getVehicleId();
 
             IOUtils ioUtils = new IOUtils();
 
             Map<String, String> params = new HashMap<String, String>();
-            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(getActivity()));
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(context));
 
-            ioUtils.getGETStringRequestHeader(getActivity(), URL, params, new IOUtils.VolleyCallback() {
+            ioUtils.getGETStringRequestHeader(context, url , params , new IOUtils.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
-                    Log.i("product_category", result);
+                    Log.d("OffersList", result.toString());
+
+                    swipeContainer.setRefreshing(false);
 
                     getProductDataResponse(result);
                 }
             });
 
-
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.i("OffersList", e.getMessage());
         }
     }
 
@@ -112,13 +185,139 @@ public class Product_categoryFragment extends Fragment {
         try {
 
             subProductMainPOJO = gson.fromJson(Response, SubProductMainPOJO.class);
+            valueTV = new TextView(MyOffersActivity.this);
 
-            myDataAdapter = new MyDataAdapter(subProductMainPOJO.getData(), getActivity());
-            gridview.setAdapter(myDataAdapter);
-            myDataAdapter.notifyDataSetChanged();
+            if(subProductMainPOJO.getData().isEmpty())
+            {
+                myDataAdapter = new MyDataAdapter(subProductMainPOJO.getData(), MyOffersActivity.this);
+                gridview.setAdapter(myDataAdapter);
+                myDataAdapter.notifyDataSetChanged();
+
+                gridview.setVisibility(View.GONE);
+                relativeLayout.setVisibility(View.VISIBLE);
+                relativeLayout.removeAllViews();
+                valueTV.setText("No Offers Found!!!");
+                valueTV.setGravity(Gravity.CENTER);
+                valueTV.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+                ((RelativeLayout) relativeLayout).addView(valueTV);
+
+            }
+            else
+            {
+                relativeLayout.setVisibility(View.GONE);
+                gridview.setVisibility(View.VISIBLE);
+
+                myDataAdapter = new MyDataAdapter(subProductMainPOJO.getData(), MyOffersActivity.this);
+                gridview.setAdapter(myDataAdapter);
+                myDataAdapter.notifyDataSetChanged();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_add_tocart, menu);
+
+        MenuItem item = menu.findItem(R.id.menu_hot);
+        LayerDrawable icon = (LayerDrawable) item.getIcon();
+
+        setBadgeCount(this, icon, mNotificationsCount);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        invalidateOptionsMenu();
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_hot:
+                Intent intent = new Intent(MyOffersActivity.this, AddToCart.class);
+                startActivity(intent);
+                finish();
+                return true;
+
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public static void updateNotificationsBadge(int count) {
+        mNotificationsCount = count;
+
+        // force the ActionBar to relayout its MenuItems.
+        // onCreateOptionsMenu(Menu) will be called again.
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        try {
+            unregisterReceiver(networkUtilsReceiver);
+            //scheduleTaskExecutor.shutdown();
+
+            if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
+                // LOCATION SERVICE
+                stopService(new Intent(this, LocationServiceNew.class));
+                Log.e(TAG, "Location service is stopped");
+            }
+
+        }catch (Exception e)
+        {
+            Log.i(TAG,e.getMessage());
+        }
+    }
+
+
+    @Override
+    public void NetworkOpen() {
+
+    }
+
+    @Override
+    public void NetworkClose() {
+
+        try {
+
+            if (!NetworkUtils.isNetworkConnectionOn(this)) {
+                /*FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+                    @Override
+                    public void onActionClicked(Snackbar snackbar) {
+                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                    }
+                });
+                return;*/
+
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
+            }
+
+        }catch (Exception e)
+        {
+            Log.i(TAG,e.getMessage());
         }
     }
 
@@ -149,12 +348,12 @@ public class Product_categoryFragment extends Fragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            final ViewHolder viewHolder;
+            final MyDataAdapter.ViewHolder viewHolder;
             if (layoutInflater == null) {
                 layoutInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             }
             if (convertView == null) {
-                viewHolder = new ViewHolder();
+                viewHolder = new MyDataAdapter.ViewHolder();
                 convertView = layoutInflater.inflate(R.layout.product_layout, null);
 
                 viewHolder.product_name = (TextView) convertView.findViewById(R.id.product_name);
@@ -172,7 +371,7 @@ public class Product_categoryFragment extends Fragment {
 
                 convertView.setTag(viewHolder);
             } else {
-                viewHolder = (ViewHolder) convertView.getTag();
+                viewHolder = (MyDataAdapter.ViewHolder) convertView.getTag();
             }
 
             try {
@@ -236,42 +435,6 @@ public class Product_categoryFragment extends Fragment {
                                 else
                                 {
                                     addCart_model.setOffer("false");
-                                }
-
-                                if(product_pojo.getMfgDate() != null)
-                                {
-                                    addCart_model.setMfgDate(product_pojo.getMfgDate());
-                                }
-                                else
-                                {
-                                    addCart_model.setMfgDate("");
-                                }
-
-                                if(product_pojo.getExpDate() != null)
-                                {
-                                    addCart_model.setExpDate(product_pojo.getExpDate());
-                                }
-                                else
-                                {
-                                    addCart_model.setExpDate("");
-                                }
-
-                                if(product_pojo.getQc() != null)
-                                {
-                                    addCart_model.setQc(product_pojo.getQc());
-                                }
-                                else
-                                {
-                                    addCart_model.setQc("");
-                                }
-
-                                if(product_pojo.getBatchNo() != null)
-                                {
-                                    addCart_model.setBatchNo(product_pojo.getBatchNo());
-                                }
-                                else
-                                {
-                                    addCart_model.setBatchNo("");
                                 }
 
                                 myApplication.setProducts(addCart_model);
@@ -409,42 +572,6 @@ public class Product_categoryFragment extends Fragment {
                                 in.putExtra("Offer","false");
                             }
 
-                            if(product_pojo.getMfgDate() != null)
-                            {
-                                in.putExtra("mfgDate",product_pojo.getMfgDate());
-                            }
-                            else
-                            {
-                                in.putExtra("mfgDate","");
-                            }
-
-                            if(product_pojo.getExpDate() != null)
-                            {
-                                in.putExtra("expDate",product_pojo.getExpDate());
-                            }
-                            else
-                            {
-                                in.putExtra("expDate","");
-                            }
-
-                            if(product_pojo.getQc() != null)
-                            {
-                                in.putExtra("qc",product_pojo.getQc());
-                            }
-                            else
-                            {
-                                in.putExtra("qc","");
-                            }
-
-                            if(product_pojo.getBatchNo() != null)
-                            {
-                                in.putExtra("batchNo",product_pojo.getBatchNo());
-                            }
-                            else
-                            {
-                                in.putExtra("batchNo","");
-                            }
-
                             //in.putExtra("quantity",String.valueOf(viewHolder.count.getText().toString().trim()));
                             startActivity(in);
 
@@ -469,22 +596,4 @@ public class Product_categoryFragment extends Fragment {
             LinearLayout holder_count;
         }
     }
-
-    public String loadProductJSONFromAsset() {
-        String json = null;
-        try {
-            InputStream is = getActivity().getAssets().open("products_mock.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
-    }
-
-
 }

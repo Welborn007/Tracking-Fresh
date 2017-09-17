@@ -50,7 +50,9 @@ import com.kesari.trackingfresh.HelpAndFAQ.HelpActivity;
 import com.kesari.trackingfresh.Legal.LegalActivity;
 import com.kesari.trackingfresh.Login.LoginActivity;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
+import com.kesari.trackingfresh.MyOffers.MyOffersActivity;
 import com.kesari.trackingfresh.MyProfile.ProfileActivity;
+import com.kesari.trackingfresh.NotificationList.NotificationListActivity;
 import com.kesari.trackingfresh.OTP.OTP;
 import com.kesari.trackingfresh.OTP.SendOtpPOJO;
 import com.kesari.trackingfresh.ProductMainFragment.Product_Fragment;
@@ -63,12 +65,9 @@ import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.VehicleRoute.RouteActivity;
 import com.kesari.trackingfresh.YourOrders.OrderListActivity;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -77,6 +76,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
 import mehdi.sakout.fancybuttons.FancyButton;
 
@@ -112,7 +112,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
     String subAdminArea = "";
     String subLocality = "";
     public static MyApplication myApplication;
-    RelativeLayout my_orders_holder, profile_holder, help_holder, route_holder, refer_earn, legalHolder,setting_layout;
+    RelativeLayout my_orders_holder, profile_holder, help_holder, route_holder, refer_earn, legalHolder,setting_layout,my_offers_holder;
 
     private Gson gson;
     VerifyMobilePOJO verifyMobilePOJO;
@@ -178,6 +178,15 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             walletAmount = (TextView) header.findViewById(R.id.walletAmount);
             legalHolder = (RelativeLayout) header.findViewById(R.id.legalHolder);
             setting_layout = (RelativeLayout) header.findViewById(R.id.setting_layout);
+            my_offers_holder = (RelativeLayout) header.findViewById(R.id.my_offers_holder);
+
+            my_offers_holder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(DashboardActivity.this, MyOffersActivity.class);
+                    startActivity(intent);
+                }
+            });
 
             setting_layout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -773,6 +782,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
         TextView my_account = (TextView) view.findViewById(R.id.my_account);
         TextView my_orders = (TextView) view.findViewById(R.id.my_orders);
         TextView tkcash = (TextView) view.findViewById(R.id.tkcash);
+        TextView notificationList = (TextView) view.findViewById(R.id.notificationList);
 
         LinearLayout layout = (LinearLayout) view.findViewById(R.id.change_password);
 
@@ -804,6 +814,14 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(DashboardActivity.this, TKWalletActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        notificationList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DashboardActivity.this, NotificationListActivity.class);
                 startActivity(intent);
             }
         });
@@ -849,7 +867,11 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                     @Override
                     public void onResult(Status status) {
                         // ...
-                        Toast.makeText(context, "Logged Out", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(context, "Logged Out", Toast.LENGTH_SHORT).show();
+                        new SweetAlertDialog(context)
+                                .setTitleText("Logged Out")
+                                .show();
+
                         Intent i = new Intent(context, LoginActivity.class);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(i);
@@ -929,13 +951,26 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
         try {
 
             if (!NetworkUtils.isNetworkConnectionOn(this)) {
-                FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+                /*FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
                     @Override
                     public void onActionClicked(Snackbar snackbar) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
-                return;
+                return;*/
+
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
 
         } catch (Exception e) {

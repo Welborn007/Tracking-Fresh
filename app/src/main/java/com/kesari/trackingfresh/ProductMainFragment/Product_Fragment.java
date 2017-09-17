@@ -58,10 +58,7 @@ import com.kesari.trackingfresh.Utilities.OnSwipeTouchListener;
 import com.kesari.trackingfresh.Utilities.RecyclerItemClickListener;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.VehicleNearestRoute.NearestRouteMainPOJO;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.NetworkUtils;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
 
 import org.json.JSONArray;
@@ -82,6 +79,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -329,13 +327,26 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             map.setMyLocationEnabled(true);
 
             if (!NetworkUtils.isNetworkConnectionOn(getActivity())) {
-                FireToast.customSnackbarWithListner(getActivity(), "No internet access", "Settings", new ActionClickListener() {
+                /*FireToast.customSnackbarWithListner(getActivity(), "No internet access", "Settings", new ActionClickListener() {
                     @Override
                     public void onActionClicked(Snackbar snackbar) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
-                return;
+                return;*/
+
+                new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             } else {
                 startSocket();
                 setVehicleEmpty();

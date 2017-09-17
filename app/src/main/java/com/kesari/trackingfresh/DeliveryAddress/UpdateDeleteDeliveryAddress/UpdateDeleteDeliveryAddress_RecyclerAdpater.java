@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
@@ -126,7 +127,11 @@ public class UpdateDeleteDeliveryAddress_RecyclerAdpater extends RecyclerView.Ad
                     }
                     else
                     {
-                        Toast.makeText(context, "Address already set default", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(context, "Address already set default", Toast.LENGTH_SHORT).show();
+
+                        new SweetAlertDialog(context)
+                                .setTitleText("Address already set default")
+                                .show();
                     }
                 }
             });

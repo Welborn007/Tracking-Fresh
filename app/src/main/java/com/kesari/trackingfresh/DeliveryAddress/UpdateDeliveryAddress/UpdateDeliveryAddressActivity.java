@@ -23,7 +23,6 @@ import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -41,11 +40,8 @@ import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.VehicleNearestRoute.NearestRouteMainPOJO;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,6 +49,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 public class UpdateDeliveryAddressActivity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt,OnMapReadyCallback {
@@ -278,7 +275,11 @@ public class UpdateDeliveryAddressActivity extends AppCompatActivity implements 
                     }
                     else if(Latitude.isEmpty() || Longitude.isEmpty())
                     {
-                        Toast.makeText(UpdateDeliveryAddressActivity.this, "Please Set Your Location On Map!!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(UpdateDeliveryAddressActivity.this, "Please Set Your Location On Map!!", Toast.LENGTH_SHORT).show();
+
+                        new SweetAlertDialog(UpdateDeliveryAddressActivity.this)
+                                .setTitleText("Please Set Your Location On Map!!")
+                                .show();
                     }
 
                 }
@@ -429,7 +430,11 @@ public class UpdateDeliveryAddressActivity extends AppCompatActivity implements 
             }
             else
             {
-                Toast.makeText(UpdateDeliveryAddressActivity.this, "Location Set!!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(UpdateDeliveryAddressActivity.this, "Location Set!!", Toast.LENGTH_SHORT).show();
+
+                new SweetAlertDialog(UpdateDeliveryAddressActivity.this)
+                        .setTitleText("Location Set!!")
+                        .show();
             }
 
         } catch (Exception e) {
@@ -554,13 +559,26 @@ public class UpdateDeliveryAddressActivity extends AppCompatActivity implements 
         try {
 
             if (!NetworkUtils.isNetworkConnectionOn(this)) {
-                FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+                /*FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
                     @Override
                     public void onActionClicked(Snackbar snackbar) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
-                return;
+                return;*/
+
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
 
         }catch (Exception e)

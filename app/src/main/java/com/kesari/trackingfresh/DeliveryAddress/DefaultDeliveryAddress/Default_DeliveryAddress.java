@@ -25,7 +25,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.AddToCart.AddCart_model;
@@ -40,12 +39,9 @@ import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -58,6 +54,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 import static com.kesari.trackingfresh.Utilities.IOUtils.setBadgeCount;
@@ -199,17 +196,29 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
                             }
                             else
                             {
-                                Toast.makeText(Default_DeliveryAddress.this, "Sorry Vehicle Left!!", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(Default_DeliveryAddress.this, "Sorry Vehicle Left!!", Toast.LENGTH_SHORT).show();
+
+                                new SweetAlertDialog(Default_DeliveryAddress.this)
+                                        .setTitleText("Sorry Vehicle Left!!")
+                                        .show();
                             }
                         }
                         else
                         {
-                            Toast.makeText(Default_DeliveryAddress.this, "Sorry Vehicle Left!!", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(Default_DeliveryAddress.this, "Sorry Vehicle Left!!", Toast.LENGTH_SHORT).show();
+
+                            new SweetAlertDialog(Default_DeliveryAddress.this)
+                                    .setTitleText("Sorry Vehicle Left!!")
+                                    .show();
                         }
                     }
                     else
                     {
-                        FireToast.customSnackbar(Default_DeliveryAddress.this, "Default address not set!", "");
+                        //FireToast.customSnackbar(Default_DeliveryAddress.this, "Default address not set!", "");
+
+                        new SweetAlertDialog(Default_DeliveryAddress.this)
+                                .setTitleText("Default address not set!")
+                                .show();
                     }
                 }
             });
@@ -291,14 +300,19 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
                     Intent intent = new Intent(Default_DeliveryAddress.this, FetchedDeliveryAddressActivity.class);
                     intent.putExtra("default_address","false");
                     startActivity(intent);
-                    FireToast.customSnackbar(Default_DeliveryAddress.this, "Default address not set!", "");
+                    //FireToast.customSnackbar(Default_DeliveryAddress.this, "Default address not set!", "");
+
+                    new SweetAlertDialog(Default_DeliveryAddress.this)
+                            .setTitleText("Default address not set!")
+                            .show();
                     default_address = false;
                 }
 
             }
 
         } catch (Exception e) {
-            Log.i(TAG, e.getMessage());
+            //Log.i(TAG, e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -389,7 +403,11 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
             }
             else
             {
-                FireToast.customSnackbar(Default_DeliveryAddress.this, "No Products Added!!!", "");
+                //FireToast.customSnackbar(Default_DeliveryAddress.this, "No Products Added!!!", "");
+
+                new SweetAlertDialog(Default_DeliveryAddress.this)
+                        .setTitleText("No Products Added!!!")
+                        .show();
             }
 
         } catch (Exception e) {
@@ -589,13 +607,26 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
         try {
 
             if (!NetworkUtils.isNetworkConnectionOn(this)) {
-                FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+               /* FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
                     @Override
                     public void onActionClicked(Snackbar snackbar) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
-                return;
+                return;*/
+
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
 
         }catch (Exception e)

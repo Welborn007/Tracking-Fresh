@@ -16,7 +16,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.AddToCart.AddCart_model;
@@ -39,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -611,7 +611,11 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
                     }
                     else
                     {
-                        Toast.makeText(context, "Please mention reason!!!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(context, "Please mention reason!!!", Toast.LENGTH_SHORT).show();
+
+                        new SweetAlertDialog(context)
+                                .setTitleText("Please mention reason!!!")
+                                .show();
                     }
                 }
             });
