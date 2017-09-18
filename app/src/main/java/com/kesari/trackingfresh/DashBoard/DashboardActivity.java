@@ -174,6 +174,8 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             mapTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+
                     mapTextView.setBackgroundColor(getResources().getColor(R.color.MoneyGreen));
                     menuTextView.setBackgroundColor(getResources().getColor(R.color.whitegray));
                     menuTextView.setTextColor(getResources().getColor(R.color.gray));
