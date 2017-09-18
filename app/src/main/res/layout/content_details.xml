@@ -49,14 +49,14 @@
                     android:drawableLeft="@drawable/star"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:padding="5dp"
                     />
                 <TextView
                     android:id="@+id/addtoCart"
                     android:text="ADD TO CART"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/text_size"
+                    android:textSize="14dp"
                     android:textStyle="bold"
                     android:background="@color/MoneyGreen"
                     android:padding="10dp"
@@ -66,7 +66,7 @@
                     android:drawablePadding="5dp"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="50dp" />
 
 
                 </LinearLayout>
