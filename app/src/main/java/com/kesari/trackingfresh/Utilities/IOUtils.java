@@ -295,9 +295,10 @@ public class IOUtils {
                         }catch (Exception e)
                         {
                             //Log.d("Error", e.getMessage());
-                            new SweetAlertDialog(context)
+                            /*new SweetAlertDialog(context)
                                     .setTitleText("Oops Something Went Wrong!!")
-                                    .show();
+                                    .show();*/
+                            e.printStackTrace();
                         }
                     }
                 }

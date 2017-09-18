@@ -436,7 +436,7 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
                                         addCart_model.set_id(_id);
                                         addCart_model.setUnitsOfMeasurement(unitsOfMeasurement);
                                         addCart_model.setUnitsOfMeasurementId(unitsOfMeasurementId);
-                                        addCart_model.setProductId(productCategoryId);
+                                        addCart_model.setProductCategoryId(productCategoryId);
                                         addCart_model.setProductDescription(productDescription);
                                         addCart_model.setProductDetails(productDetails);
                                         addCart_model.setUnit(unit);

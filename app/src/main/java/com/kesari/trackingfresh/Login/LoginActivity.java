@@ -406,7 +406,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             String url = Constants.LoginActivityAPI;
 
-            Log.i("url", url);
+            //Log.i("url", url);
 
             JSONObject jsonObject = new JSONObject();
 
@@ -502,9 +502,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         {
             //FireToast.customSnackbar(context, errorPOJO.getMessage(),"");
 
-            new SweetAlertDialog(context)
+            /*new SweetAlertDialog(context)
                     .setTitleText(errorPOJO.getMessage())
-                    .show();
+                    .show();*/
 
             if(errorPOJO.getMessage().equalsIgnoreCase("User not found"))
             {
