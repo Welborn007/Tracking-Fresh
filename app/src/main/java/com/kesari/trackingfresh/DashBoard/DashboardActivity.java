@@ -867,10 +867,10 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                     @Override
                     public void onResult(Status status) {
                         // ...
-                        //Toast.makeText(context, "Logged Out", Toast.LENGTH_SHORT).show();
-                        new SweetAlertDialog(context)
+                        Toast.makeText(context, "Logged Out", Toast.LENGTH_SHORT).show();
+                        /*new SweetAlertDialog(context)
                                 .setTitleText("Logged Out")
-                                .show();
+                                .show();*/
 
                         Intent i = new Intent(context, LoginActivity.class);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -302,6 +302,7 @@
             android:id="@+id/repeat"
             fancy:fb_defaultColor="@color/fresh_blue"
             fancy:fb_focusColor="@color/colorPrimary"
+            android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginBottom="5dp"
             android:layout_toLeftOf="@+id/cancel"
