@@ -307,6 +307,11 @@ public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.Netwo
                 public void onSuccess(String result) {
                     matchOTPResponse(result);
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
         } catch (Exception e) {
@@ -531,6 +536,11 @@ public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.Netwo
 
                 VoiceOTPResponse(result);
             }
+        }, new IOUtils.VolleyFailureCallback() {
+            @Override
+            public void onFailure(String result) {
+
+            }
         });
     }
 
@@ -581,6 +591,11 @@ public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.Netwo
             public void onSuccess(String result) {
 
                 OTPResponse(result);
+            }
+        }, new IOUtils.VolleyFailureCallback() {
+            @Override
+            public void onFailure(String result) {
+
             }
         });
     }

@@ -158,7 +158,7 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
                                             .show();
 
                                 } else {
-
+                                    btnRegister.setClickable(false);
                                     verifyDuplicateMobileAndRegister(mobile.getText().toString().trim());
 
                                     /*if(duplicateMobile)
@@ -239,6 +239,11 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
             public void onSuccess(String result) {
                 verifyMobileResponse(result);
             }
+        }, new IOUtils.VolleyFailureCallback() {
+            @Override
+            public void onFailure(String result) {
+
+            }
         });
     }
 
@@ -280,6 +285,11 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
             @Override
             public void onSuccess(String result) {
                 verifyMobileResponseAndRegister(result);
+            }
+        }, new IOUtils.VolleyFailureCallback() {
+            @Override
+            public void onFailure(String result) {
+
             }
         });
     }
@@ -347,7 +357,13 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
             ioUtils.sendJSONObjectRequest(RegisterActivity.this,url, jsonObject, new IOUtils.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
+                    btnRegister.setClickable(true);
                     RegisterResponse(result.toString());
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+                    btnRegister.setClickable(true);
                 }
             });
 
@@ -396,6 +412,11 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
                     Log.i("profile_result",result);
 
                     profileDataResponse(result);
+
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
 
                 }
             });

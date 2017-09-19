@@ -218,6 +218,11 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
 
                     fetchUserAddressResponse(result);
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
         } catch (Exception e) {
@@ -286,6 +291,11 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
                 public void onSuccess(String result) {
                     Log.i("profile_result",result);
                     profileDataResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 
@@ -367,6 +377,11 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
                     Log.d(TAG, result.toString());
 
                     VerifyResponse(result);
+
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
 
                 }
             });
@@ -521,6 +536,11 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
                     Log.d(TAG, result.toString());
 
                     updateCustomerResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 
@@ -923,6 +943,11 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
                     Log.d(TAG, result.toString());
 
                     updateCustomerImageResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 

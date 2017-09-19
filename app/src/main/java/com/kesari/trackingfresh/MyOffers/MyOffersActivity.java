@@ -173,6 +173,11 @@ public class MyOffersActivity extends AppCompatActivity implements NetworkUtilsR
 
                     getProductDataResponse(result);
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
         } catch (Exception e) {

@@ -216,6 +216,11 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
 
                     OrderDetailsResponse(result);
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
         } catch (Exception e) {
@@ -500,6 +505,11 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
             @Override
             public void onSuccess(String result) {
                 VehicleNearestRouteResponse(result);
+            }
+        }, new IOUtils.VolleyFailureCallback() {
+            @Override
+            public void onFailure(String result) {
+
             }
         });
     }

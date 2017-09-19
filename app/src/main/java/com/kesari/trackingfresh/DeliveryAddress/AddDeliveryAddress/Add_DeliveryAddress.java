@@ -435,6 +435,11 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
                 public void onSuccess(String result) {
                     NearestVehicleResponse(result);
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
         } catch (Exception e) {
@@ -534,6 +539,11 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
                     Log.i("AddressAdded",result);
 
                     AddAddressResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 

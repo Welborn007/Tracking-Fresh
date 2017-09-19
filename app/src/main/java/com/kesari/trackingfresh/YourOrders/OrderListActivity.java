@@ -183,6 +183,11 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
                     swipeContainer.setRefreshing(false);
 
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
         } catch (Exception e) {

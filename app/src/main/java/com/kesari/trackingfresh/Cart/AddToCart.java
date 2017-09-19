@@ -205,6 +205,11 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
 
                     fetchUserAddressResponse(result);
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
         } catch (Exception e) {

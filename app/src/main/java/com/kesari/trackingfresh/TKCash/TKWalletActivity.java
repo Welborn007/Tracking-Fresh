@@ -100,6 +100,11 @@ public class TKWalletActivity extends AppCompatActivity implements NetworkUtilsR
                     Log.i("profile_result",result);
                     profileDataResponse(result);
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
 

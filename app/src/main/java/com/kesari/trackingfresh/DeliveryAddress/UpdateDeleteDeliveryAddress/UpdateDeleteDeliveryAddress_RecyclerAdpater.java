@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.kesari.trackingfresh.DeliveryAddress.AddressPOJO;
 import com.kesari.trackingfresh.DeliveryAddress.UpdateDeliveryAddress.UpdateDeliveryAddressActivity;
@@ -205,6 +204,11 @@ public class UpdateDeleteDeliveryAddress_RecyclerAdpater extends RecyclerView.Ad
                     Log.d(TAG, result.toString());
 
                     deleteDeliveryAddressResponse(result,position);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 
