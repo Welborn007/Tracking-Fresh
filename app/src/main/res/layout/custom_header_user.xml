@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
+    android:background="@drawable/background_overlay"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -22,7 +22,7 @@
             android:gravity="center"
             android:layout_gravity="center"
             android:textSize="18sp"
-            android:textColor="@color/black"
+            android:textColor="@color/MoneyGreen"
             />
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -30,7 +30,7 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginLeft="20dp"
-            android:src="@drawable/default_logo"
+            android:src="@drawable/camera"
             />
 
     </LinearLayout>
@@ -39,11 +39,13 @@
         android:id="@+id/my_account"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_black_account"
+        android:drawableLeft="@drawable/leftmenumenu"
         android:text="My Account"
+        android:drawablePadding="10dp"
+        android:padding="10dp"
         android:gravity="center_vertical"
         android:textSize="14sp"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         />
 
     <View
@@ -51,30 +53,32 @@
         android:layout_height="1dp"
         android:background="#ccc"/>
 
-    <LinearLayout
+   <!-- <LinearLayout
         android:id="@+id/change_password"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <ImageView
-            android:src="@drawable/ic_password_key"
+            android:src="@drawable/leftmenusetting"
             android:layout_marginLeft="5dp"
             android:layout_width="35dp"
             android:layout_height="35dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
+-->
+        <TextView         android:id="@+id/change_password"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Reset Password"
-            android:gravity="center"
-            android:layout_marginLeft="5dp"
+            android:gravity="center_vertical"
+            android:drawableLeft="@drawable/leftmenusetting"
+            android:drawablePadding="10dp"
+            android:padding="10dp"
             android:layout_gravity="center"
             android:textSize="14sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             />
-
-    </LinearLayout>
+<!--
+    </LinearLayout>-->
 
 
 
@@ -87,11 +91,13 @@
         android:id="@+id/my_orders"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_my_orders"
+        android:drawablePadding="10dp"
+        android:padding="10dp"
+        android:drawableLeft="@drawable/leftmenulastorder"
         android:text="My Orders"
         android:gravity="center_vertical"
         android:textSize="14sp"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         />
 
     <View
@@ -105,9 +111,11 @@
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/ic_tk_cash"
         android:text="TK Cash"
+        android:drawablePadding="10dp"
+        android:padding="10dp"
         android:gravity="center_vertical"
         android:textSize="14sp"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         />
 
     <View
@@ -119,12 +127,13 @@
         android:id="@+id/notificationList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_bell"
-        android:padding="10dp"
+        android:drawableLeft="@drawable/leftmenunotification"
         android:text="Notification List"
+        android:drawablePadding="10dp"
+        android:padding="10dp"
         android:gravity="center_vertical"
         android:textSize="14sp"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         />
 
     <View
@@ -134,14 +143,14 @@
 
     <mehdi.sakout.fancybuttons.FancyButton
         android:layout_width="250dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:padding="5dp"
         fancy:fb_text="Log Out"
         android:id="@+id/btnLogout"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        fancy:fb_defaultColor="@color/fresh_blue"
+        fancy:fb_defaultColor="@color/MoneyGreen"
         fancy:fb_focusColor="@color/colorPrimary"
         fancy:fb_radius="5dp"
         fancy:fb_textColor="@color/white"

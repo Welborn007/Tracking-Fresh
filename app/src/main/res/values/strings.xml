@@ -99,4 +99,8 @@
     <string name="repeat_call"><u> Call Me</u></string>
     <string name="SMS_verification">Enter Code</string>
     <string name="from_sms">from sms</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="menu">Menu</string>
+    <string name="my_cart">My Cart</string>
+    <string name="notification">Notification</string>
 </resources>

@@ -112,8 +112,8 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
     String subAdminArea = "";
     String subLocality = "";
     public static MyApplication myApplication;
-    RelativeLayout my_orders_holder, profile_holder, help_holder, route_holder, refer_earn, legalHolder,setting_layout,my_offers_holder;
-
+    RelativeLayout my_orders_holder, menu_holder,my_cart_holder,notification_holder, help_holder, route_holder, refer_earn, legalHolder,setting_layout,my_offers_holder;
+    TextView profile_holder;
     private Gson gson;
     VerifyMobilePOJO verifyMobilePOJO;
     SendOtpPOJO sendOtpPOJO;
@@ -198,13 +198,16 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 }
             });
 
-            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            final DrawerLayout mDrawerLayout;
+            mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+            mDrawerLayout.closeDrawers();
+            final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             View header = navigationView.getHeaderView(0);
 
             my_orders_holder = (RelativeLayout) header.findViewById(R.id.my_orders_holder);
             name_Login = (TextView) header.findViewById(R.id.name_Login);
 
-            profile_holder = (RelativeLayout) header.findViewById(R.id.profile_holder);
+            profile_holder = (TextView) header.findViewById(R.id.profile_holder);
             help_holder = (RelativeLayout) header.findViewById(R.id.help_holder);
             route_holder = (RelativeLayout) header.findViewById(R.id.route_holder);
             refer_earn = (RelativeLayout) header.findViewById(R.id.refer_earn);
@@ -213,12 +216,17 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             legalHolder = (RelativeLayout) header.findViewById(R.id.legalHolder);
             setting_layout = (RelativeLayout) header.findViewById(R.id.setting_layout);
             my_offers_holder = (RelativeLayout) header.findViewById(R.id.my_offers_holder);
+            notification_holder = (RelativeLayout) header.findViewById(R.id.notification_holder);
+            my_cart_holder = (RelativeLayout) header.findViewById(R.id.my_cart_holder);
+            menu_holder = (RelativeLayout) header.findViewById(R.id.menu_holder);
 
             my_offers_holder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(DashboardActivity.this, MyOffersActivity.class);
                     startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
                 }
             });
 
@@ -227,6 +235,8 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 public void onClick(View v) {
                     Intent intent = new Intent(DashboardActivity.this, SettingsActivity.class);
                     startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
                 }
             });
 
@@ -235,6 +245,8 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 public void onClick(View v) {
                     Intent intent = new Intent(DashboardActivity.this, ReferralCodeActivity.class);
                     startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
                 }
             });
 
@@ -243,6 +255,8 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 public void onClick(View v) {
                     Intent intent = new Intent(DashboardActivity.this, RouteActivity.class);
                     startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
                 }
             });
 
@@ -253,6 +267,8 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 public void onClick(View v) {
                     Intent intent = new Intent(DashboardActivity.this, HelpActivity.class);
                     startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
                 }
             });
 
@@ -261,6 +277,8 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 public void onClick(View v) {
                     Intent intent = new Intent(DashboardActivity.this, LegalActivity.class);
                     startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
                 }
             });
 
@@ -269,6 +287,8 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 public void onClick(View v) {
                     Intent intent = new Intent(DashboardActivity.this, OrderListActivity.class);
                     startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
                 }
             });
 
@@ -277,6 +297,34 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 public void onClick(View v) {
                     Intent intent = new Intent(DashboardActivity.this, ProfileActivity.class);
                     startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
+                }
+            });
+            menu_holder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mDrawerLayout.closeDrawers();
+
+                }
+            });
+            my_cart_holder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(DashboardActivity.this, AddToCart.class);
+                    startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
+
+                }
+            });
+            notification_holder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(DashboardActivity.this, NotificationListActivity.class);
+                    startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
                 }
             });
 
@@ -813,14 +861,15 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
         TextView nameTxt = (TextView) view.findViewById(R.id.name);
         nameTxt.setText("Hello " + name);
 
+
         TextView my_account = (TextView) view.findViewById(R.id.my_account);
         TextView my_orders = (TextView) view.findViewById(R.id.my_orders);
         TextView tkcash = (TextView) view.findViewById(R.id.tkcash);
         TextView notificationList = (TextView) view.findViewById(R.id.notificationList);
 
-        LinearLayout layout = (LinearLayout) view.findViewById(R.id.change_password);
+        TextView change_password = (TextView) view.findViewById(R.id.change_password);
 
-        layout.setOnClickListener(new View.OnClickListener() {
+        change_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(DashboardActivity.this, ChangePasswordActivity.class);

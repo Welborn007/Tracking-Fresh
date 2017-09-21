@@ -58,8 +58,8 @@ public class ForgotPassword_Activity extends AppCompatActivity implements Networ
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        setTitle("Forget Password");
-        toolbar.setTitleTextColor(ContextCompat.getColor(ForgotPassword_Activity.this,R.color.black));
+//        setTitle("Forget Password");
+//        toolbar.setTitleTextColor(ContextCompat.getColor(ForgotPassword_Activity.this,R.color.black));
         toolbar.getBackground().setAlpha(0);
         mobile = (EditText) findViewById(R.id.mobile);
         email = (EditText) findViewById(R.id.email);

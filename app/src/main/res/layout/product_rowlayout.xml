@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<!--<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
     android:id="@+id/subItemCard_view"
@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     card_view:cardUseCompatPadding="true"
     card_view:cardCornerRadius="0dp"
-    card_view:cardBackgroundColor="@android:color/transparent"><!--<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    card_view:cardBackgroundColor="@android:color/transparent">--><!--<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
     android:id="@+id/subItemCard_view"
@@ -20,6 +20,11 @@
     card_view:cardElevation="1dp">-->
 
     <LinearLayout
+         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        xmlns:fancy="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/subItemCard_view"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -66,8 +71,8 @@
                 android:textColor="#ffffff"
                 android:paddingBottom="8dp"
                 android:paddingTop="8dp"
-                android:layout_alignEnd="@+id/title"
-                android:layout_alignRight="@+id/title" />
+                android:layout_alignEnd="@+id/product_name"
+                android:layout_alignRight="@+id/product_name" />
         </RelativeLayout>
 
 <!--
@@ -87,4 +92,5 @@
 
     </LinearLayout>
 
-</android.support.v7.widget.CardView>
+<!--
+</android.support.v7.widget.CardView>-->

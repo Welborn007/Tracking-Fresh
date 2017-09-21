@@ -3,7 +3,7 @@
     <item>
         <bitmap
             android:antialias="true"
-            android:src="@drawable/splash_bg" />
+            android:src="@drawable/background" />
     </item>
     <!--<item>
         <color android:color="#a6000000" />
