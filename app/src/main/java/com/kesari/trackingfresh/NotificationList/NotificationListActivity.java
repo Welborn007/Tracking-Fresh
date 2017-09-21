@@ -148,6 +148,11 @@ public class NotificationListActivity extends AppCompatActivity implements Netwo
                     swipeContainer.setRefreshing(false);
 
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
         } catch (Exception e) {

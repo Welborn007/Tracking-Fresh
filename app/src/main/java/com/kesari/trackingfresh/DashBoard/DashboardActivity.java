@@ -123,6 +123,8 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
     //ScheduledExecutorService scheduleTaskExecutor;
     TextView walletAmount,menuTextView,mapTextView;
 
+    PopupWindow popupwindow_obj;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -417,6 +419,11 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                     Log.d(TAG, result.toString());
 
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
         } catch (Exception e) {
@@ -437,6 +444,11 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 public void onSuccess(String result) {
                     Log.i("profile_result", result);
                     profileDataResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 
@@ -473,8 +485,9 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 name = "Guest";
             }
 
-            PopupWindow popupwindow_obj = popupDisplay();
+            popupwindow_obj = popupDisplay();
             popupwindow_obj.showAtLocation(filter, Gravity.TOP | Gravity.RIGHT, 50, 150);
+
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
@@ -493,6 +506,11 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 public void onSuccess(String result) {
                     Log.i("profile_result", result);
                     profileDataResponseOnCreate(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 
@@ -556,6 +574,11 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                     Log.d(TAG, result.toString());
 
                     VerifyResponse(result);
+
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
 
                 }
             });
@@ -677,6 +700,11 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             public void onSuccess(String result) {
 
                 OTPResponse(result, MobileNo);
+            }
+        }, new IOUtils.VolleyFailureCallback() {
+            @Override
+            public void onFailure(String result) {
+
             }
         });
     }
@@ -1011,6 +1039,10 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             unregisterReceiver(networkUtilsReceiver);
 
             //scheduleTaskExecutor.shutdown();
+
+            if ( popupwindow_obj !=null && popupwindow_obj.isShowing() ){
+                popupwindow_obj.dismiss();
+            }
 
             if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
                 // LOCATION SERVICE

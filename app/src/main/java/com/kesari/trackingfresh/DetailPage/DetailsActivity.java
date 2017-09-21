@@ -535,6 +535,11 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
 
                     fetchUserAddressResponse(result);
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
         } catch (Exception e) {

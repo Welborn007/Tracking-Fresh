@@ -205,6 +205,11 @@ public class UpdateSettingsAddress_RecyclerAdpater extends RecyclerView.Adapter<
 
                     deleteDeliveryAddressResponse(result,position);
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
         } catch (Exception e) {

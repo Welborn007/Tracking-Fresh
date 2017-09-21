@@ -481,6 +481,11 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             public void onSuccess(String result) {
                 VehicleNearestRouteResponse(result);
             }
+        }, new IOUtils.VolleyFailureCallback() {
+            @Override
+            public void onFailure(String result) {
+
+            }
         });
     }
 
@@ -705,6 +710,11 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                     Log.i("product_category", result);
 
                     ProductCategoryResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 
@@ -1146,6 +1156,11 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 public void onSuccess(String result) {
                     Log.d(TAG, result.toString());
                     SetVehicleRouteResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 

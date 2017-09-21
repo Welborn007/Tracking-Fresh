@@ -393,6 +393,11 @@ public class UpdateDeliveryAddressActivity extends AppCompatActivity implements 
                 public void onSuccess(String result) {
                     NearestVehicleResponse(result);
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
         } catch (Exception e) {
@@ -492,6 +497,11 @@ public class UpdateDeliveryAddressActivity extends AppCompatActivity implements 
                     Log.i("AddressUpdated",result);
 
                     AddAddressResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 

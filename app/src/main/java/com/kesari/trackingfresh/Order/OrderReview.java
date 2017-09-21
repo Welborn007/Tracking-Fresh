@@ -255,6 +255,11 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
                     Log.d(TAG, result.toString());
                     getOrderDetailsfromID();
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
         } catch (Exception e) {
@@ -278,6 +283,11 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
                     Log.d(TAG, result.toString());
                     swipeContainer.setRefreshing(false);
                     OrderDetailsResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 

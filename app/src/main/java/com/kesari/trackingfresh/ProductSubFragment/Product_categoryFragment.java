@@ -103,6 +103,11 @@ public class Product_categoryFragment extends Fragment {
 
                     getProductDataResponse(result);
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
 

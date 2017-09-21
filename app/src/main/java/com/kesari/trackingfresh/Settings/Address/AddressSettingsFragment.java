@@ -106,6 +106,11 @@ public class AddressSettingsFragment extends Fragment {
 
                     fetchUserAddressResponse(result,context,TAG);
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
         } catch (Exception e) {
@@ -193,6 +198,11 @@ public class AddressSettingsFragment extends Fragment {
                 public void onSuccess(String result) {
                     Log.d("Address Update", result.toString());
                     updateDeliveryAddressResponse(result,position,context);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 
