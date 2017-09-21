@@ -202,6 +202,11 @@ public class ForgotPassword_Activity extends AppCompatActivity implements Networ
 
                     ForgotPasswordResponse(result);
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
         } catch (Exception e) {

@@ -257,6 +257,11 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
 
                     fetchUserAddressResponse(result);
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
         } catch (Exception e) {
@@ -372,6 +377,11 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
                     Log.d(TAG, result.toString());
 
                     OrderSendResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
         } catch (Exception e) {

@@ -476,6 +476,11 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                     Log.i("profile_result",result);
                     profileDataResponse(result);
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
 
@@ -557,6 +562,11 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                     VerifyResponse(result);
 
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
         } catch (Exception e) {
@@ -624,6 +634,11 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 @Override
                 public void onSuccess(String result) {
                     NearestVehicleResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 
@@ -781,6 +796,11 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
                 OTPResponse(result,MobileNo);
             }
+        }, new IOUtils.VolleyFailureCallback() {
+            @Override
+            public void onFailure(String result) {
+
+            }
         });
     }
 
@@ -874,6 +894,11 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 public void onSuccess(String result) {
                     Log.d(TAG, result.toString());
                     OrderSendResponse(result);
+
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
 
                 }
             });
@@ -1062,6 +1087,11 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
                     CancelResponse(result);
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
         } catch (Exception e) {
@@ -1149,6 +1179,11 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                     Log.d(TAG, result.toString());
 
                     PaymentUpdateResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 

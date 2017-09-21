@@ -203,7 +203,7 @@ public class IOUtils {
     }
 
     // Volley String Get Request
-    public void getGETStringRequest(final Context context, String url, final VolleyCallback callback) {
+    public void getGETStringRequest(final Context context, String url, final VolleyCallback callback,final VolleyFailureCallback failureCallback) {
 
         Log.i("url", url);
         // custom dialog
@@ -235,7 +235,7 @@ public class IOUtils {
                     json = new String(response.data);
                     Log.d("Error", json);
 
-                    ErrorResponse(json,context);
+                    failureCallback.onFailure(ErrorResponse(json,context));
 
                 }catch (Exception e)
                 {
@@ -253,7 +253,7 @@ public class IOUtils {
     }
 
     // Volley String Get Request with Header
-    public void getGETStringRequestHeader(final Context context, String url, final Map<String, String> paramsHeaders , final VolleyCallback callback) {
+    public void getGETStringRequestHeader(final Context context, String url, final Map<String, String> paramsHeaders , final VolleyCallback callback,final VolleyFailureCallback failureCallback) {
 
         //RequestQueue queue = Volley.newRequestQueue(this);
         Log.i("url", url);
@@ -290,7 +290,7 @@ public class IOUtils {
                             json = new String(response.data);
                             Log.d("Error", json);
 
-                            ErrorResponse(json,context);
+                            failureCallback.onFailure(ErrorResponse(json,context));
 
                         }catch (Exception e)
                         {
@@ -318,7 +318,7 @@ public class IOUtils {
     }
 
     // Volley String Delete Request with Header
-    public void getDeleteStringRequestHeader(final Context context, String url, final Map<String, String> paramsHeaders , final VolleyCallback callback) {
+    public void getDeleteStringRequestHeader(final Context context, String url, final Map<String, String> paramsHeaders , final VolleyCallback callback,final VolleyFailureCallback failureCallback) {
 
         //RequestQueue queue = Volley.newRequestQueue(this);
         Log.i("url", url);
@@ -355,7 +355,7 @@ public class IOUtils {
                             json = new String(response.data);
                             Log.d("Error", json);
 
-                            ErrorResponse(json,context);
+                            failureCallback.onFailure(ErrorResponse(json,context));
 
                         }catch (Exception e)
                         {
@@ -382,7 +382,7 @@ public class IOUtils {
     }
 
     // Volley String POST Request with Header
-    public void getPOSTStringRequestHeader(final Context context, String url, final Map<String, String> paramsHeaders , final VolleyCallback callback) {
+    public void getPOSTStringRequestHeader(final Context context, String url, final Map<String, String> paramsHeaders , final VolleyCallback callback,final VolleyFailureCallback failureCallback) {
 
         //RequestQueue queue = Volley.newRequestQueue(this);
         final Dialog dialog = new Dialog(context);
@@ -418,7 +418,7 @@ public class IOUtils {
                             json = new String(response.data);
                             Log.d("Error", json);
 
-                            ErrorResponse(json,context);
+                            failureCallback.onFailure(ErrorResponse(json,context));
 
                         }catch (Exception e)
                         {
@@ -448,8 +448,12 @@ public class IOUtils {
         void onSuccess(String result);
     }
 
+    public interface VolleyFailureCallback{
+        void onFailure(String result);
+    }
+
     //Volley JSON Object Post Request
-    public void sendJSONObjectRequest(final Context context, String url, JSONObject jsonObject, final VolleyCallback callback) {
+    public void sendJSONObjectRequest(final Context context, String url, JSONObject jsonObject, final VolleyCallback callback,final VolleyFailureCallback failureCallback) {
 
         Log.i("url", url);
         Log.i("JSON CREATED", jsonObject.toString());
@@ -483,7 +487,7 @@ public class IOUtils {
                     json = new String(response.data);
                     Log.d("Error", json);
 
-                    ErrorResponse(json,context);
+                    failureCallback.onFailure(ErrorResponse(json,context));
 
                 }catch (Exception e)
                 {
@@ -506,7 +510,7 @@ public class IOUtils {
     }
 
     //Volley JSON Object Post Request for Dialog
-    public void sendJSONObjectRequestHeaderDialog(final Context context, final ViewGroup viewGroup, String url, final Map<String, String> paramsHeaders, JSONObject jsonObject, final VolleyCallback callback) {
+    public void sendJSONObjectRequestHeaderDialog(final Context context, final ViewGroup viewGroup, String url, final Map<String, String> paramsHeaders, JSONObject jsonObject, final VolleyCallback callback,final VolleyFailureCallback failureCallback) {
 
         Log.i("url", url);
         Log.i("JSON CREATED", jsonObject.toString());
@@ -540,7 +544,9 @@ public class IOUtils {
                     json = new String(response.data);
                     Log.d("Error", json);
 
-                    ErrorResponseDialog(json,context,viewGroup);
+                    //ErrorResponseDialog(json,context,viewGroup);
+
+                    failureCallback.onFailure(ErrorResponseDialog(json,context,viewGroup));
 
                 }catch (Exception e)
                 {
@@ -576,7 +582,7 @@ public class IOUtils {
     }
 
     //Volley JSON Object Post Request
-    public void sendJSONObjectRequestHeader(final Context context, String url, final Map<String, String> paramsHeaders, JSONObject jsonObject, final VolleyCallback callback) {
+    public void sendJSONObjectRequestHeader(final Context context, String url, final Map<String, String> paramsHeaders, JSONObject jsonObject, final VolleyCallback callback,final VolleyFailureCallback failureCallback) {
 
         /*Log.i("url", url);
         Log.i("JSON CREATED", jsonObject.toString());
@@ -610,7 +616,7 @@ public class IOUtils {
                     json = new String(response.data);
                     Log.d("Error", json);
 
-                    ErrorResponse(json,context);
+                    failureCallback.onFailure(ErrorResponse(json,context));
 
                 }catch (Exception e)
                 {
@@ -644,7 +650,7 @@ public class IOUtils {
     }
 
     //Volley JSON Object Put Request
-    public void sendJSONObjectPutRequestHeader(final Context context, String url, final Map<String, String> paramsHeaders, JSONObject jsonObject, final VolleyCallback callback) {
+    public void sendJSONObjectPutRequestHeader(final Context context, String url, final Map<String, String> paramsHeaders, JSONObject jsonObject, final VolleyCallback callback,final VolleyFailureCallback failureCallback) {
 
         Log.i("url", url);
         Log.i("JSON CREATED", jsonObject.toString());
@@ -678,7 +684,7 @@ public class IOUtils {
                     json = new String(response.data);
                     Log.d("Error", json);
 
-                    ErrorResponse(json,context);
+                    failureCallback.onFailure(ErrorResponse(json,context));
 
                 }catch (Exception e)
                 {
@@ -711,10 +717,11 @@ public class IOUtils {
 
     }
 
-    private void ErrorResponse(String Response,Context context)
+    private String ErrorResponse(String Response,Context context)
     {
         gson = new Gson();
         errorPOJO = gson.fromJson(Response, ErrorPOJO.class);
+        String FailureReason = "Oops Something Went Wrong!!";
 
         if(errorPOJO.getErrors() != null)
         {
@@ -727,6 +734,7 @@ public class IOUtils {
                     .setTitleText(errorString)
                     .show();
 
+            FailureReason = errorString;
         }
         else if(errorPOJO.getMessage() != null)
         {
@@ -734,24 +742,27 @@ public class IOUtils {
                     .setTitleText(errorPOJO.getMessage())
                     .show();
 
+            FailureReason = errorPOJO.getMessage();
             //FireToast.customSnackbar(context, errorPOJO.getMessage(),"");
         }
         else
         {
-            new SweetAlertDialog(context)
+            /*new SweetAlertDialog(context)
                     .setTitleText("Oops Something Went Wrong!!")
-                    .show();
+                    .show();*/
 
+            FailureReason = "Oops Something Went Wrong!!";
             //FireToast.customSnackbar(context, "Oops Something Went Wrong!!","");
         }
 
-
+        return FailureReason;
     }
 
-    private void ErrorResponseDialog(String Response, Context context, final ViewGroup viewGroup)
+    private String ErrorResponseDialog(String Response, Context context, final ViewGroup viewGroup)
     {
         gson = new Gson();
         errorPOJO = gson.fromJson(Response, ErrorPOJO.class);
+        String FailureReason = "Oops Something Went Wrong!!";
 
         if(errorPOJO.getErrors() != null)
         {
@@ -765,6 +776,8 @@ public class IOUtils {
                 }
             });
 
+            FailureReason = errorString;
+
         }
         else if(errorPOJO.getMessage() != null)
         {
@@ -774,6 +787,8 @@ public class IOUtils {
                     viewGroup.setVisibility(View.GONE);
                 }
             });
+
+            FailureReason = errorPOJO.getMessage();
         }
         else
         {
@@ -783,9 +798,11 @@ public class IOUtils {
                     viewGroup.setVisibility(View.GONE);
                 }
             });
+
+            FailureReason = "Oops Something Went Wrong!!";
         }
 
-
+        return FailureReason;
     }
 
     public static void showRipples(LatLng latLng,GoogleMap map,int DURATION) {

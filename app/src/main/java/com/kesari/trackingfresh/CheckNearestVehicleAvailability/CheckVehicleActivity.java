@@ -22,11 +22,8 @@ import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.VehicleNearestRoute.NearestRouteMainPOJO;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONException;
@@ -159,6 +156,11 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
                     //NearestVehicleResponse(result);
 
                     NearestVehicleRouteResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 

@@ -222,6 +222,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             });
                             return;*/
                         } else {
+                            btnLogin.setClickable(false);
                             sendSimpleLoginData(UserName, Password);
                         }
                     } else if (UserName.isEmpty()) {
@@ -318,6 +319,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onSuccess(String result) {
                     SimpleResponse(result.toString());
+                    btnLogin.setClickable(true);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+                    btnLogin.setClickable(true);
                 }
             });
 
@@ -369,6 +376,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Log.i("profile_result",result);
 
                     profileDataResponse(result);
+
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
 
                 }
             });
@@ -586,6 +598,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onSuccess(String result) {
                     RegisterResponse(result.toString());
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 
