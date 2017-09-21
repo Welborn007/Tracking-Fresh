@@ -29,6 +29,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -74,7 +75,7 @@ public class MyOffersActivity extends AppCompatActivity implements NetworkUtilsR
     public  RelativeLayout relativeLayout;
     public  TextView valueTV;
 
-    GridView gridview;
+    ListView gridview;
     private MyDataAdapter myDataAdapter;
 
     @Override
@@ -100,7 +101,7 @@ public class MyOffersActivity extends AppCompatActivity implements NetworkUtilsR
             recListOffers.setLayoutManager(Orders);
 
             relativeLayout = (RelativeLayout) findViewById(R.id.relativelay_reclview);
-            gridview = (GridView) findViewById(R.id.list);
+            gridview = (ListView) findViewById(R.id.list);
 
             swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
             // Setup refresh listener which triggers new data loading
@@ -372,7 +373,7 @@ public class MyOffersActivity extends AppCompatActivity implements NetworkUtilsR
                 viewHolder.plus = (Button) convertView.findViewById(R.id.plus);
                 viewHolder.minus = (Button) convertView.findViewById(R.id.minus);
                 viewHolder.mrp = (TextView) convertView.findViewById(R.id.mrp);
-                viewHolder.addtoCart = (FancyButton) convertView.findViewById(R.id.addtoCart);
+                viewHolder.addtoCart = (Button) convertView.findViewById(R.id.addtoCart);
                 viewHolder.holder_count = (LinearLayout) convertView.findViewById(R.id.holder_count);
 
                 convertView.setTag(viewHolder);
@@ -598,7 +599,7 @@ public class MyOffersActivity extends AppCompatActivity implements NetworkUtilsR
             TextView product_name, weight, price, count,quantity,mrp;
             SimpleDraweeView imageView;
             Button plus, minus;
-            FancyButton addtoCart;
+            Button addtoCart;
             LinearLayout holder_count;
         }
     }

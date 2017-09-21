@@ -37,7 +37,7 @@
                 android:background="@color/LightGray">
             </android.support.v7.widget.RecyclerView>
 
-            <GridView
+            <ListView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/list"
@@ -48,7 +48,7 @@
                 android:horizontalSpacing="5dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true">
-            </GridView>
+            </ListView>
 
         </RelativeLayout>
 
