@@ -7,6 +7,7 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,12 +17,9 @@ import com.google.gson.Gson;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.IOUtils;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -42,7 +40,7 @@ public class LegalActivity extends AppCompatActivity implements NetworkUtilsRece
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            toolbar.getBackground().setAlpha(0);
+            toolbar.setBackgroundColor(ContextCompat.getColor(this,R.color.porcelain));
 
             gson = new Gson();
 

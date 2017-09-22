@@ -28,8 +28,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.LinearLayout;
@@ -210,26 +208,22 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
             product_category.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
                 public void onSwipeTop() {
-                    Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
-                            R.anim.slide_down);
+                    //Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_down);
 
-                    Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
-                            R.anim.slide_up);
+                    //Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up);
 
                     //product_category.setIconResource(getString(R.string.drop_down));
                     arrow_down.setVisibility(View.VISIBLE);
                     arrow_up.setVisibility(View.GONE);
 
                     product_holder.setVisibility(View.VISIBLE);
-                    product_holder.startAnimation(slide_up);
+                    //product_holder.startAnimation(slide_up);
                 }
 
                 public void onSwipeBottom() {
-                    Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
-                            R.anim.slide_down);
+                    //Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_down);
 
-                    Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
-                            R.anim.slide_up);
+                    //Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up);
 
                     arrow_down.setVisibility(View.GONE);
                     arrow_up.setVisibility(View.VISIBLE);
@@ -238,7 +232,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                     //product_category.setIconResource(getString(R.string.drop_up));
 
                     product_holder.setVisibility(View.GONE);
-                    product_holder.startAnimation(slide_down);
+                    //product_holder.startAnimation(slide_down);
                 }
 
             });
@@ -727,8 +721,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     public void ProductCategoryResponse(String Response) {
 
         try {
-            Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
-                    R.anim.slide_up);
+            //Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up);
 
             //product_category.setIconResource(getString(R.string.drop_down));
 
@@ -1093,14 +1086,13 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
         isVehiclePresent = true;
         Current_Location = SharedPrefUtil.getLocation(getActivity());
         Current_Origin = new LatLng(Current_Location.getLatitude(), Current_Location.getLongitude());
-        Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
-                R.anim.slide_down);
+        //Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_down);
 
         arrow_down.setVisibility(View.GONE);
         arrow_up.setVisibility(View.VISIBLE);
 
         product_holder.setVisibility(View.GONE);
-        product_holder.startAnimation(slide_down);
+        //product_holder.startAnimation(slide_down);
 
         try {
             recyclerView.setAdapter(null);

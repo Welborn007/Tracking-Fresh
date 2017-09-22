@@ -32,7 +32,7 @@ public class SettingsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.getBackground().setAlpha(0);
+        toolbar.setBackgroundColor(ContextCompat.getColor(this,R.color.porcelain));
 
         tourTabs = (SlidingTabLayout) findViewById(R.id.tourTabSlider);
         tourPager = (ViewPager) findViewById(R.id.tourTabsPager);

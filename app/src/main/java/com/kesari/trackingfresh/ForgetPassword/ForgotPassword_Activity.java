@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import mehdi.sakout.fancybuttons.FancyButton;
 
 public class ForgotPassword_Activity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt {
 
@@ -57,6 +56,7 @@ public class ForgotPassword_Activity extends AppCompatActivity implements Networ
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setBackgroundColor(ContextCompat.getColor(this,R.color.porcelain));
 
 //        setTitle("Forget Password");
 //        toolbar.setTitleTextColor(ContextCompat.getColor(ForgotPassword_Activity.this,R.color.black));

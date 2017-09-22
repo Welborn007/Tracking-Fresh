@@ -12,6 +12,7 @@
 
     <include
         android:id="@+id/toolbar"
+        android:visibility="gone"
         layout="@layout/custom_toolbar" />
     <TextView
         android:id="@+id/logintext"

@@ -7,6 +7,7 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -64,7 +65,7 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            toolbar.getBackground().setAlpha(0);
+            toolbar.setBackgroundColor(ContextCompat.getColor(this,R.color.porcelain));
 
             gson = new Gson();
 

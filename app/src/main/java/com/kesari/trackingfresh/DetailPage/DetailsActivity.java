@@ -128,7 +128,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             toolbar.setTitleTextColor(ContextCompat.getColor(DetailsActivity.this,R.color.black));
-            toolbar.getBackground().setAlpha(0);
+            toolbar.setBackgroundColor(ContextCompat.getColor(this,R.color.porcelain));
 
             /*Register receiver*/
             networkUtilsReceiver = new NetworkUtilsReceiver(this);

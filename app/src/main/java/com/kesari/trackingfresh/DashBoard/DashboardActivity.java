@@ -15,6 +15,7 @@ import android.provider.Settings;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -31,7 +32,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -135,6 +135,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
+            toolbar.setBackgroundColor(ContextCompat.getColor(DashboardActivity.this,R.color.porcelain));
 
             myApplication = (MyApplication) getApplicationContext();
 

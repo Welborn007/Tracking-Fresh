@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_marginTop="24dp"
-        android:background="@color/porcelain"
+
         android:theme="@style/ToolbarStyle"
         app:popupTheme="@style/AppTheme.PopupOverlay">
 
