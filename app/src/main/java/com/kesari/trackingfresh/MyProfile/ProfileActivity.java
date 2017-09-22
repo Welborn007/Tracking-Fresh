@@ -28,29 +28,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.BuildConfig;
 import com.kesari.trackingfresh.Cart.AddToCart;
-import com.kesari.trackingfresh.CheckNearestVehicleAvailability.CheckVehicleActivity;
-import com.kesari.trackingfresh.Login.LoginActivity;
+import com.kesari.trackingfresh.DashBoard.VerifyMobilePOJO;
+import com.kesari.trackingfresh.DeliveryAddress.AddDeliveryAddress.Add_DeliveryAddress;
+import com.kesari.trackingfresh.DeliveryAddress.AddressPOJO;
+import com.kesari.trackingfresh.DeliveryAddress.DefaultDeliveryAddress.FetchAddressPOJO;
 import com.kesari.trackingfresh.Login.ProfileMain;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 import com.squareup.picasso.Picasso;
 
 import org.apache.http.entity.mime.HttpMultipartMode;
@@ -69,15 +68,17 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
+import mehdi.sakout.fancybuttons.FancyButton;
 
 import static com.kesari.trackingfresh.Utilities.IOUtils.setBadgeCount;
 
@@ -97,6 +98,15 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
     //ScheduledExecutorService scheduleTaskExecutor;
     MyApplication myApplication;
     public static int mNotificationsCount = 0;
+    TextView refferal;
+    LinearLayout referral_holder,phoneHolder;
+    FancyButton Share,verifiedStatus;
+    VerifyMobilePOJO verifyMobilePOJO;
+    private FetchAddressPOJO fetchAddressPOJO;
+    List<AddressPOJO> addressArrayList = new ArrayList<>();
+    boolean default_address = false;
+
+    TextView city,pincode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +118,7 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.getBackground().setAlpha(0);
 
             gson = new Gson();
 
@@ -118,8 +129,29 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
             photo_edit = (ImageView) findViewById(R.id.photo_edit);
             profile_edit = (ImageView) findViewById(R.id.profile_edit);
             profile_image = (CircleImageView) findViewById(R.id.profile_image);
+            referral_holder = (LinearLayout) findViewById(R.id.referral_holder);
+            refferal = (TextView) findViewById(R.id.refferal);
+            Share = (FancyButton) findViewById(R.id.Share);
+            verifiedStatus = (FancyButton) findViewById(R.id.verifiedStatus);
+            phoneHolder = (LinearLayout) findViewById(R.id.phoneHolder);
+
+            address = (TextView) findViewById(R.id.address);
+            city = (TextView) findViewById(R.id.city);
+            pincode = (TextView) findViewById(R.id.pincode);
 
             getProfileData();
+
+            Share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    String shareBodyText = "https://play.google.com/store/apps/details?id=com.kesari.trackingfresh" + "\n\n" + "Referral Code - " + SharedPrefUtil.getUser(ProfileActivity.this).getData().getReferralCode();
+                    intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Referral Code");
+                    intent.putExtra(android.content.Intent.EXTRA_TEXT, shareBodyText);
+                    startActivity(Intent.createChooser(intent, "Choose sharing method"));
+                }
+            });
 
             profile_edit.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -154,9 +186,93 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
                 }
             }
 
+
             myApplication = (MyApplication) getApplicationContext();
 
             updateNotificationsBadge(myApplication.getProductsArraylist().size());
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fetchUserAddress();
+    }
+
+    private void fetchUserAddress() {
+        try {
+
+            String url = Constants.FetchAddress;
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(ProfileActivity.this));
+
+            ioUtils.getGETStringRequestHeader(ProfileActivity.this, url, params, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG, result.toString());
+
+                    fetchUserAddressResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void fetchUserAddressResponse(String Response) {
+        try {
+
+            default_address = false;
+            fetchAddressPOJO = gson.fromJson(Response, FetchAddressPOJO.class);
+
+            if (fetchAddressPOJO.getData().isEmpty()) {
+                address.setText("Address Not Set");
+
+                address.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(ProfileActivity.this, Add_DeliveryAddress.class);
+                        intent.putExtra("value","Profile");
+                        startActivity(intent);
+                    }
+                });
+            } else {
+
+                addressArrayList = fetchAddressPOJO.getData();
+
+                for (Iterator<AddressPOJO> it = addressArrayList.iterator(); it.hasNext(); ) {
+                    AddressPOJO addressPOJO = it.next();
+
+                    if (addressPOJO.isDefault())
+                    {
+                        address.setText(addressPOJO.getFlat_No() + ", " + addressPOJO.getBuildingName() + ", " + addressPOJO.getLandmark());
+                        city.setText(addressPOJO.getCity());
+                        pincode.setText(addressPOJO.getPincode());
+
+                        default_address = true;
+                    }
+
+                }
+
+                if(!default_address)
+                {
+
+                    default_address = false;
+                }
+
+            }
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
@@ -177,6 +293,11 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
                     Log.i("profile_result",result);
                     profileDataResponse(result);
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
 
@@ -191,9 +312,40 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
         {
             SharedPrefUtil.setUser(getApplicationContext(), Response.toString());
 
-            Phonenumber.setText(SharedPrefUtil.getUser(ProfileActivity.this).getData().getMobileNo());
+            if(SharedPrefUtil.getUser(ProfileActivity.this).getData().getMobileNo() != null)
+            {
+                phoneHolder.setVisibility(View.VISIBLE);
+                if(!SharedPrefUtil.getUser(ProfileActivity.this).getData().getMobileNo().isEmpty())
+                {
+                    phoneHolder.setVisibility(View.VISIBLE);
+                    Phonenumber.setText(SharedPrefUtil.getUser(ProfileActivity.this).getData().getMobileNo());
+                }
+                else
+                {
+                    phoneHolder.setVisibility(View.GONE);
+                }
+            }
+            else
+            {
+                phoneHolder.setVisibility(View.GONE);
+            }
+
             Email.setText(SharedPrefUtil.getUser(ProfileActivity.this).getData().getEmailId());
             customer_name.setText(SharedPrefUtil.getUser(ProfileActivity.this).getData().getFirstName() + " " + SharedPrefUtil.getUser(ProfileActivity.this).getData().getLastName());
+
+            if(SharedPrefUtil.getUser(ProfileActivity.this).getData() != null)
+            {
+                if(!SharedPrefUtil.getUser(ProfileActivity.this).getData().getReferralCode().isEmpty())
+                {
+                    refferal.setText(SharedPrefUtil.getUser(ProfileActivity.this).getData().getReferralCode());
+                    referral_holder.setVisibility(View.VISIBLE);
+                    getVerifiedMobileNumber();
+                }
+                else
+                {
+                    referral_holder.setVisibility(View.GONE);
+                }
+            }
 
             if(SharedPrefUtil.getUser(ProfileActivity.this).getData().getProfileImage() != null)
             {
@@ -201,6 +353,63 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
                         .with(ProfileActivity.this)
                         .load(SharedPrefUtil.getUser(ProfileActivity.this).getData().getProfileImage())
                         .into(profile_image);
+            }
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void getVerifiedMobileNumber()
+    {
+        try
+        {
+
+            String url = Constants.VerifyMobile + SharedPrefUtil.getUser(ProfileActivity.this).getData().get_id();
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(ProfileActivity.this));
+
+            ioUtils.getGETStringRequestHeader(ProfileActivity.this, url , params , new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG, result.toString());
+
+                    VerifyResponse(result);
+
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void VerifyResponse(String Response)
+    {
+        try
+        {
+
+            verifyMobilePOJO = gson.fromJson(Response, VerifyMobilePOJO.class);
+
+            if(verifyMobilePOJO.getMessage().equalsIgnoreCase("Mobile number not found"))
+            {
+                verifiedStatus.setVisibility(View.GONE);
+            }
+            else if(verifyMobilePOJO.getMessage().equalsIgnoreCase("Mobile not Verified"))
+            {
+                verifiedStatus.setVisibility(View.GONE);
+            }
+            else if(verifyMobilePOJO.getMessage().equalsIgnoreCase("Mobile Verified"))
+            {
+                verifiedStatus.setVisibility(View.VISIBLE);
             }
 
         } catch (Exception e) {
@@ -223,7 +432,7 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
 
             TextView delivery_text;
             final EditText first_name,last_name,email,referral_code/*,mobile,flat_no,building_name,landmark,city,state,pincode*/;
-            Button confirmAddress;
+            FancyButton confirmAddress;
 
             delivery_text = (TextView) dialog.findViewById(R.id.delivery_text);
             first_name = (EditText) dialog.findViewById(R.id.first_name);
@@ -238,7 +447,7 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
             state = (EditText) dialog.findViewById(R.id.state);
             pincode = (EditText) dialog.findViewById(R.id.pincode);*/
 
-            confirmAddress = (Button) dialog.findViewById(R.id.confirmAddress);
+            confirmAddress = (FancyButton) dialog.findViewById(R.id.confirmAddress);
 
             delivery_text.setText("Edit Profile");
             first_name.setText(SharedPrefUtil.getUser(ProfileActivity.this).getData().getFirstName());
@@ -329,6 +538,11 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
 
                     updateCustomerResponse(result);
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
         } catch (Exception e) {
@@ -391,13 +605,26 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
         try {
 
             if (!NetworkUtils.isNetworkConnectionOn(this)) {
-                FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+                /*FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
                     @Override
                     public void onActionClicked(Snackbar snackbar) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
-                return;
+                return;*/
+
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
 
         }catch (Exception e)
@@ -660,14 +887,20 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
 
                 if(message.equalsIgnoreCase("uploaded"))
                 {
-                    Toast.makeText(getApplicationContext(), "file uploaded",
-                            Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "file uploaded", Toast.LENGTH_LONG).show();
+                    new SweetAlertDialog(getApplicationContext())
+                            .setTitleText("file uploaded")
+                            .show();
+
                     updateCustomerProfileImage(SharedPrefUtil.getUser(ProfileActivity.this).getData().get_id(),url);
                 }
                 else
                 {
-                    Toast.makeText(getApplicationContext(), "file uploaded failed",
-                            Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "file uploaded failed",Toast.LENGTH_LONG).show();
+
+                    new SweetAlertDialog(getApplicationContext())
+                            .setTitleText("file uploaded failed")
+                            .show();
                 }
 
             } catch (JSONException e) {
@@ -711,6 +944,11 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
                     Log.d(TAG, result.toString());
 
                     updateCustomerImageResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 

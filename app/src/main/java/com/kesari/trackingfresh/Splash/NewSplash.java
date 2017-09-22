@@ -1,15 +1,18 @@
 package com.kesari.trackingfresh.Splash;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import com.kesari.trackingfresh.BuildConfig;
 import com.kesari.trackingfresh.CheckNearestVehicleAvailability.CheckVehicleActivity;
 import com.kesari.trackingfresh.Login.LoginActivity;
 import com.kesari.trackingfresh.R;
+import com.kesari.trackingfresh.Register.RegisterActivity;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 
 public class NewSplash extends AppCompatActivity {
@@ -24,19 +27,27 @@ public class NewSplash extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_new_splash);
 
-        btnLogin = (Button) findViewById(R.id.btnLogin);
-        login = (Button) findViewById(R.id.login);
 
-        login.setOnClickListener(new View.OnClickListener() {
+        checkFirstRun();
+        Button buttonSignUp= (Button) findViewById(R.id.buttonSignUp);
+        Button buttonLogin= (Button) findViewById(R.id.buttonLogin);
+
+        buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startApp();
+                Intent startMainActivity = new Intent(getApplicationContext(),RegisterActivity.class);
+                startMainActivity.putExtra("Type","simple");
+                startActivity(startMainActivity);
             }
         });
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
+
+        buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+               /* Intent startMainActivity = new Intent(getApplicationContext(),LoginActivity.class);
+                startActivity(startMainActivity);
+                finish();*/
                 startApp();
             }
         });
@@ -66,5 +77,38 @@ public class NewSplash extends AppCompatActivity {
             startActivity(startMainActivity);
             finish();
         }
+    }
+
+    private void checkFirstRun() {
+
+        final String PREFS_NAME = "MyPrefsFile";
+        final String PREF_VERSION_CODE_KEY = "version_code";
+        final int DOESNT_EXIST = -1;
+
+        // Get current version code
+        int currentVersionCode = BuildConfig.VERSION_CODE;
+
+        // Get saved version code
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        int savedVersionCode = prefs.getInt(PREF_VERSION_CODE_KEY, DOESNT_EXIST);
+
+        // Check for first run or upgrade
+        if (currentVersionCode == savedVersionCode) {
+
+            startApp();
+            // This is just a normal run
+            return;
+
+        } else if (savedVersionCode == DOESNT_EXIST) {
+
+            // TODO This is a new install (or the user cleared the shared preferences)
+
+        } else if (currentVersionCode > savedVersionCode) {
+
+            // TODO This is an upgrade
+        }
+
+        // Update the shared preferences with the current version code
+        prefs.edit().putInt(PREF_VERSION_CODE_KEY, currentVersionCode).apply();
     }
 }

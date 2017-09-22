@@ -16,8 +16,9 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -45,7 +46,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  */
 
 public class Product_categoryFragment extends Fragment {
-    GridView gridview;
+    ListView listView;
     private MyDataAdapter myDataAdapter;
     private Gson gson;
     private SubProductMainPOJO subProductMainPOJO;
@@ -58,7 +59,10 @@ public class Product_categoryFragment extends Fragment {
 
         View V = inflater.inflate(R.layout.fragment_product_category, container, false);
 
-        gridview = (GridView) V.findViewById(R.id.list);
+        listView = (ListView) V.findViewById(R.id.list);
+/*
+        listView = (GridView) V.findViewById(R.id.list);
+*/
 
         gson = new Gson();
 
@@ -83,9 +87,9 @@ public class Product_categoryFragment extends Fragment {
 
             String category_id = args.getString("category_id");
 
-            Log.i("Subcategory_url", Constants.Product_Desc + "?categoryId=" + category_id + "&vehicleId=" + SharedPrefUtil.getNearestVehicle(getActivity()).getData().get(0).getVehicle_id());
+            Log.i("Subcategory_url", Constants.Product_Desc + "?categoryId=" + category_id + "&vehicleId=" + SharedPrefUtil.getNearestRouteMainPOJO(getActivity()).getData().get(0).getVehicleId());
 
-            String URL = Constants.Product_Desc + "?categoryId=" + category_id + "&vehicleId=" + SharedPrefUtil.getNearestVehicle(getActivity()).getData().get(0).getVehicle_id();
+            String URL = Constants.Product_Desc + "?categoryId=" + category_id + "&vehicleId=" + SharedPrefUtil.getNearestRouteMainPOJO(getActivity()).getData().get(0).getVehicleId();
 
             IOUtils ioUtils = new IOUtils();
 
@@ -98,6 +102,11 @@ public class Product_categoryFragment extends Fragment {
                     Log.i("product_category", result);
 
                     getProductDataResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 
@@ -114,7 +123,7 @@ public class Product_categoryFragment extends Fragment {
             subProductMainPOJO = gson.fromJson(Response, SubProductMainPOJO.class);
 
             myDataAdapter = new MyDataAdapter(subProductMainPOJO.getData(), getActivity());
-            gridview.setAdapter(myDataAdapter);
+            listView.setAdapter(myDataAdapter);
             myDataAdapter.notifyDataSetChanged();
 
         } catch (Exception e) {
@@ -164,10 +173,14 @@ public class Product_categoryFragment extends Fragment {
                 viewHolder.price = (TextView) convertView.findViewById(R.id.price);
                 viewHolder.quantity = (TextView) convertView.findViewById(R.id.quantity);
                 viewHolder.count = (TextView) convertView.findViewById(R.id.count);
-                viewHolder.plus = (FancyButton) convertView.findViewById(R.id.plus);
-                viewHolder.minus = (FancyButton) convertView.findViewById(R.id.minus);
+                viewHolder.plus = (Button) convertView.findViewById(R.id.plus);
+                viewHolder.minus = (Button) convertView.findViewById(R.id.minus);
                 viewHolder.mrp = (TextView) convertView.findViewById(R.id.mrp);
-                viewHolder.addtoCart = (Button) convertView.findViewById(R.id.addtoCart);
+
+                viewHolder.addtoCart = (ImageView) convertView.findViewById(R.id.addtoCart);
+/*
+                viewHolder.addtoCart = (FancyButton) convertView.findViewById(R.id.addtoCart);
+*/
                 viewHolder.holder_count = (LinearLayout) convertView.findViewById(R.id.holder_count);
 
                 convertView.setTag(viewHolder);
@@ -181,14 +194,15 @@ public class Product_categoryFragment extends Fragment {
 
                 viewHolder.product_name.setText(product_pojo.getProductName());
 
-                viewHolder.imageView.setController(IOUtils.getFrescoImageController(activity, product_pojo.getProductImage()));
-                viewHolder.imageView.setHierarchy(IOUtils.getFrescoImageHierarchy(activity));
+//                viewHolder.imageView.setController(IOUtils.getFrescoImageController(activity, product_pojo.getProductImage()));
+//                viewHolder.imageView.setHierarchy(IOUtils.getFrescoImageHierarchy(activity));
+//                viewHolder.imageView.setImageResource(getResources().getDrawable(R.drawable/**/.fruit));
                 viewHolder.quantity.setText(product_pojo.getAvailableQuantity() + " quantity");
                 viewHolder.weight.setText(product_pojo.getUnit() + product_pojo.getUnitsOfMeasurement());
-                viewHolder.price.setText(product_pojo.getSelling_price() + " Rs");
+                viewHolder.price.setText("₹ " + product_pojo.getSelling_price());
 
                 viewHolder.mrp.setPaintFlags(viewHolder.mrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                viewHolder.mrp.setText("MRP " + product_pojo.getMRP() + " Rs.");
+                viewHolder.mrp.setText("₹ " + product_pojo.getMRP());
 
                 viewHolder.addtoCart.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -199,26 +213,87 @@ public class Product_categoryFragment extends Fragment {
 
 
                         if (!myApplication.checkifproductexists(product_pojo.getProductId())) {
-                            AddCart_model addCart_model = new AddCart_model();
-                            addCart_model.setProductCategory(product_pojo.getProductCategory());
-                            addCart_model.setProductId(product_pojo.getProductId());
-                            addCart_model.setProductName(product_pojo.getProductName());
-                            addCart_model.set_id(product_pojo.get_id());
-                            addCart_model.setUnitsOfMeasurement(product_pojo.getUnitsOfMeasurement());
-                            addCart_model.setProductCategoryId(product_pojo.getProductCategoryId());
-                            addCart_model.setProductDescription(product_pojo.getProductDescription());
-                            addCart_model.setProductDetails(product_pojo.getProductDetails());
-                            addCart_model.setUnit(product_pojo.getUnit());
-                            addCart_model.setPrice(product_pojo.getSelling_price());
-                            addCart_model.setUnitsOfMeasurementId(product_pojo.getUnitsOfMeasurementId());
-                            addCart_model.setProductImage(product_pojo.getProductImage());
-                            addCart_model.setActive(product_pojo.getActive());
-                            addCart_model.setQuantity(1);
-                            addCart_model.setBrand(product_pojo.getBrand());
-                            addCart_model.setAvailableQuantity(product_pojo.getAvailableQuantity());
-                            addCart_model.setMRP(product_pojo.getMRP());
+                            try
+                            {
+                                AddCart_model addCart_model = new AddCart_model();
+                                addCart_model.setProductCategory(product_pojo.getProductCategory());
+                                addCart_model.setProductId(product_pojo.getProductId());
+                                addCart_model.setProductName(product_pojo.getProductName());
+                                addCart_model.set_id(product_pojo.get_id());
+                                addCart_model.setUnitsOfMeasurement(product_pojo.getUnitsOfMeasurement());
+                                addCart_model.setProductCategoryId(product_pojo.getProductCategoryId());
+                                addCart_model.setProductDescription(product_pojo.getProductDescription());
+                                addCart_model.setProductDetails(product_pojo.getProductDetails());
+                                addCart_model.setUnit(product_pojo.getUnit());
+                                addCart_model.setPrice(product_pojo.getSelling_price());
+                                addCart_model.setUnitsOfMeasurementId(product_pojo.getUnitsOfMeasurementId());
 
-                            myApplication.setProducts(addCart_model);
+                                if(product_pojo.getProductImages().isEmpty())
+                                {
+                                    addCart_model.setProductImage(product_pojo.getProductImage());
+                                }
+                                else
+                                {
+                                    addCart_model.setProductImage(product_pojo.getProductImages().get(0).getUrl());
+                                }
+
+                                addCart_model.setActive(product_pojo.getActive());
+                                addCart_model.setQuantity(1);
+                                addCart_model.setBrand(product_pojo.getBrand());
+                                addCart_model.setAvailableQuantity(product_pojo.getAvailableQuantity());
+                                addCart_model.setMRP(product_pojo.getMRP());
+
+                                if(product_pojo.getOffer() != null)
+                                {
+                                    addCart_model.setOffer(product_pojo.getOffer());
+                                }
+                                else
+                                {
+                                    addCart_model.setOffer("false");
+                                }
+
+                                if(product_pojo.getMfgDate() != null)
+                                {
+                                    addCart_model.setMfgDate(product_pojo.getMfgDate());
+                                }
+                                else
+                                {
+                                    addCart_model.setMfgDate("");
+                                }
+
+                                if(product_pojo.getExpDate() != null)
+                                {
+                                    addCart_model.setExpDate(product_pojo.getExpDate());
+                                }
+                                else
+                                {
+                                    addCart_model.setExpDate("");
+                                }
+
+                                if(product_pojo.getQc() != null)
+                                {
+                                    addCart_model.setQc(product_pojo.getQc());
+                                }
+                                else
+                                {
+                                    addCart_model.setQc("");
+                                }
+
+                                if(product_pojo.getBatchNo() != null)
+                                {
+                                    addCart_model.setBatchNo(product_pojo.getBatchNo());
+                                }
+                                else
+                                {
+                                    addCart_model.setBatchNo("");
+                                }
+
+                                myApplication.setProducts(addCart_model);
+                            }catch (Exception e)
+                            {
+                                e.printStackTrace();
+                            }
+
                         } else {
                             //Toast.makeText(activity, "Product already present in cart!!", Toast.LENGTH_SHORT).show();
                             viewHolder.count.setText(myApplication.getProductQuantity(product_pojo.getProductId()));
@@ -250,11 +325,10 @@ public class Product_categoryFragment extends Fragment {
                                 final Dialog dialog = new Dialog(activity);
                                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                 dialog.setContentView(R.layout.item_unavailable_dialog);
-                                dialog.setCanceledOnTouchOutside(false);
                                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
                                 dialog.show();
 
-                                Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
+                                FancyButton btnCancel = (FancyButton) dialog.findViewById(R.id.btnCancel);
                                 btnCancel.setText("Oops! Only " + product_pojo.getAvailableQuantity() + " items available!!");
                                 btnCancel.setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -320,12 +394,70 @@ public class Product_categoryFragment extends Fragment {
                             in.putExtra("unit", product_pojo.getUnit());
                             in.putExtra("unitsOfMeasurementId", product_pojo.getUnitsOfMeasurementId());
                             in.putExtra("productId", product_pojo.getProductId());
-                            in.putExtra("productImage", product_pojo.getProductImage());
+                            if(product_pojo.getProductImages().isEmpty())
+                            {
+                                in.putExtra("productImage", product_pojo.getProductImage());
+                                in.putExtra("productImages","");
+                            }
+                            else
+                            {
+                                in.putExtra("productImage", product_pojo.getProductImages().get(0).getUrl());
+
+                                //Set the values
+                                Gson gson = new Gson();
+                                String jsonText = gson.toJson(product_pojo.getProductImages());
+                                in.putExtra("productImages",jsonText);
+                            }
                             in.putExtra("active", product_pojo.getActive());
                             in.putExtra("price",product_pojo.getSelling_price());
                             in.putExtra("brand",product_pojo.getBrand());
                             in.putExtra("quantity",product_pojo.getAvailableQuantity());
                             in.putExtra("MRP",product_pojo.getMRP());
+
+                            if(product_pojo.getOffer() != null)
+                            {
+                                in.putExtra("Offer",product_pojo.getOffer());
+                            }
+                            else
+                            {
+                                in.putExtra("Offer","false");
+                            }
+
+                            if(product_pojo.getMfgDate() != null)
+                            {
+                                in.putExtra("mfgDate",product_pojo.getMfgDate());
+                            }
+                            else
+                            {
+                                in.putExtra("mfgDate","");
+                            }
+
+                            if(product_pojo.getExpDate() != null)
+                            {
+                                in.putExtra("expDate",product_pojo.getExpDate());
+                            }
+                            else
+                            {
+                                in.putExtra("expDate","");
+                            }
+
+                            if(product_pojo.getQc() != null)
+                            {
+                                in.putExtra("qc",product_pojo.getQc());
+                            }
+                            else
+                            {
+                                in.putExtra("qc","");
+                            }
+
+                            if(product_pojo.getBatchNo() != null)
+                            {
+                                in.putExtra("batchNo",product_pojo.getBatchNo());
+                            }
+                            else
+                            {
+                                in.putExtra("batchNo","");
+                            }
 
                             //in.putExtra("quantity",String.valueOf(viewHolder.count.getText().toString().trim()));
                             startActivity(in);
@@ -346,8 +478,8 @@ public class Product_categoryFragment extends Fragment {
         private class ViewHolder {
             TextView product_name, weight, price, count,quantity,mrp;
             SimpleDraweeView imageView;
-            FancyButton plus, minus;
-            Button addtoCart;
+            Button plus, minus;
+            ImageView addtoCart;
             LinearLayout holder_count;
         }
     }

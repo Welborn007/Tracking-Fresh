@@ -9,7 +9,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -23,6 +25,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -70,27 +73,29 @@ import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.ErrorPOJO;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import mehdi.sakout.fancybuttons.FancyButton;
+
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener, NetworkUtilsReceiver.NetworkResponseInt {
 
     Button btnLogin, btnSignup;
     TextView btnForget;
-    ImageView Fbbtn, Googlebtn;
+//    ImageView Fbbtn, Googlebtn;
     private NetworkUtilsReceiver networkUtilsReceiver;
     ErrorPOJO errorPOJO;
     private String TAG = this.getClass().getSimpleName();
@@ -114,10 +119,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
     boolean permission = false;
     EditText user_name, password;
-
+    private Boolean exit = false;
     private Gson gson;
     LoginMain loginMain;
-
+    Button faceBookLogin,googleLogin;
+    TextView signupTextView,toolbarTitleTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,16 +142,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             registerReceiver(networkUtilsReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
             gson = new Gson();
-
+            //printHashKey(LoginActivity.this);
             btnLogin = (Button) findViewById(R.id.btnLogin);
             btnSignup = (Button) findViewById(R.id.btnSignup);
             btnForget = (TextView) findViewById(R.id.btnForget);
+            signupTextView = (TextView) findViewById(R.id.signupTextView);
 
             user_name = (EditText) findViewById(R.id.user_name);
             password = (EditText) findViewById(R.id.password);
 
 
-            password.setOnTouchListener(new View.OnTouchListener() {
+          /*  password.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     final int DRAWABLE_LEFT = 0;
@@ -174,12 +181,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     }
                     return false;
                 }
-            });
+            });*/
 
             sharedpreferencesLogin = getSharedPreferences(MyPREFERENCES_LOGIN, Context.MODE_PRIVATE);
 
             String token = sharedpreferencesLogin.getString("token", "None");
-            Log.i("token", token);
+            Log.i("Firebasetoken", token);
 
             btnLogin.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -193,14 +200,29 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     if (!UserName.isEmpty() && !Password.isEmpty()) {
                         if (!NetworkUtils.isNetworkConnectionOn(LoginActivity.this)) {
-                            FireToast.customSnackbarWithListner(LoginActivity.this, "No internet access", "Settings", new ActionClickListener() {
+
+                            new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText("No internet access")
+                                    .setContentText("Check Settings!")
+                                    .setConfirmText("Settings")
+                                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sDialog) {
+                                            sDialog.dismissWithAnimation();
+                                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                        }
+                                    })
+                                    .show();
+
+                          /*  FireToast.customSnackbarWithListner(LoginActivity.this, "No internet access", "Settings", new ActionClickListener() {
                                 @Override
                                 public void onActionClicked(Snackbar snackbar) {
                                     startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                                 }
                             });
-                            return;
+                            return;*/
                         } else {
+                            btnLogin.setClickable(false);
                             sendSimpleLoginData(UserName, Password);
                         }
                     } else if (UserName.isEmpty()) {
@@ -214,7 +236,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
             });
 
-            btnSignup.setOnClickListener(new View.OnClickListener() {
+            signupTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent startMainActivity = new Intent(getApplicationContext(), RegisterActivity.class);
@@ -297,6 +319,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onSuccess(String result) {
                     SimpleResponse(result.toString());
+                    btnLogin.setClickable(true);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+                    btnLogin.setClickable(true);
                 }
             });
 
@@ -320,7 +348,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
             else if(loginMain.getUser().getOk().equalsIgnoreCase("false"))
             {
-                Toast.makeText(this, loginMain.getMessage(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, loginMain.getMessage(), Toast.LENGTH_SHORT).show();
+                new SweetAlertDialog(this)
+                        .setTitleText(loginMain.getMessage())
+                        .show();
+
                 user_name.setText("");
                 password.setText("");
             }
@@ -344,6 +376,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Log.i("profile_result",result);
 
                     profileDataResponse(result);
+
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
 
                 }
             });
@@ -381,7 +418,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             String url = Constants.LoginActivityAPI;
 
-            Log.i("url", url);
+            //Log.i("url", url);
 
             JSONObject jsonObject = new JSONObject();
 
@@ -390,6 +427,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 JSONObject postObject = new JSONObject();
 
                 postObject.put("socialId", SocialID);
+                postObject.put("registrationType",Type);
 
                 jsonObject.put("post", postObject);
 
@@ -466,24 +504,32 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             if(errorString.equalsIgnoreCase("User not found"))
             {
-                sendRegisterData(firstname, lastname, "", Email, "", "", Type, SocialID);
+                sendRegisterData(firstname, lastname,  Email, Type, SocialID);
             }
 
-            FireToast.customSnackbar(context, errorString,"");
+            //FireToast.customSnackbar(context, errorString,"");
 
         }
         else if(errorPOJO.getMessage() != null)
         {
-            FireToast.customSnackbar(context, errorPOJO.getMessage(),"");
+            //FireToast.customSnackbar(context, errorPOJO.getMessage(),"");
+
+            /*new SweetAlertDialog(context)
+                    .setTitleText(errorPOJO.getMessage())
+                    .show();*/
 
             if(errorPOJO.getMessage().equalsIgnoreCase("User not found"))
             {
-                sendRegisterData(firstname, lastname, "", Email, "", "", Type, SocialID);
+                sendRegisterData(firstname, lastname,  Email, Type, SocialID);
             }
         }
         else
         {
-            FireToast.customSnackbar(context, "Oops Something Went Wrong!!","");
+            //FireToast.customSnackbar(context, "Oops Something Went Wrong!!","");
+
+            new SweetAlertDialog(context)
+                    .setTitleText("Oops Something Went Wrong!!")
+                    .show();
         }
 
 
@@ -511,7 +557,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    public void sendRegisterData(String FirstName, String LastName, String Mobile, String Email, String ReferralCode, String Password, String Type, String SocialID) {
+    public void sendRegisterData(String FirstName, String LastName, String Email, String Type, String SocialID) {
 
         try
         {
@@ -530,13 +576,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 postObject.put("firstName", FirstName);
                 postObject.put("lastName", LastName);
-                postObject.put("mobileNo", Mobile);
+                //postObject.put("mobileNo", Mobile);
                 postObject.put("emailId", Email);
                 //postObject.put("location",Location);
-                postObject.put("referralCode", ReferralCode);
+                //postObject.put("referralCode", ReferralCode);
                 postObject.put("socialId", SocialID);
                 postObject.put("registrationType", Type);
-                postObject.put("password", Password);
+                //postObject.put("password", Password);
 
                 jsonObject.put("post", postObject);
 
@@ -552,6 +598,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onSuccess(String result) {
                     RegisterResponse(result.toString());
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 
@@ -579,7 +630,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
             else if(loginMain.getUser().getOk().equalsIgnoreCase("false"))
             {
-                Toast.makeText(this, loginMain.getMessage(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, loginMain.getMessage(), Toast.LENGTH_SHORT).show();
+
+                new SweetAlertDialog(this)
+                        .setTitleText(loginMain.getMessage())
+                        .show();
             }
 
 
@@ -749,8 +804,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         {
 
             //Google
-            Googlebtn = (ImageView) findViewById(R.id.Googlebtn);
-            Googlebtn.setOnClickListener(this);
+            googleLogin = (Button) findViewById(R.id.googleLogin);
+            googleLogin.setOnClickListener(this);
             GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestEmail()
                     .build();
@@ -766,8 +821,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
             //Facebook
-            Fbbtn = (ImageView) findViewById(R.id.Fbbtn);
-            Fbbtn.setOnClickListener(this);
+            faceBookLogin = (Button) findViewById(R.id.faceBookLogin);
+            faceBookLogin.setOnClickListener(this);
             loginButton = (LoginButton) findViewById(R.id.login_button);
             loginButton.setReadPermissions("public_profile", "email", "user_friends", "user_birthday");
             callbackManager = CallbackManager.Factory.create();
@@ -795,7 +850,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 // If the user has not previously signed in on this device or the sign-in has expired,
                 // this asynchronous branch will attempt to sign in the user silently.  Cross-device
                 // single sign-on will occur in this branch.
-                showProgressDialog();
+                //showProgressDialog();
                 opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
                     @Override
                     public void onResult(GoogleSignInResult googleSignInResult) {
@@ -814,32 +869,57 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
 
-            case R.id.Googlebtn:
+            case R.id.googleLogin:
 
                 if (!NetworkUtils.isNetworkConnectionOn(LoginActivity.this)) {
-                    FireToast.customSnackbarWithListner(LoginActivity.this, "No internet access", "Settings", new ActionClickListener() {
+                    /*FireToast.customSnackbarWithListner(LoginActivity.this, "No internet access", "Settings", new ActionClickListener() {
                         @Override
                         public void onActionClicked(Snackbar snackbar) {
                             startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                         }
                     });
-                    return;
+                    return;*/
+
+                    new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("No Internet access")
+                            .setContentText("Check Settings!")
+                            .setConfirmText("Settings")
+                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sDialog) {
+                                    sDialog.dismissWithAnimation();
+                                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                }
+                            })
+                            .show();
                 } else {
                     signIn();
                 }
 
                 break;
 
-            case R.id.Fbbtn:
+            case R.id.faceBookLogin:
 
                 if (!NetworkUtils.isNetworkConnectionOn(LoginActivity.this)) {
-                    FireToast.customSnackbarWithListner(LoginActivity.this, "No internet access", "Settings", new ActionClickListener() {
+                    /*FireToast.customSnackbarWithListner(LoginActivity.this, "No internet access", "Settings", new ActionClickListener() {
                         @Override
                         public void onActionClicked(Snackbar snackbar) {
                             startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                         }
                     });
-                    return;
+                    return;*/
+                    new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("No Internet access")
+                            .setContentText("Check Settings!")
+                            .setConfirmText("Settings")
+                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sDialog) {
+                                    sDialog.dismissWithAnimation();
+                                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                }
+                            })
+                            .show();
                 } else {
                     if (isLoggedIn()) {
                         LoginManager.getInstance().logOut();
@@ -912,13 +992,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 String registration_Type = "facebook";
 
                                 if (!NetworkUtils.isNetworkConnectionOn(LoginActivity.this)) {
-                                    FireToast.customSnackbarWithListner(LoginActivity.this, "No internet access", "Settings", new ActionClickListener() {
+                                    /*FireToast.customSnackbarWithListner(LoginActivity.this, "No internet access", "Settings", new ActionClickListener() {
                                         @Override
                                         public void onActionClicked(Snackbar snackbar) {
                                             startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                                         }
                                     });
-                                    return;
+                                    return;*/
+
+                                    new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.WARNING_TYPE)
+                                            .setTitleText("No internet access")
+                                            .setContentText("Check Settings!")
+                                            .setConfirmText("Settings")
+                                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                @Override
+                                                public void onClick(SweetAlertDialog sDialog) {
+                                                    sDialog.dismissWithAnimation();
+                                                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                                }
+                                            })
+                                            .show();
+
                                 } else {
                                     sendSocialLoginData(id, name, email, registration_Type, firstname, lastname);
                                 }
@@ -1016,13 +1110,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 String registration_Type = "google";
 
                 if (!NetworkUtils.isNetworkConnectionOn(LoginActivity.this)) {
-                    FireToast.customSnackbarWithListner(LoginActivity.this, "No internet access", "Settings", new ActionClickListener() {
+                   /* FireToast.customSnackbarWithListner(LoginActivity.this, "No internet access", "Settings", new ActionClickListener() {
                         @Override
                         public void onActionClicked(Snackbar snackbar) {
                             startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                         }
                     });
-                    return;
+                    return;*/
+
+                    new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("No internet access")
+                            .setContentText("Check Settings!")
+                            .setConfirmText("Settings")
+                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sDialog) {
+                                    sDialog.dismissWithAnimation();
+                                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                }
+                            })
+                            .show();
                 } else {
                     sendSocialLoginData(id, name, email, registration_Type, personGivenName, personFamilyName);
                 }
@@ -1062,6 +1169,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
+        }
+    }
+
+    public void printHashKey(Context pContext) {
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo("com.kesari.trackingfresh", PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                String hashKey = new String(Base64.encode(md.digest(), 0));
+                Log.i(TAG, "printHashKey() Hash Key: " + hashKey);
+            }
+        } catch (NoSuchAlgorithmException e) {
+            Log.e(TAG, "printHashKey()", e);
+        } catch (Exception e) {
+            Log.e(TAG, "printHashKey()", e);
         }
     }
 
@@ -1137,13 +1260,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void NetworkClose() {
         if (!NetworkUtils.isNetworkConnectionOn(this)) {
-            FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+            /*FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
                 @Override
                 public void onActionClicked(Snackbar snackbar) {
                     startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                 }
             });
-            return;
+            return;*/
+
+            new SweetAlertDialog(LoginActivity.this, SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText("No internet access")
+                    .setContentText("Check Settings!")
+                    .setConfirmText("Settings")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            sDialog.dismissWithAnimation();
+                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                        }
+                    })
+                    .show();
         }
     }
 
@@ -1162,5 +1298,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (exit) {
+            finish(); // finish activity
+        } else {
+            Toast.makeText(this, "Press Back again to Exit.",
+                    Toast.LENGTH_SHORT).show();
+            exit = true;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    exit = false;
+                }
+            }, 3 * 1000);
+
+        }
+
     }
 }

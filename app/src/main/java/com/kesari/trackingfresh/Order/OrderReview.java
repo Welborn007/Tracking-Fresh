@@ -6,8 +6,10 @@ import android.content.IntentFilter;
 import android.graphics.drawable.LayerDrawable;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,26 +18,34 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.Cart.AddToCart;
+import com.kesari.trackingfresh.HelpAndFAQ.HelpActivity;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.OrderTracking.OrderBikerTrackingActivity;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import mehdi.sakout.fancybuttons.FancyButton;
 
 import static com.kesari.trackingfresh.Utilities.IOUtils.setBadgeCount;
 
@@ -49,12 +59,22 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
     private Gson gson;
     OrderReviewMainPOJO orderReviewMainPOJO;
     private RecyclerView.Adapter adapterProducts;
-    TextView total_price,payment_status,payment_mode,fullName,buildingName,landmark,address,mobileNo;
-    Button btnSubmit;
+    TextView total_price,payment_status,payment_mode,fullName,buildingName,landmark,address,mobileNo,bikerName,deliveryCharge,orderDate,orderDeliverDate,delivery_textData,orderNo,orderType;
+    FancyButton btnSubmit,btnCall,btnSupport;
+
+    LinearLayout BikerHolder,deliveryDateHolder;
 
     //ScheduledExecutorService scheduleTaskExecutor;
     MyApplication myApplication;
     public static int mNotificationsCount = 0;
+    private SwipeRefreshLayout swipeContainer;
+
+    //Rating View
+    RatingBar ratingBar;
+    LinearLayout FeedbackHolder;
+    TextView feedbackTxt;
+    EditText feedback_remark;
+    FancyButton btnFeedback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +86,7 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.getBackground().setAlpha(0);
 
         /*Register receiver*/
             networkUtilsReceiver = new NetworkUtilsReceiver(this);
@@ -82,6 +103,7 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
             recListProducts.setLayoutManager(ProductsLayout);
 
             total_price = (TextView) findViewById(R.id.total_price);
+            deliveryCharge = (TextView) findViewById(R.id.deliveryCharge);
             payment_status = (TextView) findViewById(R.id.payment_status);
             payment_mode = (TextView) findViewById(R.id.payment_mode);
             fullName = (TextView) findViewById(R.id.fullName);
@@ -89,10 +111,57 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
             landmark = (TextView) findViewById(R.id.landmark);
             address = (TextView) findViewById(R.id.address);
             mobileNo = (TextView) findViewById(R.id.mobileNo);
+            orderDate = (TextView) findViewById(R.id.orderDate);
+            orderDeliverDate = (TextView) findViewById(R.id.orderDeliverDate);
+            delivery_textData = (TextView) findViewById(R.id.delivery_textData);
+            orderNo = (TextView) findViewById(R.id.orderNo);
+            orderType = (TextView) findViewById(R.id.orderType);
 
-            btnSubmit = (Button) findViewById(R.id.btnSubmit);
+            BikerHolder = (LinearLayout) findViewById(R.id.BikerHolder);
+            deliveryDateHolder = (LinearLayout) findViewById(R.id.deliveryDateHolder);
+            bikerName = (TextView) findViewById(R.id.bikerName);
+            btnCall = (FancyButton) findViewById(R.id.btnCall);
+            btnSupport = (FancyButton) findViewById(R.id.btnSupport);
+
+            ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+            FeedbackHolder = (LinearLayout) findViewById(R.id.FeedbackHolder);
+            feedbackTxt = (TextView) findViewById(R.id.feedbackTxt);
+            feedback_remark = (EditText) findViewById(R.id.feedback_remark);
+            btnFeedback = (FancyButton) findViewById(R.id.btnFeedback);
 
             final String orderID = getIntent().getStringExtra("orderID");
+
+            btnFeedback.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    String RatingtXt = String.valueOf(ratingBar.getRating());
+                    String feedbackTxt = feedback_remark.getText().toString().trim();
+
+                    if(!RatingtXt.equalsIgnoreCase("0.0"))
+                    {
+                        sendRatingsFeedback(orderID,RatingtXt,feedbackTxt);
+                    }
+                    else
+                    {
+                        //Toast.makeText(OrderReview.this, "Please Rate!!", Toast.LENGTH_SHORT).show();
+
+                        new SweetAlertDialog(OrderReview.this)
+                                .setTitleText("Please Rate!!")
+                                .show();
+                    }
+                }
+            });
+
+            btnSubmit = (FancyButton) findViewById(R.id.btnSubmit);
+
+            btnSupport.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(OrderReview.this, HelpActivity.class);
+                    startActivity(intent);
+                }
+            });
 
             btnSubmit.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -119,6 +188,25 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
                 }
             }
 
+
+
+            swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+            // Setup refresh listener which triggers new data loading
+            swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    // Your code to refresh the list here.
+                    // Make sure you call swipeContainer.setRefreshing(false)
+                    // once the network request has completed successfully.
+                    getOrderDetailsfromID();
+                }
+            });
+            // Configure the refreshing colors
+            swipeContainer.setColorSchemeResources(R.color.colorAccent,
+                    android.R.color.holo_green_light,
+                    android.R.color.holo_orange_light,
+                    android.R.color.holo_red_light);
+
             getOrderDetailsfromID();
 
 
@@ -126,19 +214,57 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
 
             updateNotificationsBadge(myApplication.getProductsArraylist().size());
 
-            /*scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
-
-            // This schedule a task to run every 10 minutes:
-            scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
-                public void run() {
-                    updateNotificationsBadge(myApplication.getProductsArraylist().size());
-                }
-            }, 0, 1, TimeUnit.SECONDS);*/
-
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
 
+    }
+
+    private void sendRatingsFeedback(String orderID, String Rating,String Feedback) {
+        try {
+
+            String url = Constants.UpdateOrder;
+
+            JSONObject jsonObject = new JSONObject();
+
+            try {
+
+                JSONObject postObject = new JSONObject();
+
+                postObject.put("id", orderID);
+                postObject.put("feedback",Feedback);
+                postObject.put("rating",Rating);
+                postObject.put("status","Delivered");
+
+                jsonObject.put("post", postObject);
+
+                Log.i("JSON CREATED", jsonObject.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(OrderReview.this));
+
+            ioUtils.sendJSONObjectPutRequestHeader(OrderReview.this, url, params, jsonObject, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG, result.toString());
+                    getOrderDetailsfromID();
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
     }
 
     private void getOrderDetailsfromID() {
@@ -155,8 +281,13 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
                 @Override
                 public void onSuccess(String result) {
                     Log.d(TAG, result.toString());
-
+                    swipeContainer.setRefreshing(false);
                     OrderDetailsResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 
@@ -180,18 +311,57 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
                 btnSubmit.setVisibility(View.GONE);
             }
 
+            if(orderReviewMainPOJO.getData().getPickUp() != null)
+            {
+                if(orderReviewMainPOJO.getData().getPickUp().equalsIgnoreCase("true"))
+                {
+                    orderType.setText("Pick Up");
+                }
+                else
+                {
+                    orderType.setText("Delivery");
+
+                    if(orderReviewMainPOJO.getData().getBiker() != null)
+                    {
+                        BikerHolder.setVisibility(View.VISIBLE);
+                        bikerName.setText(orderReviewMainPOJO.getData().getBiker().getBikerName());
+
+                        btnCall.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                String phone = orderReviewMainPOJO.getData().getBiker().getMobileNo();
+                                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
+                                startActivity(intent);
+                            }
+                        });
+                    }
+                }
+            }
+            else
+            {
+                orderType.setText("Delivery");
+
+                if(orderReviewMainPOJO.getData().getBiker() != null)
+                {
+                    BikerHolder.setVisibility(View.VISIBLE);
+                    bikerName.setText(orderReviewMainPOJO.getData().getBiker().getBikerName());
+
+                    btnCall.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String phone = orderReviewMainPOJO.getData().getBiker().getMobileNo();
+                            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
+                            startActivity(intent);
+                        }
+                    });
+                }
+            }
+
             adapterProducts = new OrderReViewRecyclerAdapter(orderReviewMainPOJO.getData().getOrder(),OrderReview.this);
             recListProducts.setAdapter(adapterProducts);
 
-            payment_status = (TextView) findViewById(R.id.payment_status);
-            payment_mode = (TextView) findViewById(R.id.payment_mode);
-            fullName = (TextView) findViewById(R.id.fullName);
-            buildingName = (TextView) findViewById(R.id.buildingName);
-            landmark = (TextView) findViewById(R.id.landmark);
-            address = (TextView) findViewById(R.id.address);
-            mobileNo = (TextView) findViewById(R.id.mobileNo);
-
-            total_price.setText(orderReviewMainPOJO.getData().getTotal_price() + " .Rs");
+            total_price.setText("₹ " + orderReviewMainPOJO.getData().getTotal_price());
+            deliveryCharge.setText("₹ " + orderReviewMainPOJO.getData().getDelivery_charge());
 
             if(orderReviewMainPOJO.getData().getPayment_Status() != null)
             {
@@ -208,6 +378,93 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
             landmark.setText(orderReviewMainPOJO.getData().getAddress().getLandmark());
             address.setText(orderReviewMainPOJO.getData().getAddress().getCity() + ", " + orderReviewMainPOJO.getData().getAddress().getState() + ", " + orderReviewMainPOJO.getData().getAddress().getPincode());
             mobileNo.setText(orderReviewMainPOJO.getData().getAddress().getMobileNo());
+            orderNo.setText(orderReviewMainPOJO.getData().getOrderNo());
+
+            SimpleDateFormat sdfInput = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            SimpleDateFormat sdfOutput = new SimpleDateFormat("dd-MM-yyyy");
+            Date d = sdfInput.parse(orderReviewMainPOJO.getData().getCreatedAt());
+            String orderDateFormatted = sdfOutput.format(d);
+            orderDate.setText(orderDateFormatted);
+
+            if(orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Delivered"))
+            {
+                deliveryDateHolder.setVisibility(View.VISIBLE);
+                SimpleDateFormat deliverInput = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                SimpleDateFormat deliverOutput = new SimpleDateFormat("dd-MM-yyyy");
+                Date deliver = deliverInput.parse(orderReviewMainPOJO.getData().getEditedAt());
+                String orderdeliverDateFormatted = deliverOutput.format(deliver);
+                orderDeliverDate.setText(orderdeliverDateFormatted);
+
+                delivery_textData.setText(" delivered the order.");
+            }
+            else
+            {
+                deliveryDateHolder.setVisibility(View.GONE);
+                delivery_textData.setText(" will deliver the order.");
+            }
+
+            if(orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Delivered"))
+            {
+                FeedbackHolder.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                FeedbackHolder.setVisibility(View.GONE);
+            }
+
+            if(orderReviewMainPOJO.getData().getRating() != null)
+            {
+                if(!orderReviewMainPOJO.getData().getRating().isEmpty())
+                {
+                    ratingBar.setRating(Float.parseFloat(orderReviewMainPOJO.getData().getRating()));
+                    ratingBar.setIsIndicator(true);
+                }
+                else
+                {
+                    ratingBar.setRating(5);
+                }
+            }
+            else
+            {
+                ratingBar.setRating(5);
+            }
+
+
+            if(orderReviewMainPOJO.getData().getFeedback() != null)
+            {
+                if(!orderReviewMainPOJO.getData().getFeedback().isEmpty())
+                {
+                    feedbackTxt.setText(orderReviewMainPOJO.getData().getFeedback());
+                    feedbackTxt.setVisibility(View.VISIBLE);
+                    feedback_remark.setVisibility(View.GONE);
+                }
+                else
+                {
+                    feedback_remark.setVisibility(View.VISIBLE);
+                    feedbackTxt.setVisibility(View.GONE);
+                }
+            }
+            else
+            {
+                feedback_remark.setVisibility(View.VISIBLE);
+                feedbackTxt.setVisibility(View.GONE);
+            }
+
+            if(orderReviewMainPOJO.getData().getRating() != null && orderReviewMainPOJO.getData().getFeedback() != null)
+            {
+                if(!orderReviewMainPOJO.getData().getFeedback().isEmpty() && !orderReviewMainPOJO.getData().getRating().isEmpty())
+                {
+                    btnFeedback.setVisibility(View.GONE);
+                }
+                else
+                {
+                    btnFeedback.setVisibility(View.VISIBLE);
+                }
+            }
+            else
+            {
+                btnFeedback.setVisibility(View.VISIBLE);
+            }
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
@@ -290,13 +547,26 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
         try {
 
             if (!NetworkUtils.isNetworkConnectionOn(this)) {
-                FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+               /* FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
                     @Override
                     public void onActionClicked(Snackbar snackbar) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
-                return;
+                return;*/
+
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
 
         }catch (Exception e)

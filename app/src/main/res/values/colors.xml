@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#e5e5e5</color>
-    <color name="colorPrimaryDark">#D50000</color>
+    <color name="colorPrimaryDark">#FE0000</color>
+    <!--<color name="colorPrimaryDark">#D50000</color>-->
     <color name="colorAccent">#E91E63</color>
 
     <color name="colorHighlight">#B6B6B6</color>
@@ -13,7 +14,8 @@
     <color name="teal">#26A69A</color>
     <color name="Blue">#2196f3</color>
     <color name="Gray">#757575</color>
-    <color name="MoneyGreen">#4CAF50</color>
+    <color name="whitegray">#EFEEF4</color>
+    <color name="MoneyGreen">#8DC33A</color>
     <color name="bluegray100">#CFD8DC</color>
 
     <color name="LightGray">#E0E0E0</color>
@@ -35,8 +37,8 @@
     <color name="colorEdittextBackground">#f1f1f1</color>
     <color name="colorImageviewBackground">#33e5e5e5</color>
     <color name="Skip">#a9a8a8</color>
-    <color name="Button_Color">#d40f14</color>
-
+    <!--<color name="Button_Color">#d40f14</color>-->
+    <color name="Button_Color">#FE0000</color>
 
     <color name="ButtonColor">#26a69a</color>
     <color name="Red">#f44336</color>
@@ -58,7 +60,7 @@
     <color name="orange">#FF5722</color>
     <color name="gray">#9E9E9E</color>
 
-    <color name="red">#F00</color>
+
     <color name="green">#0F0</color>
     <color name="yellow">#FF0</color>
     <integer-array name="color_array">
@@ -118,4 +120,15 @@
     <color name="btn_bg">#277bec</color>
     <color name="txt_font">#4e5572</color>
     <color name="button_green">#66BB6A</color>
+    
+    <!--Client colors-->
+    <color name="mint">#B3DBC0</color>
+    <color name="red">#FE0000</color>
+    <color name="porcelain">#a6000000</color>
+<!--
+    <color name="porcelain">#FDF6F6</color>
+-->
+    <color name="fresh_blue">#67BACA</color>
+
+    <color name="arrowColor">#A3A2A2</color>
 </resources>

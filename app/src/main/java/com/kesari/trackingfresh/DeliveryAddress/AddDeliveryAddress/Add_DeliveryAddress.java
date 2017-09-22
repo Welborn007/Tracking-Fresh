@@ -1,9 +1,11 @@
 package com.kesari.trackingfresh.DeliveryAddress.AddDeliveryAddress;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -20,16 +22,20 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
+import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.DeliveryAddress.DefaultDeliveryAddress.Default_DeliveryAddress;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
@@ -37,11 +43,9 @@ import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
-import com.kesari.trackingfresh.network.FireToast;
+import com.kesari.trackingfresh.VehicleNearestRoute.NearestRouteMainPOJO;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,10 +55,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import mehdi.sakout.fancybuttons.FancyButton;
+
 public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt,OnMapReadyCallback
 {
 
-    Button confirmAddress;
+    FancyButton confirmAddress;
     EditText name,email,mobile,city,state,pincode,flat_no,building_name,landmark,addressType;
     private String TAG = this.getClass().getSimpleName();
     //private GPSTracker gpsTracker;
@@ -82,6 +89,9 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
 
     String Latitude,Longitude;
     NestedScrollView nestedScrollView;
+    private LatLng Current_Location;
+    Marker marker;
+    NearestRouteMainPOJO nearestRouteMainPOJO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +104,7 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.getBackground().setAlpha(0);
 
         /*Register receiver*/
             networkUtilsReceiver = new NetworkUtilsReceiver(this);
@@ -124,7 +135,7 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
             }
             supportMapFragment.getMapAsync(this);
 
-            confirmAddress = (Button) findViewById(R.id.confirmAddress);
+            confirmAddress = (FancyButton) findViewById(R.id.confirmAddress);
 
             name = (EditText) findViewById(R.id.name);
             email = (EditText) findViewById(R.id.email);
@@ -185,6 +196,8 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
 
             Latitude = String.valueOf(SharedPrefUtil.getLocation(Add_DeliveryAddress.this).getLatitude());
             Longitude = String.valueOf(SharedPrefUtil.getLocation(Add_DeliveryAddress.this).getLongitude());
+
+            sendLATLONVehicle(Latitude,Longitude);
 
             Geocoder geocoder = new Geocoder(this, Locale.getDefault());
             List<Address> addresses = null;
@@ -258,7 +271,7 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
                         DefaultAddress = "false";
                     }
 
-                    if(!FullName.isEmpty() && !EmailID.isEmpty() && !MobileNum.isEmpty() && !FlatNum.isEmpty() && !BuildingName.isEmpty() && !Landmark.isEmpty() && !City.isEmpty() && !State.isEmpty() && !Pincode.isEmpty() && !AddressType.isEmpty())
+                    if(!FullName.isEmpty() && !EmailID.isEmpty() && !MobileNum.isEmpty() && !FlatNum.isEmpty() && !BuildingName.isEmpty() && !Landmark.isEmpty() && !City.isEmpty() && !State.isEmpty() && !Pincode.isEmpty() && !AddressType.isEmpty() && !Latitude.isEmpty() && !Longitude.isEmpty())
                     {
                         AddNewAddress(FullName,EmailID,MobileNum,FlatNum,BuildingName,Landmark,City,State,Pincode,AddressType,DefaultAddress);
                     }
@@ -302,6 +315,14 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
                     {
                         addressType.setError(getString(R.string.addressType));
                     }
+                    else if(Latitude.isEmpty() || Longitude.isEmpty())
+                    {
+                        //Toast.makeText(Add_DeliveryAddress.this, "Please Set Your Location On Map!!", Toast.LENGTH_SHORT).show();
+
+                        new SweetAlertDialog(Add_DeliveryAddress.this)
+                                .setTitleText("Please Set Your Location On Map!!")
+                                .show();
+                    }
 
                 }
             });
@@ -313,7 +334,7 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(final GoogleMap googleMap) {
 
         try
         {
@@ -331,15 +352,143 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
 
                     Latitude = String.valueOf(latLng.latitude);
                     Longitude = String.valueOf(latLng.longitude);
-                    Toast.makeText(Add_DeliveryAddress.this, "Location Set!!", Toast.LENGTH_SHORT).show();
+
+                    sendLATLONVehicle(Latitude,Longitude);
+
+                    marker.setPosition(latLng);
                 }
             });
 
+            Current_Origin = SharedPrefUtil.getLocation(Add_DeliveryAddress.this);
+            Current_Location = new LatLng(Current_Origin.getLatitude(), Current_Origin.getLongitude());
+
+            CameraPosition cameraPosition = new CameraPosition.Builder().
+                    target(Current_Location).
+                    zoom(15).
+                    build();
+
+            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+            googleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+                @Override
+                public void onMarkerDragStart(Marker marker) {
+
+                }
+
+                @Override
+                public void onMarkerDrag(Marker marker) {
+
+                }
+
+                @Override
+                public void onMarkerDragEnd(Marker marker) {
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
+
+                    Latitude = String.valueOf(marker.getPosition().latitude);
+                    Longitude = String.valueOf(marker.getPosition().longitude);
+
+                    sendLATLONVehicle(Latitude,Longitude);
+                }
+            });
+
+
+            marker = googleMap.addMarker(new MarkerOptions().position(Current_Location).icon(BitmapDescriptorFactory .fromResource(R.drawable.ic_location_marker_hi)).draggable(true));
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
 
+    }
+
+    private void sendLATLONVehicle(String Latitude,String Longitude)
+    {
+        try
+        {
+
+            String url = Constants.VehicleNearestRoute ;
+
+            Log.i("url", url);
+
+            JSONObject jsonObject = new JSONObject();
+
+            try {
+
+                JSONObject postObject = new JSONObject();
+
+                postObject.put("longitude", Longitude);
+                postObject.put("latitude", Latitude);
+
+                jsonObject.put("post", postObject);
+
+                Log.i("JSON CREATED", jsonObject.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(Add_DeliveryAddress.this));
+
+            IOUtils ioUtils = new IOUtils();
+
+            ioUtils.sendJSONObjectRequestHeader(Add_DeliveryAddress.this, url,params, jsonObject, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    NearestVehicleResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+
+    }
+
+    private void NearestVehicleResponse(String Response)
+    {
+        try
+        {
+            nearestRouteMainPOJO = gson.fromJson(Response, NearestRouteMainPOJO.class);
+
+            if(nearestRouteMainPOJO.getData().isEmpty())
+            {
+                final Dialog dialog = new Dialog(Add_DeliveryAddress.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.item_unavailable_dialog);
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.setCancelable(true);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                dialog.show();
+
+                FancyButton btnCancel = (FancyButton) dialog.findViewById(R.id.btnCancel);
+                btnCancel.setText("Sorry! We don't serve on Current Location. Please set another Location on Map!!");
+                btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                Latitude = "";
+                Longitude = "";
+            }
+            else
+            {
+                //Toast.makeText(Add_DeliveryAddress.this, "Location Set!!", Toast.LENGTH_SHORT).show();
+
+                /*new SweetAlertDialog(Add_DeliveryAddress.this)
+                        .setTitleText("Location Set!!")
+                        .show();*/
+            }
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
     }
 
     private void AddNewAddress(String fullName,String emailId,String mobileNo,String flat_no,String buildingName,String landmark,String city,String state,String pincode,String address_Type,String isDefault)
@@ -392,6 +541,11 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
 
                     AddAddressResponse(result);
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
         } catch (Exception e) {
@@ -407,14 +561,21 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
 
             addAddressPOJO = gson.fromJson(Response,AddAddressPOJO.class);
 
-            if(!addAddressPOJO.getAddress().get_id().isEmpty())
+            if(getIntent().getStringExtra("value") != null || getIntent().getStringExtra("SettingAddress") != null)
             {
-                Intent intent = new Intent(Add_DeliveryAddress.this,Default_DeliveryAddress.class);
-                intent.putExtra("FullName",FullName);
-                intent.putExtra("city",subLocality + " , " + city_geo);
-                intent.putExtra("postalCode",postalCode);
-                startActivity(intent);
                 finish();
+            }
+            else
+            {
+                if(!addAddressPOJO.getAddress().get_id().isEmpty())
+                {
+                    Intent intent = new Intent(Add_DeliveryAddress.this,Default_DeliveryAddress.class);
+                    intent.putExtra("FullName",FullName);
+                    intent.putExtra("city",subLocality + " , " + city_geo);
+                    intent.putExtra("postalCode",postalCode);
+                    startActivity(intent);
+                    finish();
+                }
             }
 
         } catch (Exception e) {
@@ -463,13 +624,26 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
         try {
 
             if (!NetworkUtils.isNetworkConnectionOn(this)) {
-                FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+                /*FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
                     @Override
                     public void onActionClicked(Snackbar snackbar) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
-                return;
+                return;*/
+
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
 
         }catch (Exception e)

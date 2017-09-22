@@ -8,13 +8,18 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.Cart.AddToCart;
@@ -24,23 +29,16 @@ import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.kesari.trackingfresh.Utilities.IOUtils.setBadgeCount;
 
@@ -60,6 +58,11 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
     MyApplication myApplication;
     public static int mNotificationsCount = 0;
 
+    private static SwipeRefreshLayout swipeContainer;
+
+    public static RelativeLayout relativeLayout;
+    public static TextView valueTV;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +74,7 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.getBackground().setAlpha(0);
 
             gson = new Gson();
 
@@ -80,6 +84,25 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
             Orders = new LinearLayoutManager(OrderListActivity.this);
             Orders.setOrientation(LinearLayoutManager.VERTICAL);
             recListOrders.setLayoutManager(Orders);
+
+            relativeLayout = (RelativeLayout) findViewById(R.id.relativelay_reclview);
+
+            swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+            // Setup refresh listener which triggers new data loading
+            swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    // Your code to refresh the list here.
+                    // Make sure you call swipeContainer.setRefreshing(false)
+                    // once the network request has completed successfully.
+                    getOrderList(OrderListActivity.this);
+                }
+            });
+            // Configure the refreshing colors
+            swipeContainer.setColorSchemeResources(R.color.colorAccent,
+                    android.R.color.holo_green_light,
+                    android.R.color.holo_orange_light,
+                    android.R.color.holo_red_light);
 
 
         /*Register receiver*/
@@ -128,7 +151,24 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
         try
         {
 
-            String url = Constants.OrderList;
+            String url = "";
+
+            if(SharedPrefUtil.getNearestRouteMainPOJO(context) != null)
+            {
+                String VehicleID = SharedPrefUtil.getNearestRouteMainPOJO(context).getData().get(0).getVehicleId();
+
+                Log.i("VEhicleID",VehicleID);
+
+                url = Constants.OrderList + "?vehicleId=" + VehicleID;
+            }
+            else
+            {
+                Log.i("VEhicleID","Not Present");
+
+                url = Constants.OrderList;
+            }
+
+
 
             IOUtils ioUtils = new IOUtils();
 
@@ -141,6 +181,13 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
                     Log.d("OrderListActivity", result.toString());
 
                     getOrderListResponse(result,context);
+                    swipeContainer.setRefreshing(false);
+
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 
@@ -154,80 +201,37 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
         try
         {
             orderMainPOJO = gson.fromJson(Response, OrderMainPOJO.class);
+            valueTV = new TextView(context);
 
             if(orderMainPOJO.getData().isEmpty())
             {
-                FireToast.customSnackbar(context, "No Orders Found!!!", "");
+                adapterOrders = new OrdersListRecycler_Adapter(orderMainPOJO.getData(),context);
+                recListOrders.setAdapter(adapterOrders);
+                adapterOrders.notifyDataSetChanged();
+
+                recListOrders.setVisibility(View.GONE);
+                relativeLayout.setVisibility(View.VISIBLE);
+                relativeLayout.removeAllViews();
+                valueTV.setText("No Orders Found!!!");
+                valueTV.setGravity(Gravity.CENTER);
+                valueTV.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+                ((RelativeLayout) relativeLayout).addView(valueTV);
+
             }
             else
             {
+                relativeLayout.setVisibility(View.GONE);
+                recListOrders.setVisibility(View.VISIBLE);
+
                 adapterOrders = new OrdersListRecycler_Adapter(orderMainPOJO.getData(),context);
                 recListOrders.setAdapter(adapterOrders);
+                adapterOrders.notifyDataSetChanged();
             }
 
         } catch (Exception e) {
             Log.i("OrderListActivity", e.getMessage());
         }
     }
-
-    public void getData() {
-        try {
-            JSONArray jsonArray = new JSONArray(loadJSONFromAsset());
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-
-                JSONObject jo_inside = jsonArray.getJSONObject(i);
-
-                JSON_POJO js = new JSON_POJO();
-
-                String location_name = jo_inside.getString("location_name");
-                Double latitude = jo_inside.getDouble("latitude");
-                Double longitude = jo_inside.getDouble("longitude");
-                String id = jo_inside.getString("id");
-                String customer_name = jo_inside.getString("customer_name");
-                String payment_mode = jo_inside.getString("payment_mode");
-                String payment_confirmation = jo_inside.getString("payment_confirmation");
-                String order_status = jo_inside.getString("order_status");
-
-                //getMapsApiDirectionsUrl(latitude,longitude);
-
-                js.setId(id);
-                js.setLatitude(latitude);
-                js.setLongitude(longitude);
-                js.setLocation_name(location_name);
-                js.setCustomer_name(customer_name);
-                js.setPayment_mode(payment_mode);
-                js.setPayment_confirmation(payment_confirmation);
-                js.setOrder_status(order_status);
-                /*js.setDistance(distance);
-                js.setTime(duration);*/
-
-                jsonIndiaModelList.add(js);
-
-            }
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public String loadJSONFromAsset() {
-        String json = null;
-        try {
-            InputStream is = getAssets().open("mock_orderlist");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -305,13 +309,26 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
         try {
 
             if (!NetworkUtils.isNetworkConnectionOn(this)) {
-                FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+                /*FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
                     @Override
                     public void onActionClicked(Snackbar snackbar) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
-                return;
+                return;*/
+
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
 
         }catch (Exception e)

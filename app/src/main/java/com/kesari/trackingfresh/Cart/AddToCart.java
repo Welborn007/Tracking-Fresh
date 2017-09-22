@@ -26,7 +26,6 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
@@ -40,12 +39,9 @@ import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,6 +49,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 import static com.kesari.trackingfresh.Utilities.IOUtils.setBadgeCount;
@@ -64,7 +61,7 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
     private MyDataAdapter myDataAdapter;
     //List<Product_POJO> product_pojos = new ArrayList<>();
     TextView cart_count;
-    Button checkOut;
+    FancyButton checkOut;
     MyApplication myApplication;
     private RelativeLayout relativeLayout;
     private TextView valueTV;
@@ -86,6 +83,7 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.getBackground().setAlpha(0);
 
             myApplication = (MyApplication) getApplicationContext();
 
@@ -109,9 +107,17 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
 
             gridview = (GridView) findViewById(R.id.list);
             cart_count = (TextView) findViewById(R.id.cart_count);
-            checkOut = (Button) findViewById(R.id.checkOut);
+            checkOut = (FancyButton) findViewById(R.id.checkOut);
             relativeLayout = (RelativeLayout) findViewById(R.id.relativelay_reclview);
             valueTV = new TextView(AddToCart.this);
+
+            if(getIntent().getStringExtra("productRemoved") != null)
+            {
+                new SweetAlertDialog(AddToCart.this, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Oops...")
+                        .setContentText("Some products were not added as Out of Stock!")
+                        .show();
+            }
 
             if(myApplication.getProductsArraylist() != null)
             {
@@ -148,11 +154,19 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
                         if (!myApplication.getProductsArraylist().isEmpty()) {
                             fetchUserAddress();
                         } else {
-                            Toast.makeText(AddToCart.this, "No Items in Cart!!", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(AddToCart.this, "No Items in Cart!!", Toast.LENGTH_SHORT).show();
+
+                            new SweetAlertDialog(AddToCart.this)
+                                    .setTitleText("No Items in Cart!!")
+                                    .show();
                         }
                     }catch (Exception e)
                     {
-                        Toast.makeText(AddToCart.this, "No Items in Cart!!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(AddToCart.this, "No Items in Cart!!", Toast.LENGTH_SHORT).show();
+
+                        new SweetAlertDialog(AddToCart.this)
+                                .setTitleText("No Items in Cart!!")
+                                .show();
                     }
 
                 }
@@ -191,6 +205,11 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
                     Log.d(TAG, result.toString());
 
                     fetchUserAddressResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 
@@ -281,8 +300,8 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
                 viewHolder.price = (TextView) convertView.findViewById(R.id.price);
 
                 viewHolder.count = (TextView) convertView.findViewById(R.id.count);
-                viewHolder.plus = (FancyButton) convertView.findViewById(R.id.plus);
-                viewHolder.minus = (FancyButton) convertView.findViewById(R.id.minus);
+                viewHolder.plus = (Button) convertView.findViewById(R.id.plus);
+                viewHolder.minus = (Button) convertView.findViewById(R.id.minus);
                 viewHolder.delete = (FancyButton) convertView.findViewById(R.id.delete);
 
                 viewHolder.quantity_price = (TextView) convertView.findViewById(R.id.quantity_price);
@@ -302,10 +321,10 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
                 viewHolder.imageView.setHierarchy(IOUtils.getFrescoImageHierarchy(activity));
 
                 viewHolder.weight.setText(product_pojo.getUnit() + product_pojo.getUnitsOfMeasurement());
-                viewHolder.price.setText(product_pojo.getPrice());
+                viewHolder.price.setText("₹ " + product_pojo.getPrice());
 
                 viewHolder.count.setText(String.valueOf(product_pojo.getQuantity()));
-                viewHolder.quantity_price.setText(String.valueOf(Integer.parseInt(product_pojo.getPrice()) * product_pojo.getQuantity()));
+                viewHolder.quantity_price.setText("₹ " + String.valueOf(Integer.parseInt(product_pojo.getPrice()) * product_pojo.getQuantity()));
 
                 viewHolder.delete.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -347,11 +366,10 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
                                 final Dialog dialog = new Dialog(activity);
                                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                 dialog.setContentView(R.layout.item_unavailable_dialog);
-                                dialog.setCanceledOnTouchOutside(false);
                                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
                                 dialog.show();
 
-                                Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
+                                FancyButton btnCancel = (FancyButton) dialog.findViewById(R.id.btnCancel);
                                 btnCancel.setText("Oops! Only " + product_pojo.getAvailableQuantity() + " items available!!");
                                 btnCancel.setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -426,7 +444,8 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
         private class ViewHolder {
             TextView product_name, weight, price, count,quantity_price;
             SimpleDraweeView imageView;
-            FancyButton plus, minus, delete;
+            Button plus, minus;
+            FancyButton delete;
         }
     }
 
@@ -526,13 +545,26 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
         try {
 
             if (!NetworkUtils.isNetworkConnectionOn(this)) {
-                FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+                /*FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
                     @Override
                     public void onActionClicked(Snackbar snackbar) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
-                return;
+                return;*/
+
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
 
         } catch (Exception e) {

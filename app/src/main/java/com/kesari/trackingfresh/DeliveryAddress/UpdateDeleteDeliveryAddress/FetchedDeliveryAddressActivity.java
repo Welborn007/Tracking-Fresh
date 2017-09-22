@@ -13,7 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 
 import com.google.gson.Gson;
@@ -24,13 +23,9 @@ import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
-import com.kesari.trackingfresh.Utilities.RecyclerItemClickListener;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +35,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class FetchedDeliveryAddressActivity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt{
 
@@ -67,6 +64,7 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.getBackground().setAlpha(0);
 
             gson = new Gson();
 
@@ -77,7 +75,11 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
             try {
                 if(getIntent().getStringExtra("default_address").equalsIgnoreCase("false"))
                 {
-                    FireToast.customSnackbar(FetchedDeliveryAddressActivity.this, "Default address not set!", "");
+                    //FireToast.customSnackbar(FetchedDeliveryAddressActivity.this, "Default address not set!", "");
+
+                    new SweetAlertDialog(FetchedDeliveryAddressActivity.this)
+                            .setTitleText("Default address not set!")
+                            .show();
                 }
             }catch (NullPointerException npe)
             {
@@ -91,19 +93,26 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
             AddressLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             recListFecthedDeliveryAddress.setLayoutManager(AddressLayoutManager);
 
-            recListFecthedDeliveryAddress.addOnItemTouchListener(
+            /*recListFecthedDeliveryAddress.addOnItemTouchListener(
                     new RecyclerItemClickListener(getApplicationContext(), new RecyclerItemClickListener.OnItemClickListener() {
                         @Override public void onItemClick(View view, int position) {
 
-                           AddressPOJO addressPOJO = addressArrayList.get(position);
+                           *//*AddressPOJO addressPOJO = addressArrayList.get(position);
 
-                            updateDeliveryAddress(addressPOJO.get_id(),position);
+                            if(!addressPOJO.isDefault())
+                            {
+                                updateDeliveryAddress(addressPOJO.get_id(),position);
+                            }
+                            else
+                            {
+                                Toast.makeText(FetchedDeliveryAddressActivity.this, "Address already set default", Toast.LENGTH_SHORT).show();
+                            }*//*
 
+                            //Toast.makeText(FetchedDeliveryAddressActivity.this, "Clicked Whole", Toast.LENGTH_SHORT).show();
                         }
                     })
-            );
+            );*/
 
-            fetchUserAddress(FetchedDeliveryAddressActivity.this,TAG);
 
             final LocationManager locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
 
@@ -126,6 +135,13 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        fetchUserAddress(FetchedDeliveryAddressActivity.this,TAG);
+    }
+
     public static void fetchUserAddress(final Context context, final String TAG) {
         try {
 
@@ -143,6 +159,11 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
 
                     fetchUserAddressResponse(result,context,TAG);
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
         } catch (Exception e) {
@@ -159,6 +180,9 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
             if (fetchAddressPOJO.getData().isEmpty()) {
                 Intent intent = new Intent(context, Add_DeliveryAddress.class);
                 context.startActivity(intent);
+
+                adapterAddress = new UpdateDeleteDeliveryAddress_RecyclerAdpater(fetchAddressPOJO.getData(),context);
+                recListFecthedDeliveryAddress.setAdapter(adapterAddress);
             } else {
 
                 addressArrayList = fetchAddressPOJO.getData();
@@ -182,7 +206,12 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
 
                 if(!default_address)
                 {
-                    FireToast.customSnackbar(context, "Default address not set!", "");
+                    //FireToast.customSnackbar(context, "Default address not set!", "");
+                    //Toast.makeText(context,"Default address not set!", Toast.LENGTH_SHORT).show();
+
+                    new SweetAlertDialog(context)
+                            .setTitleText("Default address not set!")
+                            .show();
                 }
 
             }
@@ -192,7 +221,7 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
         }
     }
 
-    private void updateDeliveryAddress(String addressID, final int position) {
+    public static void updateDeliveryAddress(String addressID, final int position, final Context context) {
         try {
 
             String url = Constants.UpdateAddress;
@@ -217,22 +246,27 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
             IOUtils ioUtils = new IOUtils();
 
             Map<String, String> params = new HashMap<String, String>();
-            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(FetchedDeliveryAddressActivity.this));
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(context));
 
-            ioUtils.sendJSONObjectPutRequestHeader(FetchedDeliveryAddressActivity.this, url, params, jsonObject, new IOUtils.VolleyCallback() {
+            ioUtils.sendJSONObjectPutRequestHeader(context, url, params, jsonObject, new IOUtils.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
-                    Log.d(TAG, result.toString());
-                    updateDeliveryAddressResponse(result,position);
+                    Log.d("Address Update", result.toString());
+                    updateDeliveryAddressResponse(result,position,context);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 
         } catch (Exception e) {
-            Log.i(TAG, e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    private void updateDeliveryAddressResponse(String Response,int pos)
+    public static void updateDeliveryAddressResponse(String Response,int pos,Context context)
     {
         try
         {
@@ -244,11 +278,11 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
             if(Message.equalsIgnoreCase("Updated Successfully"))
             {
                 adapterAddress.notifyDataSetChanged();
-                fetchUserAddress(FetchedDeliveryAddressActivity.this,TAG);
+                fetchUserAddress(context,"Address Update");
             }
 
         } catch (Exception e) {
-            Log.i(TAG, e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -263,7 +297,11 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
                 }
                 else
                 {
-                    FireToast.customSnackbar(FetchedDeliveryAddressActivity.this, "Default address not set!", "");
+                    //FireToast.customSnackbar(FetchedDeliveryAddressActivity.this, "Default address not set!", "");
+
+                    new SweetAlertDialog(FetchedDeliveryAddressActivity.this)
+                            .setTitleText("Default address not set!")
+                            .show();
                 }
                 return true;
         }
@@ -278,7 +316,11 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
         }
         else
         {
-            FireToast.customSnackbar(FetchedDeliveryAddressActivity.this, "Default address not set!", "");
+            //FireToast.customSnackbar(FetchedDeliveryAddressActivity.this, "Default address not set!", "");
+
+            new SweetAlertDialog(FetchedDeliveryAddressActivity.this)
+                    .setTitleText("Default address not set!")
+                    .show();
         }
     }
 
@@ -313,13 +355,26 @@ public class FetchedDeliveryAddressActivity extends AppCompatActivity implements
         try {
 
             if (!NetworkUtils.isNetworkConnectionOn(this)) {
-                FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+                /*FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
                     @Override
                     public void onActionClicked(Snackbar snackbar) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
-                return;
+                return;*/
+
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
 
         }catch (Exception e)

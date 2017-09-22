@@ -3,11 +3,10 @@ package com.kesari.trackingfresh.CheckNearestVehicleAvailability;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.location.*;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -22,11 +21,9 @@ import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
-import com.kesari.trackingfresh.network.FireToast;
+import com.kesari.trackingfresh.VehicleNearestRoute.NearestRouteMainPOJO;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONException;
@@ -34,9 +31,9 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class CheckVehicleActivity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt{
 
@@ -45,7 +42,8 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
     private String TAG = this.getClass().getSimpleName();
     private NetworkUtilsReceiver networkUtilsReceiver;
     private Gson gson;
-    NearestVehicleMainPOJO nearestVehicleMainPOJO;
+    //NearestVehicleMainPOJO nearestVehicleMainPOJO;
+    NearestRouteMainPOJO nearestRouteMainPOJO;
 
     private Location Current_Location;
     private LatLng Current_Origin;
@@ -83,7 +81,7 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
                     Log.e(TAG, "Location service is already running");
                 }
 
-                scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
+                /*scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
 
                 // This schedule a task to run every 10 minutes:
                 scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
@@ -100,7 +98,9 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
                         }
 
                     }
-                }, 0, 10, TimeUnit.SECONDS);
+                }, 0, 10, TimeUnit.SECONDS);*/
+
+                sendLATLONVehicle();
             }
 
         } catch (Exception e) {
@@ -109,13 +109,21 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
 
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
+            sendLATLONVehicle();
+        }
+    }
 
     private void sendLATLONVehicle()
     {
         try
         {
 
-            String url = Constants.CheckNearestVehicle ;
+            String url = Constants.VehicleNearestRoute ;
 
             Log.i("url", url);
 
@@ -144,8 +152,15 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
             ioUtils.sendJSONObjectRequestHeader(CheckVehicleActivity.this, url,params, jsonObject, new IOUtils.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
-                    scheduleTaskExecutor.shutdown();
-                    NearestVehicleResponse(result);
+                    //scheduleTaskExecutor.shutdown();
+                    //NearestVehicleResponse(result);
+
+                    NearestVehicleRouteResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 
@@ -155,7 +170,40 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
 
     }
 
-    private void NearestVehicleResponse(String Response)
+    private void NearestVehicleRouteResponse(String Response)
+    {
+        try
+        {
+            nearestRouteMainPOJO = gson.fromJson(Response, NearestRouteMainPOJO.class);
+
+            if(nearestRouteMainPOJO.getData().isEmpty())
+            {
+                search_text.setText("Sorry! We don't serve on this route currently");
+                aviFailed.setVisibility(View.VISIBLE);
+                avi.setVisibility(View.GONE);
+                SharedPrefUtil.setNearestRouteMainPOJO(CheckVehicleActivity.this,"");
+
+                Intent intent = new Intent(CheckVehicleActivity.this, DashboardActivity.class);
+                startActivity(intent);
+                finish();
+            }
+            else
+            {
+                SharedPrefUtil.setNearestRouteMainPOJO(CheckVehicleActivity.this,Response);
+                aviFailed.setVisibility(View.GONE);
+                avi.setVisibility(View.VISIBLE);
+
+                Intent intent = new Intent(CheckVehicleActivity.this, DashboardActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+   /* private void NearestVehicleResponse(String Response)
     {
         try
         {
@@ -168,15 +216,17 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
                 avi.setVisibility(View.GONE);
                 SharedPrefUtil.setNearestVehicle(CheckVehicleActivity.this,"");
 
-                final Handler handler = new Handler();
+                Intent intent = new Intent(CheckVehicleActivity.this, DashboardActivity.class);
+                startActivity(intent);
+                finish();
+
+                *//*final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Intent intent = new Intent(CheckVehicleActivity.this, DashboardActivity.class);
-                        startActivity(intent);
-                        finish();
+
                     }
-                }, 5000);
+                }, 5000);*//*
             }
             else
             {
@@ -192,7 +242,7 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
-    }
+    }*/
 
 
     @Override
@@ -226,13 +276,26 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
         try {
 
             if (!NetworkUtils.isNetworkConnectionOn(this)) {
-                FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+                /*FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
                     @Override
                     public void onActionClicked(Snackbar snackbar) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
-                return;
+                return;*/
+
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
 
         }catch (Exception e)

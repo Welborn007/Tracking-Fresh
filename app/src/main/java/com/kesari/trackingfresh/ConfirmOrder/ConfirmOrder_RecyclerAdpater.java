@@ -8,8 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.kesari.trackingfresh.DeliveryAddress.OrderFareListPOJO;
 import com.kesari.trackingfresh.R;
+import com.kesari.trackingfresh.Utilities.IOUtils;
 
 import java.util.List;
 
@@ -47,8 +49,11 @@ public class ConfirmOrder_RecyclerAdpater extends RecyclerView.Adapter<ConfirmOr
 
             holder.product_name.setText(OrderFareListPOJOs.get(position).getProductName());
             holder.quantity.setText(OrderFareListPOJOs.get(position).getQuantity());
-            holder.price.setText(OrderFareListPOJOs.get(position).getPrice());
-            holder.subtotal.setText(OrderFareListPOJOs.get(position).getSub_total());
+            holder.price.setText("₹ " + OrderFareListPOJOs.get(position).getPrice());
+            holder.subtotal.setText("₹ " + OrderFareListPOJOs.get(position).getSub_total());
+
+            holder.images.setController(IOUtils.getFrescoImageController(context,OrderFareListPOJOs.get(position).getProductImage()));
+            holder.images.setHierarchy(IOUtils.getFrescoImageHierarchy(context));
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
@@ -67,6 +72,7 @@ public class ConfirmOrder_RecyclerAdpater extends RecyclerView.Adapter<ConfirmOr
     {
 
         TextView product_name,quantity,price,subtotal;
+        SimpleDraweeView images;
 
         public RecyclerViewHolder(View view)
         {
@@ -75,6 +81,8 @@ public class ConfirmOrder_RecyclerAdpater extends RecyclerView.Adapter<ConfirmOr
             quantity = (TextView) view.findViewById(R.id.quantity);
             price = (TextView) view.findViewById(R.id.price);
             subtotal = (TextView) view.findViewById(R.id.subtotal);
+
+            images = (SimpleDraweeView) view.findViewById(R.id.images);
         }
     }
 }

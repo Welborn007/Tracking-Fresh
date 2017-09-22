@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "564733435966-91keil9q92h75ppja7qbhs46f181jhb5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kesari.trackingfresh",
+            "certificate_hash": "a9bdd58a26aa209ea121d58ac7e05288c316a811"
+          }
+        },
+        {
           "client_id": "564733435966-l7d3imnphle8jvc8c77ll4esfn0uodb9.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "564733435966-l7d3imnphle8jvc8c77ll4esfn0uodb9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.kesari.trackingfresh.R;
@@ -36,10 +37,14 @@ public class Product_RecyclerAdapter extends RecyclerView.Adapter<Product_Recycl
     @Override
     public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_rowlayout,parent,false);
+        LayoutInflater mInflater = LayoutInflater.from(parent.getContext());
+        ViewGroup mainGroup = (ViewGroup) mInflater.inflate(R.layout.product_rowlayout, parent, false);
+        RecyclerViewHolder recyclerViewHolder = new RecyclerViewHolder(mainGroup);
+
+       /* View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_rowlayout,parent,false);
 
         RecyclerViewHolder recyclerViewHolder = new RecyclerViewHolder(view);
-
+*/
         return recyclerViewHolder;
     }
 
@@ -49,6 +54,7 @@ public class Product_RecyclerAdapter extends RecyclerView.Adapter<Product_Recycl
         try
         {
 
+/*
             if(selected_position == position){
 
                 holder.product_name.setBackgroundColor(Color.parseColor("#80CBC4"));
@@ -57,6 +63,7 @@ public class Product_RecyclerAdapter extends RecyclerView.Adapter<Product_Recycl
 
                 holder.product_name.setBackgroundColor(Color.parseColor("#ffffff"));
             }
+*/
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -91,13 +98,13 @@ public class Product_RecyclerAdapter extends RecyclerView.Adapter<Product_Recycl
 
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder
     {
-        FancyButton product_name;
+        TextView product_name;
         SimpleDraweeView product_image;
 
         public RecyclerViewHolder(View view)
         {
             super(view);
-            product_name = (FancyButton) view.findViewById(R.id.product_name);
+            product_name = (TextView) view.findViewById(R.id.product_name);
             product_image = (SimpleDraweeView) view.findViewById(R.id.product_image);
         }
     }

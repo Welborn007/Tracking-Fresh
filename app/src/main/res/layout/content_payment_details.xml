@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:background="@android:color/white"
     tools:showIn="@layout/activity_payment_details"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:layout_height="match_parent">
 
@@ -15,6 +16,7 @@
         android:textColor="@color/white"
         android:drawablePadding="-190dp"
         android:padding="10dp"
+        android:textStyle="bold"
         android:textSize="@dimen/text_size"
         android:background="@color/Button_Color"
         android:layout_width="match_parent"
@@ -33,7 +35,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:text="Total Payable amount :-"
+                android:text="Total amount :-"
                 android:textColor="@color/black"
                 android:layout_margin="5dp"
                 android:padding="10dp"
@@ -42,7 +44,7 @@
                 android:layout_height="wrap_content"/>
 
             <TextView
-                android:id="@+id/price_payable"
+                android:id="@+id/price_total"
                 android:text="500"
                 android:textColor="@color/black"
                 android:layout_marginTop="5dp"
@@ -52,7 +54,7 @@
                 android:layout_height="wrap_content"/>
 
             <TextView
-                android:text="Rs"
+                android:text="₹"
                 android:textColor="@color/black"
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="2dp"
@@ -80,7 +82,7 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:text="Available Balance: Rs 200"
+                android:text="Available Balance: ₹ 200"
                 android:textColor="@color/black"
                 android:layout_marginLeft="10dp"
                 android:textSize="14sp"
@@ -92,6 +94,7 @@
         <RadioGroup
             android:id="@+id/payment_group"
             android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -112,15 +115,182 @@
 
         </RadioGroup>
 
+        <CheckBox
+            android:id="@+id/walletCash"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:text="Use cash from wallet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:padding="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:gravity="end"
+            android:layout_gravity="end"
+            android:background="@drawable/border_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/promocodeText"
+                android:hint="PROMOCODE"
+                android:textSize="18sp"
+                android:drawablePadding="10dp"
+                android:inputType="textCapCharacters"
+                android:layout_marginRight="25dp"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                fancy:fb_text="Apply"
+                android:layout_margin="5dp"
+                android:id="@+id/promocodeSubmit"
+                fancy:fb_defaultColor="@color/fresh_blue"
+                fancy:fb_focusColor="@color/colorPrimary"
+                fancy:fb_radius="5dp"
+                fancy:fb_textColor="@color/white"
+                fancy:fb_textSize="18sp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:text="Apply"
+                android:visibility="gone"
+                android:padding="5dp"
+                android:layout_alignParentBottom="true"
+                android:textSize="@dimen/text_size"
+                android:background="@drawable/rounded_btn"
+                android:textStyle="bold"
+                android:textColor="@color/TextColor"
+                android:textAppearance="?android:textAppearanceMedium"
+                />
+
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:id="@+id/cancel"
+                fancy:fb_fontIconResource="&#xf00d;"
+                fancy:fb_textColor="@color/black"
+                fancy:fb_borderColor="@color/Gray"
+                fancy:fb_defaultColor="#00000000"
+                android:visibility="gone"
+                fancy:fb_focusColor="@color/colorHighlight"
+                fancy:fb_textSize="8sp"
+                fancy:fb_text=""
+                android:padding="5dp"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/promocodeDeductHolder"
+            android:orientation="horizontal"
+            android:gravity="right"
+            android:visibility="gone"
+            android:layout_marginRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="Promocode Applied :-"
+                android:textColor="@color/black"
+                android:layout_margin="5dp"
+                android:padding="10dp"
+                android:textSize="@dimen/text_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/promocodeDeduction"
+                android:text="40"
+                android:textColor="@color/black"
+                android:layout_marginTop="5dp"
+                android:paddingTop="10dp"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:text="₹"
+                android:textColor="@color/black"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="2dp"
+                android:paddingTop="10dp"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="right"
+            android:layout_marginRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="Total Payable amount :-"
+                android:textColor="@color/black"
+                android:layout_margin="5dp"
+                android:padding="10dp"
+                android:textSize="@dimen/text_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/price_payable"
+                android:text="500"
+                android:textColor="@color/black"
+                android:layout_marginTop="5dp"
+                android:paddingTop="10dp"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:text="₹"
+                android:textColor="@color/black"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="2dp"
+                android:paddingTop="10dp"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
     </LinearLayout>
+
+
+    <mehdi.sakout.fancybuttons.FancyButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_margin="5dp"
+        fancy:fb_text="Place Order"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/btnSubmit"
+        fancy:fb_defaultColor="@color/fresh_blue"
+        fancy:fb_focusColor="@color/colorPrimary"
+        fancy:fb_radius="5dp"
+        fancy:fb_textColor="@color/white"
+        fancy:fb_textSize="18sp" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Place Order"
-        android:layout_margin="5dp"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/btnSubmit"
+        android:visibility="gone"
         android:textSize="@dimen/text_size"
         android:background="@drawable/rounded_btn"
         android:textStyle="bold"

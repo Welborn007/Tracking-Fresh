@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:background="@android:color/white"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     tools:showIn="@layout/activity_order_biker_tracking"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:layout_height="match_parent">
@@ -29,16 +30,16 @@
                 android:id="@+id/guestCardview"
                 android:background="@color/LightGray"
                 card_view:cardCornerRadius="4dp"
-                card_view:cardElevation="4dp">
+                card_view:cardElevation="1dp">
 
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
+                    android:padding="5dp"
                     android:layout_height="wrap_content">
 
                     <LinearLayout
                         android:orientation="horizontal"
-                        android:padding="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
@@ -59,12 +60,12 @@
 
                         <TextView
                             android:id="@+id/GuestAddress"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/edittext_border"
                             android:ellipsize="end"
                             android:maxLines="1"
-                            android:text="35 Kms"
+                            android:text=""
                             android:layout_marginLeft="10dp"
                             android:textColor="@color/black"
                             android:textSize="@dimen/text_size"
@@ -72,11 +73,32 @@
 
                     </LinearLayout>
 
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                xmlns:fancy="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_below="@+id/guestCardview"
+                android:id="@+id/destinationCardview"
+                android:background="@color/LightGray"
+                card_view:cardCornerRadius="4dp"
+                card_view:cardElevation="1dp">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:padding="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
                     <LinearLayout
                         android:orientation="horizontal"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:paddingBottom="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
@@ -113,9 +135,11 @@
 
             </android.support.v7.widget.CardView>
 
+
             <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:map="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/map_container"
+                android:layout_below="@+id/destinationCardview"
                 class="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -125,13 +149,13 @@
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 xmlns:fancy="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/subItemCard_view"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/btnSubmit"
                 android:layout_margin="5dp"
                 android:background="@color/LightGray"
                 card_view:cardCornerRadius="4dp"
-                card_view:cardElevation="4dp">
+                card_view:cardElevation="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -163,21 +187,21 @@
 
             </android.support.v7.widget.CardView>
 
-            <Button
+            <mehdi.sakout.fancybuttons.FancyButton
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="View Order Details"
+                android:padding="5dp"
+                fancy:fb_text="View Order Details"
+                android:id="@+id/btnSubmit"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="5dp"
-                android:id="@+id/btnSubmit"
                 android:layout_alignParentBottom="true"
-                android:textSize="@dimen/text_size"
-                android:background="@drawable/rounded_btn"
-                android:textStyle="bold"
-                android:textColor="@color/TextColor"
-                android:textAppearance="?android:textAppearanceMedium"
-                />
+                fancy:fb_defaultColor="@color/fresh_blue"
+                fancy:fb_focusColor="@color/colorPrimary"
+                fancy:fb_radius="5dp"
+                fancy:fb_textColor="@color/white"
+                fancy:fb_textSize="18sp" />
 
         </RelativeLayout>
 

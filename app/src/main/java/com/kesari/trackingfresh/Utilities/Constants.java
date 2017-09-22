@@ -77,6 +77,61 @@ public interface Constants {
     //get Order details from order id
     String OrderDetails = "http://"+ LIVEIP +"/api/order/";
 
+    //Wallet All Transactions
+    String AllWalletTransactions = "http://"+ LIVEIP + "/api/userWallet/";
+
+    //Wallet Paid Transactions
+    String PaidWalletTransactions = "http://"+ LIVEIP + "/api/userWallet/?operation=minus";
+
+    //Wallet Received Transactions
+    String ReceivedWalletTransactions = "http://"+ LIVEIP + "/api/userWallet/?operation=add";
+
+    //Check Promocode Validity
+    String PromocodeValidity = "http://"+ LIVEIP + "/api/promoCode/validate";
+
+    //TODO Forget Password
+    String ForgetPassword = "http://"+ LIVEIP + "/api/customer/forgotPassword";
+
+    //Verify Duplicate Mobile No
+    String VerifyDuplicate = "http://"+ LIVEIP + "/api/customer/mobile/";
+
+    //Cancellation / Rejection reasons
+    String Reasons = "http://"+ LIVEIP + "/api/order/reason?reason=";
+
+    //Send Firebase Token
+    String FirebaseToken =  "http://"+ LIVEIP + "/api/customer/fbt";
+
+    //Vehicle Route
+    String VehicleRoute = "http://"+ LIVEIP + "/api/customer/getVehicleRoutes/";
+
+    //Vehicle Socket Location
+
+    String VehicleLiveLocation = "http://" + LIVEIP;
+
+    //Biker Socket Location
+
+    String BikerLiveLocation = "http://" + LIVEIP;
+
+    //Vehicle Nearest Route
+
+    String VehicleNearestRoute = "http://"+ LIVEIP +  "/api/vehicleTimeTable/nearestRoute";
+
+    //Change Password
+
+    String changePassword = "http://"+ LIVEIP + "/api/customer/changePassword";
+
+    //Offer Products
+
+    String ProductOffers = "http://"+ LIVEIP + "/api/productRate/offer?vehicleId=";
+
+    //Notification List
+
+    String NotificationList = "http://"+ LIVEIP + "/api/customer/pushNotifications";
+
+    //Send Voice OTP
+
+    String VoiceOTP = "http://"+ LIVEIP + "/api/OTP/sendVoiceOtp";
+
     // Milliseconds per second
     public static final int MILLISECONDS_PER_SECOND = 1000;
     // Update frequency in seconds

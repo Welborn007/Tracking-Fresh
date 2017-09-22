@@ -1,5 +1,10 @@
 package com.kesari.trackingfresh.YourOrders;
 
+import com.kesari.trackingfresh.DeliveryAddress.OrderFareListPOJO;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by kesari on 07/06/17.
  */
@@ -31,6 +36,66 @@ public class OrderSubPOJO {
     private String editedBy;
 
     private String editedAt;
+
+    private String remarks;
+
+    private String cancelReason;
+
+    private String rejectReason;
+
+    private String orderNo;
+
+    private String pickUp;
+
+    public String getPickUp() {
+        return pickUp;
+    }
+
+    public void setPickUp(String pickUp) {
+        this.pickUp = pickUp;
+    }
+
+    private List<OrderFareListPOJO> orders = new ArrayList<OrderFareListPOJO>();
+
+    public List<OrderFareListPOJO> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<OrderFareListPOJO> orders) {
+        this.orders = orders;
+    }
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
+
+    public String getRejectReason() {
+        return rejectReason;
+    }
+
+    public void setRejectReason(String rejectReason) {
+        this.rejectReason = rejectReason;
+    }
+
+    public String getCancelReason() {
+        return cancelReason;
+    }
+
+    public void setCancelReason(String cancelReason) {
+        this.cancelReason = cancelReason;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
 
     public String getPayment_Mode() {
         return payment_Mode;

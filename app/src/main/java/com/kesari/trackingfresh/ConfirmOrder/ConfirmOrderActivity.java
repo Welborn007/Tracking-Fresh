@@ -16,7 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -28,17 +27,17 @@ import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import mehdi.sakout.fancybuttons.FancyButton;
 
 public class ConfirmOrderActivity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt{
 
@@ -51,7 +50,7 @@ public class ConfirmOrderActivity extends AppCompatActivity implements NetworkUt
     private Gson gson;
     private RecyclerView.Adapter confirmOrderAdapter;
     private OrderFareMainPOJO orderFareMainPOJO;
-    private Button confirm_Order_pay;
+    private FancyButton confirm_Order_pay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +63,7 @@ public class ConfirmOrderActivity extends AppCompatActivity implements NetworkUt
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.getBackground().setAlpha(0);
 
             gson = new Gson();
 
@@ -90,7 +90,7 @@ public class ConfirmOrderActivity extends AppCompatActivity implements NetworkUt
             order_status = (TextView) findViewById(R.id.order_status);
             order_total = (TextView) findViewById(R.id.order_total);
             delivery_charge = (TextView) findViewById(R.id.delivery_charge);
-            confirm_Order_pay = (Button) findViewById(R.id.btnSubmit);
+            confirm_Order_pay = (FancyButton) findViewById(R.id.btnSubmit);
             recyclerViewConfirmOrder = (RecyclerView) findViewById(R.id.recyclerView);
 
             order_placed_by.setText(getIntent().getStringExtra("OrderPlacedBy"));
@@ -116,6 +116,7 @@ public class ConfirmOrderActivity extends AppCompatActivity implements NetworkUt
                     {
                         Intent intent = new Intent(ConfirmOrderActivity.this, PaymentDetails.class);
                         //intent.putExtra("orderID",orderAddPojo.getMessage().get_id());
+                        intent.putExtra("isPickup",getIntent().getBooleanExtra("isPickup",false));
                         intent.putExtra("amount",orderFareMainPOJO.getData().getTotal_price());
                         startActivity(intent);
                         finish();
@@ -142,8 +143,8 @@ public class ConfirmOrderActivity extends AppCompatActivity implements NetworkUt
             {
                 //order_placed_by.setText(orderAddPojo.getMessage().getCreatedBy());
                 //order_status.setText(orderAddPojo.getMessage().getStatus());
-                order_total.setText(orderFareMainPOJO.getData().getTotal_price());
-                delivery_charge.setText(orderFareMainPOJO.getData().getDelivery_charge());
+                order_total.setText("₹ " + orderFareMainPOJO.getData().getTotal_price());
+                delivery_charge.setText("₹ " + orderFareMainPOJO.getData().getDelivery_charge());
 
                 confirmOrderAdapter = new ConfirmOrder_RecyclerAdpater(orderFareMainPOJO.getData().getOrders(),ConfirmOrderActivity.this);
                 recyclerViewConfirmOrder.setAdapter(confirmOrderAdapter);
@@ -186,13 +187,26 @@ public class ConfirmOrderActivity extends AppCompatActivity implements NetworkUt
         try {
 
             if (!NetworkUtils.isNetworkConnectionOn(this)) {
-                FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+                /*FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
                     @Override
                     public void onActionClicked(Snackbar snackbar) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
-                return;
+                return;*/
+
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
 
         }catch (Exception e)
@@ -266,6 +280,11 @@ public class ConfirmOrderActivity extends AppCompatActivity implements NetworkUt
                     Log.d(TAG, result.toString());
 
                     PaymentUpdateResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 

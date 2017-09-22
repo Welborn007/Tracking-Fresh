@@ -1,7 +1,9 @@
 package com.kesari.trackingfresh.DeliveryAddress.UpdateDeleteDeliveryAddress;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.kesari.trackingfresh.DeliveryAddress.AddressPOJO;
+import com.kesari.trackingfresh.DeliveryAddress.UpdateDeliveryAddress.UpdateDeliveryAddressActivity;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
@@ -23,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
@@ -81,10 +85,55 @@ public class UpdateDeleteDeliveryAddress_RecyclerAdpater extends RecyclerView.Ad
                 @Override
                 public void onClick(View v) {
                     deleteDeliveryAddress(AddressPOJOs.get(position).get_id(),position);
+
+                    //Toast.makeText(context, "Clicked delete", Toast.LENGTH_SHORT).show();
                 }
             });
 
+            holder.edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
+                    //Toast.makeText(context, "Clicked edit", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context, UpdateDeliveryAddressActivity.class);
+                    intent.putExtra("_id",AddressPOJOs.get(position).get_id());
+                    intent.putExtra("fullName",AddressPOJOs.get(position).getFullName());
+                    intent.putExtra("email_Id",AddressPOJOs.get(position).getEmail_Id());
+                    intent.putExtra("mobileNo",AddressPOJOs.get(position).getMobileNo());
+                    intent.putExtra("flat_No",AddressPOJOs.get(position).getFlat_No());
+                    intent.putExtra("buildingName",AddressPOJOs.get(position).getBuildingName());
+                    intent.putExtra("landmark",AddressPOJOs.get(position).getLandmark());
+                    intent.putExtra("city",AddressPOJOs.get(position).getCity());
+                    intent.putExtra("state",AddressPOJOs.get(position).getState());
+                    intent.putExtra("pincode",AddressPOJOs.get(position).getPincode());
+                    intent.putExtra("address_Type",AddressPOJOs.get(position).getAddress_Type());
+                    intent.putExtra("latitude",AddressPOJOs.get(position).getLatitude());
+                    intent.putExtra("longitude",AddressPOJOs.get(position).getLongitude());
+                    intent.putExtra("isDefault",AddressPOJOs.get(position).isDefault());
+                    context.startActivity(intent);
+                }
+            });
+
+            holder.subItemCard_view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    //Toast.makeText(context, "Card Clicked", Toast.LENGTH_SHORT).show();
+
+                    if(!AddressPOJOs.get(position).isDefault())
+                    {
+                        FetchedDeliveryAddressActivity.updateDeliveryAddress(AddressPOJOs.get(position).get_id(),position,context);
+                    }
+                    else
+                    {
+                        //Toast.makeText(context, "Address already set default", Toast.LENGTH_SHORT).show();
+
+                        new SweetAlertDialog(context)
+                                .setTitleText("Address already set default")
+                                .show();
+                    }
+                }
+            });
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
@@ -104,7 +153,8 @@ public class UpdateDeleteDeliveryAddress_RecyclerAdpater extends RecyclerView.Ad
         RadioGroup selected_addressGroup;
         RadioButton selected_address;
         TextView customer_name,contact_number,address,addressType,default_text;
-        FancyButton delete;
+        FancyButton delete,edit;
+        CardView subItemCard_view;
 
         public RecyclerViewHolder(View view)
         {
@@ -114,10 +164,12 @@ public class UpdateDeleteDeliveryAddress_RecyclerAdpater extends RecyclerView.Ad
             address = (TextView) view.findViewById(R.id.address);
             addressType = (TextView) view.findViewById(R.id.addressType);
             delete = (FancyButton) view.findViewById(R.id.delete);
+            edit = (FancyButton) view.findViewById(R.id.edit);
 
             selected_address = (RadioButton) view.findViewById(R.id.selected_address);
             selected_addressGroup = (RadioGroup) view.findViewById(R.id.selected_addressGroup);
             default_text = (TextView) view.findViewById(R.id.default_text);
+            subItemCard_view = (CardView) view.findViewById(R.id.subItemCard_view);
 
             /*selected_address.setOnClickListener(new View.OnClickListener()
             {
@@ -153,6 +205,11 @@ public class UpdateDeleteDeliveryAddress_RecyclerAdpater extends RecyclerView.Ad
 
                     deleteDeliveryAddressResponse(result,position);
                 }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
             });
 
         } catch (Exception e) {
@@ -172,6 +229,8 @@ public class UpdateDeleteDeliveryAddress_RecyclerAdpater extends RecyclerView.Ad
             if(Message.equalsIgnoreCase("removed Successfully!"))
             {
                 FetchedDeliveryAddressActivity.fetchUserAddress(context,"AdapterAddress");
+                AddressPOJOs.remove(pos);
+                notifyDataSetChanged();
             }
 
         } catch (Exception e) {

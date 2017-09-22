@@ -20,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -40,12 +39,9 @@ import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -58,12 +54,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import mehdi.sakout.fancybuttons.FancyButton;
+
 import static com.kesari.trackingfresh.Utilities.IOUtils.setBadgeCount;
 
 public class Default_DeliveryAddress extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt{
 
     private NetworkUtilsReceiver networkUtilsReceiver;
-    Button btnSubmit,btnChange,btnNew;
+    FancyButton btnSubmit,btnChange,btnNew;
     //private GPSTracker gpsTracker;
     private Location Current_Origin;
     private String TAG = this.getClass().getSimpleName();
@@ -100,6 +99,8 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
     MyApplication myApplication;
     public static int mNotificationsCount = 0;
 
+    boolean isPickup = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,9 +135,9 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
                 }
             }
 
-            btnSubmit = (Button) findViewById(R.id.btnSubmit);
-            btnChange = (Button) findViewById(R.id.btnChange);
-            btnNew = (Button) findViewById(R.id.btnNew);
+            btnSubmit = (FancyButton) findViewById(R.id.btnSubmit);
+            btnChange = (FancyButton) findViewById(R.id.btnChange);
+            btnNew = (FancyButton) findViewById(R.id.btnNew);
 
             name = (TextView) findViewById(R.id.name);
             address = (TextView) findViewById(R.id.address);
@@ -152,11 +153,13 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
 
                     if(isChecked)
                     {
-                        address_holder.setVisibility(View.GONE);
+                        //address_holder.setVisibility(View.GONE);
+                        isPickup = true;
                     }
                     else
                     {
-                        address_holder.setVisibility(View.VISIBLE);
+                        //address_holder.setVisibility(View.VISIBLE);
+                        isPickup = false;
                     }
 
                 }
@@ -185,11 +188,37 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
 
                     if(default_address)
                     {
-                        addOrderListFromCart();
+                        if(SharedPrefUtil.getNearestRouteMainPOJO(Default_DeliveryAddress.this) != null)
+                        {
+                            if(!SharedPrefUtil.getNearestRouteMainPOJO(Default_DeliveryAddress.this).getData().get(0).getVehicleId().isEmpty())
+                            {
+                                addOrderListFromCart();
+                            }
+                            else
+                            {
+                                //Toast.makeText(Default_DeliveryAddress.this, "Sorry Vehicle Left!!", Toast.LENGTH_SHORT).show();
+
+                                new SweetAlertDialog(Default_DeliveryAddress.this)
+                                        .setTitleText("Sorry Vehicle Left!!")
+                                        .show();
+                            }
+                        }
+                        else
+                        {
+                            //Toast.makeText(Default_DeliveryAddress.this, "Sorry Vehicle Left!!", Toast.LENGTH_SHORT).show();
+
+                            new SweetAlertDialog(Default_DeliveryAddress.this)
+                                    .setTitleText("Sorry Vehicle Left!!")
+                                    .show();
+                        }
                     }
                     else
                     {
-                        FireToast.customSnackbar(Default_DeliveryAddress.this, "Default address not set!", "");
+                        //FireToast.customSnackbar(Default_DeliveryAddress.this, "Default address not set!", "");
+
+                        new SweetAlertDialog(Default_DeliveryAddress.this)
+                                .setTitleText("Default address not set!")
+                                .show();
                     }
                 }
             });
@@ -227,6 +256,11 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
                     Log.d(TAG, result.toString());
 
                     fetchUserAddressResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 
@@ -271,14 +305,19 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
                     Intent intent = new Intent(Default_DeliveryAddress.this, FetchedDeliveryAddressActivity.class);
                     intent.putExtra("default_address","false");
                     startActivity(intent);
-                    FireToast.customSnackbar(Default_DeliveryAddress.this, "Default address not set!", "");
+                    //FireToast.customSnackbar(Default_DeliveryAddress.this, "Default address not set!", "");
+
+                    new SweetAlertDialog(Default_DeliveryAddress.this)
+                            .setTitleText("Default address not set!")
+                            .show();
                     default_address = false;
                 }
 
             }
 
         } catch (Exception e) {
-            Log.i(TAG, e.getMessage());
+            //Log.i(TAG, e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -307,6 +346,7 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
                     cartItemsObjedct.put("productName",myApplication.getProductsArraylist().get(i).getProductName());
                     cartItemsObjedct.put("quantity",myApplication.getProductsArraylist().get(i).getQuantity());
                     cartItemsObjedct.put("price",myApplication.getProductsArraylist().get(i).getPrice());
+                    cartItemsObjedct.put("productImage",myApplication.getProductsArraylist().get(i).getProductImage());
                     //cartItemsObjedct.put("active",myApplication.getProductsArraylist().get(i).getActive());
                     cartItemsArray.put(cartItemsObjedct);
                 }
@@ -317,7 +357,7 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
 */
                 postObject.put("orders",cartItemsArray);
                 //postObject.put("total_price","1100");
-                postObject.put("vehicleId",SharedPrefUtil.getNearestVehicle(Default_DeliveryAddress.this).getData().get(0).getVehicle_id());
+                postObject.put("vehicleId",SharedPrefUtil.getNearestRouteMainPOJO(Default_DeliveryAddress.this).getData().get(0).getVehicleId());
                 jsonObject.put("post", postObject);
 
                 Log.i("JSON CREATED", jsonObject.toString());
@@ -337,6 +377,11 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
                     Log.d(TAG, result.toString());
 
                     OrderSendResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
         } catch (Exception e) {
@@ -360,6 +405,7 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
                 Intent intent = new Intent(Default_DeliveryAddress.this, ConfirmOrderActivity.class);
                 intent.putExtra("confirmOrder",Response);
                 intent.putExtra("OrderPlacedBy",OrderPlacedBy);
+                intent.putExtra("isPickup",isPickup);
                 startActivity(intent);
                 //finish();
 
@@ -367,7 +413,11 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
             }
             else
             {
-                FireToast.customSnackbar(Default_DeliveryAddress.this, "No Products Added!!!", "");
+                //FireToast.customSnackbar(Default_DeliveryAddress.this, "No Products Added!!!", "");
+
+                new SweetAlertDialog(Default_DeliveryAddress.this)
+                        .setTitleText("No Products Added!!!")
+                        .show();
             }
 
         } catch (Exception e) {
@@ -449,7 +499,7 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
 
             TextView delivery_text;
             EditText name,email,mobile,flat_no,building_name,landmark,city,state,pincode;
-            Button confirmAddress;
+            FancyButton confirmAddress;
 
             delivery_text = (TextView) dialog.findViewById(R.id.delivery_text);
             name = (EditText) dialog.findViewById(R.id.name);
@@ -462,7 +512,7 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
             state = (EditText) dialog.findViewById(R.id.state);
             pincode = (EditText) dialog.findViewById(R.id.pincode);
 
-            confirmAddress = (Button) dialog.findViewById(R.id.confirmAddress);
+            confirmAddress = (FancyButton) dialog.findViewById(R.id.confirmAddress);
 
             delivery_text.setText("Set new Default Delivery Address");
             name.setText(SharedPrefUtil.getUser(Default_DeliveryAddress.this).getData().getFirstName() + " " + SharedPrefUtil.getUser(Default_DeliveryAddress.this).getData().getLastName());
@@ -567,13 +617,26 @@ public class Default_DeliveryAddress extends AppCompatActivity implements Networ
         try {
 
             if (!NetworkUtils.isNetworkConnectionOn(this)) {
-                FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+               /* FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
                     @Override
                     public void onActionClicked(Snackbar snackbar) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
-                return;
+                return;*/
+
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
 
         }catch (Exception e)

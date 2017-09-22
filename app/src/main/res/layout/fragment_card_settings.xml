@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/recyclerView"
+        android:scrollbars="vertical"
+        android:visibility="gone"
+        android:layout_above="@+id/btnSubmit"
+        android:background="@color/white">
+    </android.support.v7.widget.RecyclerView>
+
+    <ListView
+        android:id="@+id/listview"
+        android:layout_above="@+id/btnSubmit"
+        android:layout_margin="10dp"
+        android:divider="@null"
+        android:dividerHeight="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></ListView>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Cards"
+        android:layout_margin="5dp"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/btnSubmit"
+        android:textSize="@dimen/text_size"
+        android:background="@drawable/rounded_btn"
+        android:textStyle="bold"
+        android:textColor="@color/TextColor"
+        android:textAppearance="?android:textAppearanceMedium"
+        />
+
+</RelativeLayout>

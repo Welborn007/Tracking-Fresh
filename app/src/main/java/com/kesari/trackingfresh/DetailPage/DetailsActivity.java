@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,9 +22,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
@@ -41,18 +42,22 @@ import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 import static com.kesari.trackingfresh.Utilities.IOUtils.setBadgeCount;
@@ -61,9 +66,11 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
 
     private SliderLayout mDemoSlider;
     TextView mrp, count;
-    FancyButton plus, minus, delete;
+    Button plus, minus;
+    FancyButton  delete;
     LinearLayout holder_count;
-    Button gotoCart, addtoCart, checkOut;
+    FancyButton gotoCart,  checkOut;
+    TextView addtoCart;
     TextView price, percent, disclaimer, related_searches, package_contents, product_description, product_category, title_productname;
     private String TAG = this.getClass().getSimpleName();
     private String productDescription = "";
@@ -71,6 +78,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
     private String productCategory = "";
     //private String __v = "";
     private String productImage = "";
+    private String productImages = "";
     //private String editedAt = "";
     private String productId = "";
     private String unit = "";
@@ -89,6 +97,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
     private String availableQuantity = "";
     private String brand = "";
     private String MRP = "";
+    private String Offer = "";
     private NetworkUtilsReceiver networkUtilsReceiver;
     MyApplication myApplication;
     List<AddressPOJO> addressArrayList = new ArrayList<>();
@@ -97,6 +106,15 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
     private FetchAddressPOJO fetchAddressPOJO;
     public static int mNotificationsCount = 0;
     // ScheduledExecutorService scheduleTaskExecutor;
+    FancyButton Share;
+    ImageView offersImage;
+
+    private String mfgDate = "";
+    private String expDate = "";
+    private String qc = "";
+    private String batchNo = "";
+
+    TextView mfgDateTxt,expiryDateTxt,qcCertTxt,batchNoTxt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +127,8 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.setTitleTextColor(ContextCompat.getColor(DetailsActivity.this,R.color.black));
+            toolbar.getBackground().setAlpha(0);
 
             /*Register receiver*/
             networkUtilsReceiver = new NetworkUtilsReceiver(this);
@@ -148,24 +168,70 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             availableQuantity = getIntent().getStringExtra("quantity");
             brand = getIntent().getStringExtra("brand");
             MRP = getIntent().getStringExtra("MRP");
+            productImages = getIntent().getStringExtra("productImages");
+            Offer = getIntent().getStringExtra("Offer");
+
+            mfgDate = getIntent().getStringExtra("mfgDate");
+            expDate = getIntent().getStringExtra("expDate");
+            qc = getIntent().getStringExtra("qc");
+            batchNo = getIntent().getStringExtra("batchNo");
+
+            Log.i("ImageList",productImages);
 
             initCollapsingToolbar();
             //Image Slider
             mDemoSlider = (SliderLayout) findViewById(R.id.slider);
             mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Default);
+            offersImage = (ImageView) findViewById(R.id.offersImage);
 
-            HashMap<String, String> url_maps = new HashMap<String, String>();
-            /*url_maps.put("Tomato1", "http://cdn1-www.wholesomebabyfood.momtastic.com/assets/uploads/2015/04/tomato.jpg");
-            url_maps.put("Tomato2", "https://grist.files.wordpress.com/2009/09/tomato.jpg");
-            url_maps.put("Tomato3", "http://media.treehugger.com/assets/images/2012/08/Ramon-Gonzalez-Tomatoes.jpg.650x0_q70_crop-smart.jpg");
-            url_maps.put("Tomato4", "http://venturesafrica.com/wp-content/uploads/2016/05/tomatoes-in-baskets.jpg");*/
+            if(Offer.equalsIgnoreCase("true"))
+            {
+                offersImage.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                offersImage.setVisibility(View.GONE);
+            }
 
-            url_maps.put("Tomato1", productImage);
-            url_maps.put("Tomato2", productImage);
-            url_maps.put("Tomato3", productImage);
-            url_maps.put("Tomato4", productImage);
+           if(!productImages.isEmpty())
+            {
+                try
+                {
+                    JSONArray product = new JSONArray(productImages);
 
-            for (String name : url_maps.keySet()) {
+                    for(int i = 0; i < product.length(); i++)
+                    {
+                        JSONObject jsonObject = product.getJSONObject(i);
+                        //url_maps.put("", jsonObject.getString("url"));
+
+                        TextSliderView textSliderView = new TextSliderView(this);
+                        // initialize a SliderLayout
+                        textSliderView
+                                .description("")
+                                .image(jsonObject.getString("url"))
+                                .setScaleType(BaseSliderView.ScaleType.CenterInside)
+                                .setOnSliderClickListener(this);
+
+                        //add your extra information
+                        textSliderView.bundle(new Bundle());
+                        textSliderView.getBundle()
+                                .putString("extra", "");
+
+                        mDemoSlider.addSlider(textSliderView);
+                    }
+                }catch (Exception e)
+                {
+                    //url_maps.put("", productImage);
+                    e.printStackTrace();
+                }
+
+            }
+            else
+            {
+                HashMap<String, String> url_maps = new HashMap<String, String>();
+                url_maps.put("", productImage);
+
+                for (String name : url_maps.keySet()) {
                 TextSliderView textSliderView = new TextSliderView(this);
                 // initialize a SliderLayout
                 textSliderView
@@ -181,6 +247,8 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
 
                 mDemoSlider.addSlider(textSliderView);
             }
+            }
+
             mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Accordion);
             mDemoSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
             mDemoSlider.setCustomAnimation(new DescriptionAnimation());
@@ -189,9 +257,9 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             //View Binding
             mrp = (TextView) findViewById(R.id.mrp);
             mrp.setPaintFlags(mrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            mrp.setText("MRP " + MRP + " Rs.");
-            plus = (FancyButton) findViewById(R.id.plus);
-            minus = (FancyButton) findViewById(R.id.minus);
+            mrp.setText("₹ " + MRP);
+            plus = (Button) findViewById(R.id.plus);
+            minus = (Button) findViewById(R.id.minus);
             delete = (FancyButton) findViewById(R.id.delete);
             price = (TextView) findViewById(R.id.price);
             percent = (TextView) findViewById(R.id.percent);
@@ -200,21 +268,49 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             package_contents = (TextView) findViewById(R.id.package_contents);
             product_description = (TextView) findViewById(R.id.product_description);
             count = (TextView) findViewById(R.id.count);
-            gotoCart = (Button) findViewById(R.id.gotoCart);
-            checkOut = (Button) findViewById(R.id.checkOut);
+            gotoCart = (FancyButton) findViewById(R.id.gotoCart);
+            checkOut = (FancyButton) findViewById(R.id.checkOut);
             product_category = (TextView) findViewById(R.id.product_category);
             title_productname = (TextView) findViewById(R.id.title_productname);
+            Share = (FancyButton) findViewById(R.id.Share);
 
-            addtoCart = (Button) findViewById(R.id.addtoCart);
+            addtoCart = (TextView) findViewById(R.id.addtoCart);
             holder_count = (LinearLayout) findViewById(R.id.holder_count);
+
+            mfgDateTxt = (TextView) findViewById(R.id.mfgDateTxt);
+            expiryDateTxt = (TextView) findViewById(R.id.expiryDateTxt);
+            qcCertTxt = (TextView) findViewById(R.id.qcCertTxt);
+            batchNoTxt = (TextView) findViewById(R.id.batchNoTxt);
+
+            SimpleDateFormat sdfInput = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            //SimpleDateFormat sdfOutput = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
+            SimpleDateFormat sdfOutput = new SimpleDateFormat("dd-MM-yyyy");
+
+            if(!mfgDate.isEmpty())
+            {
+                Date d = sdfInput.parse(mfgDate);
+                String formatteddob = sdfOutput.format(d);
+                mfgDateTxt.setText(formatteddob);
+            }
+
+            if(!expDate.isEmpty())
+            {
+                Date d = sdfInput.parse(expDate);
+                String formatteddob = sdfOutput.format(d);
+                expiryDateTxt.setText(formatteddob);
+            }
+
+            qcCertTxt.setText(qc);
+            batchNoTxt.setText(batchNo);
 
             //Setting value
             product_description.setText(productDetails);
             package_contents.setText(productDescription + "," + unit + unitsOfMeasurement);
             product_category.setText(productCategory);
             title_productname.setText(productName);
+            setTitle(productName);
 
-            price.setText("Price Rs. " + productPrice);
+            price.setText("Price ₹ " + productPrice);
 
             /*if (!myApplication.checkifproductexists(productId)) {
                 holder_count.setVisibility(View.VISIBLE);
@@ -223,6 +319,18 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
                 holder_count.setVisibility(View.GONE);
                 addtoCart.setVisibility(View.VISIBLE);
             }*/
+
+            Share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    String shareBodyText = productImage + "\n\n" + productName;
+                    intent.putExtra(android.content.Intent.EXTRA_SUBJECT, productName);
+                    intent.putExtra(android.content.Intent.EXTRA_TEXT, shareBodyText);
+                    startActivity(Intent.createChooser(intent, "Choose sharing method"));
+                }
+            });
 
             addtoCart.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -248,9 +356,29 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
                         addCart_model.setUnit(unit);
                         addCart_model.setPrice(productPrice);
                         addCart_model.setUnitsOfMeasurementId(unitsOfMeasurementId);
-                        addCart_model.setProductImage(productImage);
+
+                        if(!productImages.isEmpty())
+                        {
+                            try {
+                                JSONArray product = new JSONArray(productImages);
+                                JSONObject jsonObject = product.getJSONObject(0);
+
+                                addCart_model.setProductImage(jsonObject.getString("url"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                        else
+                        {
+                            addCart_model.setProductImage(productImage);
+                        }
+
                         addCart_model.setActive(active);
                         addCart_model.setQuantity(1);
+                        addCart_model.setBrand(brand);
+                        addCart_model.setAvailableQuantity(availableQuantity);
+                        addCart_model.setMRP(MRP);
 
                         myApplication.setProducts(addCart_model);
 
@@ -282,11 +410,10 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
                             final Dialog dialog = new Dialog(DetailsActivity.this);
                             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                             dialog.setContentView(R.layout.item_unavailable_dialog);
-                            dialog.setCanceledOnTouchOutside(false);
                             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
                             dialog.show();
 
-                            Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
+                            FancyButton btnCancel = (FancyButton) dialog.findViewById(R.id.btnCancel);
                             btnCancel.setText("Oops! Only " + availableQuantity + " items available!!");
                             btnCancel.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -358,11 +485,19 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
                         if (!myApplication.getProductsArraylist().isEmpty()) {
                             fetchUserAddress();
                         } else {
-                            Toast.makeText(DetailsActivity.this, "No Items in Cart!!", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(DetailsActivity.this, "No Items in Cart!!", Toast.LENGTH_SHORT).show();
+
+                            new SweetAlertDialog(DetailsActivity.this)
+                                    .setTitleText("No Items in Cart!!")
+                                    .show();
                         }
                     }catch (Exception e)
                     {
-                        Toast.makeText(DetailsActivity.this, "No Items in Cart!!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(DetailsActivity.this, "No Items in Cart!!", Toast.LENGTH_SHORT).show();
+
+                        new SweetAlertDialog(DetailsActivity.this)
+                                .setTitleText("No Items in Cart!!")
+                                .show();
                     }
                 }
             });
@@ -399,6 +534,11 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
                     Log.d(TAG, result.toString());
 
                     fetchUserAddressResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 
@@ -514,13 +654,26 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
         try {
 
             if (!NetworkUtils.isNetworkConnectionOn(this)) {
-                FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+                /*FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
                     @Override
                     public void onActionClicked(Snackbar snackbar) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
-                return;
+                return;*/
+
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
 
         } catch (Exception e) {

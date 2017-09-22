@@ -7,9 +7,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.graphics.drawable.LayerDrawable;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -32,9 +29,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -48,49 +45,54 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.Cart.AddToCart;
+import com.kesari.trackingfresh.ChangePassword.ChangePasswordActivity;
+import com.kesari.trackingfresh.HelpAndFAQ.HelpActivity;
+import com.kesari.trackingfresh.Legal.LegalActivity;
 import com.kesari.trackingfresh.Login.LoginActivity;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
+import com.kesari.trackingfresh.MyOffers.MyOffersActivity;
 import com.kesari.trackingfresh.MyProfile.ProfileActivity;
+import com.kesari.trackingfresh.NotificationList.NotificationListActivity;
 import com.kesari.trackingfresh.OTP.OTP;
 import com.kesari.trackingfresh.OTP.SendOtpPOJO;
 import com.kesari.trackingfresh.ProductMainFragment.Product_Fragment;
 import com.kesari.trackingfresh.R;
+import com.kesari.trackingfresh.ReferEarn.ReferralCodeActivity;
+import com.kesari.trackingfresh.Settings.SettingsActivity;
+import com.kesari.trackingfresh.TKCash.TKWalletActivity;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.VehicleRoute.RouteActivity;
 import com.kesari.trackingfresh.YourOrders.OrderListActivity;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
+import mehdi.sakout.fancybuttons.FancyButton;
 
 import static com.kesari.trackingfresh.Utilities.IOUtils.setBadgeCount;
 
-public class DashboardActivity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt{
+public class DashboardActivity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt {
 
     private String TAG = this.getClass().getSimpleName();
     DrawerLayout drawer;
     ActionBarDrawerToggle toggle;
-    ImageView logo,filter,map_View;
-    GoogleApiClient mGoogleApiClient;
+    ImageView logo, filter, map_View;
+    static GoogleApiClient mGoogleApiClient;
     TextView name_Login;
     String name;
-    SharedPreferences pref;
-    SharedPreferences.Editor editor;
+    static SharedPreferences pref;
+    static SharedPreferences.Editor editor;
     private Boolean exit = false;
     public static int mNotificationsCount = 0;
     //private GPSTracker gpsTracker;
@@ -109,9 +111,9 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
     String postalCode = "";
     String subAdminArea = "";
     String subLocality = "";
-    MyApplication myApplication ;
-    RelativeLayout my_orders_holder,profile_holder,help_holder,route_holder;
-
+    public static MyApplication myApplication;
+    RelativeLayout my_orders_holder, menu_holder,my_cart_holder,notification_holder, help_holder, route_holder, refer_earn, legalHolder,setting_layout,my_offers_holder;
+    TextView profile_holder;
     private Gson gson;
     VerifyMobilePOJO verifyMobilePOJO;
     SendOtpPOJO sendOtpPOJO;
@@ -119,16 +121,18 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
     private ViewGroup mSnackbarContainer;
     CircleImageView profile_image;
     //ScheduledExecutorService scheduleTaskExecutor;
+    TextView walletAmount,menuTextView,mapTextView;
+
+    PopupWindow popupwindow_obj;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        try
-        {
+        try {
 
-            final Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+            final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -151,7 +155,42 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             logo = (ImageView) findViewById(R.id.logo);
             filter = (ImageView) findViewById(R.id.filter);
             map_View = (ImageView) findViewById(R.id.map_View);
+            mapTextView = (TextView) findViewById(R.id.mapTextView);
+            menuTextView = (TextView) findViewById(R.id.menuTextView);
 
+            menuTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    menuTextView.setBackgroundColor(getResources().getColor(R.color.MoneyGreen));
+                    mapTextView.setBackgroundColor(getResources().getColor(R.color.whitegray));
+                    menuTextView.setTextColor(getResources().getColor(R.color.white));
+                    mapTextView.setTextColor(getResources().getColor(R.color.gray));
+                    Product_Fragment.fragment_holder.setVisibility(View.GONE);
+                    Product_Fragment.layout_holder.setVisibility(View.VISIBLE);
+                    Product_Fragment.frameLayout.setVisibility(View.GONE);
+                    Product_Fragment.product_holder.setVisibility(View.VISIBLE);
+                }
+            });
+
+
+            mapTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+
+                    mapTextView.setBackgroundColor(getResources().getColor(R.color.MoneyGreen));
+                    menuTextView.setBackgroundColor(getResources().getColor(R.color.whitegray));
+                    menuTextView.setTextColor(getResources().getColor(R.color.gray));
+                    mapTextView.setTextColor(getResources().getColor(R.color.white));
+                    Product_Fragment.product_holder.setVisibility(View.GONE);
+
+                    Product_Fragment.map_Holder.setVisibility(View.VISIBLE);
+                    Product_Fragment.fragment_holder.setVisibility(View.VISIBLE);
+                    Product_Fragment.layout_holder.setVisibility(View.GONE);
+                    Product_Fragment.frameLayout.setVisibility(View.GONE);}
+            });
+
+            getProfileDataOnCreate();
 
             map_View.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -161,48 +200,86 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 }
             });
 
-            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            final DrawerLayout mDrawerLayout;
+            mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+            mDrawerLayout.closeDrawers();
+            final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             View header = navigationView.getHeaderView(0);
 
             my_orders_holder = (RelativeLayout) header.findViewById(R.id.my_orders_holder);
             name_Login = (TextView) header.findViewById(R.id.name_Login);
-            profile_image = (CircleImageView) header.findViewById(R.id.profile_image);
 
-            if(SharedPrefUtil.getUser(DashboardActivity.this).getData().getProfileImage() != null)
-            {
-                Picasso
-                        .with(DashboardActivity.this)
-                        .load(SharedPrefUtil.getUser(DashboardActivity.this).getData().getProfileImage())
-                        .into(profile_image);
-            }
-
-
-            profile_holder = (RelativeLayout) header.findViewById(R.id.profile_holder);
+            profile_holder = (TextView) header.findViewById(R.id.profile_holder);
             help_holder = (RelativeLayout) header.findViewById(R.id.help_holder);
             route_holder = (RelativeLayout) header.findViewById(R.id.route_holder);
+            refer_earn = (RelativeLayout) header.findViewById(R.id.refer_earn);
+            profile_image = (CircleImageView) header.findViewById(R.id.profile_image);
+            walletAmount = (TextView) header.findViewById(R.id.walletAmount);
+            legalHolder = (RelativeLayout) header.findViewById(R.id.legalHolder);
+            setting_layout = (RelativeLayout) header.findViewById(R.id.setting_layout);
+            my_offers_holder = (RelativeLayout) header.findViewById(R.id.my_offers_holder);
+            notification_holder = (RelativeLayout) header.findViewById(R.id.notification_holder);
+            my_cart_holder = (RelativeLayout) header.findViewById(R.id.my_cart_holder);
+            menu_holder = (RelativeLayout) header.findViewById(R.id.menu_holder);
+
+            my_offers_holder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(DashboardActivity.this, MyOffersActivity.class);
+                    startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
+                }
+            });
+
+            setting_layout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(DashboardActivity.this, SettingsActivity.class);
+                    startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
+                }
+            });
+
+            refer_earn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(DashboardActivity.this, ReferralCodeActivity.class);
+                    startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
+                }
+            });
 
             route_holder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(DashboardActivity.this, RouteActivity.class);
                     startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
                 }
             });
 
-            try
-            {
-                pref = getApplicationContext().getSharedPreferences("MyPref", 0);
-                name = SharedPrefUtil.getUser(DashboardActivity.this).getData().getFirstName();
-                name_Login.setText(name);
-
-            }catch (Exception e)
-            {
-                name = "Guest";
-            }
+            pref = getApplicationContext().getSharedPreferences("MyPref", 0);
 
             help_holder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Intent intent = new Intent(DashboardActivity.this, HelpActivity.class);
+                    startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
+                }
+            });
+
+            legalHolder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(DashboardActivity.this, LegalActivity.class);
+                    startActivity(intent);
+                    mDrawerLayout.closeDrawers();
 
                 }
             });
@@ -212,6 +289,8 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 public void onClick(View v) {
                     Intent intent = new Intent(DashboardActivity.this, OrderListActivity.class);
                     startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
                 }
             });
 
@@ -220,18 +299,34 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 public void onClick(View v) {
                     Intent intent = new Intent(DashboardActivity.this, ProfileActivity.class);
                     startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
                 }
             });
-
-            logo.setOnClickListener(new View.OnClickListener() {
+            menu_holder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                /*Product_Fragment product_fragment = new Product_Fragment();
+                    mDrawerLayout.closeDrawers();
 
-                FragmentManager manager = getSupportFragmentManager();
-                FragmentTransaction transaction = manager.beginTransaction();
-                transaction.replace(R.id.fragment_holder, product_fragment);
-                transaction.commit();*/
+                }
+            });
+            my_cart_holder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(DashboardActivity.this, AddToCart.class);
+                    startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
+
+                }
+            });
+            notification_holder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(DashboardActivity.this, NotificationListActivity.class);
+                    startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
                 }
             });
 
@@ -242,51 +337,17 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 }
             });
 
-            final LocationManager locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+            final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-            if ( !locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) )
-            {
+            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 IOUtils.buildAlertMessageNoGps(DashboardActivity.this);
-            }
-            else
-            {
+            } else {
                 if (!IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
                     // LOCATION SERVICE
                     startService(new Intent(this, LocationServiceNew.class));
                     Log.e(TAG, "Location service is already running");
                 }
             }
-
-            Product_Fragment product_fragment = new Product_Fragment();
-
-            FragmentManager manager = getSupportFragmentManager();
-            FragmentTransaction transaction = manager.beginTransaction();
-            transaction.replace(R.id.fragment_holder, product_fragment);
-            transaction.commit();
-
-            updateNotificationsBadge(myApplication.getProductsArraylist().size());
-
-            //updateNotificationsBadge(4);
-
-            /*scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
-
-            // This schedule a task to run every 10 minutes:
-            scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
-                public void run() {
-                    updateNotificationsBadge(myApplication.getProductsArraylist().size());
-                }
-            }, 0, 1, TimeUnit.SECONDS);
-
-
-            final Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                    getVerifiedMobileNumber(SharedPrefUtil.getToken(DashboardActivity.this));
-
-                }
-            }, 3000);*/
 
             final Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
@@ -298,6 +359,72 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 }
             }, 3000);
 
+            Product_Fragment product_fragment = new Product_Fragment();
+
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.replace(R.id.fragment_holder, product_fragment);
+            transaction.commit();
+
+            Log.i("Cust_Auth", SharedPrefUtil.getToken(DashboardActivity.this));
+
+            try {
+                if (SharedPrefUtil.getFirebaseToken(DashboardActivity.this) != null) {
+                    Log.i("FirebaseTOKEN", SharedPrefUtil.getFirebaseToken(DashboardActivity.this));
+                    sendToken(SharedPrefUtil.getFirebaseToken(DashboardActivity.this));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if(myApplication.getProductsArraylist() != null)
+            {
+                updateNotificationsBadge(myApplication.getProductsArraylist().size());
+            }
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void sendToken(String TOKEN) {
+        try {
+
+            String url = Constants.FirebaseToken;
+
+            JSONObject jsonObject = new JSONObject();
+
+            try {
+
+                JSONObject postObject = new JSONObject();
+
+                postObject.put("FBT", TOKEN);
+
+                jsonObject.put("post", postObject);
+
+                Log.i("JSON CREATED", jsonObject.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(DashboardActivity.this));
+
+            ioUtils.sendJSONObjectPutRequestHeader(DashboardActivity.this, url, params, jsonObject, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG, result.toString());
+
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
+            });
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
@@ -312,11 +439,16 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             Map<String, String> params = new HashMap<String, String>();
             params.put("Authorization", "JWT " + SharedPrefUtil.getToken(DashboardActivity.this));
 
-            ioUtils.getPOSTStringRequestHeader(DashboardActivity.this,Constants.Profile, params, new IOUtils.VolleyCallback() {
+            ioUtils.getPOSTStringRequestHeader(DashboardActivity.this, Constants.Profile, params, new IOUtils.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
-                    Log.i("profile_result",result);
+                    Log.i("profile_result", result);
                     profileDataResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
                 }
             });
 
@@ -326,14 +458,93 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
         }
     }
 
-    private void profileDataResponse(String Response)
-    {
-        try
-        {
+    private void profileDataResponse(String Response) {
+        try {
             SharedPrefUtil.setUser(getApplicationContext(), Response.toString());
 
-            PopupWindow popupwindow_obj = popupDisplay();
-            popupwindow_obj.showAtLocation(filter, Gravity.TOP| Gravity.RIGHT, 50, 150);
+            if (SharedPrefUtil.getUser(DashboardActivity.this).getData().getWalletAmount() != null) {
+                if (!SharedPrefUtil.getUser(DashboardActivity.this).getData().getWalletAmount().isEmpty()) {
+                    walletAmount.setText(SharedPrefUtil.getUser(DashboardActivity.this).getData().getWalletAmount());
+                } else {
+                    walletAmount.setText("0");
+                }
+            }
+
+            if (SharedPrefUtil.getUser(DashboardActivity.this).getData().getProfileImage() != null) {
+                Picasso
+                        .with(DashboardActivity.this)
+                        .load(SharedPrefUtil.getUser(DashboardActivity.this).getData().getProfileImage())
+                        .into(profile_image);
+            }
+
+            try {
+                name = SharedPrefUtil.getUser(DashboardActivity.this).getData().getFirstName();
+                name_Login.setText(name);
+
+            } catch (Exception e) {
+                name = "Guest";
+            }
+
+            popupwindow_obj = popupDisplay();
+            popupwindow_obj.showAtLocation(filter, Gravity.TOP | Gravity.RIGHT, 50, 150);
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void getProfileDataOnCreate() {
+        try {
+
+            IOUtils ioUtils = new IOUtils();
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(DashboardActivity.this));
+
+            ioUtils.getPOSTStringRequestHeader(DashboardActivity.this, Constants.Profile, params, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.i("profile_result", result);
+                    profileDataResponseOnCreate(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void profileDataResponseOnCreate(String Response) {
+        try {
+            SharedPrefUtil.setUser(getApplicationContext(), Response.toString());
+
+            if (SharedPrefUtil.getUser(DashboardActivity.this).getData().getWalletAmount() != null) {
+                if (!SharedPrefUtil.getUser(DashboardActivity.this).getData().getWalletAmount().isEmpty()) {
+                    walletAmount.setText(SharedPrefUtil.getUser(DashboardActivity.this).getData().getWalletAmount());
+                } else {
+                    walletAmount.setText("0");
+                }
+            }
+
+            if (SharedPrefUtil.getUser(DashboardActivity.this).getData().getProfileImage() != null) {
+                Picasso
+                        .with(DashboardActivity.this)
+                        .load(SharedPrefUtil.getUser(DashboardActivity.this).getData().getProfileImage())
+                        .into(profile_image);
+            }
+
+            try {
+                name = SharedPrefUtil.getUser(DashboardActivity.this).getData().getFirstName();
+                name_Login.setText(name);
+
+            } catch (Exception e) {
+                name = "Guest";
+            }
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
@@ -347,10 +558,8 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
         Product_Fragment.frameLayout.setVisibility(View.GONE);
     }
 
-    private void getVerifiedMobileNumber(String Token)
-    {
-        try
-        {
+    private void getVerifiedMobileNumber(String Token) {
+        try {
 
             String url = Constants.VerifyMobile + SharedPrefUtil.getUser(DashboardActivity.this).getData().get_id();
 
@@ -359,12 +568,17 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             Map<String, String> params = new HashMap<String, String>();
             params.put("Authorization", "JWT " + Token);
 
-            ioUtils.getGETStringRequestHeader(DashboardActivity.this, url , params , new IOUtils.VolleyCallback() {
+            ioUtils.getGETStringRequestHeader(DashboardActivity.this, url, params, new IOUtils.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
                     Log.d(TAG, result.toString());
 
                     VerifyResponse(result);
+
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
 
                 }
             });
@@ -374,19 +588,14 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
         }
     }
 
-    private void VerifyResponse(String Response)
-    {
-        try
-        {
+    private void VerifyResponse(String Response) {
+        try {
 
             verifyMobilePOJO = gson.fromJson(Response, VerifyMobilePOJO.class);
 
-            if(verifyMobilePOJO.getMessage().equalsIgnoreCase("Mobile number not found"))
-            {
+            if (verifyMobilePOJO.getMessage().equalsIgnoreCase("Mobile number not found")) {
                 verifyMobileNumber("");
-            }
-            else if(verifyMobilePOJO.getMessage().equalsIgnoreCase("Mobile not Verified"))
-            {
+            } else if (verifyMobilePOJO.getMessage().equalsIgnoreCase("Mobile not Verified")) {
                 verifyMobileNumber(verifyMobilePOJO.getMobileNo());
             }
 
@@ -395,8 +604,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
         }
     }
 
-    private void verifyMobileNumber(final String MobileNumber)
-    {
+    private void verifyMobileNumber(final String MobileNumber) {
         try {
 
             // Create custom dialog object
@@ -407,10 +615,10 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             dialog.setTitle("Custom Dialog");
 
             final EditText mobile;
-            Button confirmNumber;
+            FancyButton confirmNumber;
 
             mobile = (EditText) dialog.findViewById(R.id.mobile);
-            confirmNumber = (Button) dialog.findViewById(R.id.confirmNumber);
+            confirmNumber = (FancyButton) dialog.findViewById(R.id.confirmNumber);
 
             mSnackbarContainer = (ViewGroup) dialog.findViewById(R.id.snackbar_container);
 
@@ -422,25 +630,17 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
 
                     String mobile_number = mobile.getText().toString();
 
-                    if(!mobile_number.isEmpty())
-                    {
-                        if (android.util.Patterns.PHONE.matcher(mobile_number).matches())
-                        {
+                    if (!mobile_number.isEmpty()) {
+                        if (android.util.Patterns.PHONE.matcher(mobile_number).matches()) {
                             if (mobile_number.length() >= 10) {
-                               sendMobileNumber(mobile.getText().toString(),mSnackbarContainer);
-                            }
-                            else
-                            {
+                                sendMobileNumber(mobile.getText().toString(), mSnackbarContainer);
+                            } else {
                                 mobile.setError(getString(R.string.less_than_10digit));
                             }
-                        }
-                        else
-                        {
+                        } else {
                             mobile.setError(getString(R.string.proper_mobile));
                         }
-                    }
-                    else
-                    {
+                    } else {
                         mobile.setError(getString(R.string.mobileno));
                     }
 
@@ -462,16 +662,14 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
 
             dialog.show();
 
-        }catch (Exception e)
-        {
-            Log.i(TAG,"dialog_Mobile");
+        } catch (Exception e) {
+            Log.i(TAG, "dialog_Mobile");
         }
 
     }
 
-    private void sendMobileNumber(final String MobileNo, ViewGroup viewGroup)
-    {
-        String url = Constants.SendOTP ;
+    private void sendMobileNumber(final String MobileNo, ViewGroup viewGroup) {
+        String url = Constants.SendOTP;
 
         Log.i("url", url);
 
@@ -482,7 +680,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             JSONObject postObject = new JSONObject();
 
             postObject.put("mobileNo", MobileNo);
-            postObject.put("id",SharedPrefUtil.getUser(DashboardActivity.this).getData().get_id());
+            postObject.put("id", SharedPrefUtil.getUser(DashboardActivity.this).getData().get_id());
 
             jsonObject.put("post", postObject);
 
@@ -497,25 +695,27 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
 
         IOUtils ioUtils = new IOUtils();
 
-        ioUtils.sendJSONObjectRequestHeaderDialog(DashboardActivity.this, viewGroup, url, params ,jsonObject, new IOUtils.VolleyCallback() {
+        ioUtils.sendJSONObjectRequestHeaderDialog(DashboardActivity.this, viewGroup, url, params, jsonObject, new IOUtils.VolleyCallback() {
             @Override
             public void onSuccess(String result) {
 
-                OTPResponse(result,MobileNo);
+                OTPResponse(result, MobileNo);
+            }
+        }, new IOUtils.VolleyFailureCallback() {
+            @Override
+            public void onFailure(String result) {
+
             }
         });
     }
 
-    private void OTPResponse(String Response,String mobile)
-    {
-        try
-        {
+    private void OTPResponse(String Response, String mobile) {
+        try {
             sendOtpPOJO = gson.fromJson(Response, SendOtpPOJO.class);
 
-            if(sendOtpPOJO.getMessage().equalsIgnoreCase("Otp Send"))
-            {
+            if (sendOtpPOJO.getMessage().equalsIgnoreCase("Otp Send")) {
                 Intent intent = new Intent(DashboardActivity.this, OTP.class);
-                intent.putExtra("mobile_num",mobile);
+                intent.putExtra("mobile_num", mobile);
                 startActivity(intent);
             }
 
@@ -524,7 +724,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
         }
     }
 
-    private void SetDefaultAddress()
+   /* private void SetDefaultAddress()
     {
         // Create custom dialog object
         final Dialog dialog = new Dialog(DashboardActivity.this);
@@ -615,7 +815,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
 
         dialog.show();
 
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -660,8 +860,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
     @Override
     protected void onStart() {
 
-        try
-        {
+        try {
 
             GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestEmail()
@@ -678,9 +877,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
     }
 
 
-
-    public PopupWindow popupDisplay()
-    {
+    public PopupWindow popupDisplay() {
 
         final PopupWindow popupWindow = new PopupWindow(this);
 
@@ -692,8 +889,21 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
         TextView nameTxt = (TextView) view.findViewById(R.id.name);
         nameTxt.setText("Hello " + name);
 
+
         TextView my_account = (TextView) view.findViewById(R.id.my_account);
         TextView my_orders = (TextView) view.findViewById(R.id.my_orders);
+        TextView tkcash = (TextView) view.findViewById(R.id.tkcash);
+        TextView notificationList = (TextView) view.findViewById(R.id.notificationList);
+
+        TextView change_password = (TextView) view.findViewById(R.id.change_password);
+
+        change_password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DashboardActivity.this, ChangePasswordActivity.class);
+                startActivity(intent);
+            }
+        });
 
         my_account.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -711,40 +921,37 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             }
         });
 
+        tkcash.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DashboardActivity.this, TKWalletActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        notificationList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DashboardActivity.this, NotificationListActivity.class);
+                startActivity(intent);
+            }
+        });
+
         CircleImageView imgUserimage = (CircleImageView) view.findViewById(R.id.imgUserimage);
 
-        if(SharedPrefUtil.getUser(DashboardActivity.this).getData().getProfileImage() != null)
-        {
+        if (SharedPrefUtil.getUser(DashboardActivity.this).getData().getProfileImage() != null) {
             Picasso
                     .with(DashboardActivity.this)
                     .load(SharedPrefUtil.getUser(DashboardActivity.this).getData().getProfileImage())
                     .into(imgUserimage);
         }
 
-        Button logout = (Button) view.findViewById(R.id.btnLogout);
+        FancyButton logout = (FancyButton) view.findViewById(R.id.btnLogout);
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LoginManager.getInstance().logOut();
-
-                Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                        new ResultCallback<Status>() {
-                            @Override
-                            public void onResult(Status status) {
-                                // ...
-                                Toast.makeText(getApplicationContext(),"Logged Out", Toast.LENGTH_SHORT).show();
-                                finish();
-                                Intent i=new Intent(DashboardActivity.this,LoginActivity.class);
-                                startActivity(i);
-
-                                editor = pref.edit();
-                                editor.clear();
-                                editor.commit();
-                            }
-                        });
-
-                SharedPrefUtil.setClear(DashboardActivity.this);
+                LogOutFunc(DashboardActivity.this);
             }
         });
 
@@ -755,11 +962,40 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
         int height = size.y;
 
         popupWindow.setFocusable(true);
-        popupWindow.setWidth(width-140);
+        popupWindow.setWidth(width - 140);
         popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
         popupWindow.setContentView(view);
 
         return popupWindow;
+    }
+
+    public static void LogOutFunc(final Context context)
+    {
+        LoginManager.getInstance().logOut();
+
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        // ...
+                        Toast.makeText(context, "Logged Out", Toast.LENGTH_SHORT).show();
+                        /*new SweetAlertDialog(context)
+                                .setTitleText("Logged Out")
+                                .show();*/
+
+                        Intent i = new Intent(context, LoginActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(i);
+
+                        editor = pref.edit();
+                        editor.clear();
+                        editor.commit();
+                    }
+                });
+
+        SharedPrefUtil.setClear(context);
+
+        myApplication.removeProductsItems();
     }
 
    /* @Override
@@ -777,7 +1013,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
     @Override
     public void onBackPressed() {
         if (exit) {
-            finish(); // finish activity
+            finishAffinity(); // finish activity
         } else {
             Product_Fragment.map_Holder.setVisibility(View.VISIBLE);
             Product_Fragment.frameLayout.setVisibility(View.GONE);
@@ -804,15 +1040,18 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
 
             //scheduleTaskExecutor.shutdown();
 
+            if ( popupwindow_obj !=null && popupwindow_obj.isShowing() ){
+                popupwindow_obj.dismiss();
+            }
+
             if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
                 // LOCATION SERVICE
                 stopService(new Intent(this, LocationServiceNew.class));
                 Log.e(TAG, "Location service is stopped");
             }
 
-        }catch (Exception e)
-        {
-            Log.i(TAG,e.getMessage());
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
         }
     }
 
@@ -827,18 +1066,30 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
         try {
 
             if (!NetworkUtils.isNetworkConnectionOn(this)) {
-                FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+                /*FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
                     @Override
                     public void onActionClicked(Snackbar snackbar) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
-                return;
+                return;*/
+
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
 
-        }catch (Exception e)
-        {
-            Log.i(TAG,e.getMessage());
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
         }
     }
 }

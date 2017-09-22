@@ -35,6 +35,66 @@ public class OrderReviewDataPOJO {
 
     private String payment_Id;
 
+    private String delivery_charge;
+
+    private String orderNo;
+
+    private String feedback;
+
+    private String rating;
+
+    private String pickUp;
+
+    public String getPickUp() {
+        return pickUp;
+    }
+
+    public void setPickUp(String pickUp) {
+        this.pickUp = pickUp;
+    }
+
+    public String getFeedback() {
+        return feedback;
+    }
+
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
+    }
+
+    public String getRating() {
+        return rating;
+    }
+
+    public void setRating(String rating) {
+        this.rating = rating;
+    }
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
+
+    public String getDelivery_charge() {
+        return delivery_charge;
+    }
+
+    public void setDelivery_charge(String delivery_charge) {
+        this.delivery_charge = delivery_charge;
+    }
+
+    private OrderBikerDetails biker;
+
+    public OrderBikerDetails getBiker() {
+        return biker;
+    }
+
+    public void setBiker(OrderBikerDetails biker) {
+        this.biker = biker;
+    }
+
     private List<OrderReviewProductPOJO> orders = new ArrayList<OrderReviewProductPOJO>();
 
     public String getStatus() {

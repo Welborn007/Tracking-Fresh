@@ -20,7 +20,8 @@
         android:id="@+id/fragment_holder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/layout_holder">
+        android:layout_above="@+id/layout_holder"
+        android:visibility="gone">
 
         <RelativeLayout
             android:id="@+id/map_Holder"
@@ -45,10 +46,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:id="@+id/guestCardview"
+                android:id="@+id/sourceCardview"
                 android:background="@color/LightGray"
                 card_view:cardCornerRadius="4dp"
-                card_view:cardElevation="4dp">
+                card_view:cardElevation="1dp">
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -78,12 +79,12 @@
 
                         <TextView
                             android:id="@+id/GuestAddress"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/edittext_border"
                             android:ellipsize="end"
                             android:maxLines="1"
-                            android:text="35 Kms"
+                            android:text=""
                             android:layout_marginLeft="10dp"
                             android:textColor="@color/black"
                             android:textSize="@dimen/text_size"
@@ -91,11 +92,32 @@
 
                     </LinearLayout>
 
+                </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                xmlns:fancy="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_below="@+id/sourceCardview"
+                android:id="@+id/destinationCardview"
+                android:background="@color/LightGray"
+                card_view:cardCornerRadius="4dp"
+                card_view:cardElevation="1dp">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
                     <LinearLayout
                         android:orientation="horizontal"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:paddingBottom="5dp"
+                        android:padding="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
@@ -130,12 +152,12 @@
 
                 </LinearLayout>
 
-                </android.support.v7.widget.CardView>
+            </android.support.v7.widget.CardView>
 
             <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:map="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/map_container"
-                android:layout_below="@+id/guestCardview"
+                android:layout_below="@+id/destinationCardview"
                 class="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -151,7 +173,7 @@
                 android:layout_margin="5dp"
                 android:background="@color/LightGray"
                 card_view:cardCornerRadius="4dp"
-                card_view:cardElevation="4dp">
+                card_view:cardElevation="1dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -183,7 +205,8 @@
         <FrameLayout
             android:id="@+id/fragment_data"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            >
 
         </FrameLayout>
 
@@ -193,31 +216,67 @@
         android:id="@+id/layout_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
+        android:elevation="5dp"
+        android:background="@drawable/radius_white"
+        android:layout_margin="5dp"
+        android:orientation="vertical"
+        android:visibility="visible"
+        >
 
-        <mehdi.sakout.fancybuttons.FancyButton
-            android:id="@+id/product_category"
+        <RelativeLayout
+            android:background="@drawable/radius_mint"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            fancy:fb_borderColor="#FFFFFF"
-            fancy:fb_borderWidth="1dp"
-            fancy:fb_iconPosition="right"
-            fancy:fb_iconPaddingLeft="10dp"
-            fancy:fb_fontIconResource="&#xf0d7;"
-            fancy:fb_defaultColor="@color/Button_Color"
-            fancy:fb_focusColor="#2e5071"
-            fancy:fb_radius="5dp"
-            fancy:fb_text="Product Category"
-            fancy:fb_textColor="@color/white"
-            fancy:fb_textSize="18sp" />
+            android:layout_height="35dp"
+            android:visibility="gone">
+
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:id="@+id/product_category"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="5dp"
+                fancy:fb_iconPosition="right"
+                android:layout_centerInParent="true"
+                fancy:fb_iconPaddingLeft="10dp"
+                fancy:fb_defaultColor="@color/mint"
+                fancy:fb_focusColor="#2e5071"
+                fancy:fb_text="Product Category"
+                fancy:fb_textColor="@color/white"
+                fancy:fb_textSize="18sp"
+                />
+
+            <RelativeLayout
+                android:id="@+id/arrowHolder"
+                android:layout_toRightOf="@+id/product_category"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="30dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <pl.droidsonroids.gif.GifImageView
+                    android:id="@+id/arrow_down"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/arrow_down2"
+                    />
+
+                <pl.droidsonroids.gif.GifImageView
+                    android:id="@+id/arrow_up"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:visibility="gone"
+                    android:background="@drawable/arrow_up2"
+                    />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/product_holder"
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:visibility="visible">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/product_category_recyclerview"
@@ -229,156 +288,10 @@
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
             </android.support.v7.widget.RecyclerView>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:visibility="gone"
-                android:orientation="horizontal"
-                android:weightSum="3">
-
-                <ImageView
-                    android:id="@+id/fruits"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/fruit" />
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="#ccc" />
-
-                <ImageView
-                    android:id="@+id/vegetables"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/vegetable" />
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="#ccc" />
-
-                <ImageView
-                    android:id="@+id/groceries"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/groceries" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"
-                android:orientation="horizontal"
-                android:weightSum="3">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/Skip"
-                    android:gravity="center"
-                    android:padding="15dp"
-                    android:text="@string/fruits"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size"
-                    android:visibility="gone" />
-
-                <mehdi.sakout.fancybuttons.FancyButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:padding="5dp"
-                    fancy:fb_borderColor="#ffffff"
-                    fancy:fb_borderWidth="1dp"
-                    fancy:fb_defaultColor="@color/Skip"
-                    fancy:fb_focusColor="#2e5071"
-                    fancy:fb_radius="5dp"
-                    fancy:fb_text="@string/fruits"
-                    fancy:fb_textColor="@color/black"
-                    fancy:fb_textSize="18sp" />
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="#ccc" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@color/Skip"
-                    android:gravity="center"
-                    android:padding="15dp"
-                    android:text="@string/vegetables"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size"
-                    android:visibility="gone" />
-
-                <mehdi.sakout.fancybuttons.FancyButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:padding="5dp"
-                    fancy:fb_borderColor="#ffffff"
-                    fancy:fb_borderWidth="1dp"
-                    fancy:fb_defaultColor="@color/Skip"
-                    fancy:fb_focusColor="#2e5071"
-                    fancy:fb_radius="5dp"
-                    fancy:fb_text="@string/vegetables"
-                    fancy:fb_textColor="@color/black"
-                    fancy:fb_textSize="18sp" />
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="#ccc" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@color/Skip"
-                    android:gravity="center"
-                    android:padding="15dp"
-                    android:text="@string/groceries"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size"
-                    android:visibility="gone" />
-
-                <mehdi.sakout.fancybuttons.FancyButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:padding="5dp"
-                    fancy:fb_borderColor="#ffffff"
-                    fancy:fb_borderWidth="1dp"
-                    fancy:fb_defaultColor="@color/Skip"
-                    fancy:fb_focusColor="#2e5071"
-                    fancy:fb_radius="5dp"
-                    fancy:fb_text="@string/groceries"
-                    fancy:fb_textColor="@color/black"
-                    fancy:fb_textSize="18sp" />
-
-            </LinearLayout>
-
         </LinearLayout>
 
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_plus"
-        android:visibility="gone"
-        app:backgroundTint="@color/Button_Color" />
 
 </RelativeLayout>
 

@@ -5,14 +5,12 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/white"
     tools:showIn="@layout/activity_profile"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@+id/header"
-        android:background="@color/blue_trans"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -28,7 +26,7 @@
                 android:layout_width="96dp"
                 android:layout_height="96dp"
                 android:layout_centerInParent="true"
-                android:src="@drawable/profile_image_demo"
+                android:src="@drawable/camera"
                 app:civ_border_width="2dp"
                 app:civ_border_color="#FFFFFFFF"/>
 
@@ -84,9 +82,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Basic Profile"
+                    android:textStyle="bold"
                     android:layout_centerVertical="true"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size18"
                     />
 
                 <ImageView
@@ -101,6 +100,7 @@
 
             <LinearLayout
                 android:padding="5dp"
+                android:id="@+id/phoneHolder"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -116,7 +116,7 @@
                     fancy:fb_text=""
                     fancy:fb_fontIconResource="&#xf095;"
                     fancy:fb_defaultColor="@color/full_trans"
-                    fancy:fb_focusColor="#2e5071"
+                    fancy:fb_focusColor="@color/full_trans"
                     fancy:fb_radius="5dp"
                     fancy:fb_textColor="@color/Gray"
                     fancy:fb_textSize="18sp" />
@@ -128,9 +128,28 @@
                     android:text="Phone"
                     android:layout_marginLeft="20dp"
                     android:layout_gravity="center"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/text_size"
                     />
+
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:id="@+id/verifiedStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    fancy:fb_borderColor="#FFFFFF"
+                    fancy:fb_borderWidth="1dp"
+                    fancy:fb_iconPosition="right"
+                    fancy:fb_iconPaddingLeft="10dp"
+                    android:visibility="gone"
+                    fancy:fb_text="Verified"
+                    android:layout_marginLeft="10dp"
+                    fancy:fb_fontIconResource="&#xf00c;"
+                    fancy:fb_defaultColor="@color/full_trans"
+                    fancy:fb_focusColor="@color/full_trans"
+                    fancy:fb_radius="5dp"
+                    fancy:fb_textColor="@color/MoneyGreen"
+                    fancy:fb_textSize="18sp" />
 
             </LinearLayout>
 
@@ -147,13 +166,13 @@
                     android:padding="5dp"
                     fancy:fb_borderColor="#FFFFFF"
                     fancy:fb_borderWidth="1dp"
-                    fancy:fb_iconPosition="right"
-                    fancy:fb_iconPaddingLeft="10dp"
-                    fancy:fb_text=""
-                    fancy:fb_fontIconResource="&#xf0e0;"
                     fancy:fb_defaultColor="@color/full_trans"
-                    fancy:fb_focusColor="#2e5071"
+                    fancy:fb_focusColor="@color/full_trans"
+                    fancy:fb_fontIconResource="&#xf0e0;"
+                    fancy:fb_iconPaddingLeft="10dp"
+                    fancy:fb_iconPosition="right"
                     fancy:fb_radius="5dp"
+                    fancy:fb_text=""
                     fancy:fb_textColor="@color/Gray"
                     fancy:fb_textSize="18sp" />
 
@@ -164,14 +183,13 @@
                     android:text="Email"
                     android:layout_marginLeft="20dp"
                     android:layout_gravity="center"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/text_size"
                     />
             </LinearLayout>
 
             <LinearLayout
                 android:padding="5dp"
-                android:visibility="gone"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -192,16 +210,115 @@
                     fancy:fb_textColor="@color/Gray"
                     fancy:fb_textSize="18sp" />
 
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_margin="5dp"
+                    android:padding="5dp"
+                    android:background="@drawable/border_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:text="Address"
+                        android:textColor="@color/white"
+                        android:paddingLeft="10dp"
+                        android:visibility="gone"
+                        android:textSize="@dimen/text_size"
+                        android:textStyle="bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/address"
+                        android:textColor="@color/Gray"
+                        android:layout_marginLeft="15dp"
+                        android:textSize="14sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/city"
+                            android:textColor="@color/Gray"
+                            android:layout_marginLeft="15dp"
+                            android:textSize="14sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:id="@+id/pincode"
+                            android:textColor="@color/Gray"
+                            android:layout_marginLeft="10dp"
+                            android:textSize="14sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:padding="5dp"
+                android:id="@+id/referral_holder"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
                 <TextView
-                    android:id="@+id/address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Address"
-                    android:layout_marginLeft="20dp"
+                    android:text="Referral Code"
+                    android:layout_marginLeft="10dp"
                     android:layout_gravity="center"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size"
+                    android:textColor="@color/Gray"
+                    android:textSize="22sp"
                     />
+
+                <LinearLayout
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/border_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/refferal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textStyle="bold"
+                        android:layout_gravity="center"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size"
+                        />
+
+                </LinearLayout>
+
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:id="@+id/Share"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    fancy:fb_borderColor="#FFFFFF"
+                    fancy:fb_borderWidth="1dp"
+                    fancy:fb_iconPosition="right"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    fancy:fb_text=""
+                    fancy:fb_fontIconResource="&#xf1e0;"
+                    fancy:fb_defaultColor="@color/full_trans"
+                    fancy:fb_focusColor="#2e5071"
+                    fancy:fb_radius="5dp"
+                    fancy:fb_textColor="@color/Gray"
+                    fancy:fb_textSize="18sp" />
 
             </LinearLayout>
 

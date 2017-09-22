@@ -7,14 +7,13 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -30,11 +29,8 @@ import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
-import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,18 +38,22 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import mehdi.sakout.fancybuttons.FancyButton;
+
 public class RegisterActivity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt {
 
     EditText first_name, last_name, mobile, email, location, referral_code, password;
-    Button btnRegister;
+    FancyButton btnRegister;
     private String TAG = this.getClass().getSimpleName();
 
-    String SocialID = "", FirstName, LastName, Name, Email, Type = "simple";
+    String SocialID = "", FirstName, LastName, Name, Email, Type = "simple",Mobile,Referral_code,Password;
     GoogleApiClient mGoogleApiClient;
     private NetworkUtilsReceiver networkUtilsReceiver;
 
     private Gson gson;
     LoginMain loginMain;
+    Boolean duplicateMobile = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +66,10 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.getBackground().setAlpha(0);
 
             setTitle("Register");
+            toolbar.setTitleTextColor(ContextCompat.getColor(RegisterActivity.this,R.color.black));
 
         /*Register receiver*/
             networkUtilsReceiver = new NetworkUtilsReceiver(this);
@@ -116,18 +118,18 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
                 Type = "simple";
             }
 
-            btnRegister = (Button) findViewById(R.id.btnRegister);
+            btnRegister = (FancyButton) findViewById(R.id.btnRegister);
 
             btnRegister.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String FirstName = first_name.getText().toString();
-                    String LastName = last_name.getText().toString();
-                    String Mobile = mobile.getText().toString();
-                    String Email = email.getText().toString();
+                    FirstName = first_name.getText().toString();
+                    LastName = last_name.getText().toString();
+                    Mobile = mobile.getText().toString();
+                    Email = email.getText().toString();
                     //String Location = location.getText().toString();
-                    String Referral_code = referral_code.getText().toString();
-                    String Password = password.getText().toString();
+                    Referral_code = referral_code.getText().toString();
+                    Password = password.getText().toString();
 
                     if (!FirstName.isEmpty() && !LastName.isEmpty() && !Mobile.isEmpty() && !Email.isEmpty() && !Password.isEmpty()) {
                         if (android.util.Patterns.EMAIL_ADDRESS.matcher(Email).matches() && android.util.Patterns.PHONE.matcher(Mobile).matches()) {
@@ -135,15 +137,43 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
 
                             if (Mobile.length() >= 10) {
                                 if (!NetworkUtils.isNetworkConnectionOn(RegisterActivity.this)) {
-                                    FireToast.customSnackbarWithListner(RegisterActivity.this, "No internet access", "Settings", new ActionClickListener() {
+                                    /*FireToast.customSnackbarWithListner(RegisterActivity.this, "No internet access", "Settings", new ActionClickListener() {
                                         @Override
                                         public void onActionClicked(Snackbar snackbar) {
                                             startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                                         }
                                     });
-                                    return;
+                                    return;*/
+
+                                    new SweetAlertDialog(RegisterActivity.this, SweetAlertDialog.NORMAL_TYPE)
+                                            .setTitleText("Oops! No internet access")
+                                            .setContentText("Please Check Settings")
+                                            .setConfirmText("Enable the Internet?")
+                                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                @Override
+                                                public void onClick(SweetAlertDialog sDialog) {
+                                                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                                    sDialog.dismissWithAnimation();
+                                                }
+                                            })
+                                            .show();
+
                                 } else {
-                                    sendRegisterData(FirstName, LastName, Mobile, Email, Referral_code, Password, Type, SocialID);
+                                    btnRegister.setClickable(false);
+                                    verifyDuplicateMobileAndRegister(mobile.getText().toString().trim());
+
+                                    /*if(duplicateMobile)
+                                    {
+                                        //mobile.setError("Not Found");
+                                        Toast.makeText(RegisterActivity.this, "User Registered", Toast.LENGTH_SHORT).show();
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(RegisterActivity.this, "Mobile No. Already Registered", Toast.LENGTH_SHORT).show();
+                                        //mobile.setError("Mobile No. Already Registered");
+                                    }*/
+
+                                    //sendRegisterData(FirstName, LastName, Mobile, Email, Referral_code, Password, Type, SocialID);
                                 }
                             } else {
                                 //Toast.makeText(RegisterActivity.this, getString(R.string.less_than_10digit) , Toast.LENGTH_SHORT).show();
@@ -180,12 +210,119 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
                 }
             });
 
+            mobile.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if(!hasFocus)
+                    {
+                        if(!mobile.getText().toString().isEmpty())
+                        {
+                            verifyDuplicateMobile(mobile.getText().toString().trim());
+                        }
+                    }
+                }
+            });
+
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
 
     }
 
+    public void verifyDuplicateMobile(String number)
+    {
+        String url = Constants.VerifyDuplicate + number;
+
+        IOUtils ioUtils = new IOUtils();
+
+        ioUtils.getGETStringRequest(RegisterActivity.this,url, new IOUtils.VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+                verifyMobileResponse(result);
+            }
+        }, new IOUtils.VolleyFailureCallback() {
+            @Override
+            public void onFailure(String result) {
+
+            }
+        });
+    }
+
+    private void verifyMobileResponse(String Response)
+    {
+        try
+        {
+            JSONObject jsonObject = new JSONObject(Response);
+            String message = jsonObject.getString("message");
+
+            if(message.equalsIgnoreCase("Found"))
+            {
+                duplicateMobile = false;
+                mobile.setError("Mobile No. Already Registered");
+                //Toast.makeText(this, "Mobile No. Already Registered", Toast.LENGTH_SHORT).show();
+
+                new SweetAlertDialog(this)
+                        .setTitleText("Mobile No. Already Registered")
+                        .show();
+            }
+            else if(message.equalsIgnoreCase("Not Found"))
+            {
+                duplicateMobile = true;
+            }
+
+        }catch (Exception e)
+        {
+
+        }
+    }
+
+    public void verifyDuplicateMobileAndRegister(String number)
+    {
+        String url = Constants.VerifyDuplicate + number;
+
+        IOUtils ioUtils = new IOUtils();
+
+        ioUtils.getGETStringRequest(RegisterActivity.this,url, new IOUtils.VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+                verifyMobileResponseAndRegister(result);
+            }
+        }, new IOUtils.VolleyFailureCallback() {
+            @Override
+            public void onFailure(String result) {
+
+            }
+        });
+    }
+
+    private void verifyMobileResponseAndRegister(String Response)
+    {
+        try
+        {
+            JSONObject jsonObject = new JSONObject(Response);
+            String message = jsonObject.getString("message");
+
+            if(message.equalsIgnoreCase("Found"))
+            {
+                duplicateMobile = false;
+                mobile.setError("Mobile No. Already Registered");
+                //Toast.makeText(this, "Mobile No. Already Registered", Toast.LENGTH_SHORT).show();
+
+                new SweetAlertDialog(this)
+                        .setTitleText("Mobile No. Already Registered")
+                        .show();
+            }
+            else if(message.equalsIgnoreCase("Not Found"))
+            {
+                duplicateMobile = true;
+                sendRegisterData(FirstName, LastName, Mobile, Email, Referral_code, Password, Type, SocialID);
+            }
+
+        }catch (Exception e)
+        {
+
+        }
+    }
 
     public void sendRegisterData(String FirstName, String LastName, String Mobile, String Email, String ReferralCode, String Password, String Type, String SocialID) {
 
@@ -221,7 +358,13 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
             ioUtils.sendJSONObjectRequest(RegisterActivity.this,url, jsonObject, new IOUtils.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
+                    btnRegister.setClickable(true);
                     RegisterResponse(result.toString());
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+                    btnRegister.setClickable(true);
                 }
             });
 
@@ -244,7 +387,11 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
             }
             else if(loginMain.getUser().getOk().equalsIgnoreCase("false"))
             {
-                Toast.makeText(this, loginMain.getMessage(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, loginMain.getMessage(), Toast.LENGTH_SHORT).show();
+
+                new SweetAlertDialog(this)
+                        .setTitleText(loginMain.getMessage())
+                        .show();
             }
 
         } catch (Exception jse) {
@@ -266,6 +413,11 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
                     Log.i("profile_result",result);
 
                     profileDataResponse(result);
+
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
 
                 }
             });
@@ -391,13 +543,26 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
         try {
 
             if (!NetworkUtils.isNetworkConnectionOn(this)) {
-                FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
+                /*FireToast.customSnackbarWithListner(this, "No internet access", "Settings", new ActionClickListener() {
                     @Override
                     public void onActionClicked(Snackbar snackbar) {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 });
-                return;
+                return;*/
+
+                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Oops! No internet access")
+                        .setContentText("Please Check Settings")
+                        .setConfirmText("Enable the Internet?")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
 
         }catch (Exception e)

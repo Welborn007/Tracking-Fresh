@@ -9,7 +9,8 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:background="?attr/colorPrimary"
+        android:background="@color/porcelain"
+        android:theme="@style/ToolbarStyle"
         app:popupTheme="@style/AppTheme.PopupOverlay"
         app:titleTextColor="@color/white"
         android:layout_height="?attr/actionBarSize">
@@ -70,7 +71,7 @@
             android:layout_margin="5dp"
             android:background="@color/LightGray"
             card_view:cardCornerRadius="4dp"
-            card_view:cardElevation="4dp">
+            card_view:cardElevation="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"

@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
+import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 
 
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
@@ -30,6 +31,8 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
             Log.d(TAG, "Refreshed token: " + refreshedToken);
 
             token = FirebaseInstanceId.getInstance().getToken();
+
+            SharedPrefUtil.setFirebaseToken(this,token);
 
             sharedpreferencesLogin = getSharedPreferences(MyPREFERENCES_LOGIN, Context.MODE_PRIVATE);
             editorLogin = sharedpreferencesLogin.edit();
