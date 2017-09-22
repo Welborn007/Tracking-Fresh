@@ -32,6 +32,7 @@
 
             <LinearLayout
                 android:orientation="vertical"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -64,119 +65,13 @@
             </LinearLayout>
 
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:background="@drawable/edittext_border"
+            <android.support.v7.widget.RecyclerView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/images"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/fruit"
-                    android:layout_gravity="center"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp" />
-
-                <View
-                    android:background="@color/black"
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"/>
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:padding="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <TextView
-                            android:text="Price"
-                            android:textColor="@color/black"
-                            android:padding="10dp"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:layout_width="90dp"
-                            android:layout_height="wrap_content"/>
-
-                        <TextView
-                            android:text="Rs. 25"
-                            android:textColor="@color/black"
-                            android:padding="10dp"
-                            android:gravity="center"
-                            android:textSize="14sp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-
-                    </LinearLayout>
-
-                    <View
-                        android:background="@color/black"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"/>
-
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <TextView
-                            android:text="Qty"
-                            android:textColor="@color/black"
-                            android:padding="10dp"
-                            android:textStyle="bold"
-                            android:textSize="14sp"
-                            android:layout_width="90dp"
-                            android:layout_height="wrap_content"/>
-
-                        <TextView
-                            android:text="4"
-                            android:textColor="@color/black"
-                            android:padding="10dp"
-                            android:gravity="center"
-                            android:textSize="14sp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-
-                    </LinearLayout>
-
-                    <View
-                        android:background="@color/black"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"/>
-
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <TextView
-                            android:text="Subtotal"
-                            android:textColor="@color/black"
-                            android:padding="10dp"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:layout_width="90dp"
-                            android:layout_height="wrap_content"/>
-
-                        <TextView
-                            android:text="Rs. 100"
-                            android:textColor="@color/black"
-                            android:padding="10dp"
-                            android:gravity="center"
-                            android:textSize="14sp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </LinearLayout>
+                android:layout_height="match_parent"
+                android:id="@+id/recyclerView"
+                android:scrollbars="vertical"
+                android:background="@color/white">
+            </android.support.v7.widget.RecyclerView>
 
             <LinearLayout
                 android:orientation="vertical"
@@ -187,6 +82,7 @@
 
                 <LinearLayout
                     android:orientation="horizontal"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -210,6 +106,7 @@
 
                 <LinearLayout
                     android:orientation="horizontal"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -245,7 +142,8 @@
                         android:layout_height="wrap_content"/>
 
                     <TextView
-                        android:text="Rs. 150"
+                        android:id="@+id/total_price"
+                        android:text="nil"
                         android:textColor="@color/black"
                         android:gravity="center"
                         android:textSize="14sp"
@@ -256,17 +154,84 @@
 
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:text="Payment Status"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/payment_status"
+                    android:text="nil"
+                    android:textColor="@color/black"
+                    android:gravity="center"
+                    android:textSize="14sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:text="Payment Mode"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/payment_mode"
+                    android:text="nil"
+                    android:textColor="@color/black"
+                    android:gravity="center"
+                    android:textSize="14sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black"/>
+
             <TextView
                 android:text="Your Delivery Address"
                 android:padding="10dp"
                 android:textColor="@color/black"
+                android:textStyle="bold"
                 android:background="@drawable/edittext_border"
                 android:textSize="14sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <TextView
-                android:text="Kesari Tours, India"
+                android:id="@+id/fullName"
+                android:text=""
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 android:layout_marginLeft="10dp"
@@ -274,7 +239,8 @@
                 android:layout_height="wrap_content"/>
 
             <TextView
-                android:text="314,Kings Corner,L.J.Road-Mahim"
+                android:id="@+id/buildingName"
+                android:text=""
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 android:layout_marginLeft="10dp"
@@ -282,7 +248,17 @@
                 android:layout_height="wrap_content"/>
 
             <TextView
-                android:text="Mumbai - 400 016"
+                android:id="@+id/landmark"
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_marginLeft="10dp"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/address"
+                android:text=""
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 android:layout_marginLeft="10dp"
@@ -295,39 +271,13 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:text="9922338800"
+                    android:id="@+id/mobileNo"
                     android:textColor="@color/black"
                     android:textSize="14sp"
                     android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
-
-                <ImageView
-                    android:src="@drawable/ic_edit"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:text="Payment Method"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-                <ImageView
-                    android:src="@drawable/ic_edit"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp" />
 
             </LinearLayout>
 
@@ -338,7 +288,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Continue to Shopping"
+        android:text="Check Vehicle on Map"
         android:layout_margin="5dp"
         android:layout_alignParentBottom="true"
         android:id="@+id/btnSubmit"

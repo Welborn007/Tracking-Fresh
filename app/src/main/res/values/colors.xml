@@ -33,8 +33,89 @@
 
 
     <color name="colorEdittextBackground">#f1f1f1</color>
-    <color name="colorImageviewBackground">#e5e5e5</color>
+    <color name="colorImageviewBackground">#33e5e5e5</color>
     <color name="Skip">#a9a8a8</color>
     <color name="Button_Color">#d40f14</color>
 
+
+    <color name="ButtonColor">#26a69a</color>
+    <color name="Red">#f44336</color>
+    <color name="Green">#43a047</color>
+    <color name="chatcolorright">#d4e157</color>
+    <color name="light_font">#FBFBFB</color>
+    <color name="grey_font">#757575</color>
+    <color name="text_shadow">#000000</color>
+    <color name="text_shadow_white">#FFFFFF</color>
+    <color name="list_group_title">#808080</color>
+    <color name="list_item_title">#AAAAAA</color>
+    <color name="group_divider_color">#80CBC4</color>
+    <color name="lightred">#FFEBEE</color>
+    <color name="lightgreen">#F1F8E9</color>
+    <color name="lightgreen100">#DCEDC8</color>
+    <color name="lightred100">#FFCDD2</color>
+    <color name="visagreen">#3c763d</color>
+    <color name="golden">#8a6d3b</color>
+    <color name="orange">#FF5722</color>
+    <color name="gray">#9E9E9E</color>
+
+    <color name="red">#F00</color>
+    <color name="green">#0F0</color>
+    <color name="yellow">#FF0</color>
+    <integer-array name="color_array">
+        <item>@color/red</item>
+        <item>@color/green</item>
+        <item>@color/blue</item>
+        <item>@color/yellow</item>
+    </integer-array>
+
+    <color name="full_trans">#00000000</color>
+    <color name="primary">#52bf90</color>
+    <color name="blue_trans">#CC017ad5</color>
+    <color name="list_divider">#E6272727</color>
+    <color name="item_border">#c2c3c8</color>
+    <color name="activity_bg">#e4e5e5</color>
+    <color name="light_gray_seperator">#999999</color>
+    <color name="date">#939490</color>
+    <color name="pink">#ee315f</color>
+    <item name="blue_focus" type="color">#2e5071</item>
+    <item name="red_focus" type="color">#B22222</item>
+    <item name="brown" type="color">#2B1B17</item>
+    <item name="canta" type="color"> #FFA62F</item>
+    <color name="bg_msg_input">#e8e8e8</color>
+    <color name="light_gray">#666666</color>
+    <color name="black_trans">#1A000000</color>
+    <color name="green_color">#008000</color>
+    <color name="bg_msg_you">#5eb964</color>
+    <color name="bg_msg_from">#e5e7eb</color>
+    <color name="lblFromName">#777777</color>
+    <color name="back_color">#66000000</color>
+    <color name="back_color_white">#66FFFFFF</color>
+    <color name="light_blue">#B0E0E6</color>
+    <color name="hint">#acacac</color>
+    <color name="liveo_separator">#33cccccc</color>
+    <color name="slide_seperator">#ccc</color>
+    <color name="new_black">#333333</color>
+    <color name="trans_black">#E6333333</color>
+
+    <color name="event_text_blue">#2998BB</color>
+    <color name="events_tab">#e7e9ec</color>
+    <color name="black_semi_transparent">#B2000000</color>
+    <color name="white_trans">#99FFFFFF</color>
+    <color name="black_low">#CC000000</color>
+    <color name="background">#e5e5e5</color>
+    <color name="half_black">#808080</color>
+    <color name="white_pressed">#f1f1f1</color>
+    <color name="pink_pressed">#ec407a</color>
+    <color name="blue_semi_transparent">#805677fc</color>
+    <color name="blue_semi_transparent_pressed">#80738ffe</color>
+
+    <color name="notification_background_light">#ffee315f</color>
+    <color name="theme_gray">#eaeaea</color>
+
+    <color name="ratingbar_gray">#b5b6b5</color>
+
+    <color name="view_background">#e8ecfa</color>
+    <color name="btn_bg">#277bec</color>
+    <color name="txt_font">#4e5572</color>
+    <color name="button_green">#66BB6A</color>
 </resources>

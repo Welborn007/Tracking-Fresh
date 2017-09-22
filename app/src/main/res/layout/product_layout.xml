@@ -46,14 +46,43 @@
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/price"
-            android:text="Price"
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_gravity="center"
-            android:textColor="@color/black"
-            android:textSize="14sp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/price"
+                android:text="Price"
+                android:layout_gravity="center"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/mrp"
+                android:text="MRP"
+                android:layout_gravity="center"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/quantity"
+                android:text="3"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/black"
+                android:visibility="gone"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"

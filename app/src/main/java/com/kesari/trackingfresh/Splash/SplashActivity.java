@@ -5,12 +5,14 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
 
+import com.kesari.trackingfresh.CheckNearestVehicleAvailability.CheckVehicleActivity;
 import com.kesari.trackingfresh.Login.LoginActivity;
-import com.kesari.trackingfresh.ProductPage.DashboardActivity;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 
 public class SplashActivity extends AppCompatActivity {
+
+    private String TAG = this.getClass().getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +41,9 @@ public class SplashActivity extends AppCompatActivity {
     public void startApp()
     {
         if (SharedPrefUtil.getUser(SplashActivity.this) != null) {
-            if(!SharedPrefUtil.getUser(SplashActivity.this).getUser().getMobileNo().isEmpty())
+            if(!SharedPrefUtil.getUser(SplashActivity.this).getData().getMobileNo().isEmpty())
             {
-                Intent startMainActivity = new Intent(getApplicationContext(),DashboardActivity.class);
+                Intent startMainActivity = new Intent(getApplicationContext(),CheckVehicleActivity.class);
                 startActivity(startMainActivity);
                 finish();
             }

@@ -33,6 +33,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/title_productname"
                     android:text="Tomato,1kg"
                     android:gravity="center"
                     android:textColor="@color/white"
