@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.location.LocationManager;
@@ -16,9 +17,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,8 +30,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -38,6 +44,8 @@ import com.google.gson.Gson;
 import com.kesari.trackingfresh.AddToCart.AddCart_model;
 import com.kesari.trackingfresh.Cart.AddToCart;
 import com.kesari.trackingfresh.DetailPage.DetailsActivity;
+import com.kesari.trackingfresh.DetailPage.OffersRecylerAdapter;
+import com.kesari.trackingfresh.DetailPage.PaddingItemDecoration;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.ProductSubFragment.SubProductMainPOJO;
 import com.kesari.trackingfresh.ProductSubFragment.SubProductSubPOJO;
@@ -78,6 +86,9 @@ public class MyOffersActivity extends AppCompatActivity implements NetworkUtilsR
     ListView gridview;
     private MyDataAdapter myDataAdapter;
 
+    HorizontalRecyclerView offersRecyclerView;
+    PaddingItemDecoration itemDecoration;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +105,7 @@ public class MyOffersActivity extends AppCompatActivity implements NetworkUtilsR
             gson = new Gson();
 
             recListOffers = (RecyclerView) findViewById(R.id.recyclerView);
+            offersRecyclerView = (HorizontalRecyclerView) findViewById(R.id.offersRecyclerView);
 
             recListOffers.setHasFixedSize(true);
             Orders = new LinearLayoutManager(MyOffersActivity.this);
@@ -212,16 +224,54 @@ public class MyOffersActivity extends AppCompatActivity implements NetworkUtilsR
             else
             {
                 relativeLayout.setVisibility(View.GONE);
-                gridview.setVisibility(View.VISIBLE);
-
-                myDataAdapter = new MyDataAdapter(subProductMainPOJO.getData(), MyOffersActivity.this);
+//                gridview.setVisibility(View.VISIBLE);
+                recListOffers.setVisibility(View.VISIBLE);
+              /*  myDataAdapter = new MyDataAdapter(subProductMainPOJO.getData(), MyOffersActivity.this);
                 gridview.setAdapter(myDataAdapter);
-                myDataAdapter.notifyDataSetChanged();
+                myDataAdapter.notifyDataSetChanged();*/
+
+              /*  OffersRecylerAdapter offersRecylerAdapter = new OffersRecylerAdapter(subProductMainPOJO.getData(), MyOffersActivity.this,myApplication);
+
+                recListOffers.setAdapter(offersRecylerAdapter);
+                offersRecylerAdapter.notifyDataSetChanged();
+*/
+
+                offersRecyclerView.setOnFlingListener(null);
+                SnapHelper snapHelper = new PagerSnapHelper();
+//        snapHelper.attachToRecyclerView(offersRecyclerView);
+//        getSnapHelper().attachToRecyclerView(accountSelectionRecyclerView);
+
+
+                OffersRecylerAdapter offersRecylerAdapter = new OffersRecylerAdapter(subProductMainPOJO.getData(), MyOffersActivity.this,myApplication);
+                LinearLayoutManager  accountLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+                offersRecyclerView.setLayoutManager(accountLayoutManager);
+                offersRecyclerView.enableViewScaling(true);
+
+                offersRecyclerView.setAdapter(offersRecylerAdapter);
+//                PaddingItemDecoration itemDecoration= new PaddingItemDecoration(MyOffersActivity.this);
+                if (itemDecoration == null) {
+                    itemDecoration = new PaddingItemDecoration((int) ((getScreenWidth() - (getScreenWidth() / 300)) - 24) / 2,2); //subProductMainPOJO.getData().size());
+                } else {
+                    offersRecyclerView.removeItemDecoration(itemDecoration);
+                    itemDecoration = new PaddingItemDecoration((int) ((getScreenWidth() - (getScreenWidth() / 300)) - 24) / 2,2);// subProductMainPOJO.getData().size());
+                }
+                offersRecyclerView.addItemDecoration(itemDecoration);
+                offersRecyclerView.scrollToPosition(0);
+
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public int getScreenWidth() {
+        WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+
+        Display display = windowManager.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        return size.x;
     }
 
     @Override
@@ -361,7 +411,7 @@ public class MyOffersActivity extends AppCompatActivity implements NetworkUtilsR
             }
             if (convertView == null) {
                 viewHolder = new MyDataAdapter.ViewHolder();
-                convertView = layoutInflater.inflate(R.layout.product_layout, null);
+                convertView = layoutInflater.inflate(R.layout.offer_layout, null);
 
                 viewHolder.product_name = (TextView) convertView.findViewById(R.id.product_name);
                 viewHolder.imageView = (SimpleDraweeView) convertView.findViewById(R.id.images);
@@ -373,7 +423,7 @@ public class MyOffersActivity extends AppCompatActivity implements NetworkUtilsR
                 viewHolder.plus = (Button) convertView.findViewById(R.id.plus);
                 viewHolder.minus = (Button) convertView.findViewById(R.id.minus);
                 viewHolder.mrp = (TextView) convertView.findViewById(R.id.mrp);
-                viewHolder.addtoCart = (Button) convertView.findViewById(R.id.addtoCart);
+                viewHolder.addtoCart = (ImageView) convertView.findViewById(R.id.addtoCart);
                 viewHolder.holder_count = (LinearLayout) convertView.findViewById(R.id.holder_count);
 
                 convertView.setTag(viewHolder);
@@ -599,7 +649,7 @@ public class MyOffersActivity extends AppCompatActivity implements NetworkUtilsR
             TextView product_name, weight, price, count,quantity,mrp;
             SimpleDraweeView imageView;
             Button plus, minus;
-            Button addtoCart;
+            ImageView addtoCart;
             LinearLayout holder_count;
         }
     }
