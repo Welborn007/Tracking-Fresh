@@ -159,6 +159,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             mapTextView = (TextView) findViewById(R.id.mapTextView);
             menuTextView = (TextView) findViewById(R.id.menuTextView);
 
+
             menuTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
