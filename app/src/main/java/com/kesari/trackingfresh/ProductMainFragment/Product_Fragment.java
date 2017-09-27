@@ -1,14 +1,19 @@
 package com.kesari.trackingfresh.ProductMainFragment;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +24,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -52,6 +58,7 @@ import com.kesari.trackingfresh.Map.PathJSONParser;
 import com.kesari.trackingfresh.ProductSubFragment.Product_categoryFragment;
 import com.kesari.trackingfresh.ProductSubFragment.SubProductMainPOJO;
 import com.kesari.trackingfresh.R;
+import com.kesari.trackingfresh.Splash.NewSplash;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.OnSwipeTouchListener;
@@ -65,8 +72,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -243,6 +254,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            //sendNotification("Hello World","");
                             //sendNotification("Hello World","https://d3r8gwkgo0io6y.cloudfront.net/upload/assets/Kesari-Tours.png");
                         }
                     });
@@ -326,41 +338,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             }
             map.setMyLocationEnabled(true);
 
-            if (!NetworkUtils.isNetworkConnectionOn(getActivity())) {
-                /*FireToast.customSnackbarWithListner(getActivity(), "No internet access", "Settings", new ActionClickListener() {
-                    @Override
-                    public void onActionClicked(Snackbar snackbar) {
-                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                    }
-                });
-                return;*/
 
-                new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE)
-                        .setTitleText("Oops! No internet access")
-                        .setContentText("Please Check Settings")
-                        .setConfirmText("Enable the Internet?")
-                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sDialog) {
-                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                                sDialog.dismissWithAnimation();
-                            }
-                        })
-                        .show();
-            } else {
-                startSocket();
-                setVehicleEmpty();
-
-                scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
-
-                // This schedule a task to run every 10 minutes:
-                scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
-                    public void run() {
-                        getVehicleLocation();
-                    }
-                }, 0, 60, TimeUnit.SECONDS);
-
-            }
 
             getVehicleRoute(SharedPrefUtil.getNearestRouteMainPOJO(getActivity()).getData().get(0).getVehicleId());
 
@@ -433,10 +411,52 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 }
             });
 
+            setVehicleEmpty();
+
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (!NetworkUtils.isNetworkConnectionOn(getActivity())) {
+                /*FireToast.customSnackbarWithListner(getActivity(), "No internet access", "Settings", new ActionClickListener() {
+                    @Override
+                    public void onActionClicked(Snackbar snackbar) {
+                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                    }
+                });
+                return;*/
+
+            new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE)
+                    .setTitleText("Oops! No internet access")
+                    .setContentText("Please Check Settings")
+                    .setConfirmText("Enable the Internet?")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                            sDialog.dismissWithAnimation();
+                        }
+                    })
+                    .show();
+        } else {
+            startSocket();
+
+            scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
+
+            // This schedule a task to run every 10 minutes:
+            scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
+                public void run() {
+                    getVehicleLocation();
+                }
+            }, 0, 60, TimeUnit.SECONDS);
+
+        }
     }
 
     private void getVehicleLocation() {
@@ -984,17 +1004,17 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 Address returnedAddress = addresses.get(0);
                 StringBuilder strReturnedAddress = new StringBuilder("");
 
-                for (int i = 0; i < returnedAddress.getMaxAddressLineIndex(); i++) {
+                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
                     strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
                 }
                 strAdd = strReturnedAddress.toString();
-
+                Log.w("My Current loction address", strReturnedAddress.toString());
             } else {
-
+                Log.w("My Current loction address", "No Address returned!");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            strAdd = "Unable to fetch location";
+            Log.w("My Current loction address", "Canont get Address!");
         }
         return strAdd;
     }
@@ -1121,13 +1141,28 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 .title("Origin"));
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        stopSocket();
+
+        if(!scheduleTaskExecutor.isShutdown())
+        {
+            scheduleTaskExecutor.shutdown();
+        }
+    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
 
         stopSocket();
-        scheduleTaskExecutor.shutdown();
+
+        if(!scheduleTaskExecutor.isShutdown())
+        {
+            scheduleTaskExecutor.shutdown();
+        }
         //stopSocket();
     }
 
@@ -1257,6 +1292,66 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
+        }
+    }
+
+    private void sendNotification(String messageBody,String Image) {
+        try
+        {
+
+
+            Intent intent = new Intent(getActivity(), NewSplash.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent pendingIntent = PendingIntent.getActivity(getActivity(), 0, intent,
+                    PendingIntent.FLAG_ONE_SHOT);
+
+            Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+
+            Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getActivity())
+                    .setContentTitle("Tracking Fresh")
+                    //.setContentText(messageBody)
+                    //.setLargeIcon(largeIcon)
+                    .setAutoCancel(true)
+                    .setSound(defaultSoundUri)
+                    .setContentIntent(pendingIntent);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                notificationBuilder.setSmallIcon(R.drawable.ic_stat_tkf);
+            } else {
+                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+            }
+
+            if(!Image.isEmpty())
+            {
+                try {
+                    bitmap = BitmapFactory.decodeStream((InputStream) new URL(Image).getContent());
+                    bitmap = Bitmap.createScaledBitmap(bitmap, 350, 150, false);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                notificationBuilder.setStyle(new NotificationCompat.BigPictureStyle()
+                        .bigPicture(bitmap)).setSubText(messageBody);
+            }
+            else
+            {
+                notificationBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody)).setContentText(messageBody);
+                Bitmap defaultImage = BitmapFactory.decodeResource(getResources(), R.drawable.tracking_banner);
+                notificationBuilder.setStyle(new NotificationCompat.BigPictureStyle().bigPicture(defaultImage)).setSubText(messageBody);
+            }
+
+            NotificationManager notificationManager =
+                    (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+
+            Random random = new Random();
+            int id = random.nextInt(9999 - 1000) + 1000;
+            notificationManager.notify(id, notificationBuilder.build());
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

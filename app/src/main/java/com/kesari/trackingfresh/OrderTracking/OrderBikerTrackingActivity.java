@@ -118,7 +118,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
 
     boolean connectedVehicle = false;
     boolean connectedBiker = false;
-    boolean bikerAssigned;
+    boolean oldLocationSet = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -234,10 +234,16 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
         {
             orderReviewMainPOJO = gson.fromJson(Response, OrderReviewMainPOJO.class);
 
-            if(orderReviewMainPOJO.getData().getBiker() != null)
+            if(oldLocationSet)
             {
                 Delivery_Origin = new LatLng(Double.parseDouble(orderReviewMainPOJO.getData().getAddress().getLatitude()), Double.parseDouble(orderReviewMainPOJO.getData().getAddress().getLongitude()));
                 oldLocation = Delivery_Origin;
+
+                oldLocationSet = false;
+            }
+
+            if(orderReviewMainPOJO.getData().getBiker() != null)
+            {
 
                 if(connectedVehicle)
                 {
@@ -253,8 +259,8 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
             }
             else
             {
-                Delivery_Origin = new LatLng(Double.parseDouble(orderReviewMainPOJO.getData().getAddress().getLatitude()), Double.parseDouble(orderReviewMainPOJO.getData().getAddress().getLongitude()));
-                oldLocation = Delivery_Origin;
+                /*Delivery_Origin = new LatLng(Double.parseDouble(orderReviewMainPOJO.getData().getAddress().getLatitude()), Double.parseDouble(orderReviewMainPOJO.getData().getAddress().getLongitude()));
+                oldLocation = Delivery_Origin;*/
 
                 if(connectedBiker)
                 {
@@ -290,49 +296,6 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
 
             map.setMyLocationEnabled(true);
 
-            if (!NetworkUtils.isNetworkConnectionOn(OrderBikerTrackingActivity.this)) {
-                /*FireToast.customSnackbarWithListner(OrderBikerTrackingActivity.this, "No internet access", "Settings", new ActionClickListener() {
-                    @Override
-                    public void onActionClicked(Snackbar snackbar) {
-                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                    }
-                });
-                return;*/
-
-                new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
-                        .setTitleText("Oops! No internet access")
-                        .setContentText("Please Check Settings")
-                        .setConfirmText("Enable the Internet?")
-                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sDialog) {
-                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                                sDialog.dismissWithAnimation();
-                            }
-                        })
-                        .show();
-            }
-            else
-            {
-                startSocket();
-                setVehicleEmpty();
-
-                scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
-
-                // This schedule a task to run every 10 minutes:
-                scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
-                    public void run() {
-
-                        Current_Location = SharedPrefUtil.getLocation(OrderBikerTrackingActivity.this);
-                        Current_Origin = new LatLng(Current_Location.getLatitude(), Current_Location.getLongitude());
-
-                        Log.i("laittudeText",String.valueOf(Current_Origin.latitude));
-
-                        getOrderDetailsfromID();
-                    }
-                }, 0, 30, TimeUnit.SECONDS);
-            }
-
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
@@ -341,11 +304,59 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                 }
             });
 
+            setVehicleEmpty();
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (!NetworkUtils.isNetworkConnectionOn(OrderBikerTrackingActivity.this)) {
+                /*FireToast.customSnackbarWithListner(OrderBikerTrackingActivity.this, "No internet access", "Settings", new ActionClickListener() {
+                    @Override
+                    public void onActionClicked(Snackbar snackbar) {
+                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                    }
+                });
+                return;*/
+
+            new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+                    .setTitleText("Oops! No internet access")
+                    .setContentText("Please Check Settings")
+                    .setConfirmText("Enable the Internet?")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                            sDialog.dismissWithAnimation();
+                        }
+                    })
+                    .show();
+        }
+        else
+        {
+            startSocket();
+
+            scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
+
+            // This schedule a task to run every 10 minutes:
+            scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
+                public void run() {
+
+                    Current_Location = SharedPrefUtil.getLocation(OrderBikerTrackingActivity.this);
+                    Current_Origin = new LatLng(Current_Location.getLatitude(), Current_Location.getLongitude());
+
+                    Log.i("laittudeText",String.valueOf(Current_Origin.latitude));
+
+                    getOrderDetailsfromID();
+                }
+            }, 0, 30, TimeUnit.SECONDS);
+        }
     }
 
     private void startSocket()
@@ -615,27 +626,27 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                                 //getMapsApiDirectionsUrl(cust_latitude, cust_longitude);
                             }else
                             {
-                                setVehicleEmpty();
+                                //setVehicleEmpty();
                             }
                         }
                         else
                         {
-                            setVehicleEmpty();
+                            //setVehicleEmpty();
                         }
                     }
                     else
                     {
-                        setVehicleEmpty();
+                        //setVehicleEmpty();
                     }
 
                 }else
                 {
-                    setVehicleEmpty();
+                    //setVehicleEmpty();
                 }
             }
             else
             {
-                setVehicleEmpty();
+                //setVehicleEmpty();
             }
 
         } catch (Exception e) {
@@ -714,17 +725,17 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                                 //getMapsApiDirectionsUrl(cust_latitude, cust_longitude);
                             }else
                             {
-                                setVehicleEmpty();
+                                //setVehicleEmpty();
                             }
                         }
                         else
                         {
-                            setVehicleEmpty();
+                            //setVehicleEmpty();
                         }
                     }
                     else
                     {
-                        setVehicleEmpty();
+                        //setVehicleEmpty();
                     }
 
 
@@ -742,7 +753,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
         Projection proj = map.getProjection();
         Point startPoint = proj.toScreenLocation(marker.getPosition());
         final LatLng startLatLng = proj.fromScreenLocation(startPoint);
-        final long duration = 500;
+        final long duration = 3000;
 
         final Interpolator interpolator = new LinearInterpolator();
 
@@ -779,6 +790,8 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                 R.anim.slide_down);
 
         GuestAddress.setText(getCompleteAddressString(Current_Origin.latitude,Current_Origin.longitude));
+
+        Log.d("GeocoderAddress",getCompleteAddressString(Current_Origin.latitude,Current_Origin.longitude));
         kilometre.setText("Vehicle Not Available");
         //SharedPrefUtil.setNearestVehicle(getActivity(),"");
         SharedPrefUtil.setSocketLiveMainPOJO(OrderBikerTrackingActivity.this,"");
@@ -802,24 +815,24 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
 
     private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
         String strAdd = "";
-        Geocoder geocoder = new Geocoder(OrderBikerTrackingActivity.this, Locale.getDefault());
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         try {
             List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
             if (addresses != null) {
                 Address returnedAddress = addresses.get(0);
                 StringBuilder strReturnedAddress = new StringBuilder("");
 
-                for (int i = 0; i < returnedAddress.getMaxAddressLineIndex(); i++) {
+                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
                     strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
                 }
                 strAdd = strReturnedAddress.toString();
-
+                Log.w("My Current loction address", strReturnedAddress.toString());
             } else {
-
+                Log.w("My Current loction address", "No Address returned!");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            strAdd = "Unable to fetch location";
+            Log.w("My Current loction address", "Canont get Address!");
         }
         return strAdd;
     }
