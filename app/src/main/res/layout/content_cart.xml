@@ -49,7 +49,7 @@
 
     <mehdi.sakout.fancybuttons.FancyButton
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:padding="5dp"
         fancy:fb_text="CheckOut"
         android:id="@+id/checkOut"
@@ -58,7 +58,7 @@
         android:layout_margin="5dp"
         android:layout_alignParentBottom="true"
         fancy:fb_fontIconResource="&#xf046;"
-        fancy:fb_defaultColor="@color/fresh_blue"
+        fancy:fb_defaultColor="@color/MoneyGreen"
         fancy:fb_focusColor="@color/colorPrimary"
         fancy:fb_radius="5dp"
         fancy:fb_textColor="@color/white"

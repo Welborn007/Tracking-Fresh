@@ -4,13 +4,16 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,8 +22,6 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.AddToCart.AddCart_model;
-import com.kesari.trackingfresh.ProductMainFragment.ProductCategorySubPOJO;
-import com.kesari.trackingfresh.ProductMainFragment.Product_RecyclerAdapter;
 import com.kesari.trackingfresh.ProductSubFragment.SubProductSubPOJO;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.IOUtils;
@@ -54,6 +55,8 @@ public class OffersRecylerAdapter  extends RecyclerView.Adapter<OffersRecylerAda
 
         LayoutInflater mInflater = LayoutInflater.from(parent.getContext());
         ViewGroup mainGroup = (ViewGroup) mInflater.inflate(R.layout.offer_layout, parent, false);
+        mainGroup.getLayoutParams().width = (int) ((getScreenWidth()) / 1.6f);
+
         OffersRecylerAdapter.RecyclerViewHolder recyclerViewHolder = new OffersRecylerAdapter.RecyclerViewHolder(mainGroup);
 
        /* View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_rowlayout,parent,false);
@@ -61,6 +64,15 @@ public class OffersRecylerAdapter  extends RecyclerView.Adapter<OffersRecylerAda
         RecyclerViewHolder recyclerViewHolder = new RecyclerViewHolder(view);
 */
         return recyclerViewHolder;
+    }
+
+    public int getScreenWidth() {
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+
+        Display display = windowManager.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        return size.x;
     }
 
     @Override
@@ -107,6 +119,8 @@ public class OffersRecylerAdapter  extends RecyclerView.Adapter<OffersRecylerAda
 
                 viewHolder.imageView.setController(IOUtils.getFrescoImageController(context, product_pojo.getProductImage()));
                 viewHolder.imageView.setHierarchy(IOUtils.getFrescoImageHierarchy(context));
+//                viewHolder.imageView.getHierarchy().setFailureImage(R.drawable.fruit);
+
                 viewHolder.quantity.setText(product_pojo.getAvailableQuantity() + " quantity");
                 viewHolder.weight.setText(product_pojo.getUnit() + product_pojo.getUnitsOfMeasurement());
                 viewHolder.price.setText("₹ " + product_pojo.getSelling_price());

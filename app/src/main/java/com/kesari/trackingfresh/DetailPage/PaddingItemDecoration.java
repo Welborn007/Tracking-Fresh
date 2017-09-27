@@ -1,19 +1,36 @@
 package com.kesari.trackingfresh.DetailPage;
 
-import android.app.Activity;
-import android.content.res.Resources;
 import android.graphics.Rect;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-
-import com.kesari.trackingfresh.R;
 
 /**
  * Created by SNK Consulting on 26-09-2017.
  */
 
 public class PaddingItemDecoration extends RecyclerView.ItemDecoration {
+    private final int padding, length;
+
+    public PaddingItemDecoration(int padding, int length) {
+        this.padding = padding;
+        this.length = length;
+    }
+
+    @Override
+    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+        super.getItemOffsets(outRect, view, parent, state);
+
+        if (parent.getChildAdapterPosition(view) == 0) {
+            outRect.left += padding;
+        }
+        if (parent.getChildAdapterPosition(view) == length) {
+            outRect.right += padding;
+        }
+    }
+
+}
+
+/*extends RecyclerView.ItemDecoration {
 
     private int mPaddingPx;
     private int mPaddingEdgesPx;
@@ -45,32 +62,32 @@ public PaddingItemDecoration(int mPaddingPx,int mPaddingEdgesPx) {
         int right = 0;
         int bottom = 0;
 
-        /** HORIZONTAL */
+        *//** HORIZONTAL *//*
         if (orientation == LinearLayoutManager.HORIZONTAL) {
-            /** all positions */
+            *//** all positions *//*
             left = mPaddingPx;
             right = mPaddingPx;
 
-            /** first position */
+            *//** first position *//*
             if (itemPosition == 0) {
                 left += mPaddingEdgesPx;
             }
-            /** last position */
+            *//** last position *//*
             else if (itemCount > 0 && itemPosition == itemCount - 1) {
                 right += mPaddingEdgesPx;
             }
         }
-        /** VERTICAL */
+        *//** VERTICAL *//*
         else {
-            /** all positions */
+            *//** all positions *//*
             top = mPaddingPx;
             bottom = mPaddingPx;
 
-            /** first position */
+            *//** first position *//*
             if (itemPosition == 0) {
                 top += mPaddingEdgesPx;
             }
-            /** last position */
+            *//** last position *//*
             else if (itemCount > 0 && itemPosition == itemCount - 1) {
                 bottom += mPaddingEdgesPx;
             }
@@ -100,4 +117,4 @@ public PaddingItemDecoration(int mPaddingPx,int mPaddingEdgesPx) {
             throw new IllegalStateException("PaddingItemDecoration can only be used with a LinearLayoutManager.");
         }
     }
-}
+}*/

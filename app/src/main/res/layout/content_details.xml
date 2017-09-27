@@ -497,22 +497,22 @@
 
             <mehdi.sakout.fancybuttons.FancyButton
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:padding="5dp"
                 fancy:fb_text="Go to Cart"
                 android:layout_weight="1"
                 fancy:fb_iconPosition="left"
                 android:id="@+id/gotoCart"
                 fancy:fb_fontIconResource="&#xf217;"
-                fancy:fb_defaultColor="@color/fresh_blue"
+                fancy:fb_defaultColor="@color/MoneyGreen"
                 fancy:fb_focusColor="@color/colorPrimary"
-                fancy:fb_radius="5dp"
+                fancy:fb_radius="2dp"
                 fancy:fb_textColor="@color/white"
                 fancy:fb_textSize="18sp" />
 
             <mehdi.sakout.fancybuttons.FancyButton
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:padding="5dp"
                 fancy:fb_text="CheckOut"
                 android:id="@+id/checkOut"
@@ -520,9 +520,9 @@
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
                 fancy:fb_fontIconResource="&#xf046;"
-                fancy:fb_defaultColor="@color/fresh_blue"
+                fancy:fb_defaultColor="@color/MoneyGreen"
                 fancy:fb_focusColor="@color/colorPrimary"
-                fancy:fb_radius="5dp"
+                fancy:fb_radius="2dp"
                 fancy:fb_textColor="@color/white"
                 fancy:fb_textSize="18sp" />
 

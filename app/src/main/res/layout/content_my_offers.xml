@@ -42,7 +42,7 @@
             <com.kesari.trackingfresh.MyOffers.HorizontalRecyclerView
                 android:id="@+id/offersRecyclerView"
                 android:layout_width="wrap_content"
-                android:layout_height="300dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:clipChildren="false"
                 android:orientation="horizontal" />

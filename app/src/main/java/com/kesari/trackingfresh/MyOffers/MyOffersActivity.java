@@ -87,7 +87,7 @@ public class MyOffersActivity extends AppCompatActivity implements NetworkUtilsR
     private MyDataAdapter myDataAdapter;
 
     HorizontalRecyclerView offersRecyclerView;
-    PaddingItemDecoration itemDecoration;
+    RecyclerView.ItemDecoration itemDecoration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -250,10 +250,10 @@ public class MyOffersActivity extends AppCompatActivity implements NetworkUtilsR
                 offersRecyclerView.setAdapter(offersRecylerAdapter);
 //                PaddingItemDecoration itemDecoration= new PaddingItemDecoration(MyOffersActivity.this);
                 if (itemDecoration == null) {
-                    itemDecoration = new PaddingItemDecoration((int) ((getScreenWidth() - (getScreenWidth() / 300)) - 24) / 2,2); //subProductMainPOJO.getData().size());
+                    itemDecoration = new PaddingItemDecoration((int) ((getScreenWidth() - (getScreenWidth() / 1.0f)) - 24) / 2,subProductMainPOJO.getData().size());
                 } else {
                     offersRecyclerView.removeItemDecoration(itemDecoration);
-                    itemDecoration = new PaddingItemDecoration((int) ((getScreenWidth() - (getScreenWidth() / 300)) - 24) / 2,2);// subProductMainPOJO.getData().size());
+                    itemDecoration = new PaddingItemDecoration((int) ((getScreenWidth() - (getScreenWidth() / 1.0f)) - 24) / 2, subProductMainPOJO.getData().size());
                 }
                 offersRecyclerView.addItemDecoration(itemDecoration);
                 offersRecyclerView.scrollToPosition(0);
