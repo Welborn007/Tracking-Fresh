@@ -42,7 +42,7 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
     private String TAG = this.getClass().getSimpleName();
     private NetworkUtilsReceiver networkUtilsReceiver;
     private Gson gson;
-    //NearestVehicleMainPOJO nearestVehicleMainPOJO;
+    NearestVehicleMainPOJO nearestVehicleMainPOJO;
     NearestRouteMainPOJO nearestRouteMainPOJO;
 
     private Location Current_Location;
@@ -101,6 +101,7 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
                 }, 0, 10, TimeUnit.SECONDS);*/
 
                 sendLATLONVehicle();
+                sendLATLONNearestVehicle();
             }
 
         } catch (Exception e) {
@@ -203,33 +204,63 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
         }
     }
 
-   /* private void NearestVehicleResponse(String Response)
+    private void sendLATLONNearestVehicle()
+    {
+        try
+        {
+
+            String url = Constants.CheckNearestVehicle ;
+
+            Log.i("url", url);
+
+            JSONObject jsonObject = new JSONObject();
+
+            try {
+
+                JSONObject postObject = new JSONObject();
+
+                postObject.put("longitude", SharedPrefUtil.getLocation(CheckVehicleActivity.this).getLongitude());
+                postObject.put("latitude", SharedPrefUtil.getLocation(CheckVehicleActivity.this).getLatitude());
+
+                jsonObject.put("post", postObject);
+
+                Log.i("JSON CREATED", jsonObject.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(CheckVehicleActivity.this));
+
+            IOUtils ioUtils = new IOUtils();
+
+            ioUtils.sendJSONObjectRequestHeader(CheckVehicleActivity.this, url,params, jsonObject, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    //scheduleTaskExecutor.shutdown();
+                    NearestVehicleResponse(result);
+
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+
+    }
+
+    private void NearestVehicleResponse(String Response)
     {
         try
         {
             nearestVehicleMainPOJO = gson.fromJson(Response, NearestVehicleMainPOJO.class);
 
-            if(nearestVehicleMainPOJO.getData().isEmpty())
-            {
-                search_text.setText("Oops! No Vehicle found Nearby!");
-                aviFailed.setVisibility(View.VISIBLE);
-                avi.setVisibility(View.GONE);
-                SharedPrefUtil.setNearestVehicle(CheckVehicleActivity.this,"");
-
-                Intent intent = new Intent(CheckVehicleActivity.this, DashboardActivity.class);
-                startActivity(intent);
-                finish();
-
-                *//*final Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                    }
-                }, 5000);*//*
-            }
-            else
-            {
                 SharedPrefUtil.setNearestVehicle(CheckVehicleActivity.this,Response);
                 aviFailed.setVisibility(View.GONE);
                 avi.setVisibility(View.VISIBLE);
@@ -237,12 +268,11 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
                 Intent intent = new Intent(CheckVehicleActivity.this, DashboardActivity.class);
                 startActivity(intent);
                 finish();
-            }
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
-    }*/
+    }
 
 
     @Override

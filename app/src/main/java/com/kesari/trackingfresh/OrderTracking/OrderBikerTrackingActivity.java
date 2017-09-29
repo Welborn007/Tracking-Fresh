@@ -88,7 +88,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
     //GoogleMap googleMap;
     private String TAG = this.getClass().getSimpleName();
     //private GPSTracker gps;
-    private Location Current_Location;
+    private Location Current_Location,old_Location;
     LatLng oldLocation, newLocation;
     private static final int DURATION = 3000;
     ScheduledExecutorService scheduleTaskExecutor;
@@ -238,8 +238,15 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
             {
                 Delivery_Origin = new LatLng(Double.parseDouble(orderReviewMainPOJO.getData().getAddress().getLatitude()), Double.parseDouble(orderReviewMainPOJO.getData().getAddress().getLongitude()));
                 oldLocation = Delivery_Origin;
+                newLocation = Delivery_Origin;
 
                 oldLocationSet = false;
+
+                old_Location = new Location(LocationManager.GPS_PROVIDER);
+                old_Location.setLatitude(Delivery_Origin.latitude);
+                old_Location.setLongitude(Delivery_Origin.longitude);
+
+                setVehicleEmpty();
             }
 
             if(orderReviewMainPOJO.getData().getBiker() != null)
@@ -304,8 +311,6 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                 }
             });
 
-            setVehicleEmpty();
-
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
@@ -340,7 +345,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
         }
         else
         {
-            startSocket();
+            //startSocket();
 
             scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
 
@@ -594,15 +599,6 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
 
                                 map.setTrafficEnabled(true);
 
-                                CameraPosition cameraPosition = new CameraPosition.Builder().
-                                        target(finalPosition).
-                                        tilt(60).
-                                        zoom(18).
-                                        bearing(0).
-                                        build();
-
-                                map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
                                 newLocation = currentPosition;
 
                                 if(isDirectionSet)
@@ -616,11 +612,30 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                                     /*marker.setPosition(currentPosition);
                                     marker.setRotation((float) bearingBetweenLocations(oldLocation,newLocation));*/
 
-                                    animateMarker(map,marker,finalPosition,false);
-                                    marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_up_angle));
-                                    marker.setRotation((float) bearingBetweenLocations(oldLocation,newLocation));
 
-                                    oldLocation = newLocation;
+                                    if(location.distanceTo(old_Location) > 40) {
+
+                                        CameraPosition cameraPosition = new CameraPosition.Builder().
+                                                target(finalPosition).
+                                                tilt(0).
+                                                zoom(17).
+                                                bearing(0).
+                                                build();
+
+                                        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+                                        animateMarker(map,marker,finalPosition,false);
+                                        marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_red_car));
+                                        marker.setRotation((float) bearingBetweenLocations(oldLocation,newLocation));
+
+                                        oldLocation = newLocation;
+
+                                        old_Location = new Location(LocationManager.GPS_PROVIDER);
+                                        old_Location.setLatitude(cust_latitude);
+                                        old_Location.setLongitude(cust_longitude);
+                                    }
+
+
                                 }
 
                                 //getMapsApiDirectionsUrl(cust_latitude, cust_longitude);
@@ -693,15 +708,6 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
 
                                 map.setTrafficEnabled(true);
 
-                                CameraPosition cameraPosition = new CameraPosition.Builder().
-                                        target(finalPosition).
-                                        tilt(60).
-                                        zoom(18).
-                                        bearing(0).
-                                        build();
-
-                                map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
                                 newLocation = currentPosition;
 
                                 if(isDirectionSet)
@@ -715,11 +721,27 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                                     /*marker.setPosition(currentPosition);
                                     marker.setRotation((float) bearingBetweenLocations(oldLocation,newLocation));*/
 
-                                    animateMarker(map,marker,finalPosition,false);
-                                    marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_biker));
-                                    marker.setRotation((float) bearingBetweenLocations(oldLocation,newLocation));
+                                    if(location.distanceTo(old_Location) > 40) {
+                                        CameraPosition cameraPosition = new CameraPosition.Builder().
+                                                target(finalPosition).
+                                                tilt(0).
+                                                zoom(17).
+                                                bearing(0).
+                                                build();
 
-                                    oldLocation = newLocation;
+                                        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+                                        animateMarker(map,marker,finalPosition,false);
+                                        marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_biker));
+                                        marker.setRotation((float) bearingBetweenLocations(oldLocation,newLocation));
+
+                                        oldLocation = newLocation;
+
+                                        old_Location = new Location(LocationManager.GPS_PROVIDER);
+                                        old_Location.setLatitude(cust_latitude);
+                                        old_Location.setLongitude(cust_longitude);
+                                    }
+
                                 }
 
                                 //getMapsApiDirectionsUrl(cust_latitude, cust_longitude);
@@ -792,7 +814,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
         GuestAddress.setText(getCompleteAddressString(Current_Origin.latitude,Current_Origin.longitude));
 
         Log.d("GeocoderAddress",getCompleteAddressString(Current_Origin.latitude,Current_Origin.longitude));
-        kilometre.setText("Vehicle Not Available");
+        //kilometre.setText("Vehicle Not Available");
         //SharedPrefUtil.setNearestVehicle(getActivity(),"");
         SharedPrefUtil.setSocketLiveMainPOJO(OrderBikerTrackingActivity.this,"");
         //scheduleTaskExecutor.shutdown();
@@ -802,11 +824,26 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
         CameraPosition cameraPosition = new CameraPosition.Builder().
                 target(Current_Origin).
                 tilt(0).
-                zoom(18).
+                zoom(17).
                 bearing(0).
                 build();
 
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+        String[] geoArrayNew = SharedPrefUtil.getNearestVehicle(OrderBikerTrackingActivity.this).getData().get(0).getDist().getLocation().getCoordinates();
+        Double lat = Double.valueOf(geoArrayNew[1]);
+        Double lon = Double.valueOf(geoArrayNew[0]);
+
+        Log.d("DataLOng",String.valueOf(lon) + " " + String.valueOf(lat));
+
+        //Delivery_Origin = new LatLng(lat,lon);
+        if(isDirectionSet)
+        {
+            addMarkers("1", "TKF Vehicle", lat, lon);
+            getMapsApiDirectionsUrl(lat, lon);
+        }
+
+        //isDirectionSet = true;
 
        /* map.addMarker(new MarkerOptions().position(Current_Origin)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_customer))
@@ -852,7 +889,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
 
             if (map != null) {
                 marker = map.addMarker(new MarkerOptions().position(dest)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_up_angle))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_red_car))
                         .rotation((float) bearingBetweenLocations(oldLocation,newLocation))
                         .title(location_name));
 
@@ -862,14 +899,6 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                 data.put(TAG_LONGITUDE, String.valueOf(longitude));
 
                 extraMarkerInfo.put(marker.getId(), data);
-
-                IOUtils.showRipples(dest,map,DURATION);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        IOUtils.showRipples(dest,map,DURATION);
-                    }
-                }, DURATION - 500);
 
                 custMarker = map.addMarker(new MarkerOptions().position(Delivery_Origin)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_customer))
@@ -912,14 +941,6 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                 data.put(TAG_LONGITUDE, String.valueOf(longitude));
 
                 extraMarkerInfo.put(marker.getId(), data);
-
-                IOUtils.showRipples(dest,map,DURATION);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        IOUtils.showRipples(dest,map,DURATION);
-                    }
-                }, DURATION - 500);
 
                 map.addMarker(new MarkerOptions().position(Delivery_Origin)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_customer))
