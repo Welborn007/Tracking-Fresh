@@ -30,6 +30,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -43,6 +44,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
+import com.kesari.trackingfresh.CheckNearestVehicleAvailability.NearestVehicleMainPOJO;
 import com.kesari.trackingfresh.DashBoard.DashboardActivity;
 import com.kesari.trackingfresh.Map.HttpConnection;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
@@ -119,6 +121,8 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
     boolean connectedVehicle = false;
     boolean connectedBiker = false;
     boolean oldLocationSet = true;
+
+    NearestVehicleMainPOJO nearestVehicleMainPOJO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -234,6 +238,15 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
         {
             orderReviewMainPOJO = gson.fromJson(Response, OrderReviewMainPOJO.class);
 
+            if(orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Delivered"))
+            {
+                Toast.makeText(this, "Order Delivered Successfully!!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(OrderBikerTrackingActivity.this, OrderReview.class);
+                intent.putExtra("orderID",OrderID);
+                startActivity(intent);
+                finish();
+            }
+
             if(oldLocationSet)
             {
                 Delivery_Origin = new LatLng(Double.parseDouble(orderReviewMainPOJO.getData().getAddress().getLatitude()), Double.parseDouble(orderReviewMainPOJO.getData().getAddress().getLongitude()));
@@ -347,6 +360,8 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
         {
             //startSocket();
 
+            sendLATLONNearestVehicle();
+
             scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
 
             // This schedule a task to run every 10 minutes:
@@ -361,6 +376,76 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                     getOrderDetailsfromID();
                 }
             }, 0, 30, TimeUnit.SECONDS);
+        }
+    }
+
+    private void sendLATLONNearestVehicle()
+    {
+        try
+        {
+
+            String url = Constants.CheckNearestVehicle ;
+
+            Log.i("url", url);
+
+            JSONObject jsonObject = new JSONObject();
+
+            try {
+
+                JSONObject postObject = new JSONObject();
+
+                postObject.put("longitude", SharedPrefUtil.getLocation(OrderBikerTrackingActivity.this).getLongitude());
+                postObject.put("latitude", SharedPrefUtil.getLocation(OrderBikerTrackingActivity.this).getLatitude());
+
+                jsonObject.put("post", postObject);
+
+                Log.i("JSON CREATED", jsonObject.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(OrderBikerTrackingActivity.this));
+
+            IOUtils ioUtils = new IOUtils();
+
+            ioUtils.sendJSONObjectRequestHeader(OrderBikerTrackingActivity.this, url,params, jsonObject, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    //scheduleTaskExecutor.shutdown();
+                    NearestVehicleResponse(result);
+
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+
+    }
+
+    private void NearestVehicleResponse(String Response)
+    {
+        try
+        {
+            nearestVehicleMainPOJO = gson.fromJson(Response, NearestVehicleMainPOJO.class);
+
+            SharedPrefUtil.setNearestVehicle(OrderBikerTrackingActivity.this,Response);
+                /*aviFailed.setVisibility(View.GONE);
+                avi.setVisibility(View.VISIBLE);
+
+                Intent intent = new Intent(CheckVehicleActivity.this, DashboardActivity.class);
+                startActivity(intent);
+                finish();*/
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
         }
     }
 

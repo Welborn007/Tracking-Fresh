@@ -262,12 +262,12 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
             nearestVehicleMainPOJO = gson.fromJson(Response, NearestVehicleMainPOJO.class);
 
                 SharedPrefUtil.setNearestVehicle(CheckVehicleActivity.this,Response);
-                aviFailed.setVisibility(View.GONE);
+                /*aviFailed.setVisibility(View.GONE);
                 avi.setVisibility(View.VISIBLE);
 
                 Intent intent = new Intent(CheckVehicleActivity.this, DashboardActivity.class);
                 startActivity(intent);
-                finish();
+                finish();*/
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());

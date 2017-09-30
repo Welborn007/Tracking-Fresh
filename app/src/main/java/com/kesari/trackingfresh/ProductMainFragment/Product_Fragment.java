@@ -52,6 +52,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
+import com.kesari.trackingfresh.CheckNearestVehicleAvailability.CheckVehicleActivity;
+import com.kesari.trackingfresh.CheckNearestVehicleAvailability.NearestVehicleMainPOJO;
 import com.kesari.trackingfresh.Map.HttpConnection;
 import com.kesari.trackingfresh.Map.JSON_POJO;
 import com.kesari.trackingfresh.Map.PathJSONParser;
@@ -175,6 +177,8 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     private static final String TAG_FROM_TIME = "";
     private static final String TAG_TO_TIME = "";
     Marker markerVehicle, Cust_Marker;
+
+    NearestVehicleMainPOJO nearestVehicleMainPOJO;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -446,6 +450,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                     .show();
         } else {
             startSocket();
+            sendLATLONNearestVehicle();
 
             scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
 
@@ -456,6 +461,76 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 }
             }, 0, 60, TimeUnit.SECONDS);
 
+        }
+    }
+
+    private void sendLATLONNearestVehicle()
+    {
+        try
+        {
+
+            String url = Constants.CheckNearestVehicle ;
+
+            Log.i("url", url);
+
+            JSONObject jsonObject = new JSONObject();
+
+            try {
+
+                JSONObject postObject = new JSONObject();
+
+                postObject.put("longitude", SharedPrefUtil.getLocation(getActivity()).getLongitude());
+                postObject.put("latitude", SharedPrefUtil.getLocation(getActivity()).getLatitude());
+
+                jsonObject.put("post", postObject);
+
+                Log.i("JSON CREATED", jsonObject.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(getActivity()));
+
+            IOUtils ioUtils = new IOUtils();
+
+            ioUtils.sendJSONObjectRequestHeader(getActivity(), url,params, jsonObject, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    //scheduleTaskExecutor.shutdown();
+                    NearestVehicleResponse(result);
+
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+
+    }
+
+    private void NearestVehicleResponse(String Response)
+    {
+        try
+        {
+            nearestVehicleMainPOJO = gson.fromJson(Response, NearestVehicleMainPOJO.class);
+
+            SharedPrefUtil.setNearestVehicle(getActivity(),Response);
+                /*aviFailed.setVisibility(View.GONE);
+                avi.setVisibility(View.VISIBLE);
+
+                Intent intent = new Intent(CheckVehicleActivity.this, DashboardActivity.class);
+                startActivity(intent);
+                finish();*/
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
         }
     }
 
