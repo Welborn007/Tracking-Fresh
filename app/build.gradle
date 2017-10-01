@@ -9,7 +9,7 @@ repositories {
 android {
     signingConfigs {
         config {
-            keyAlias 'TKF_Key'
+            keyAlias 'tkf_key'
             keyPassword '12345678'
             storeFile file('D:/chetan Projects/KeyStore/TKF_KeyStore.jks')
             storePassword '12345678'

@@ -7,11 +7,14 @@
     android:background="#eaeaea"
     tools:context="com.kesari.trackingfresh.Login.LoginActivity">
 
-    <android.support.v7.widget.Toolbar android:id="@+id/toolbar"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
         android:layout_marginTop="24dp"
+
         android:theme="@style/ToolbarStyle"
-        android:layout_width="match_parent" android:layout_height="?attr/actionBarSize"
-        android:background="@color/porcelain" app:popupTheme="@style/AppTheme.PopupOverlay" >
+        app:popupTheme="@style/AppTheme.PopupOverlay">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -20,13 +23,12 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Log in"
+                android:layout_centerInParent="true"
                 android:gravity="center"
                 android:paddingLeft="-40dp"
-                android:textSize="14sp"
-                android:layout_centerInParent="true"
+                android:text="Log in"
                 android:textColor="@color/black"
-                />
+                android:textSize="14sp" />
 
         </RelativeLayout>
 
@@ -37,29 +39,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"
-        android:textAlignment="center"
-        android:text="LOG IN WITH YOUR TRACKING FRESH ACCOUNT"
-        android:textSize="14sp"
         android:layout_centerHorizontal="true"
-        android:textColor="@color/black"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="20dp"
+        android:text="LOG IN WITH YOUR TRACKING FRESH ACCOUNT"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="14sp" />
 
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_below="@+id/logintext"
-        android:id="@+id/linearLayout"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:layout_centerHorizontal="true">
+        android:orientation="vertical">
 
         <LinearLayout
-            android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            >
+            android:background="@color/white">
 
             <EditText
                 android:id="@+id/user_name"
@@ -68,26 +69,24 @@
                 android:layout_gravity="center"
                 android:layout_margin="10dp"
                 android:background="@null"
-                android:textSize="@dimen/text_size"
                 android:focusable="true"
                 android:hint="900******8"
-                android:textColorHint="@color/textHintColor"
                 android:inputType="number"
                 android:textColor="@color/black"
-                />
+                android:textColorHint="@color/textHintColor"
+                android:textSize="@dimen/text_size" />
 
         </LinearLayout>
 
         <View
-            android:background="#ccc"
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"/>
+            android:layout_height="0.5dp"
+            android:background="#ccc" />
 
         <LinearLayout
-            android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            >
+            android:background="@color/white">
 
 
             <EditText
@@ -96,77 +95,74 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="10dp"
-                android:textSize="@dimen/text_size"
                 android:background="@null"
                 android:focusable="true"
                 android:hint="Password"
                 android:inputType="textPassword"
-                android:textColorHint="@color/textHintColor"
                 android:textColor="@color/black"
-                />
+                android:textColorHint="@color/textHintColor"
+                android:textSize="@dimen/text_size" />
 
         </LinearLayout>
 
         <Button
+            android:id="@+id/btnLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="LOG IN"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/btnLogin"
             android:layout_below="@+id/loginCard"
-            android:background="@drawable/rounded_btn"
+            android:layout_centerHorizontal="true"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="20dp"
-            android:textSize="@dimen/text_size"
-            android:textColor="@color/TextColor"
+            android:background="@drawable/rounded_btn"
+            android:text="LOG IN"
             android:textAppearance="?android:textAppearanceMedium"
-            />
-
+            android:textColor="@color/TextColor"
+            android:textSize="@dimen/text_size" />
 
 
         <TextView
+            android:id="@+id/btnForget"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:text="FORGOT PASSWORD?"
-            android:textSize="12sp"
-            android:layout_centerHorizontal="true"
             android:layout_below="@+id/btnLogin"
-            android:textColor="@color/MoneyGreen"
-            android:textStyle="bold"
+            android:layout_centerHorizontal="true"
             android:layout_gravity="center"
-            android:id="@+id/btnForget"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="20dp"
+            android:text="FORGOT PASSWORD?"
+            android:textAlignment="center"
+            android:textColor="@color/MoneyGreen"
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/Fbbtn"
-                android:src="@drawable/facebook_icon"
                 android:layout_width="50dp"
-                android:layout_height="50dp" />
+                android:layout_height="50dp"
+                android:src="@drawable/facebook_icon" />
 
             <com.facebook.login.widget.LoginButton
-                android:visibility="gone"
                 android:id="@+id/login_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="30dp"
                 android:layout_marginTop="30dp"
-                android:layout_marginBottom="30dp" />
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/Googlebtn"
-                android:src="@drawable/google_icon"
-                android:layout_marginLeft="20dp"
                 android:layout_width="50dp"
-                android:layout_height="50dp" />
+                android:layout_height="50dp"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/google_icon" />
 
             <com.google.android.gms.common.SignInButton
                 android:id="@+id/sign_in_button"
@@ -180,17 +176,16 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/btnSignup"
         android:layout_width="120dp"
         android:layout_height="30dp"
-        android:text="REGISTER"
-        android:layout_centerInParent="true"
         android:layout_alignParentBottom="true"
-        android:id="@+id/btnSignup"
-        android:textSize="@dimen/text_size"
+        android:layout_centerInParent="true"
+        android:layout_margin="20dp"
         android:background="@drawable/register_border"
-       android:layout_margin="20dp"
-        android:textStyle="bold"
-        android:textColor="@color/Gray"
+        android:text="REGISTER"
         android:textAppearance="?android:textAppearanceMedium"
-        />
+        android:textColor="@color/Gray"
+        android:textSize="@dimen/text_size"
+        android:textStyle="bold" />
 </RelativeLayout>

@@ -19,14 +19,13 @@ import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
@@ -130,6 +129,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.setBackgroundColor(ContextCompat.getColor(this,R.color.porcelain));
 
             /*Register receiver*/
             networkUtilsReceiver = new NetworkUtilsReceiver(this);
@@ -775,8 +775,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
 
         Current_Location = SharedPrefUtil.getLocation(OrderBikerTrackingActivity.this);
         Current_Origin = new LatLng(Current_Location.getLatitude(), Current_Location.getLongitude());
-        Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
-                R.anim.slide_down);
+        //Animation slide_down = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_down);
 
         GuestAddress.setText(getCompleteAddressString(Current_Origin.latitude,Current_Origin.longitude));
         kilometre.setText("Vehicle Not Available");

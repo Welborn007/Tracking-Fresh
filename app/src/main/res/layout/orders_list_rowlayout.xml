@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
-    android:background="@color/LightGray"
     card_view:cardCornerRadius="4dp"
     card_view:cardElevation="1dp">
 
@@ -300,7 +299,7 @@
             android:padding="5dp"
             fancy:fb_text="Repeat Order"
             android:id="@+id/repeat"
-            fancy:fb_defaultColor="@color/fresh_blue"
+            fancy:fb_defaultColor="@color/MoneyGreen"
             fancy:fb_focusColor="@color/colorPrimary"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
@@ -317,7 +316,7 @@
             android:padding="5dp"
             fancy:fb_text="Cancel"
             android:id="@+id/cancel"
-            fancy:fb_defaultColor="@color/fresh_blue"
+            fancy:fb_defaultColor="@color/red"
             fancy:fb_focusColor="@color/colorPrimary"
             android:layout_marginRight="5dp"
             android:layout_marginBottom="5dp"
