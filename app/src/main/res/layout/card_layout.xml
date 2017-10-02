@@ -87,6 +87,24 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
 
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" X "
+                            android:textColor="@color/Gray"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/count"
+                            android:text="0"
+                            android:layout_width="wrap_content"
+                            android:gravity="center"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/text_size"
+                            android:layout_height="match_parent" />
+
                     </LinearLayout>
 
 
@@ -107,9 +125,16 @@
                         android:id="@+id/plus"
                         android:background="@drawable/cart_circular_drawable"
                         android:text="+"
-                        android:textColor="@color/Gray"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp" />
+                        android:textSize="14dp"
+                        android:textColor="@color/white"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="35dp"
+                        android:background="@color/gray"
+                        />
 
                     <mehdi.sakout.fancybuttons.FancyButton
                         android:visibility="gone"
@@ -125,7 +150,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"/>
 
-                    <TextView
+                  <!--  <TextView
                         android:id="@+id/count"
                         android:text="0"
                         android:layout_width="wrap_content"
@@ -135,14 +160,15 @@
                         android:textColor="@color/black"
                         android:textSize="@dimen/text_size"
                         android:layout_height="match_parent" />
-
+-->
                     <Button
                         android:id="@+id/minus"
                         android:background="@drawable/cart_circular_drawable"
                         android:text="-"
-                        android:textColor="@color/Gray"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp" />
+                        android:textSize="18dp"
+                        android:textColor="@color/white"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp" />
 
                     <mehdi.sakout.fancybuttons.FancyButton
                         android:visibility="gone"

@@ -132,6 +132,7 @@ public class OffersRecylerAdapter  extends RecyclerView.Adapter<OffersRecylerAda
                     @Override
                     public void onClick(View v) {
                         viewHolder.holder_count.setVisibility(View.VISIBLE);
+                        viewHolder.priceLinearLayout.setVisibility(View.VISIBLE);
                         viewHolder.addtoCart.setVisibility(View.GONE);
                         viewHolder.count.setText("1");
 
@@ -256,6 +257,7 @@ public class OffersRecylerAdapter  extends RecyclerView.Adapter<OffersRecylerAda
                                 myApplication.RemoveProductonZeroQuantity(product_pojo.getProductId());
 
                                 viewHolder.holder_count.setVisibility(View.GONE);
+                                viewHolder.priceLinearLayout.setVisibility(View.GONE);
                                 viewHolder.addtoCart.setVisibility(View.VISIBLE);
 
                                 viewHolder.count.setText("0");
@@ -342,7 +344,7 @@ public class OffersRecylerAdapter  extends RecyclerView.Adapter<OffersRecylerAda
         SimpleDraweeView imageView;
         Button plus, minus;
         ImageView addtoCart;
-        LinearLayout holder_count;
+        LinearLayout holder_count,priceLinearLayout;
         public RecyclerViewHolder(View convertView)
         {
             super(convertView);
@@ -358,6 +360,7 @@ public class OffersRecylerAdapter  extends RecyclerView.Adapter<OffersRecylerAda
             mrp = (TextView) convertView.findViewById(R.id.mrp);
             addtoCart = (ImageView) convertView.findViewById(R.id.addtoCart);
             holder_count = (LinearLayout) convertView.findViewById(R.id.holder_count);
+            priceLinearLayout = (LinearLayout) convertView.findViewById(R.id.priceLinearLayout);
 
         }
     }

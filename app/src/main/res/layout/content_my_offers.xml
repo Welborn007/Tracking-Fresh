@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:background="@color/LightGray"
     tools:showIn="@layout/activity_my_offers"
+
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:layout_height="match_parent">
 

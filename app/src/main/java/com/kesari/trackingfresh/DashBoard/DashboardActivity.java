@@ -197,8 +197,21 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             map_View.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+
+                    mapTextView.setBackgroundColor(getResources().getColor(R.color.MoneyGreen));
+                    menuTextView.setBackgroundColor(getResources().getColor(R.color.whitegray));
+                    menuTextView.setTextColor(getResources().getColor(R.color.gray));
+                    mapTextView.setTextColor(getResources().getColor(R.color.white));
+                    Product_Fragment.product_holder.setVisibility(View.GONE);
+
                     Product_Fragment.map_Holder.setVisibility(View.VISIBLE);
+                    Product_Fragment.fragment_holder.setVisibility(View.VISIBLE);
+                    Product_Fragment.layout_holder.setVisibility(View.GONE);
                     Product_Fragment.frameLayout.setVisibility(View.GONE);
+
+//                    Product_Fragment.map_Holder.setVisibility(View.VISIBLE);
+//                    Product_Fragment.frameLayout.setVisibility(View.GONE);
                 }
             });
 

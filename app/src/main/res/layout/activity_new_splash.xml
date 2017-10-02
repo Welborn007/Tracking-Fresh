@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/splash_bg"
+    android:background="@drawable/background_new"
     android:fillViewport="true"
     tools:context="com.kesari.trackingfresh.Splash.NewSplash">
 
@@ -24,7 +24,7 @@
                 android:id="@+id/imageView5"
                 android:layout_width="220dp"
                 android:layout_height="190dp"
-                android:src="@drawable/tracking_van" />
+                android:src="@drawable/trucklogo" />
         </LinearLayout>
 
 

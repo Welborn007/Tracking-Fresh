@@ -12,7 +12,7 @@
 
     <include
         android:id="@+id/toolbar"
-        android:visibility="visible"
+        android:visibility="invisible"
         layout="@layout/custom_toolbar" />
     <TextView
         android:id="@+id/logintext"
@@ -47,8 +47,8 @@
         android:id="@+id/linearLayout"
         android:layout_below="@+id/logintextheder"
         android:layout_above="@+id/bottomlinearLayout"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
