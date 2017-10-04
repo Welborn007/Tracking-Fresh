@@ -110,13 +110,16 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
             relativeLayout = (RelativeLayout) findViewById(R.id.relativelay_reclview);
             valueTV = new TextView(AddToCart.this);
 
-            if(getIntent().getStringExtra("productRemoved") != null)
+            /*if(getIntent().getStringExtra("productRemoved") != null)
             {
-                new SweetAlertDialog(AddToCart.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Oops...")
-                        .setContentText("Some products were not added as Out of Stock!")
-                        .show();
-            }
+                if(getIntent().getStringExtra("productRemoved").equalsIgnoreCase("true"))
+                {
+                    new SweetAlertDialog(AddToCart.this, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText("Oops...")
+                            .setContentText("Some products were not added as Out of Stock!")
+                            .show();
+                }
+            }*/
 
             if(myApplication.getProductsArraylist() != null)
             {

@@ -130,7 +130,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService
             {
                 //notificationBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody)).setContentText(messageBody);
                 Bitmap defaultImage = BitmapFactory.decodeResource(getResources(), R.drawable.tracking_banner);
-                notificationBuilder.setStyle(new NotificationCompat.BigPictureStyle().bigPicture(defaultImage)).setSubText(messageBody);
+                notificationBuilder.setStyle(new NotificationCompat.BigPictureStyle().bigPicture(defaultImage)).setContentText(messageBody);
             }
 
             NotificationManager notificationManager =
