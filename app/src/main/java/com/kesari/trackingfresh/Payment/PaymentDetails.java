@@ -249,6 +249,8 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 @Override
                 public void onClick(View v) {
 
+                    btnSubmit.setClickable(false);
+
                     if(price_payable.getText().toString().equalsIgnoreCase("0"))
                     {
                         getVerifiedMobileNumber(SharedPrefUtil.getToken(PaymentDetails.this));
@@ -271,7 +273,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                         else
                         {
                             //Toast.makeText(PaymentDetails.this, "Select Payment Mode!!", Toast.LENGTH_SHORT).show();
-
+                            btnSubmit.setClickable(true);
                             new SweetAlertDialog(PaymentDetails.this)
                                     .setTitleText("Select Payment Mode!!")
                                     .show();
@@ -563,7 +565,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
             }, new IOUtils.VolleyFailureCallback() {
                 @Override
                 public void onFailure(String result) {
-
+                    btnSubmit.setClickable(true);
                 }
             });
 
@@ -636,7 +638,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
             }, new IOUtils.VolleyFailureCallback() {
                 @Override
                 public void onFailure(String result) {
-
+                    btnSubmit.setClickable(true);
                 }
             });
 
@@ -892,12 +894,12 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 public void onSuccess(String result) {
                     Log.d(TAG, result.toString());
                     OrderSendResponse(result);
-
+                    btnSubmit.setClickable(true);
                 }
             }, new IOUtils.VolleyFailureCallback() {
                 @Override
                 public void onFailure(String result) {
-
+                    btnSubmit.setClickable(true);
                 }
             });
         } catch (Exception e) {

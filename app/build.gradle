@@ -21,8 +21,8 @@ android {
         applicationId "com.kesari.trackingfresh"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 6
-        versionName "1.0.5"
+        versionCode 8
+        versionName "1.0.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -92,6 +92,7 @@ dependencies {
     compile 'io.card:android-sdk:5.5.1'
     compile 'id.zelory:compressor:1.0.4'
     compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'org.jsoup:jsoup:1.8.3'
     testCompile 'junit:junit:4.12'
 }
 apply plugin: 'com.google.gms.google-services'

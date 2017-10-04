@@ -115,34 +115,26 @@ public class IOUtils {
         return hierarchy;
     }
 
-    public static String getCompleteAddressString(Context context,double LATITUDE, double LONGITUDE) {
+    private String getCompleteAddressString(double LATITUDE, double LONGITUDE,Context context) {
         String strAdd = "";
-        try
-        {
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
+            if (addresses != null) {
+                Address returnedAddress = addresses.get(0);
+                StringBuilder strReturnedAddress = new StringBuilder("");
 
-            Geocoder geocoder = new Geocoder(context, Locale.getDefault());
-            try {
-                List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
-                if (addresses != null) {
-                    Address returnedAddress = addresses.get(0);
-                    StringBuilder strReturnedAddress = new StringBuilder("");
-
-                    for (int i = 0; i < returnedAddress.getMaxAddressLineIndex(); i++) {
-                        strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
-                    }
-                    strAdd = strReturnedAddress.toString();
-                    Log.w("My Current loction address", "" + strReturnedAddress.toString());
-                } else {
-                    Log.w("My Current loction address", "No Address returned!");
+                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
+                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.w("My Current loction address", "Canont get Address!");
+                strAdd = strReturnedAddress.toString();
+                Log.w("My Current loction address", strReturnedAddress.toString());
+            } else {
+                Log.w("My Current loction address", "No Address returned!");
             }
-        }catch (Exception e)
-        {
-            Log.i("EXception",e.getMessage());
-            strAdd = "Unable to fetch location";
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.w("My Current loction address", "Canont get Address!");
         }
         return strAdd;
     }
