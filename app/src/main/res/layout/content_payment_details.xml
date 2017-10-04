@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:background="@android:color/white"
+    android:background="@drawable/background_new"
     tools:showIn="@layout/activity_payment_details"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -36,7 +36,7 @@
 
             <TextView
                 android:text="Total amount :-"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:layout_margin="5dp"
                 android:padding="10dp"
                 android:textSize="@dimen/text_size"
@@ -46,19 +46,21 @@
             <TextView
                 android:id="@+id/price_total"
                 android:text="500"
-                android:textColor="@color/black"
+                android:textColor="@color/MoneyGreen"
                 android:layout_marginTop="5dp"
                 android:paddingTop="10dp"
                 android:textSize="14sp"
+                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <TextView
                 android:text="₹"
-                android:textColor="@color/black"
+                android:textColor="@color/MoneyGreen"
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="2dp"
                 android:paddingTop="10dp"
+                android:textStyle="bold"
                 android:textSize="14sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
@@ -102,6 +104,7 @@
                 android:id="@+id/cash_on_delivery"
                 android:text="Cash On Delivery"
                 android:textSize="@dimen/text_size"
+                android:textColor="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -109,6 +112,8 @@
                 android:id="@+id/online_payment"
                 android:textSize="@dimen/text_size"
                 android:text="Credit/Debit Card,Net Banking"
+                android:textColor="@color/white"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -119,6 +124,7 @@
             android:id="@+id/walletCash"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
+            android:textColor="@color/white"
             android:text="Use cash from wallet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -144,6 +150,8 @@
                 android:drawablePadding="10dp"
                 android:inputType="textCapCharacters"
                 android:layout_marginRight="25dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -155,7 +163,7 @@
                 fancy:fb_text="Apply"
                 android:layout_margin="5dp"
                 android:id="@+id/promocodeSubmit"
-                fancy:fb_defaultColor="@color/fresh_blue"
+                fancy:fb_defaultColor="@color/MoneyGreen"
                 fancy:fb_focusColor="@color/colorPrimary"
                 fancy:fb_radius="5dp"
                 fancy:fb_textColor="@color/white"
@@ -240,7 +248,7 @@
 
             <TextView
                 android:text="Total Payable amount :-"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:layout_margin="5dp"
                 android:padding="10dp"
                 android:textSize="@dimen/text_size"
@@ -250,19 +258,21 @@
             <TextView
                 android:id="@+id/price_payable"
                 android:text="500"
-                android:textColor="@color/black"
+                android:textColor="@color/MoneyGreen"
                 android:layout_marginTop="5dp"
                 android:paddingTop="10dp"
+                android:textStyle="bold"
                 android:textSize="14sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <TextView
                 android:text="₹"
-                android:textColor="@color/black"
+                android:textColor="@color/MoneyGreen"
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="2dp"
                 android:paddingTop="10dp"
+                android:textStyle="bold"
                 android:textSize="14sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
@@ -274,13 +284,13 @@
 
     <mehdi.sakout.fancybuttons.FancyButton
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:padding="5dp"
         android:layout_margin="5dp"
         fancy:fb_text="Place Order"
         android:layout_alignParentBottom="true"
         android:id="@+id/btnSubmit"
-        fancy:fb_defaultColor="@color/fresh_blue"
+        fancy:fb_defaultColor="@color/MoneyGreen"
         fancy:fb_focusColor="@color/colorPrimary"
         fancy:fb_radius="5dp"
         fancy:fb_textColor="@color/white"

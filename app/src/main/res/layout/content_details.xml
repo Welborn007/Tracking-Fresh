@@ -16,6 +16,29 @@
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/priceLayout"
+            android:layout_marginTop="0dp"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:background="@color/porcelain"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:id="@+id/price"
+                android:text="Price Rs. 25"
+                android:gravity="right"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size18"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_below="@+id/priceLayout"
             android:id="@+id/addtoCartHolder"
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -24,23 +47,70 @@
             <View
                 android:background="#ccc"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"/>
+                android:layout_height="1dp"
+                android:visibility="gone"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/addFavourateTextView"
+                    android:text="ADD TO FAVOURATE"
+                    android:gravity="center_vertical"
+                    android:background="@color/whitegray"
+                    android:textColor="@color/Gray"
+                    android:textSize="14dp"
+                    android:textStyle="bold"
+                    android:drawableLeft="@drawable/star"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="50dp"
+                    android:padding="5dp"
+                    />
+                <TextView
+                    android:id="@+id/addtoCart"
+                    android:text="ADD TO CART"
+                    android:textColor="@color/white"
+                    android:textSize="14dp"
+                    android:textStyle="bold"
+                    android:background="@color/MoneyGreen"
+                    android:padding="10dp"
+                    android:gravity="center_vertical"
+
+                    android:drawableLeft="@drawable/cart"
+                    android:drawablePadding="5dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="50dp" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/price"
+                    android:id="@+id/price1"
                     android:text="Price Rs. 25"
                     android:layout_gravity="center"
                     android:textColor="@color/Button_Color"
                     android:textSize="@dimen/text_size18"
                     android:textStyle="bold"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/mrp"
@@ -74,7 +144,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <mehdi.sakout.fancybuttons.FancyButton
+               <!-- <mehdi.sakout.fancybuttons.FancyButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
@@ -84,7 +154,8 @@
                     fancy:fb_focusColor="@color/colorPrimary"
                     fancy:fb_radius="5dp"
                     fancy:fb_textColor="@color/white"
-                    fancy:fb_textSize="18sp" />
+                    fancy:fb_textSize="18sp"
+                    android:visibility="gone"/>-->
 
                 <ImageView
                     android:id="@+id/offersImage"
@@ -136,9 +207,10 @@
                         android:id="@+id/plus"
                         android:background="@drawable/cart_circular_drawable"
                         android:text="+"
-                        android:textColor="@color/Gray"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp" />
+                        android:textColor="@color/white"
+                        android:textSize="18dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp" />
 
                     <mehdi.sakout.fancybuttons.FancyButton
                         fancy:fb_fontIconResource="&#xf067;"
@@ -170,9 +242,10 @@
                         android:id="@+id/minus"
                         android:background="@drawable/cart_circular_drawable"
                         android:text="-"
-                        android:textColor="@color/Gray"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp" />
+                        android:textSize="18dp"
+                        android:textColor="@color/white"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp" />
 
                     <mehdi.sakout.fancybuttons.FancyButton
                         fancy:fb_fontIconResource="&#xf068;"
@@ -246,7 +319,9 @@
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView"
+                    />
 
                 <TextView
                     android:id="@+id/package_contents"
@@ -447,22 +522,22 @@
 
             <mehdi.sakout.fancybuttons.FancyButton
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:padding="5dp"
                 fancy:fb_text="Go to Cart"
                 android:layout_weight="1"
                 fancy:fb_iconPosition="left"
                 android:id="@+id/gotoCart"
                 fancy:fb_fontIconResource="&#xf217;"
-                fancy:fb_defaultColor="@color/fresh_blue"
+                fancy:fb_defaultColor="@color/MoneyGreen"
                 fancy:fb_focusColor="@color/colorPrimary"
-                fancy:fb_radius="5dp"
+                fancy:fb_radius="2dp"
                 fancy:fb_textColor="@color/white"
                 fancy:fb_textSize="18sp" />
 
             <mehdi.sakout.fancybuttons.FancyButton
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:padding="5dp"
                 fancy:fb_text="CheckOut"
                 android:id="@+id/checkOut"
@@ -470,9 +545,9 @@
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
                 fancy:fb_fontIconResource="&#xf046;"
-                fancy:fb_defaultColor="@color/fresh_blue"
+                fancy:fb_defaultColor="@color/MoneyGreen"
                 fancy:fb_focusColor="@color/colorPrimary"
-                fancy:fb_radius="5dp"
+                fancy:fb_radius="2dp"
                 fancy:fb_textColor="@color/white"
                 fancy:fb_textSize="18sp" />
 

@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.android.gms.auth.api.Auth;
@@ -44,7 +45,7 @@ import mehdi.sakout.fancybuttons.FancyButton;
 public class RegisterActivity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt {
 
     EditText first_name, last_name, mobile, email, location, referral_code, password;
-    FancyButton btnRegister;
+    Button btnRegister;
     private String TAG = this.getClass().getSimpleName();
 
     String SocialID = "", FirstName, LastName, Name, Email, Type = "simple",Mobile,Referral_code,Password;
@@ -66,6 +67,7 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.setBackgroundColor(ContextCompat.getColor(this,R.color.porcelain));
 
             setTitle("Register");
             toolbar.setTitleTextColor(ContextCompat.getColor(RegisterActivity.this,R.color.black));
@@ -117,7 +119,7 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
                 Type = "simple";
             }
 
-            btnRegister = (FancyButton) findViewById(R.id.btnRegister);
+            btnRegister = (Button) findViewById(R.id.btnRegister);
 
             btnRegister.setOnClickListener(new View.OnClickListener() {
                 @Override
