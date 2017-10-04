@@ -50,7 +50,7 @@
                             fancy:fb_borderWidth="1dp"
                             fancy:fb_iconPosition="right"
                             android:layout_gravity="center"
-                            fancy:fb_fontIconResource="&#xf111;"
+                            fancy:fb_fontIconResource="fa fa-user"
                             fancy:fb_defaultColor="@android:color/transparent"
                             fancy:fb_focusColor="#2e5071"
                             fancy:fb_radius="5dp"
@@ -109,12 +109,12 @@
                             fancy:fb_borderWidth="1dp"
                             android:layout_gravity="center"
                             fancy:fb_iconPosition="right"
-                            fancy:fb_fontIconResource="&#xf111;"
+                            fancy:fb_fontIconResource="fa fa-car"
                             fancy:fb_defaultColor="@android:color/transparent"
                             fancy:fb_focusColor="#2e5071"
                             fancy:fb_radius="5dp"
                             fancy:fb_text=""
-                            fancy:fb_textColor="@color/orange"
+                            fancy:fb_textColor="@color/white"
                             fancy:fb_textSize="10sp" />
 
                         <TextView

@@ -176,6 +176,7 @@ public class Product_categoryFragment extends Fragment {
                 viewHolder.plus = (Button) convertView.findViewById(R.id.plus);
                 viewHolder.minus = (Button) convertView.findViewById(R.id.minus);
                 viewHolder.mrp = (TextView) convertView.findViewById(R.id.mrp);
+                viewHolder.crossTextView = (TextView) convertView.findViewById(R.id.crossTextView);
 
                 viewHolder.addtoCart = (ImageView) convertView.findViewById(R.id.addtoCart);
 /*
@@ -207,6 +208,8 @@ public class Product_categoryFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         viewHolder.holder_count.setVisibility(View.VISIBLE);
+                        viewHolder.crossTextView.setVisibility(View.VISIBLE);
+                        viewHolder.count.setVisibility(View.VISIBLE);
                         viewHolder.addtoCart.setVisibility(View.GONE);
                         viewHolder.count.setText("1");
 
@@ -475,7 +478,7 @@ public class Product_categoryFragment extends Fragment {
         }
 
         private class ViewHolder {
-            TextView product_name, weight, price, count,quantity,mrp;
+            TextView product_name, weight, price, count,quantity,mrp,crossTextView;
             SimpleDraweeView imageView;
             Button plus, minus;
             ImageView addtoCart;

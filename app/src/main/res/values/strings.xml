@@ -103,4 +103,6 @@
     <string name="menu">Menu</string>
     <string name="my_cart">My Cart</string>
     <string name="notification">Notification</string>
+    <string name="invite_friends">Invite friends</string>
+    <string name="invite_msg">Refer the TrackingFresh to your \n friends and family and earn money \n to enjoy fresh food.</string>
 </resources>

@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_overlay"
-
     android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
@@ -23,6 +21,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
+                android:visibility="gone"
                 android:layout_height="match_parent">
 
                 <ImageView
