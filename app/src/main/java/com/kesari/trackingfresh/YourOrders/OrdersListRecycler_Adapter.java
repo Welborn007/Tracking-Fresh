@@ -112,7 +112,7 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
                 holder.payment_mode.setText(OrdersListReView.get(position).getPayment_Mode());
             }
 
-            holder.total_price.setText(OrdersListReView.get(position).getTotal_price());
+            holder.total_price.setText("₹ " + OrdersListReView.get(position).getTotal_price());
 
 
             if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("Rejected"))

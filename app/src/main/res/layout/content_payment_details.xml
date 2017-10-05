@@ -44,20 +44,20 @@
                 android:layout_height="wrap_content"/>
 
             <TextView
-                android:id="@+id/price_total"
-                android:text="500"
+                android:text="₹"
                 android:textColor="@color/black"
                 android:layout_marginTop="5dp"
+                android:layout_marginLeft="2dp"
                 android:paddingTop="10dp"
                 android:textSize="14sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <TextView
-                android:text="₹"
+                android:id="@+id/price_total"
+                android:text="500"
                 android:textColor="@color/black"
                 android:layout_marginTop="5dp"
-                android:layout_marginLeft="2dp"
                 android:paddingTop="10dp"
                 android:textSize="14sp"
                 android:layout_width="wrap_content"
@@ -248,20 +248,20 @@
                 android:layout_height="wrap_content"/>
 
             <TextView
-                android:id="@+id/price_payable"
-                android:text="500"
+                android:text="₹"
                 android:textColor="@color/black"
                 android:layout_marginTop="5dp"
+                android:layout_marginLeft="2dp"
                 android:paddingTop="10dp"
                 android:textSize="14sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <TextView
-                android:text="₹"
+                android:id="@+id/price_payable"
+                android:text="500"
                 android:textColor="@color/black"
                 android:layout_marginTop="5dp"
-                android:layout_marginLeft="2dp"
                 android:paddingTop="10dp"
                 android:textSize="14sp"
                 android:layout_width="wrap_content"

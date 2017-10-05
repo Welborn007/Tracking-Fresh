@@ -27,6 +27,7 @@ import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Base64;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -970,10 +971,48 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             Log.e("response: ", response + "");
                             try {
                                 user = new User();
-                                user.ID = object.getString("id").toString();
-                                user.email = object.getString("email").toString();
-                                user.name = object.getString("name").toString();
-                                user.gender = object.getString("gender").toString();
+
+                                String id = "";
+                                String name = "";
+                                String email = "";
+                                String firstname = "";
+                                String lastname = "";
+                                String registration_Type = "facebook";
+
+                                if(object.has("id"))
+                                {
+                                    user.ID = object.getString("id").toString();
+                                    id = object.getString("id").toString();
+                                }
+
+                                if(object.has("email"))
+                                {
+                                    user.email = object.getString("email").toString();
+                                    email = object.getString("email").toString();
+                                }
+
+                                if(object.has("name"))
+                                {
+                                    user.name = object.getString("name").toString();
+                                    name = object.getString("name").toString();
+                                }
+
+                                if(object.has("gender"))
+                                {
+                                    user.gender = object.getString("gender").toString();
+                                }
+
+                                if(object.has("first_name"))
+                                {
+                                    firstname = object.getString("first_name").toString();
+                                }
+
+                                if(object.has("last_name"))
+                                {
+                                    lastname = object.getString("last_name").toString();
+                                }
+
+
                                 user.createdAt = "1";
                                 /*user.birthday = object.getString("birthday").toString();*/
                                 user.profileImageUrl = new URL("https://graph.facebook.com/" + object.getString("id").toString() + "/picture?type=large").toString();
@@ -981,12 +1020,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                /* startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                                 finish();*/
 
-                                String id = object.getString("id").toString();
-                                String name = object.getString("name").toString();
-                                String email = object.getString("email").toString();
-                                String firstname = object.getString("first_name").toString();
-                                String lastname = object.getString("last_name").toString();
-                                String registration_Type = "facebook";
+
 
                                 if (!NetworkUtils.isNetworkConnectionOn(LoginActivity.this)) {
                                     /*FireToast.customSnackbarWithListner(LoginActivity.this, "No internet access", "Settings", new ActionClickListener() {
@@ -1011,7 +1045,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                             .show();
 
                                 } else {
-                                    sendSocialLoginData(id, name, email, registration_Type, firstname, lastname);
+
+                                    if(!id.isEmpty() && !email.isEmpty() && !firstname.isEmpty() && !lastname.isEmpty())
+                                    {
+                                        sendSocialLoginData(id, name, email, registration_Type, firstname, lastname);
+                                        //Toast.makeText(LoginActivity.this, "All Details Present", Toast.LENGTH_SHORT).show();
+                                    }
+                                    else
+                                    {
+                                        verifySocialLoginDetails(firstname,lastname,email,id,name,registration_Type);
+                                    }
+
                                 }
 
                                 SharedPreferences.Editor editor = getSharedPreferences("MyPref", MODE_PRIVATE).edit();
@@ -1044,6 +1088,82 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     };
 
+    private void verifySocialLoginDetails(final String FirstName, String LastName, String Email, final String ID, final String Name, final String Registration_Type) {
+        try {
+
+            // Create custom dialog object
+            dialog = new Dialog(LoginActivity.this);
+            // Include dialog.xml file
+            dialog.setContentView(R.layout.confirm_social_login_details);
+            // Set dialog title
+            dialog.setTitle("Custom Dialog");
+
+            final EditText first_name,last_name,email;
+            FancyButton confirmNumber;
+
+            first_name = (EditText) dialog.findViewById(R.id.first_name);
+            last_name = (EditText) dialog.findViewById(R.id.last_name);
+            email = (EditText) dialog.findViewById(R.id.email);
+
+            confirmNumber = (FancyButton) dialog.findViewById(R.id.confirmNumber);
+
+            first_name.setText(FirstName);
+            last_name.setText(LastName);
+            email.setText(Email);
+
+            confirmNumber.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    String First_Name = first_name.getText().toString().trim();
+                    String Last_Name = last_name.getText().toString().trim();
+                    String Email = email.getText().toString().trim();
+
+                    if (!First_Name.isEmpty() && !Last_Name.isEmpty() && !Email.isEmpty()) {
+                        if (Patterns.EMAIL_ADDRESS.matcher(Email).matches()) {
+                            sendSocialLoginData(ID, Name, Email, Registration_Type, First_Name, Last_Name);
+                            //Toast.makeText(LoginActivity.this, "Data Sent Successfully", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        } else {
+                            email.setError(getString(R.string.proper_email));
+                        }
+                    }
+                    else if(First_Name.isEmpty())
+                    {
+                        first_name.setError(getString(R.string.first_name));
+                    }
+                    else if(Last_Name.isEmpty())
+                    {
+                        first_name.setError(getString(R.string.first_name));
+                    }
+                    else if(Email.isEmpty())
+                    {
+                        email.setError(getString(R.string.first_name));
+                    }
+
+                }
+            });
+
+            /*gpsTracker = new GPSTracker(DashboardActivity.this);
+
+            Double Lat = gpsTracker.getLatitude();
+            Double Long = gpsTracker.getLongitude();*/
+
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            Window window = dialog.getWindow();
+            lp.copyFrom(window.getAttributes());
+
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            window.setAttributes(lp);
+
+            dialog.show();
+
+        } catch (Exception e) {
+            Log.i(TAG, "dialog_Mobile");
+        }
+
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

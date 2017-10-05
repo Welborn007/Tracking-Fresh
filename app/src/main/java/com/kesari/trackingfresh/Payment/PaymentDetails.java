@@ -237,7 +237,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 price_payable.setText(getIntent().getStringExtra("amount"));
                 amountTotal = Integer.parseInt(getIntent().getStringExtra("amount"));
 
-                walletCash.setText("Use cash from wallet" + " [ " + SharedPrefUtil.getUser(PaymentDetails.this).getData().getWalletAmount() + " ₹ ]");
+                walletCash.setText("Use cash from wallet" + " [ ₹ " + SharedPrefUtil.getUser(PaymentDetails.this).getData().getWalletAmount() + " ]");
                 //OrderID = getIntent().getStringExtra("orderID");
 
             }catch (NullPointerException npe)
@@ -304,7 +304,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                         walletAmount = "";
                         price_payable.setText(getIntent().getStringExtra("amount"));
                         amountTotal = Integer.parseInt(getIntent().getStringExtra("amount"));
-                        walletCash.setText("Use cash from wallet" + " [ " + SharedPrefUtil.getUser(PaymentDetails.this).getData().getWalletAmount() + " ₹ ]");
+                        walletCash.setText("Use cash from wallet" + " [ ₹ " + SharedPrefUtil.getUser(PaymentDetails.this).getData().getWalletAmount() + " ]");
 
                         payment_group.setVisibility(View.VISIBLE);
 
@@ -507,21 +507,21 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                         walletTotal = Integer.parseInt(profileMain.getData().getWalletAmount());
                         amountTotal = amountTotal - walletTotal;
                         price_payable.setText(String.valueOf(amountTotal));
-                        walletCash.setText("Use cash from wallet" + " [ " + String.valueOf(0) + " ₹ ]");
+                        walletCash.setText("Use cash from wallet" + " [ ₹ " + String.valueOf(0) + " ]");
                     }
                     else
                     {
                         walletTotal = Integer.parseInt(profileMain.getData().getWalletAmount());
                         walletTotal = walletTotal - amountTotal;
                         price_payable.setText(String.valueOf(0));
-                        walletCash.setText("Use cash from wallet" + " [ " + String.valueOf(walletTotal) + " ₹ ]");
+                        walletCash.setText("Use cash from wallet" + " [ ₹ " + String.valueOf(walletTotal) + " ]");
                     }
 
                     walletAmount = profileMain.getData().getWalletAmount();
                 }
                 else
                 {
-                    walletCash.setText("Use cash from wallet" + " [ 0 ₹ ]");
+                    walletCash.setText("Use cash from wallet" + " [ ₹ 0 ]");
                     walletAmount = "0";
                     wallet = false;
                 }

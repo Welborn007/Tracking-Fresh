@@ -272,47 +272,71 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
 
                     if(!FullName.isEmpty() && !EmailID.isEmpty() && !MobileNum.isEmpty() && !FlatNum.isEmpty() && !BuildingName.isEmpty() && !Landmark.isEmpty() && !City.isEmpty() && !State.isEmpty() && !Pincode.isEmpty() && !AddressType.isEmpty() && !Latitude.isEmpty() && !Longitude.isEmpty())
                     {
-                        AddNewAddress(FullName,EmailID,MobileNum,FlatNum,BuildingName,Landmark,City,State,Pincode,AddressType,DefaultAddress);
+                        if(Pincode.matches("^[1-9][0-9]{5}$"))
+                        {
+                            if(!State.matches(".*\\d.*")){
+                                AddNewAddress(FullName,EmailID,MobileNum,FlatNum,BuildingName,Landmark,City,State,Pincode,AddressType,DefaultAddress);
+                            } else{
+
+                                state.setError(getString(R.string.valid_state));
+                                state.requestFocus();
+                            }
+                        }
+                        else
+                        {
+                            pincode.setError(getString(R.string.valid_pincode));
+                            pincode.requestFocus();
+                        }
                     }
                     else if(FullName.isEmpty())
                     {
                         name.setError(getString(R.string.FullName));
+                        name.requestFocus();
                     }
                     else if(EmailID.isEmpty())
                     {
                         email.setError(getString(R.string.email_id));
+                        email.requestFocus();
                     }
                     else if(MobileNum.isEmpty())
                     {
                         mobile.setError(getString(R.string.mobileno));
+                        mobile.requestFocus();
                     }
                     else if(FlatNum.isEmpty())
                     {
                         flat_no.setError(getString(R.string.flatno));
+                        flat_no.requestFocus();
                     }
                     else if(BuildingName.isEmpty())
                     {
                         building_name.setError(getString(R.string.buildingName));
+                        building_name.requestFocus();
                     }
                     else if(Landmark.isEmpty())
                     {
                         landmark.setError(getString(R.string.Landmark));
+                        landmark.requestFocus();
                     }
                     else if(City.isEmpty())
                     {
                         city.setError(getString(R.string.City));
+                        city.requestFocus();
                     }
                     else if(State.isEmpty())
                     {
                         state.setError(getString(R.string.State));
+                        state.requestFocus();
                     }
                     else if(Pincode.isEmpty())
                     {
                         pincode.setError(getString(R.string.PinCode));
+                        pincode.requestFocus();
                     }
                     else if(AddressType.isEmpty())
                     {
                         addressType.setError(getString(R.string.addressType));
+                        addressType.requestFocus();
                     }
                     else if(Latitude.isEmpty() || Longitude.isEmpty())
                     {

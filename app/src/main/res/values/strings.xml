@@ -87,4 +87,10 @@
         <item>Cards</item>
     </string-array>
 
+    <string name="first_name_2_char">First Name less than 2 characters!!</string>
+    <string name="last_name_2_char">Last Name less than 2 characters!!</string>
+
+    <string name="valid_pincode">Enter Valid Pincode</string>
+    <string name="valid_state">State cannot be a number</string>
+
 </resources>
