@@ -136,69 +136,78 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
                         if (android.util.Patterns.EMAIL_ADDRESS.matcher(Email).matches() && android.util.Patterns.PHONE.matcher(Mobile).matches()) {
                             //int mob = Integer.parseInt(Mobile);
 
-                            if (Mobile.length() >= 10) {
-                                if (!NetworkUtils.isNetworkConnectionOn(RegisterActivity.this)) {
-                                    /*FireToast.customSnackbarWithListner(RegisterActivity.this, "No internet access", "Settings", new ActionClickListener() {
-                                        @Override
-                                        public void onActionClicked(Snackbar snackbar) {
-                                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                            if(FirstName.length() >= 2 && LastName.length() >= 2)
+                            {
+                                if(Mobile.matches("^(?:(?:\\+|0{0,2})91(\\s*[\\-]\\s*)?|[0]?)?[789]\\d{9}$"))
+                                {
+                                    if (Mobile.length() >= 10) {
+                                        if (!NetworkUtils.isNetworkConnectionOn(RegisterActivity.this)) {
+
+                                            new SweetAlertDialog(RegisterActivity.this, SweetAlertDialog.NORMAL_TYPE)
+                                                    .setTitleText("Oops! No internet access")
+                                                    .setContentText("Please Check Settings")
+                                                    .setConfirmText("Enable the Internet?")
+                                                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                        @Override
+                                                        public void onClick(SweetAlertDialog sDialog) {
+                                                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                                            sDialog.dismissWithAnimation();
+                                                        }
+                                                    })
+                                                    .show();
+
+                                        } else {
+                                            btnRegister.setClickable(false);
+                                            verifyDuplicateMobileAndRegister(mobile.getText().toString().trim());
                                         }
-                                    });
-                                    return;*/
-
-                                    new SweetAlertDialog(RegisterActivity.this, SweetAlertDialog.NORMAL_TYPE)
-                                            .setTitleText("Oops! No internet access")
-                                            .setContentText("Please Check Settings")
-                                            .setConfirmText("Enable the Internet?")
-                                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                                @Override
-                                                public void onClick(SweetAlertDialog sDialog) {
-                                                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                                                    sDialog.dismissWithAnimation();
-                                                }
-                                            })
-                                            .show();
-
-                                } else {
-                                    btnRegister.setClickable(false);
-                                    verifyDuplicateMobileAndRegister(mobile.getText().toString().trim());
-
-                                    /*if(duplicateMobile)
-                                    {
-                                        //mobile.setError("Not Found");
-                                        Toast.makeText(RegisterActivity.this, "User Registered", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        //Toast.makeText(RegisterActivity.this, getString(R.string.less_than_10digit) , Toast.LENGTH_SHORT).show();
+                                        mobile.setError(getString(R.string.less_than_10digit));
+                                        mobile.requestFocus();
                                     }
-                                    else
-                                    {
-                                        Toast.makeText(RegisterActivity.this, "Mobile No. Already Registered", Toast.LENGTH_SHORT).show();
-                                        //mobile.setError("Mobile No. Already Registered");
-                                    }*/
-
-                                    //sendRegisterData(FirstName, LastName, Mobile, Email, Referral_code, Password, Type, SocialID);
                                 }
-                            } else {
-                                //Toast.makeText(RegisterActivity.this, getString(R.string.less_than_10digit) , Toast.LENGTH_SHORT).show();
-                                mobile.setError(getString(R.string.less_than_10digit));
+                                else
+                                {
+                                    mobile.setError(getString(R.string.proper_mobile));
+                                    mobile.requestFocus();
+                                }
                             }
+                            else if(FirstName.length() < 2)
+                            {
+                                first_name.setError(getString(R.string.first_name_2_char));
+                                first_name.requestFocus();
+                            }
+                            else if(LastName.length() < 2)
+                            {
+                                last_name.setError(getString(R.string.last_name_2_char));
+                                last_name.requestFocus();
+                            }
+
                         } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(Email).matches()) {
                             //Toast.makeText(RegisterActivity.this, getString(R.string.proper_email), Toast.LENGTH_SHORT).show();
                             email.setError(getString(R.string.proper_email));
+                            email.requestFocus();
                         } else if (!android.util.Patterns.PHONE.matcher(Mobile).matches()) {
                             //Toast.makeText(RegisterActivity.this, getString(R.string.proper_mobile), Toast.LENGTH_SHORT).show();
                             mobile.setError(getString(R.string.proper_mobile));
+                            mobile.requestFocus();
                         }
                     } else if (FirstName.isEmpty()) {
                         //Toast.makeText(RegisterActivity.this, getString(R.string.first_name), Toast.LENGTH_SHORT).show();
                         first_name.setError(getString(R.string.first_name));
+                        first_name.requestFocus();
                     } else if (LastName.isEmpty()) {
                         //Toast.makeText(RegisterActivity.this, getString(R.string.last_name), Toast.LENGTH_SHORT).show();
                         last_name.setError(getString(R.string.last_name));
+                        last_name.requestFocus();
                     } else if (Mobile.isEmpty()) {
                         //Toast.makeText(RegisterActivity.this, getString(R.string.mobileno), Toast.LENGTH_SHORT).show();
                         mobile.setError(getString(R.string.mobileno));
+                        mobile.requestFocus();
                     } else if (Email.isEmpty()) {
                         //Toast.makeText(RegisterActivity.this, getString(R.string.email_id), Toast.LENGTH_SHORT).show();
                         email.setError(getString(R.string.email_id));
+                        email.requestFocus();
                     }
                 /*else if(Location.isEmpty())
                 {
@@ -207,6 +216,7 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
                     else if (Password.isEmpty()) {
                         //Toast.makeText(RegisterActivity.this, getString(R.string.password), Toast.LENGTH_SHORT).show();
                         password.setError(getString(R.string.password));
+                        password.requestFocus();
                     }
                 }
             });

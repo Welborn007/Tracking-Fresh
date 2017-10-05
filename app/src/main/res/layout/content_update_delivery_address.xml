@@ -52,10 +52,10 @@
                     android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:textSize="@dimen/text_size"
-
                     android:background="@drawable/edittextback"
                     android:textColor="@color/white"
                     android:textColorHint="@color/white"
+                    android:inputType="text"
                     android:layout_height="wrap_content"
                     android:hint="@string/Full_Name" />
 <!--
@@ -131,10 +131,10 @@
                     android:id="@+id/flat_no"
                     android:layout_width="match_parent"
                     android:textSize="@dimen/text_size"
-
                     android:background="@drawable/edittextback"
                     android:textColor="@color/white"
                     android:textColorHint="@color/white"
+                    android:inputType="number"
                     android:layout_height="wrap_content"
                     android:hint="@string/flat_no" />
 
@@ -160,6 +160,7 @@
                     android:textColor="@color/white"
                     android:textColorHint="@color/white"
                     android:textSize="@dimen/text_size"
+                    android:inputType="text"
                     android:layout_height="wrap_content"
                     android:hint="@string/building_name" />
 
@@ -185,6 +186,7 @@
                     android:textColor="@color/white"
                     android:textColorHint="@color/white"
                     android:textSize="@dimen/text_size"
+                    android:inputType="text"
                     android:layout_height="wrap_content"
                     android:hint="@string/landmark" />
 
@@ -211,6 +213,7 @@
                     android:textColor="@color/white"
                     android:textColorHint="@color/white"
                     android:textSize="@dimen/text_size"
+                    android:inputType="text"
                     android:layout_height="wrap_content"
                     android:hint="@string/city" />
 
@@ -236,6 +239,7 @@
                     android:textColor="@color/white"
                     android:textColorHint="@color/white"
                     android:textSize="@dimen/text_size"
+                    android:inputType="text"
                     android:layout_height="wrap_content"
                     android:hint="@string/state" />
 
