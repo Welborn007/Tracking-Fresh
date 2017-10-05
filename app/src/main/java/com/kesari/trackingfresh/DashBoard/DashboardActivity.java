@@ -9,7 +9,9 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.location.LocationManager;
 import android.media.RingtoneManager;
@@ -26,6 +28,8 @@ import android.support.v4.app.FragmentTransaction;
 
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -156,6 +160,10 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             toolbar.setBackgroundColor(ContextCompat.getColor(DashboardActivity.this,R.color.porcelain));
 
+            Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_menu, null);
+            drawable = DrawableCompat.wrap(drawable);
+            DrawableCompat.setTint(drawable, Color.WHITE);
+            getSupportActionBar().setHomeAsUpIndicator(drawable);
             myApplication = (MyApplication) getApplicationContext();
 
             gson = new Gson();
@@ -236,6 +244,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
 
             final DrawerLayout mDrawerLayout;
             mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
             mDrawerLayout.closeDrawers();
             final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             View header = navigationView.getHeaderView(0);
