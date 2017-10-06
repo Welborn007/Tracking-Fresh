@@ -41,6 +41,7 @@ import com.google.gson.Gson;
 import com.kesari.trackingfresh.ConfirmOrder.OrderAddPojo;
 import com.kesari.trackingfresh.DashBoard.DashboardActivity;
 import com.kesari.trackingfresh.DashBoard.VerifyMobilePOJO;
+import com.kesari.trackingfresh.DeliveryAddress.DefaultDeliveryAddress.Default_DeliveryAddress;
 import com.kesari.trackingfresh.Login.ProfileMain;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.OTP.OTP;
@@ -52,7 +53,6 @@ import com.kesari.trackingfresh.Utilities.ErrorPOJO;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.VehicleNearestRoute.NearestRouteMainPOJO;
-import com.kesari.trackingfresh.VehicleRoute.RouteActivity;
 import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
@@ -673,7 +673,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                     @Override
                     public void onClick(View v) {
                         dialog.dismiss();
-                        Intent intent = new Intent(PaymentDetails.this, RouteActivity.class);
+                        Intent intent = new Intent(PaymentDetails.this, Default_DeliveryAddress.class);
                         startActivity(intent);
                         finish();
                     }
