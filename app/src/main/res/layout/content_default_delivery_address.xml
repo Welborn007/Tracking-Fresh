@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:background="@android:color/white"
+    android:background="@drawable/background_new"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
     tools:showIn="@layout/activity_default__delivery_address"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -43,7 +43,7 @@
 
                 <TextView
                     android:text="Default Delivery Address"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:layout_margin="5dp"
                     android:padding="10dp"
                     android:textSize="@dimen/text_size14"
@@ -57,7 +57,7 @@
                     fancy:fb_text="New"
                     android:layout_gravity="center"
                     android:id="@+id/btnNew"
-                    fancy:fb_defaultColor="@color/fresh_blue"
+                    fancy:fb_defaultColor="@color/MoneyGreen"
                     fancy:fb_focusColor="@color/colorPrimary"
                     fancy:fb_radius="5dp"
                     fancy:fb_textColor="@color/white"
@@ -72,7 +72,7 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    fancy:fb_defaultColor="@color/fresh_blue"
+                    fancy:fb_defaultColor="@color/MoneyGreen"
                     fancy:fb_focusColor="@color/colorPrimary"
                     fancy:fb_radius="5dp"
                     fancy:fb_textColor="@color/white"
@@ -90,7 +90,7 @@
 
                 <TextView
                     android:id="@+id/name"
-                    android:textColor="@color/black"
+                    android:textColor="@color/MoneyGreen"
                     android:paddingLeft="10dp"
                     android:textSize="@dimen/text_size"
                     android:textStyle="bold"
@@ -99,7 +99,7 @@
 
                 <TextView
                     android:id="@+id/address"
-                    android:textColor="@color/Gray"
+                    android:textColor="@color/white"
                     android:layout_marginLeft="35dp"
                     android:textSize="14sp"
                     android:layout_width="wrap_content"
@@ -112,7 +112,7 @@
 
                     <TextView
                         android:id="@+id/city"
-                        android:textColor="@color/Gray"
+                        android:textColor="@color/white"
                         android:layout_marginLeft="35dp"
                         android:textSize="14sp"
                         android:layout_width="wrap_content"
@@ -120,7 +120,7 @@
 
                     <TextView
                         android:id="@+id/pincode"
-                        android:textColor="@color/Gray"
+                        android:textColor="@color/white"
                         android:layout_marginLeft="10dp"
                         android:textSize="14sp"
                         android:layout_width="wrap_content"
@@ -138,6 +138,8 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="10dp"
+            android:textColor="@color/white"
+            android:buttonTint="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -145,13 +147,13 @@
 
     <mehdi.sakout.fancybuttons.FancyButton
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:padding="5dp"
         fancy:fb_text="View Order"
         android:layout_alignParentBottom="true"
         android:id="@+id/btnSubmit"
         android:layout_margin="5dp"
-        fancy:fb_defaultColor="@color/fresh_blue"
+        fancy:fb_defaultColor="@color/MoneyGreen"
         fancy:fb_focusColor="@color/colorPrimary"
         fancy:fb_radius="5dp"
         fancy:fb_textColor="@color/white"

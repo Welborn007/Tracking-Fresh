@@ -46,7 +46,7 @@
                         <mehdi.sakout.fancybuttons.FancyButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            fancy:fb_borderColor="#FFFFFF"
+                            fancy:fb_borderColor="@color/MoneyGreen"
                             fancy:fb_borderWidth="1dp"
                             fancy:fb_iconPosition="right"
                             android:layout_gravity="center"
@@ -105,7 +105,7 @@
                         <mehdi.sakout.fancybuttons.FancyButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            fancy:fb_borderColor="#FFFFFF"
+                            fancy:fb_borderColor="@color/MoneyGreen"
                             fancy:fb_borderWidth="1dp"
                             android:layout_gravity="center"
                             fancy:fb_iconPosition="right"

@@ -70,7 +70,7 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
             toolbar.setBackgroundColor(ContextCompat.getColor(this,R.color.porcelain));
 
             setTitle("Register");
-            toolbar.setTitleTextColor(ContextCompat.getColor(RegisterActivity.this,R.color.black));
+            toolbar.setTitleTextColor(ContextCompat.getColor(RegisterActivity.this,R.color.white));
 
         /*Register receiver*/
             networkUtilsReceiver = new NetworkUtilsReceiver(this);

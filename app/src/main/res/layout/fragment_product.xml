@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/layout_holder"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <RelativeLayout
             android:id="@+id/map_Holder"
@@ -58,32 +58,38 @@
 
                     <LinearLayout
                         android:orientation="horizontal"
-                        android:padding="5dp"
+                        android:padding="0dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
-
+<!--
                         <mehdi.sakout.fancybuttons.FancyButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            fancy:fb_borderColor="#FFFFFF"
+                            fancy:fb_borderColor="@color/MoneyGreen"
                             fancy:fb_borderWidth="1dp"
                             fancy:fb_iconPosition="right"
                             android:layout_gravity="center"
-                            fancy:fb_fontIconResource="&#xf111;"
-                            fancy:fb_defaultColor="@android:color/transparent"
+                            fancy:fb_fontIconResource="&#xf1b9;"
+                            fancy:fb_defaultColor="@color/MoneyGreen"
                             fancy:fb_focusColor="#2e5071"
-                            fancy:fb_radius="5dp"
+                            fancy:fb_radius="0dp"
                             fancy:fb_text=""
-                            fancy:fb_textColor="@color/MoneyGreen"
-                            fancy:fb_textSize="10sp" />
+                            fancy:fb_textColor="@color/white"
+                            fancy:fb_textSize="10sp" />-->
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/car"
+                            android:background="@color/MoneyGreen"/>
 
                         <TextView
                             android:id="@+id/GuestAddress"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:background="@drawable/edittext_border"
                             android:ellipsize="end"
-                            android:maxLines="1"
+                            android:maxLines="2"
                             android:text=""
                             android:layout_marginLeft="10dp"
                             android:textColor="@color/black"
@@ -117,29 +123,35 @@
 
                     <LinearLayout
                         android:orientation="horizontal"
-                        android:padding="5dp"
+                        android:padding="0dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
-
+<!--
                         <mehdi.sakout.fancybuttons.FancyButton
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            fancy:fb_borderColor="#FFFFFF"
+                            android:layout_height="match_parent"
+                            fancy:fb_borderColor="@color/MoneyGreen"
                             fancy:fb_borderWidth="1dp"
                             android:layout_gravity="center"
                             fancy:fb_iconPosition="right"
-                            fancy:fb_fontIconResource="&#xf111;"
-                            fancy:fb_defaultColor="@android:color/transparent"
+                            fancy:fb_fontIconResource="&#xf007;"
+                            fancy:fb_defaultColor="@color/MoneyGreen"
                             fancy:fb_focusColor="#2e5071"
-                            fancy:fb_radius="5dp"
+                            fancy:fb_radius="0dp"
                             fancy:fb_text=""
-                            fancy:fb_textColor="@color/orange"
-                            fancy:fb_textSize="10sp" />
+                            fancy:fb_textColor="@color/white"
+                            fancy:fb_textSize="10sp" />-->
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/user"
+                            android:background="@color/MoneyGreen"/>
 
                         <TextView
                             android:id="@+id/kilometre"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:ellipsize="end"
                             android:maxLines="2"
                             android:layout_marginLeft="10dp"
@@ -220,7 +232,7 @@
         android:background="@drawable/radius_white"
         android:layout_margin="5dp"
         android:orientation="vertical"
-        android:visibility="visible"
+        android:visibility="gone"
         >
 
         <RelativeLayout
@@ -276,7 +288,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/product_category_recyclerview"

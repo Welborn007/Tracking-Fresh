@@ -5,7 +5,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -475,10 +477,12 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
         getMenuInflater().inflate(R.menu.menu_add_tocart, menu);
 
         MenuItem item = menu.findItem(R.id.menu_hot);
-        LayerDrawable icon = (LayerDrawable) item.getIcon();
-
-        setBadgeCount(this, icon, mNotificationsCount);
-
+//        LayerDrawable icon = (LayerDrawable) item.getIcon();
+//
+//        setBadgeCount(this, icon, mNotificationsCount);
+        BitmapDrawable iconBitmap = (BitmapDrawable) item.getIcon();
+        LayerDrawable iconLayer = new LayerDrawable(new Drawable[] { iconBitmap });
+        setBadgeCount(this, iconLayer, mNotificationsCount);
         return super.onCreateOptionsMenu(menu);
     }
 
