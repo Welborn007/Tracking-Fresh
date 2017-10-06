@@ -100,6 +100,7 @@ import mehdi.sakout.fancybuttons.FancyButton;
 import pl.droidsonroids.gif.GifImageView;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
+import static com.kesari.trackingfresh.OrderTracking.OrderBikerTrackingActivity.animateMarker;
 
 /**
  * Created by kesari on 11/04/17.
@@ -112,7 +113,6 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     //GoogleMap googleMap;
     private String TAG = this.getClass().getSimpleName();
     //private GPSTracker gps;
-    private Location Current_Location;
     HashMap<String, HashMap> extraMarkerInfo = new HashMap<String, HashMap>();
 
     private static final String TAG_ID = "id";
@@ -179,6 +179,8 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     Marker markerVehicle, Cust_Marker;
 
     NearestVehicleMainPOJO nearestVehicleMainPOJO;
+    boolean isDirectionSet = true;
+    private Location Current_Location,old_Location;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -320,7 +322,9 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             Log.i("longitude", String.valueOf(Current_Location.getLongitude()));
 
             oldLocation = Current_Origin;
-
+            old_Location = new Location(LocationManager.GPS_PROVIDER);
+            old_Location.setLatitude(Current_Origin.latitude);
+            old_Location.setLongitude(Current_Origin.longitude);
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
@@ -342,7 +346,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             }
             map.setMyLocationEnabled(true);
 
-
+            map.getUiSettings().setRotateGesturesEnabled(false);
 
             getVehicleRoute(SharedPrefUtil.getNearestRouteMainPOJO(getActivity()).getData().get(0).getVehicleId());
 
@@ -743,7 +747,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
             if (map != null) {
                 marker = map.addMarker(new MarkerOptions().position(dest)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_delivery_van))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_red_car))
                         //.rotation((float) bearingBetweenLocations(oldLocation,newLocation))
                         .title(location_name));
 
@@ -754,13 +758,13 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
                 extraMarkerInfo.put(marker.getId(), data);
 
-                IOUtils.showRipples(dest, map, DURATION);
+                /*IOUtils.showRipples(dest, map, DURATION);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         IOUtils.showRipples(dest, map, DURATION);
                     }
-                }, DURATION - 500);
+                }, DURATION - 500);*/
 
                 Cust_Marker = map.addMarker(new MarkerOptions().position(Current_Origin)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_customer))
@@ -769,6 +773,8 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             }
 
             oldLocation = newLocation;
+
+            isDirectionSet = false;
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
@@ -1138,19 +1144,48 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
                                 map.setTrafficEnabled(true);
 
-                                CameraPosition cameraPosition = new CameraPosition.Builder().
-                                        target(finalPosition).
-                                        tilt(0).
-                                        zoom(15).
-                                        bearing(0).
-                                        build();
-
-                                map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
                                 newLocation = currentPosition;
 
-                                addMarkers("1", "TKF Vehicle", cust_latitude, cust_longitude);
+                                if(isDirectionSet)
+                                {
+                                    addMarkers("1", "TKF Vehicle", cust_latitude, cust_longitude);
+                                    //getMapsApiDirectionsUrl(cust_latitude, cust_longitude);
+                                }
+
                                 getMapsApiDirectionsUrl(cust_latitude, cust_longitude);
+
+                                if(marker != null)
+                                {
+                                    /*marker.setPosition(currentPosition);
+                                    marker.setRotation((float) bearingBetweenLocations(oldLocation,newLocation));*/
+
+
+                                    if(location.distanceTo(old_Location) > 40) {
+
+                                        CameraPosition cameraPosition = new CameraPosition.Builder().
+                                                target(finalPosition).
+                                                tilt(0).
+                                                zoom(15).
+                                                bearing(0).
+                                                build();
+
+                                        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+                                        if(oldLocation != newLocation)
+                                        {
+                                            animateMarker(map,marker,finalPosition,false);
+                                            marker.setRotation((float) bearingBetweenLocations(oldLocation,newLocation));
+                                        }
+
+                                        oldLocation = newLocation;
+
+                                        old_Location = new Location(LocationManager.GPS_PROVIDER);
+                                        old_Location.setLatitude(cust_latitude);
+                                        old_Location.setLongitude(cust_longitude);
+                                    }
+
+
+                                }
                             } else {
                                 //setVehicleEmpty();
                             }

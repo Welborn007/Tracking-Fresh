@@ -315,6 +315,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
             }
 
             map.setMyLocationEnabled(true);
+            map.getUiSettings().setRotateGesturesEnabled(false);
 
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
