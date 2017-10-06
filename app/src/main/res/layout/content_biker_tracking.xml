@@ -35,7 +35,6 @@
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:padding="5dp"
                     android:layout_height="wrap_content">
 
                     <LinearLayout
@@ -43,6 +42,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
+<!--
                         <mehdi.sakout.fancybuttons.FancyButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -57,14 +57,21 @@
                             fancy:fb_text=""
                             fancy:fb_textColor="@color/white"
                             fancy:fb_textSize="10sp" />
+-->
 
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/user"
+                            android:background="@color/MoneyGreen"/>
                         <TextView
                             android:id="@+id/GuestAddress"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:background="@drawable/edittext_border"
                             android:ellipsize="end"
-                            android:maxLines="1"
+                            android:maxLines="2"
                             android:text=""
                             android:layout_marginLeft="10dp"
                             android:textColor="@color/black"
@@ -93,7 +100,7 @@
 
                 <LinearLayout
                     android:orientation="vertical"
-                    android:padding="5dp"
+                    android:padding="0dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -102,7 +109,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <mehdi.sakout.fancybuttons.FancyButton
+                       <!-- <mehdi.sakout.fancybuttons.FancyButton
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             fancy:fb_borderColor="@color/MoneyGreen"
@@ -116,11 +123,17 @@
                             fancy:fb_text=""
                             fancy:fb_textColor="@color/white"
                             fancy:fb_textSize="10sp" />
+-->
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/car"
+                            android:background="@color/MoneyGreen"/>
 
                         <TextView
                             android:id="@+id/kilometre"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:ellipsize="end"
                             android:maxLines="2"
                             android:layout_marginLeft="10dp"

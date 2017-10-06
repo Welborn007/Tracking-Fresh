@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/whitegray"
     tools:showIn="@layout/activity_order_review"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -28,13 +28,13 @@
 
                 <TextView
                     android:id="@+id/delivery_text"
-                    android:text="Order Review"
-                    android:textColor="@color/white"
+                    android:text="Your Order"
+                    android:textColor="@color/Gray"
                     android:drawablePadding="-190dp"
                     android:padding="10dp"
                     android:textStyle="bold"
                     android:textSize="@dimen/text_size"
-                    android:background="@color/Button_Color"
+                    android:background="@color/whitegray"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 

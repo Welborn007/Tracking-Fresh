@@ -98,7 +98,8 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
             }
             else
             {
-                holder.payment_confirmHolder.setVisibility(View.VISIBLE);
+//                holder.payment_confirmHolder.setVisibility(View.VISIBLE);
+                holder.payment_confirmHolder.setVisibility(View.GONE);
                 holder.payment_confirm.setText(OrdersListReView.get(position).getPayment_Status());
             }
 
@@ -108,7 +109,8 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
             }
             else
             {
-                holder.payment_modeHolder.setVisibility(View.VISIBLE);
+//                holder.payment_modeHolder.setVisibility(View.VISIBLE);
+                holder.payment_modeHolder.setVisibility(View.GONE);
                 holder.payment_mode.setText(OrdersListReView.get(position).getPayment_Mode());
             }
 
@@ -120,6 +122,9 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
                 holder.cancelHolder.setVisibility(View.GONE);
                 holder.rejectHolder.setVisibility(View.VISIBLE);
                 holder.order_status.setImageResource(R.drawable.rejected);
+
+                holder.order_statustext.setText("Rejected");
+                holder.order_statustext.setBackgroundColor(context.getResources().getColor(R.color.Red));
                 holder.cancel.setVisibility(View.GONE);
 
                 if(OrdersListReView.get(position).getRejectReason() != null)
@@ -140,6 +145,9 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
                 holder.rejectHolder.setVisibility(View.GONE);
                 holder.cancelHolder.setVisibility(View.GONE);
                 holder.order_status.setImageResource(R.drawable.accepted);
+
+                holder.order_statustext.setText("Accepted");
+                holder.order_statustext.setBackgroundColor(context.getResources().getColor(R.color.MoneyGreen));
                 holder.cancel.setVisibility(View.VISIBLE);
             }
             else if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("Pending"))
@@ -147,6 +155,9 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
                 holder.cancelHolder.setVisibility(View.GONE);
                 holder.rejectHolder.setVisibility(View.GONE);
                 holder.order_status.setImageResource(R.drawable.pending);
+
+                holder.order_statustext.setText("Pending");
+                holder.order_statustext.setBackgroundColor(context.getResources().getColor(R.color.yellow));
                 holder.cancel.setVisibility(View.VISIBLE);
             }
             else if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("Cancelled"))
@@ -154,6 +165,8 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
                 holder.cancelHolder.setVisibility(View.VISIBLE);
                 holder.rejectHolder.setVisibility(View.GONE);
                 holder.order_status.setImageResource(R.drawable.cancel);
+                holder.order_statustext.setText("Cancelled");
+                holder.order_statustext.setBackgroundColor(context.getResources().getColor(R.color.Red));
                 holder.cancel.setVisibility(View.GONE);
 
                 if(OrdersListReView.get(position).getCancelReason() != null)
@@ -174,6 +187,8 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
                 holder.cancelHolder.setVisibility(View.GONE);
                 holder.rejectHolder.setVisibility(View.GONE);
                 holder.order_status.setImageResource(R.drawable.delivered);
+                holder.order_statustext.setText("Delivered");
+                holder.order_statustext.setBackgroundColor(context.getResources().getColor(R.color.MoneyGreen));
                 holder.cancel.setVisibility(View.GONE);
             }
 
@@ -493,7 +508,7 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
 
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder
     {
-        TextView order_number,customer_name,payment_confirm,payment_mode,total_price,cancelReason,rejectReason,orderDate,orderNo,orderType;
+        TextView order_number,customer_name,order_statustext,payment_confirm,payment_mode,total_price,cancelReason,rejectReason,orderDate,orderNo,orderType;
         CardView subItemCard_view;
         ImageView order_status;
         LinearLayout payment_confirmHolder,payment_modeHolder,cancelHolder,rejectHolder;
@@ -513,6 +528,7 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
             orderDate = (TextView) view.findViewById(R.id.orderDate);
             orderNo = (TextView) view.findViewById(R.id.orderNo);
             orderType = (TextView) view.findViewById(R.id.orderType);
+            order_statustext = (TextView) view.findViewById(R.id.order_statustext);
 
             payment_confirmHolder = (LinearLayout) view.findViewById(R.id.payment_confirmHolder);
             payment_modeHolder = (LinearLayout) view.findViewById(R.id.payment_modeHolder);
