@@ -30,7 +30,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/logo" />
+                    android:src="@drawable/logo"
+                    android:visibility="gone"/>
 
             </RelativeLayout>
 

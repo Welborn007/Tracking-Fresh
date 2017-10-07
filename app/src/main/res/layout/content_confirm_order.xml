@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:background="@drawable/background_overlay"
+    android:background="@color/whitegray"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
     tools:showIn="@layout/activity_confirm_order"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -19,7 +19,8 @@
         android:textSize="@dimen/text_size"
         android:background="@color/Button_Color"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:layout_below="@+id/delivery_text"
@@ -36,7 +37,7 @@
 
             <TextView
                 android:text="Order Placed By : "
-                android:textColor="@color/white"
+                android:textColor="@color/Gray"
                 android:textSize="@dimen/text_size14"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"/>
@@ -44,7 +45,7 @@
             <TextView
                 android:id="@+id/order_placed_by"
                 android:text="Welborn Machado"
-                android:textColor="@color/MoneyGreen"
+                android:textColor="@color/black"
                 android:gravity="right"
                 android:textSize="@dimen/text_size"
                 android:layout_width="match_parent"
@@ -60,7 +61,7 @@
 
             <TextView
                 android:text="Order Status : "
-                android:textColor="@color/white"
+                android:textColor="@color/Gray"
                 android:textSize="@dimen/text_size14"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"/>
@@ -68,7 +69,7 @@
             <TextView
                 android:id="@+id/order_status"
                 android:text="pending"
-                android:textColor="@color/MoneyGreen"
+                android:textColor="@color/black"
                 android:gravity="right"
                 android:textSize="@dimen/text_size"
                 android:layout_width="match_parent"
@@ -84,7 +85,7 @@
             android:layout_margin="5dp"
             android:visibility="gone"
             android:id="@+id/guestCardview"
-            android:background="@color/white"
+            android:background="@color/Gray"
             card_view:cardCornerRadius="4dp"
             card_view:cardElevation="1dp">
 
@@ -104,7 +105,7 @@
 
                     <TextView
                         android:text="Product"
-                        android:textColor="@color/MoneyGreen"
+                        android:textColor="@color/black"
                         android:textSize="@dimen/text_size"
                         android:layout_width="160dp"
                         android:layout_height="wrap_content"/>
@@ -118,7 +119,7 @@
                     <TextView
                         android:text="Quantity"
                         android:layout_marginLeft="5dp"
-                        android:textColor="@color/MoneyGreen"
+                        android:textColor="@color/black"
                         android:gravity="center"
                         android:textSize="@dimen/text_size"
                         android:layout_width="60dp"
@@ -133,7 +134,7 @@
                     <TextView
                         android:text="Price"
                         android:layout_marginLeft="5dp"
-                        android:textColor="@color/MoneyGreen"
+                        android:textColor="@color/black"
                         android:gravity="center"
                         android:textSize="@dimen/text_size"
                         android:layout_width="60dp"
@@ -148,7 +149,7 @@
                     <TextView
                         android:text="Subtotal"
                         android:layout_marginLeft="5dp"
-                        android:textColor="@color/MoneyGreen"
+                        android:textColor="@color/black"
                         android:gravity="center"
                         android:textSize="@dimen/text_size"
                         android:layout_width="60dp"
@@ -189,7 +190,7 @@
 
             <TextView
                 android:text="Delivery Charge "
-                android:textColor="@color/white"
+                android:textColor="@color/Gray"
                 android:textSize="@dimen/text_size14"
                 android:layout_gravity="left"
                 android:layout_width="wrap_content"
@@ -198,7 +199,7 @@
             <TextView
                 android:id="@+id/delivery_charge"
                 android:text="10"
-                android:textColor="@color/MoneyGreen"
+                android:textColor="@color/black"
                 android:textSize="@dimen/text_size"
                 android:gravity="right"
                 android:layout_width="match_parent"
@@ -212,7 +213,7 @@
 
             <TextView
                 android:text="Order Total "
-                android:textColor="@color/white"
+                android:textColor="@color/Gray"
                 android:textSize="@dimen/text_size14"
                 android:layout_gravity="left"
                 android:layout_width="wrap_content"
@@ -221,7 +222,7 @@
             <TextView
                 android:id="@+id/order_total"
                 android:text="10"
-                android:textColor="@color/MoneyGreen"
+                android:textColor="@color/black"
                 android:textSize="@dimen/text_size"
                 android:gravity="right"
                 android:layout_width="match_parent"
@@ -240,8 +241,8 @@
         android:id="@+id/btnSubmit"
         fancy:fb_defaultColor="@color/MoneyGreen"
         fancy:fb_focusColor="@color/colorPrimary"
-        fancy:fb_radius="5dp"
-        android:layout_margin="5dp"
+        fancy:fb_radius="0dp"
+        android:layout_margin="0dp"
         fancy:fb_textColor="@color/white"
         fancy:fb_textSize="18sp" />
 

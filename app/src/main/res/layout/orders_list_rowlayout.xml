@@ -44,7 +44,8 @@
                     android:text="Welborn Machado"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_size"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:visibility="gone"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -366,7 +367,33 @@
 
         </LinearLayout>
 
-        <mehdi.sakout.fancybuttons.FancyButton
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/data_holder"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/repeat"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:text="Repeat Order"
+                android:background="@color/MoneyGreen"
+                android:textColor="@color/white"/>
+            <View
+                android:layout_width="2dp"
+                android:layout_height="30dp"
+                android:background="@color/white"/>
+            <Button
+                android:id="@+id/cancel"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:text="Cancel"
+                android:background="@color/Button_Color"
+                android:textColor="@color/white"/>
+       <!-- <mehdi.sakout.fancybuttons.FancyButton
             android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -386,7 +413,6 @@
 
         <mehdi.sakout.fancybuttons.FancyButton
             android:layout_marginTop="10dp"
-
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5dp"
@@ -401,7 +427,8 @@
             fancy:fb_radius="5dp"
             fancy:fb_textColor="@color/white"
             fancy:fb_textSize="18sp" />
-
+-->
+        </LinearLayout>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="30dp"

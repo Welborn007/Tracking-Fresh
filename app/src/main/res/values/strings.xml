@@ -111,5 +111,9 @@
 
     <string name="valid_pincode">Enter Valid Pincode</string>
     <string name="valid_state">State cannot be a number</string>
+    <string name="ordering">Confirm Order</string>
+    <string name="order_review">Order Review</string>
+    <string name="last_order">Last Order</string>
+    <string name="profile">Profile</string>
 
 </resources>

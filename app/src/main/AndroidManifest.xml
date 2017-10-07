@@ -94,7 +94,8 @@
         <activity
             android:name=".Order.OrderReview"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/order_review"/>
         <activity
             android:name=".Register.RegisterActivity"
             android:screenOrientation="portrait"
@@ -122,14 +123,16 @@
         <activity
             android:name=".YourOrders.OrderListActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/last_order"/>
 
         <service android:name=".Map.LocationServiceNew" />
 
         <activity
             android:name=".MyProfile.ProfileActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/profile"/>
         <activity
             android:name=".OrderTracking.OrderBikerTrackingActivity"
             android:screenOrientation="portrait"
@@ -152,7 +155,8 @@
         <activity
             android:name=".ConfirmOrder.ConfirmOrderActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/ordering"/>
         <activity
             android:name=".CheckNearestVehicleAvailability.CheckVehicleActivity"
             android:screenOrientation="portrait"

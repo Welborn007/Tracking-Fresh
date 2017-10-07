@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -512,7 +513,7 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
         CardView subItemCard_view;
         ImageView order_status;
         LinearLayout payment_confirmHolder,payment_modeHolder,cancelHolder,rejectHolder;
-        FancyButton cancel,repeat;
+        Button cancel,repeat;
 
         public RecyclerViewHolder(View view)
         {
@@ -536,8 +537,8 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
             rejectHolder = (LinearLayout) view.findViewById(R.id.rejectHolder);
 
             order_status = (ImageView) view.findViewById(R.id.order_status);
-            cancel = (FancyButton) view.findViewById(R.id.cancel);
-            repeat = (FancyButton) view.findViewById(R.id.repeat);
+            cancel = (Button) view.findViewById(R.id.cancel);
+            repeat = (Button) view.findViewById(R.id.repeat);
         }
     }
 

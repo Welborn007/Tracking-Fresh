@@ -39,7 +39,7 @@ public class SettingsActivity extends AppCompatActivity {
         tourPager.setAdapter(new ExpertisePagerAdapter(getSupportFragmentManager()));
         //tourTabs.setDistributeEvenly(true);
         tourTabs.setViewPager(tourPager);
-        tourTabs.setSelectedIndicatorColors(ContextCompat.getColor(SettingsActivity.this,R.color.colorPrimary));
+        tourTabs.setSelectedIndicatorColors(ContextCompat.getColor(SettingsActivity.this,R.color.colorPrimaryDark));
 
         profile_image = (CircleImageView) findViewById(R.id.profile_image);
 

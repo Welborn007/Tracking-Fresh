@@ -45,10 +45,9 @@
                 xmlns:fancy="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
                 android:id="@+id/sourceCardview"
                 android:background="@color/LightGray"
-                card_view:cardCornerRadius="4dp"
+                card_view:cardCornerRadius="0dp"
                 card_view:cardElevation="1dp">
 
                 <LinearLayout
@@ -107,13 +106,10 @@
                 xmlns:fancy="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginBottom="5dp"
                 android:layout_below="@+id/sourceCardview"
                 android:id="@+id/destinationCardview"
                 android:background="@color/LightGray"
-                card_view:cardCornerRadius="4dp"
+                card_view:cardCornerRadius="0dp"
                 card_view:cardElevation="1dp">
 
                 <LinearLayout
@@ -184,7 +180,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_margin="5dp"
                 android:background="@color/LightGray"
-                card_view:cardCornerRadius="4dp"
+                card_view:cardCornerRadius="0dp"
                 card_view:cardElevation="1dp">
 
                 <LinearLayout
@@ -228,9 +224,7 @@
         android:id="@+id/layout_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="5dp"
         android:background="@drawable/radius_white"
-        android:layout_margin="5dp"
         android:orientation="vertical"
         android:visibility="gone"
         >

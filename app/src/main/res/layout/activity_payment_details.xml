@@ -20,7 +20,8 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/logo"
@@ -28,7 +29,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/logo" />
+                    android:src="@drawable/logo"
+                    android:visibility="gone"/>
 
 
             </RelativeLayout>

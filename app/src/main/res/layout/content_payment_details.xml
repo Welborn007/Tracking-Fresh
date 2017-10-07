@@ -20,7 +20,8 @@
         android:textSize="@dimen/text_size"
         android:background="@color/Button_Color"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:orientation="vertical"
@@ -154,7 +155,7 @@
             android:gravity="end"
             android:layout_gravity="end"
             android:background="@drawable/border_layout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <EditText
@@ -167,11 +168,13 @@
                 android:textColor="@color/white"
                 android:textColorHint="@color/white"
                 android:layout_gravity="center"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="3"
                 android:layout_height="wrap_content" />
 
             <mehdi.sakout.fancybuttons.FancyButton
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
                 fancy:fb_text="Apply"
@@ -307,13 +310,12 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:padding="5dp"
-        android:layout_margin="5dp"
         fancy:fb_text="Place Order"
         android:layout_alignParentBottom="true"
         android:id="@+id/btnSubmit"
         fancy:fb_defaultColor="@color/MoneyGreen"
         fancy:fb_focusColor="@color/colorPrimary"
-        fancy:fb_radius="5dp"
+        fancy:fb_radius="0dp"
         fancy:fb_textColor="@color/white"
         fancy:fb_textSize="18sp" />
 
