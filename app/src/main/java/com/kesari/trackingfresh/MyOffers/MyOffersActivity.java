@@ -109,7 +109,7 @@ public class MyOffersActivity extends AppCompatActivity implements NetworkUtilsR
             recListOffers = (RecyclerView) findViewById(R.id.recyclerView);
             offersRecyclerView = (HorizontalRecyclerView) findViewById(R.id.offersRecyclerView);
 
-            recListOffers.setHasFixedSize(true);
+//            recListOffers.setHasFixedSize(true);
             Orders = new LinearLayoutManager(MyOffersActivity.this);
             Orders.setOrientation(LinearLayoutManager.VERTICAL);
             recListOffers.setLayoutManager(Orders);

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/background_overlay"
+    android:background="#0d0d0c"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 

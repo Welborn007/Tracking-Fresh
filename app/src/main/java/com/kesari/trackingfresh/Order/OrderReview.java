@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -63,8 +64,8 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
     OrderReviewMainPOJO orderReviewMainPOJO;
     private RecyclerView.Adapter adapterProducts;
     TextView total_price,payment_status,payment_mode,fullName,buildingName,landmark,address,mobileNo,bikerName,deliveryCharge,orderDate,orderDeliverDate,delivery_textData,orderNo,orderType;
-    FancyButton btnSubmit,btnCall,btnSupport;
-
+    Button btnCall,btnSupport;
+    FancyButton btnSubmit;
     LinearLayout BikerHolder,deliveryDateHolder;
 
     //ScheduledExecutorService scheduleTaskExecutor;
@@ -123,8 +124,8 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
             BikerHolder = (LinearLayout) findViewById(R.id.BikerHolder);
             deliveryDateHolder = (LinearLayout) findViewById(R.id.deliveryDateHolder);
             bikerName = (TextView) findViewById(R.id.bikerName);
-            btnCall = (FancyButton) findViewById(R.id.btnCall);
-            btnSupport = (FancyButton) findViewById(R.id.btnSupport);
+            btnCall = (Button) findViewById(R.id.btnCall);
+            btnSupport = (Button) findViewById(R.id.btnSupport);
 
             ratingBar = (RatingBar) findViewById(R.id.ratingBar);
             FeedbackHolder = (LinearLayout) findViewById(R.id.FeedbackHolder);

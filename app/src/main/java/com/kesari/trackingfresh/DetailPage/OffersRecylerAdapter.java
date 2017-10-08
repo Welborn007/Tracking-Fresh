@@ -56,7 +56,7 @@ public class OffersRecylerAdapter  extends RecyclerView.Adapter<OffersRecylerAda
 
         LayoutInflater mInflater = LayoutInflater.from(parent.getContext());
         ViewGroup mainGroup = (ViewGroup) mInflater.inflate(R.layout.offer_layout, parent, false);
-        mainGroup.getLayoutParams().width = (int) ((getScreenWidth()) / 1.6f);
+//        mainGroup.getLayoutParams().width = (int) ((getScreenWidth()) / 1.6f);
 
         OffersRecylerAdapter.RecyclerViewHolder recyclerViewHolder = new OffersRecylerAdapter.RecyclerViewHolder(mainGroup);
 

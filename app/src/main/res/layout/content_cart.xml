@@ -56,7 +56,6 @@
         fancy:fb_iconPosition="right"
         android:layout_margin="0dp"
         android:layout_alignParentBottom="true"
-        fancy:fb_fontIconResource="&#xf046;"
         fancy:fb_defaultColor="@color/MoneyGreen"
         fancy:fb_focusColor="@color/colorPrimary"
         fancy:fb_radius="0dp"

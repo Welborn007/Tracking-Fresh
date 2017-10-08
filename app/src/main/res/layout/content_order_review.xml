@@ -38,6 +38,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
+
+                <android.support.v7.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/recyclerView"
+                    android:scrollbars="vertical"
+                    android:background="@color/white">
+                </android.support.v7.widget.RecyclerView>
                 <LinearLayout
                     android:orientation="vertical"
                     android:padding="10dp"
@@ -196,9 +204,9 @@
                         <TextView
                             android:id="@+id/total_price"
                             android:text="nil"
-                            android:textColor="@color/black"
+                            android:textColor="@color/MoneyGreen"
                             android:gravity="end"
-                            android:textSize="14sp"
+                            android:textSize="18sp"
                             android:layout_width="50dp"
                             android:layout_height="wrap_content"/>
 
@@ -206,14 +214,14 @@
 
                 </LinearLayout>
 
-
+<!--
                 <android.support.v7.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/recyclerView"
                     android:scrollbars="vertical"
                     android:background="@color/white">
-                </android.support.v7.widget.RecyclerView>
+                </android.support.v7.widget.RecyclerView>-->
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -351,7 +359,7 @@
                         android:drawablePadding="-190dp"
                         android:padding="10dp"
                         android:textSize="@dimen/text_size"
-                        android:background="@color/Button_Color"
+                        android:background="@color/MoneyGreen"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
 
@@ -397,37 +405,66 @@
 
                     <LinearLayout
                         android:orientation="horizontal"
-                        android:weightSum="2"
                         android:layout_margin="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
+<!--
                         <mehdi.sakout.fancybuttons.FancyButton
-                            android:layout_width="match_parent"
+
+                            android:layout_width="0dp"
+                            android:layout_weight="3"
                             android:layout_height="wrap_content"
                             android:padding="5dp"
                             android:text="Call"
-                            android:layout_weight="1"
                             android:id="@+id/btnCall"
-                            fancy:fb_defaultColor="@color/Button_Color"
+                            fancy:fb_defaultColor="@color/MoneyGreen"
                             fancy:fb_focusColor="@color/colorPrimary"
-                            fancy:fb_radius="5dp"
+                            fancy:fb_radius="1dp"
                             fancy:fb_textColor="@color/white"
                             fancy:fb_textSize="18sp" />
+-->
 
-                        <mehdi.sakout.fancybuttons.FancyButton
-                            android:layout_width="match_parent"
+
+                        <Button
+
+                            android:layout_width="0dp"
+                            android:layout_weight="3"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:text="Call"
+                            android:id="@+id/btnCall"
+                            android:background="@color/MoneyGreen"
+                            android:textColor="@color/white"
+                            android:textSize="18sp" />
+                        <Button
+
+                            android:layout_width="0dp"
+                            android:layout_weight="3"
                             android:layout_height="wrap_content"
                             android:padding="5dp"
                             android:text="Support"
-                            android:layout_weight="1"
                             android:layout_marginLeft="10dp"
                             android:id="@+id/btnSupport"
-                            fancy:fb_defaultColor="@color/Button_Color"
+                            android:background="@color/MoneyGreen"
+                            android:textColor="@color/white"
+                            android:textSize="18sp" />
+<!--
+                        <mehdi.sakout.fancybuttons.FancyButton
+
+                            android:layout_width="0dp"
+                            android:layout_weight="3"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:text="Support"
+                            android:layout_marginLeft="10dp"
+                            android:id="@+id/btnSupport"
+                            fancy:fb_defaultColor="@color/MoneyGreen"
                             fancy:fb_focusColor="@color/colorPrimary"
-                            fancy:fb_radius="5dp"
+                            fancy:fb_radius="0dp"
                             fancy:fb_textColor="@color/white"
                             fancy:fb_textSize="18sp" />
+-->
 
                     </LinearLayout>
 
@@ -446,7 +483,7 @@
                         android:textColor="@color/white"
                         android:padding="10dp"
                         android:textSize="@dimen/text_size"
-                        android:background="@color/Button_Color"
+                        android:background="@color/MoneyGreen"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
 
@@ -456,7 +493,7 @@
                         android:layout_margin="5dp"
                         android:isIndicator="false"
                         android:layout_gravity="center"
-                        android:progressTint="@android:color/holo_red_dark"
+                        android:progressTint="@color/MoneyGreen"
                         style="?android:attr/ratingBarStyleIndicator"
                         android:numStars="5"
                         android:id="@+id/ratingBar"
@@ -500,9 +537,9 @@
                         android:layout_marginRight="5dp"
                         android:layout_marginTop="5dp"
                         android:id="@+id/btnFeedback"
-                        fancy:fb_defaultColor="@color/Button_Color"
+                        fancy:fb_defaultColor="@color/MoneyGreen"
                         fancy:fb_focusColor="@color/colorPrimary"
-                        fancy:fb_radius="5dp"
+                        fancy:fb_radius="0dp"
                         fancy:fb_textColor="@color/white"
                         fancy:fb_textSize="18sp" />
 

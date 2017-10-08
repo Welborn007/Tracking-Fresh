@@ -58,7 +58,8 @@
                     android:textColor="@color/gray"
                     android:textSize="@dimen/text_size14"
                     android:layout_width="70dp"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/quantity"
@@ -88,6 +89,7 @@
                     android:textColor="@color/gray"
                     android:textSize="@dimen/text_size14"
                     android:layout_width="70dp"
+                    android:visibility="gone"
                     android:layout_height="wrap_content"/>
 
                 <TextView
@@ -125,7 +127,7 @@
                     android:id="@+id/subtotal"
                     android:text="100"
                     android:textStyle="bold"
-                    android:textColor="@color/black"
+                    android:textColor="@color/MoneyGreen"
                     android:textSize="@dimen/text_size14"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"/>

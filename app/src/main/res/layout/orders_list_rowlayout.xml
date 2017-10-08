@@ -196,8 +196,9 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+
+                        android:layout_width="0dp"
+                        android:layout_weight="3"                        android:layout_height="wrap_content"
                         android:text="Payment Confirmation:"
                         android:textColor="@color/DarkGray"
                         android:textSize="@dimen/text_size14"
@@ -205,11 +206,12 @@
 
                     <TextView
                         android:id="@+id/payment_confirm"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+
+                        android:layout_width="0dp"
+                        android:layout_weight="3"                        android:layout_height="wrap_content"
                         android:text="Received"
                         android:layout_marginLeft="10dp"
-                        android:gravity="center"
+                        android:gravity="right"
                         android:textColor="@color/black"
                         android:textSize="@dimen/text_size14"
                          />
@@ -225,7 +227,9 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
+
+                        android:layout_width="0dp"
+                        android:layout_weight="3"
                         android:layout_height="wrap_content"
                         android:text="Payment Mode:"
                         android:textColor="@color/DarkGray"
@@ -234,11 +238,12 @@
 
                     <TextView
                         android:id="@+id/payment_mode"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+
+                        android:layout_width="0dp"
+                        android:layout_weight="3"                        android:layout_height="wrap_content"
                         android:text="Credit Card"
                         android:layout_marginLeft="10dp"
-                        android:gravity="center"
+                        android:gravity="right"
                         android:textColor="@color/black"
                         android:textSize="@dimen/text_size14"
                         />
@@ -254,8 +259,9 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+
+                        android:layout_width="0dp"
+                        android:layout_weight="3"                        android:layout_height="wrap_content"
                         android:text="Cancellation Reason:"
                         android:textColor="@color/DarkGray"
                         android:textSize="@dimen/text_size14"
@@ -263,11 +269,12 @@
 
                     <TextView
                         android:id="@+id/cancelReason"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+
+                        android:layout_width="0dp"
+                        android:layout_weight="3"                        android:layout_height="wrap_content"
                         android:text=""
                         android:layout_marginLeft="10dp"
-                        android:gravity="center"
+                        android:gravity="right"
                         android:textColor="@color/black"
                         android:textSize="@dimen/text_size14"
                         />
@@ -283,8 +290,9 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+
+                        android:layout_width="0dp"
+                        android:layout_weight="3"                        android:layout_height="wrap_content"
                         android:text="Rejection Reason:"
                         android:textColor="@color/DarkGray"
                         android:textSize="@dimen/text_size14"
@@ -292,11 +300,12 @@
 
                     <TextView
                         android:id="@+id/rejectReason"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+
+                        android:layout_width="0dp"
+                        android:layout_weight="3"                        android:layout_height="wrap_content"
                         android:text=""
                         android:layout_marginLeft="10dp"
-                        android:gravity="center"
+                        android:gravity="right"
                         android:textColor="@color/black"
                         android:textSize="@dimen/text_size14"
                          />
@@ -312,8 +321,9 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+
+                        android:layout_width="0dp"
+                        android:layout_weight="3"                        android:layout_height="wrap_content"
                         android:text="Order type:"
                         android:textColor="@color/DarkGray"
                         android:textSize="@dimen/text_size14"
@@ -321,11 +331,12 @@
 
                     <TextView
                         android:id="@+id/orderType"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+
+                        android:layout_width="0dp"
+                        android:layout_weight="3"                        android:layout_height="wrap_content"
                         android:text=""
                         android:layout_marginLeft="10dp"
-                        android:gravity="center"
+                        android:gravity="right"
                         android:textColor="@color/black"
                         android:textSize="@dimen/text_size14"
                         />
@@ -344,8 +355,9 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+
+                    android:layout_width="0dp"
+                    android:layout_weight="3"                    android:layout_height="wrap_content"
                     android:text="Order No."
                     android:visibility="gone"
                     android:textColor="@color/DarkGray"
@@ -382,7 +394,7 @@
                 android:background="@color/MoneyGreen"
                 android:textColor="@color/white"/>
             <View
-                android:layout_width="2dp"
+                android:layout_width="1dp"
                 android:layout_height="30dp"
                 android:background="@color/white"/>
             <Button

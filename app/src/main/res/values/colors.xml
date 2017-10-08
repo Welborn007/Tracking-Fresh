@@ -66,6 +66,7 @@
 
     <color name="green">#0F0</color>
     <color name="yellow">#FF0</color>
+    <color name="Darkyellow">#f4d41e</color>
     <integer-array name="color_array">
         <item>@color/red</item>
         <item>@color/green</item>

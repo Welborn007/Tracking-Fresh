@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:showIn="@layout/activity_profile">
@@ -25,12 +25,6 @@
             android:textSize="@dimen/text_size18"
             android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/profile_edit"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/ic_edit_logo" />
 
     </RelativeLayout>
 
@@ -98,6 +92,13 @@
 
         </LinearLayout>
 
+
+        <ImageView
+            android:id="@+id/profile_edit"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_edit_logo" />
     </RelativeLayout>
 
     <LinearLayout
@@ -163,8 +164,8 @@
 
                     <mehdi.sakout.fancybuttons.FancyButton
                         android:id="@+id/verifiedStatus"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
                         android:layout_marginLeft="10dp"
                         android:layout_gravity="center"
                         android:padding="5dp"
@@ -173,7 +174,7 @@
                         fancy:fb_borderWidth="0dp"
                         fancy:fb_defaultColor="@color/MoneyGreen"
                         fancy:fb_focusColor="@color/whitegray"
-                        fancy:fb_fontIconResource="&#xf00c;"
+                        fancy:fb_fontIconResource="&#xf058;"
                         fancy:fb_iconPaddingLeft="10dp"
                         fancy:fb_iconPosition="right"
                         app:fb_radius="360dp"

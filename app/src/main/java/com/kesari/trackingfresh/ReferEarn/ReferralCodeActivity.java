@@ -67,8 +67,8 @@ public class ReferralCodeActivity extends AppCompatActivity implements NetworkUt
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             toolbar.setBackgroundColor(ContextCompat.getColor(this,R.color.porcelain));
-            toolbar.setTitleTextColor(ContextCompat.getColor(this,R.color.white));
-            toolbar.setTitle("Invite Friends");
+//            toolbar.setTitleTextColor(ContextCompat.getColor(this,R.color.white));
+//            toolbar.setTitle("Invite Friends");
             gson = new Gson();
 
             referral_holder = (LinearLayout) findViewById(R.id.referral_holder);

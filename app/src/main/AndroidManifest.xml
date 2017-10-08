@@ -179,6 +179,7 @@
             android:name=".ReferEarn.ReferralCodeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
+            android:label="Invite Friends"
             />
         <activity
             android:name=".HelpAndFAQ.HelpActivity"

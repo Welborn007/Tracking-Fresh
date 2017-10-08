@@ -158,7 +158,7 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
                 holder.order_status.setImageResource(R.drawable.pending);
 
                 holder.order_statustext.setText("Pending");
-                holder.order_statustext.setBackgroundColor(context.getResources().getColor(R.color.yellow));
+                holder.order_statustext.setBackgroundColor(context.getResources().getColor(R.color.Darkyellow));
                 holder.cancel.setVisibility(View.VISIBLE);
             }
             else if(OrdersListReView.get(position).getStatus().equalsIgnoreCase("Cancelled"))

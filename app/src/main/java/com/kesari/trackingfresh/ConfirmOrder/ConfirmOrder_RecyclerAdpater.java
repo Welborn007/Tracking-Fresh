@@ -48,7 +48,7 @@ public class ConfirmOrder_RecyclerAdpater extends RecyclerView.Adapter<ConfirmOr
         {
 
             holder.product_name.setText(OrderFareListPOJOs.get(position).getProductName());
-            holder.quantity.setText(OrderFareListPOJOs.get(position).getQuantity());
+            holder.quantity.setText(OrderFareListPOJOs.get(position).getQuantity()+" quantity");
             holder.price.setText("₹ " + OrderFareListPOJOs.get(position).getPrice());
             holder.subtotal.setText("₹ " + OrderFareListPOJOs.get(position).getSub_total());
 
