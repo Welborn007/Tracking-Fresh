@@ -154,7 +154,7 @@
                             <View
                                 android:layout_width="1dp"
                                 android:layout_height="35dp"
-                                android:background="@color/gray" />
+                                android:background="@color/whitegray" />
 
                             <mehdi.sakout.fancybuttons.FancyButton
                                 android:layout_width="wrap_content"
@@ -234,7 +234,7 @@
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="5dp"
                     android:orientation="horizontal"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <TextView
                         android:id="@+id/quantity_price"

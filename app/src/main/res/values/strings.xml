@@ -115,5 +115,11 @@
     <string name="order_review">Order Review</string>
     <string name="last_order">Last Order</string>
     <string name="profile">Profile</string>
+    <string name="change_pass">Change Password</string>
+    <string name="offers">Offers</string>
+    <string name="update_address">Update Address</string>
+    <string name="tkfwallet">Wallet</string>
+    <string name="payment_details">Payment Details</string>
+    <string name="delivery_address">Delivery Address</string>
 
 </resources>

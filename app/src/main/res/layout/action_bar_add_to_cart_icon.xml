@@ -34,5 +34,5 @@
         android:paddingBottom="1dp"
         android:paddingRight="4dp"
         android:paddingLeft="4dp"
-        android:background="@drawable/rounded_circle_addcart"/>
+        android:background="@drawable/rounded_circle_green"/>
 </RelativeLayout>

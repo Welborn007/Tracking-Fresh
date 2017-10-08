@@ -74,7 +74,7 @@
                     android:visibility="gone"
                     android:layout_toLeftOf="@+id/filter"
                     android:layout_centerInParent="true"
-                    android:src="@drawable/leftmenucart"
+                    android:src="@drawable/cart"
                     />
 
             </RelativeLayout>

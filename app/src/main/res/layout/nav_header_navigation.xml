@@ -10,7 +10,9 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_marginTop="24dp"
-        android:padding="10dp"
+        android:paddingTop="10dp"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -159,7 +161,7 @@
 
                 <ImageView
                     android:id="@+id/menu_logo"
-                    android:src="@drawable/leftmenumenu"
+                    android:src="@drawable/menu"
                     android:layout_alignParentLeft="true"
                     android:layout_centerInParent="true"
                     android:layout_width="30dp"
@@ -209,8 +211,9 @@
 
                 <ImageView
                     android:id="@+id/my_offers"
-                    android:src="@drawable/leftmenuoffers"
+                    android:src="@drawable/offers"
                     android:layout_width="30dp"
+                    android:layout_marginLeft="5dp"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true" />
 
@@ -255,7 +258,7 @@
 
                 <ImageView
                     android:id="@+id/my_cart"
-                    android:src="@drawable/leftmenucart"
+                    android:src="@drawable/cart"
                     android:layout_alignParentLeft="true"
                     android:layout_centerInParent="true"
                     android:layout_marginLeft="5dp"
@@ -303,7 +306,7 @@
 
                 <ImageView
                     android:id="@+id/my_orders"
-                    android:src="@drawable/leftmenulastorder"
+                    android:src="@drawable/latsorder"
                     android:layout_alignParentLeft="true"
                     android:layout_centerInParent="true"
                     android:layout_marginLeft="5dp"
@@ -352,7 +355,7 @@
 
                 <ImageView
                     android:id="@+id/referral_code"
-                    android:src="@drawable/leftmenugift"
+                    android:src="@drawable/refer_earn"
                     android:layout_alignParentLeft="true"
                     android:paddingLeft="5dp"
                     android:layout_centerInParent="true"
@@ -400,7 +403,7 @@
 
                 <ImageView
                     android:id="@+id/notificationImageView"
-                    android:src="@drawable/leftmenunotification"
+                    android:src="@drawable/notification"
                     android:layout_alignParentLeft="true"
                     android:layout_centerInParent="true"
                     android:layout_marginLeft="5dp"
@@ -548,7 +551,7 @@
 
                 <ImageView
                     android:id="@+id/settings_row"
-                    android:src="@drawable/leftmenusetting"
+                    android:src="@drawable/setting"
                     android:layout_alignParentLeft="true"
                     android:layout_centerInParent="true"
                     android:layout_width="30dp"
@@ -597,7 +600,7 @@
 
                 <ImageView
                     android:id="@+id/help_logo"
-                    android:src="@drawable/leftmenusupport"
+                    android:src="@drawable/support"
                     android:layout_alignParentLeft="true"
                     android:layout_centerInParent="true"
                     android:layout_width="30dp"
@@ -646,7 +649,7 @@
 
                 <ImageView
                     android:id="@+id/legal_logo"
-                    android:src="@drawable/leftmenusupport"
+                    android:src="@drawable/support"
                     android:layout_alignParentLeft="true"
                     android:layout_centerInParent="true"
                     android:layout_marginLeft="5dp"

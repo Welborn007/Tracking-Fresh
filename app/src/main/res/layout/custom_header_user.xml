@@ -5,7 +5,7 @@
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/background_overlay"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -39,7 +39,7 @@
         android:id="@+id/my_account"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/leftmenumenu"
+        android:drawableLeft="@drawable/menu"
         android:text="My Account"
         android:drawablePadding="10dp"
         android:padding="5dp"
@@ -70,7 +70,7 @@
             android:layout_height="wrap_content"
             android:text="Reset Password"
             android:gravity="center_vertical"
-            android:drawableLeft="@drawable/leftmenusetting"
+            android:drawableLeft="@drawable/setting"
             android:drawablePadding="10dp"
             android:padding="5dp"
             android:layout_gravity="center"
@@ -93,7 +93,7 @@
         android:layout_height="wrap_content"
         android:drawablePadding="10dp"
         android:padding="5dp"
-        android:drawableLeft="@drawable/leftmenulastorder"
+        android:drawableLeft="@drawable/latsorder"
         android:text="My Orders"
         android:gravity="center_vertical"
         android:textSize="14sp"
@@ -109,7 +109,7 @@
         android:id="@+id/tkcash"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/leftmenugift"
+        android:drawableLeft="@drawable/refer_earn"
         android:text="TK Cash"
         android:drawablePadding="10dp"
         android:padding="5dp"
@@ -127,7 +127,7 @@
         android:id="@+id/notificationList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/leftmenunotification"
+        android:drawableLeft="@drawable/notification"
         android:text="Notification List"
         android:drawablePadding="10dp"
         android:padding="5dp"
@@ -139,20 +139,21 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#ccc"/>
+        android:background="#ccc"
+        android:visibility="gone"/>
 
     <mehdi.sakout.fancybuttons.FancyButton
-        android:layout_width="250dp"
+        android:layout_width="match_parent"
         android:layout_height="40dp"
         android:padding="5dp"
         fancy:fb_text="Log Out"
         android:id="@+id/btnLogout"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="0dp"
         fancy:fb_defaultColor="@color/MoneyGreen"
         fancy:fb_focusColor="@color/colorPrimary"
-        fancy:fb_radius="5dp"
+        fancy:fb_radius="0dp"
         fancy:fb_textColor="@color/white"
         fancy:fb_textSize="18sp" />
 

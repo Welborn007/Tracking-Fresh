@@ -232,11 +232,10 @@ public class MyOffersActivity extends AppCompatActivity implements NetworkUtilsR
                 gridview.setAdapter(myDataAdapter);
                 myDataAdapter.notifyDataSetChanged();*/
 
-              /*  OffersRecylerAdapter offersRecylerAdapter = new OffersRecylerAdapter(subProductMainPOJO.getData(), MyOffersActivity.this,myApplication);
+                OffersRecylerAdapter offersRecylerAdapter = new OffersRecylerAdapter(subProductMainPOJO.getData(), MyOffersActivity.this,myApplication);
 
                 recListOffers.setAdapter(offersRecylerAdapter);
                 offersRecylerAdapter.notifyDataSetChanged();
-*/
 
                 offersRecyclerView.setOnFlingListener(null);
                 SnapHelper snapHelper = new PagerSnapHelper();
@@ -244,7 +243,7 @@ public class MyOffersActivity extends AppCompatActivity implements NetworkUtilsR
 //        getSnapHelper().attachToRecyclerView(accountSelectionRecyclerView);
 
 
-                OffersRecylerAdapter offersRecylerAdapter = new OffersRecylerAdapter(subProductMainPOJO.getData(), MyOffersActivity.this,myApplication);
+             //   OffersRecylerAdapter offersRecylerAdapter = new OffersRecylerAdapter(subProductMainPOJO.getData(), MyOffersActivity.this,myApplication);
                 LinearLayoutManager  accountLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
                 offersRecyclerView.setLayoutManager(accountLayoutManager);
                 offersRecyclerView.enableViewScaling(true);
@@ -282,12 +281,12 @@ public class MyOffersActivity extends AppCompatActivity implements NetworkUtilsR
         getMenuInflater().inflate(R.menu.menu_add_tocart, menu);
 
         MenuItem item = menu.findItem(R.id.menu_hot);
-//        LayerDrawable icon = (LayerDrawable) item.getIcon();
-//
-//        setBadgeCount(this, icon, mNotificationsCount);
-        BitmapDrawable iconBitmap = (BitmapDrawable) item.getIcon();
-        LayerDrawable iconLayer = new LayerDrawable(new Drawable[] { iconBitmap });
-        setBadgeCount(this, iconLayer, mNotificationsCount);
+        LayerDrawable icon = (LayerDrawable) item.getIcon();
+
+        setBadgeCount(this, icon, mNotificationsCount);
+//        BitmapDrawable iconBitmap = (BitmapDrawable) item.getIcon();
+//        LayerDrawable iconLayer = new LayerDrawable(new Drawable[] { iconBitmap });
+//        setBadgeCount(this, iconLayer, mNotificationsCount);
         return super.onCreateOptionsMenu(menu);
     }
 

@@ -5,7 +5,7 @@
     <item android:id="@+id/menu_hot"
         android:actionLayout="@layout/action_bar_add_to_cart_icon"
         app:showAsAction="always"
-        android:icon="@drawable/cart"
+        android:icon="@drawable/ic_menu_cart_notifications"
         android:title="Add to Cart" />
 
 </menu>

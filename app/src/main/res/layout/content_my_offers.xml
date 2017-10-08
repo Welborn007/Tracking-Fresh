@@ -35,7 +35,7 @@
                 android:layout_height="match_parent"
                 android:id="@+id/recyclerView"
                 android:scrollbars="vertical"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:background="@color/LightGray">
             </android.support.v7.widget.RecyclerView>
 
@@ -47,6 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:clipChildren="false"
+                android:visibility="gone"
                 android:orientation="horizontal" />
             <ListView
                 android:layout_width="match_parent"

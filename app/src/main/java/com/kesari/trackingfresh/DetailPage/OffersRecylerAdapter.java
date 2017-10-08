@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.gms.vision.text.Text;
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.AddToCart.AddCart_model;
 import com.kesari.trackingfresh.ProductSubFragment.SubProductSubPOJO;
@@ -132,7 +133,7 @@ public class OffersRecylerAdapter  extends RecyclerView.Adapter<OffersRecylerAda
                     @Override
                     public void onClick(View v) {
                         viewHolder.holder_count.setVisibility(View.VISIBLE);
-                        viewHolder.priceLinearLayout.setVisibility(View.VISIBLE);
+                        viewHolder.crossTextView.setVisibility(View.VISIBLE);
                         viewHolder.addtoCart.setVisibility(View.GONE);
                         viewHolder.count.setText("1");
 
@@ -257,7 +258,7 @@ public class OffersRecylerAdapter  extends RecyclerView.Adapter<OffersRecylerAda
                                 myApplication.RemoveProductonZeroQuantity(product_pojo.getProductId());
 
                                 viewHolder.holder_count.setVisibility(View.GONE);
-                                viewHolder.priceLinearLayout.setVisibility(View.GONE);
+                                viewHolder.crossTextView.setVisibility(View.GONE);
                                 viewHolder.addtoCart.setVisibility(View.VISIBLE);
 
                                 viewHolder.count.setText("0");
@@ -344,7 +345,8 @@ public class OffersRecylerAdapter  extends RecyclerView.Adapter<OffersRecylerAda
         SimpleDraweeView imageView;
         Button plus, minus;
         ImageView addtoCart;
-        LinearLayout holder_count,priceLinearLayout;
+        LinearLayout holder_count;
+        TextView crossTextView;
         public RecyclerViewHolder(View convertView)
         {
             super(convertView);
@@ -360,7 +362,7 @@ public class OffersRecylerAdapter  extends RecyclerView.Adapter<OffersRecylerAda
             mrp = (TextView) convertView.findViewById(R.id.mrp);
             addtoCart = (ImageView) convertView.findViewById(R.id.addtoCart);
             holder_count = (LinearLayout) convertView.findViewById(R.id.holder_count);
-            priceLinearLayout = (LinearLayout) convertView.findViewById(R.id.priceLinearLayout);
+            crossTextView = (TextView) convertView.findViewById(R.id.crossTextView);
 
         }
     }

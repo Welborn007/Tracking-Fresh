@@ -95,7 +95,6 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
-                    fancy:fb_borderColor="#FFFFFF"
                     fancy:fb_borderWidth="1dp"
                     fancy:fb_defaultColor="@color/MoneyGreen"
                     fancy:fb_focusColor="@color/MoneyGreen"

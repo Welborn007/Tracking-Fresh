@@ -315,7 +315,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:text="Product Description"
+                    android:text="Description"
                     android:textSize="16sp"
                     android:textColor="@color/black"
                     android:layout_marginLeft="10dp"
@@ -336,7 +336,8 @@
                     android:layout_height="1dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    android:background="@color/Gray" />
+                    android:background="@color/Gray"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:text="Package Contents"
@@ -347,6 +348,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/textView"
+                    android:visibility="gone"
                     />
 
                 <TextView
@@ -365,7 +367,7 @@
                     android:background="@color/Gray" />
 
                 <TextView
-                    android:text="Product Category"
+                    android:text="Category"
                     android:textSize="16sp"
                     android:textColor="@color/black"
                     android:layout_marginLeft="10dp"
@@ -388,8 +390,11 @@
                     android:layout_marginBottom="5dp"
                     android:background="@color/Gray" />
 
+
+
+
                 <TextView
-                    android:text="Product Details"
+                    android:text="Details"
                     android:textSize="16sp"
                     android:textColor="@color/black"
                     android:layout_marginLeft="10dp"
@@ -400,49 +405,64 @@
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
+                    android:background="@color/whitegray"
+                    android:padding="10dp"
                     android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:layout_height="wrap_content">
 
-                    <TextView
-                        android:layout_marginLeft="10dp"
-                        android:textSize="14sp"
-                        android:text="Manufacturing Date :"
-                        android:textColor="@color/Gray"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        <TextView
+                            android:layout_marginLeft="10dp"
+                            android:textSize="14sp"
+                            android:text="Manufacturing Date"
+                            android:textColor="@color/Gray"
+                            android:textAllCaps="true"
 
-                    <TextView
-                        android:id="@+id/mfgDateTxt"
-                        android:layout_marginLeft="10dp"
-                        android:textSize="14sp"
-                        android:textColor="@color/Gray"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
 
+                        <TextView
+                            android:id="@+id/mfgDateTxt"
+                            android:layout_marginLeft="10dp"
+                            android:textSize="14sp"
+                            android:textColor="@color/white"
+                            android:background="@color/MoneyGreen"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_marginLeft="10dp"
+                            android:textSize="14sp"
+                            android:text="Expiry Date"
+                            android:textColor="@color/Gray"
+                            android:layout_width="wrap_content"
+                            android:textAllCaps="true"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:id="@+id/expiryDateTxt"
+                            android:layout_marginLeft="10dp"
+                            android:textSize="14sp"
+                            android:textColor="@color/white"
+                            android:background="@color/Button_Color"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
                 </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_marginLeft="10dp"
-                        android:textSize="14sp"
-                        android:text="Expiry Date :"
-                        android:textColor="@color/Gray"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:id="@+id/expiryDateTxt"
-                        android:layout_marginLeft="10dp"
-                        android:textSize="14sp"
-                        android:textColor="@color/Gray"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                </LinearLayout>
-
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
@@ -454,6 +474,7 @@
                         android:text="QC Certificate :"
                         android:textColor="@color/Gray"
                         android:layout_width="wrap_content"
+                        android:textAllCaps="true"
                         android:layout_height="wrap_content" />
 
                     <TextView
@@ -462,6 +483,7 @@
                         android:textSize="14sp"
                         android:autoLink="web"
                         android:textColor="@color/Gray"
+                        android:textAllCaps="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -470,6 +492,7 @@
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
                     android:layout_height="wrap_content">
 
                     <TextView
@@ -478,6 +501,7 @@
                         android:text="Batch No :"
                         android:textColor="@color/Gray"
                         android:layout_width="wrap_content"
+                        android:textAllCaps="true"
                         android:layout_height="wrap_content" />
 
                     <TextView
@@ -485,11 +509,11 @@
                         android:layout_marginLeft="10dp"
                         android:textSize="14sp"
                         android:textColor="@color/Gray"
+                        android:textAllCaps="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
                 </LinearLayout>
-
                 <TextView
                     android:text="Related Searches"
                     android:textSize="16sp"
@@ -541,7 +565,6 @@
         <LinearLayout
             android:orientation="horizontal"
             android:weightSum="2"
-            android:padding="5dp"
             android:layout_below="@+id/addtoCartHolder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

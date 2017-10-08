@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/whitegray"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <android.support.v7.widget.SearchView
@@ -45,9 +46,10 @@
                 xmlns:fancy="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:id="@+id/sourceCardview"
                 android:background="@color/LightGray"
-                card_view:cardCornerRadius="0dp"
+                card_view:cardCornerRadius="4dp"
                 card_view:cardElevation="1dp">
 
                 <LinearLayout
@@ -110,6 +112,8 @@
                 android:id="@+id/destinationCardview"
                 android:background="@color/LightGray"
                 card_view:cardCornerRadius="0dp"
+                android:layout_margin="5dp"
+
                 card_view:cardElevation="1dp">
 
                 <LinearLayout
@@ -210,6 +214,7 @@
 
         </RelativeLayout>
 
+
         <FrameLayout
             android:id="@+id/fragment_data"
             android:layout_width="match_parent"
@@ -224,7 +229,6 @@
         android:id="@+id/layout_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/radius_white"
         android:orientation="vertical"
         android:visibility="gone"
         >
@@ -272,6 +276,7 @@
                     android:visibility="gone"
                     android:background="@drawable/arrow_up2"
                     />
+
 
             </RelativeLayout>
 

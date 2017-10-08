@@ -78,19 +78,23 @@
         <activity
             android:name=".Cart.AddToCart"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/my_cart"/>
         <activity
             android:name=".DeliveryAddress.AddDeliveryAddress.Add_DeliveryAddress"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/delivery_address"/>
         <activity
             android:name=".DeliveryAddress.DefaultDeliveryAddress.Default_DeliveryAddress"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/delivery_address"/>
         <activity
             android:name=".Payment.PaymentDetails"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/payment_details"/>
         <activity
             android:name=".Order.OrderReview"
             android:screenOrientation="portrait"
@@ -119,7 +123,8 @@
         <activity
             android:name=".ForgetPassword.ForgotPassword_Activity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/forgot_password"/>
         <activity
             android:name=".YourOrders.OrderListActivity"
             android:screenOrientation="portrait"
@@ -168,38 +173,48 @@
         <activity
             android:name=".TKCash.TKWalletActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/tkfwallet"/>
         <activity
             android:name=".ReferEarn.ReferralCodeActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            />
         <activity
             android:name=".HelpAndFAQ.HelpActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/help"/>
         <activity
             android:name=".Legal.LegalActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/legal"/>
         <activity
             android:name=".DeliveryAddress.UpdateDeliveryAddress.UpdateDeliveryAddressActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/update_address"/>
         <activity
             android:name=".ChangePassword.ChangePasswordActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/change_pass"/>
         <activity
             android:name=".Settings.SettingsActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/settings"/>
         <activity
             android:name=".MyOffers.MyOffersActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/offers"/>
+
         <activity android:name=".NotificationList.NotificationListActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/notification"></activity>
     </application>
 
 </manifest>

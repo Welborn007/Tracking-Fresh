@@ -204,9 +204,9 @@ public class NotificationListActivity extends AppCompatActivity implements Netwo
         getMenuInflater().inflate(R.menu.menu_add_tocart, menu);
 
         MenuItem item = menu.findItem(R.id.menu_hot);
-//        LayerDrawable icon = (LayerDrawable) item.getIcon();
-        BitmapDrawable iconBitmap = (BitmapDrawable) item.getIcon();
-        LayerDrawable iconLayer = new LayerDrawable(new Drawable[] { iconBitmap });
+        LayerDrawable iconLayer = (LayerDrawable) item.getIcon();
+//        BitmapDrawable iconBitmap = (BitmapDrawable) item.getIcon();
+//        LayerDrawable iconLayer = new LayerDrawable(new Drawable[] { iconBitmap });
         setBadgeCount(this, iconLayer, mNotificationsCount);
 //        setBadgeCount(this, icon, mNotificationsCount);
 
