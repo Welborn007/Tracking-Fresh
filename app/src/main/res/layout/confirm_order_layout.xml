@@ -67,7 +67,7 @@
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     android:textSize="@dimen/text_size14"
-                    android:layout_width="60dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
             </LinearLayout>
@@ -98,7 +98,7 @@
                     android:textStyle="bold"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_size14"
-                    android:layout_width="60dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
             </LinearLayout>
@@ -127,9 +127,9 @@
                     android:id="@+id/subtotal"
                     android:text="100"
                     android:textStyle="bold"
-                    android:textColor="@color/MoneyGreen"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/text_size14"
-                    android:layout_width="60dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
             </LinearLayout>
