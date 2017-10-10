@@ -136,39 +136,53 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
 
                             if(FirstName.length() >= 2 && LastName.length() >= 2)
                             {
-                                if(Mobile.matches("^(?:(?:\\+|0{0,2})91(\\s*[\\-]\\s*)?|[0]?)?[789]\\d{9}$"))
+                                if(FirstName.matches("^[ A-Za-z]+$") && LastName.matches("^[ A-Za-z]+$"))
                                 {
-                                    if (Mobile.length() >= 10) {
-                                        if (!NetworkUtils.isNetworkConnectionOn(RegisterActivity.this)) {
+                                    if(Mobile.matches("^(?:(?:\\+|0{0,2})91(\\s*[\\-]\\s*)?|[0]?)?[789]\\d{9}$"))
+                                    {
+                                        if (Mobile.length() >= 10) {
+                                            if (!NetworkUtils.isNetworkConnectionOn(RegisterActivity.this)) {
 
-                                            new SweetAlertDialog(RegisterActivity.this, SweetAlertDialog.NORMAL_TYPE)
-                                                    .setTitleText("Oops! No internet access")
-                                                    .setContentText("Please Check Settings")
-                                                    .setConfirmText("Enable the Internet?")
-                                                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                                        @Override
-                                                        public void onClick(SweetAlertDialog sDialog) {
-                                                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                                                            sDialog.dismissWithAnimation();
-                                                        }
-                                                    })
-                                                    .show();
+                                                new SweetAlertDialog(RegisterActivity.this, SweetAlertDialog.NORMAL_TYPE)
+                                                        .setTitleText("Oops! No internet access")
+                                                        .setContentText("Please Check Settings")
+                                                        .setConfirmText("Enable the Internet?")
+                                                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                            @Override
+                                                            public void onClick(SweetAlertDialog sDialog) {
+                                                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                                                sDialog.dismissWithAnimation();
+                                                            }
+                                                        })
+                                                        .show();
 
+                                            } else {
+                                                btnRegister.setClickable(false);
+                                                verifyDuplicateMobileAndRegister(mobile.getText().toString().trim());
+                                            }
                                         } else {
-                                            btnRegister.setClickable(false);
-                                            verifyDuplicateMobileAndRegister(mobile.getText().toString().trim());
+                                            //Toast.makeText(RegisterActivity.this, getString(R.string.less_than_10digit) , Toast.LENGTH_SHORT).show();
+                                            mobile.setError(getString(R.string.less_than_10digit));
+                                            mobile.requestFocus();
                                         }
-                                    } else {
-                                        //Toast.makeText(RegisterActivity.this, getString(R.string.less_than_10digit) , Toast.LENGTH_SHORT).show();
-                                        mobile.setError(getString(R.string.less_than_10digit));
+                                    }
+                                    else
+                                    {
+                                        mobile.setError(getString(R.string.proper_mobile));
                                         mobile.requestFocus();
                                     }
                                 }
-                                else
+                                else if(!FirstName.matches("^[ A-Za-z]+$"))
                                 {
-                                    mobile.setError(getString(R.string.proper_mobile));
-                                    mobile.requestFocus();
+                                    first_name.setError(getString(R.string.valid_name));
+                                    first_name.requestFocus();
                                 }
+                                else if(!LastName.matches("^[ A-Za-z]+$"))
+                                {
+                                    last_name.setError(getString(R.string.valid_name));
+                                    last_name.requestFocus();
+                                }
+
                             }
                             else if(FirstName.length() < 2)
                             {

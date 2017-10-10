@@ -196,7 +196,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
             Log.i("latitude", String.valueOf(Current_Location.getLatitude()));
             Log.i("longitude", String.valueOf(Current_Location.getLongitude()));
 
-
+            GuestAddress.setText(getCompleteAddressString(Current_Origin.latitude,Current_Origin.longitude));
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
@@ -987,7 +987,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                 extraMarkerInfo.put(marker.getId(), data);
 
                 custMarker = map.addMarker(new MarkerOptions().position(Delivery_Origin)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_customer))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_customer_marker))
                         .title("Customer"));
 
                 //float bearing = (float) bearing(convertLatLngToLocation(oldLocation),convertLatLngToLocation(newLocation))
@@ -1029,7 +1029,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                 extraMarkerInfo.put(marker.getId(), data);
 
                 map.addMarker(new MarkerOptions().position(Delivery_Origin)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_customer))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_customer_marker))
                         .title("Origin"));
 
                 //float bearing = (float) bearing(convertLatLngToLocation(oldLocation),convertLatLngToLocation(newLocation))

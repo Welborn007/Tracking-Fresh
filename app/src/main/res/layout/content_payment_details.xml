@@ -142,10 +142,11 @@
                 android:hint="PROMOCODE"
                 android:textSize="18sp"
                 android:drawablePadding="10dp"
+                android:maxLines="1"
                 android:inputType="textCapCharacters"
                 android:layout_marginRight="25dp"
                 android:layout_gravity="center"
-                android:layout_width="wrap_content"
+                android:layout_width="130dp"
                 android:layout_height="wrap_content" />
 
             <mehdi.sakout.fancybuttons.FancyButton

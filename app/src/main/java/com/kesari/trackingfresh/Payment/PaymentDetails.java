@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -68,19 +69,19 @@ import java.util.Map;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import mehdi.sakout.fancybuttons.FancyButton;
 
-public class PaymentDetails extends AppCompatActivity implements PaymentResultListener,NetworkUtilsReceiver.NetworkResponseInt{
+public class PaymentDetails extends AppCompatActivity implements PaymentResultListener, NetworkUtilsReceiver.NetworkResponseInt {
 
     FancyButton btnSubmit;
     private String TAG = this.getClass().getSimpleName();
     private NetworkUtilsReceiver networkUtilsReceiver;
-    private TextView price_payable,price_total;
-    private RadioButton cash_on_delivery,online_payment;
+    private TextView price_payable, price_total;
+    private RadioButton cash_on_delivery, online_payment;
     private RadioGroup payment_group;
     //private String OrderID = "";
     MyApplication myApplication;
     OrderAddPojo orderAddPojo;
     private Gson gson;
-    boolean online = false,cod =false, wallet = false,walletOnly = false;
+    boolean online = false, cod = false, wallet = false, walletOnly = false;
     VerifyMobilePOJO verifyMobilePOJO;
     SendOtpPOJO sendOtpPOJO;
     Dialog dialog;
@@ -89,7 +90,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
     CheckBox walletCash;
     ProfileMain profileMain;
     String walletAmount = "";
-    int amountTotal,walletTotal;
+    int amountTotal, walletTotal;
     boolean TKFCash = false;
 
     EditText promocodeText;
@@ -105,8 +106,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_details);
 
-        try
-        {
+        try {
 
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
@@ -119,14 +119,11 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
             networkUtilsReceiver = new NetworkUtilsReceiver(this);
             registerReceiver(networkUtilsReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
-            final LocationManager locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+            final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-            if ( !locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) )
-            {
+            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 IOUtils.buildAlertMessageNoGps(PaymentDetails.this);
-            }
-            else
-            {
+            } else {
                 if (!IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
                     // LOCATION SERVICE
                     startService(new Intent(this, LocationServiceNew.class));
@@ -159,13 +156,10 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    if(promocodeText.getText().toString().trim().isEmpty())
-                    {
+                    if (promocodeText.getText().toString().trim().isEmpty()) {
                         promocodeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                         clearDrawable = false;
-                    }
-                    else
-                    {
+                    } else {
                         promocodeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear, 0);
                         clearDrawable = true;
                     }
@@ -185,17 +179,30 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                     final int DRAWABLE_RIGHT = 2;
                     final int DRAWABLE_BOTTOM = 3;
 
-                    if(event.getAction() == MotionEvent.ACTION_UP) {
-                        if(clearDrawable)
-                        {
-                            if(event.getRawX() >= (promocodeText.getRight() - promocodeText.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                    if (event.getAction() == MotionEvent.ACTION_UP) {
+                        if (clearDrawable) {
+                            if (event.getRawX() >= (promocodeText.getRight() - promocodeText.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
                                 // your action here
-                                promocodeText.setText("");
-                                price_payable.setText(getIntent().getStringExtra("amount"));
-                                promocodeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-                                clearDrawable = false;
 
-                                promocodeSubmit.setEnabled(true);
+                                if(TKFCash)
+                                {
+                                    promocodeText.setText("");
+                                    int price =  Integer.parseInt(getIntent().getStringExtra("amount")) - Integer.parseInt(SharedPrefUtil.getUser(PaymentDetails.this).getData().getWalletAmount());
+                                    price_payable.setText(String.valueOf(price));
+                                    promocodeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                                    clearDrawable = false;
+
+                                    promocodeSubmit.setEnabled(true);
+                                }
+                                else
+                                {
+                                    promocodeText.setText("");
+                                    price_payable.setText(getIntent().getStringExtra("amount"));
+                                    promocodeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                                    clearDrawable = false;
+
+                                    promocodeSubmit.setEnabled(true);
+                                }
                                 return true;
                             }
                         }
@@ -204,7 +211,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 }
             });
 
-        cancel.setOnClickListener(new View.OnClickListener() {
+            cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     promocodeText.setText("");
@@ -215,12 +222,9 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
             promocodeSubmit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(!promocodeText.getText().toString().isEmpty())
-                    {
-                        sendPromocode(promocodeText.getText().toString().trim(),price_payable.getText().toString().trim());
-                    }
-                    else
-                    {
+                    if (!promocodeText.getText().toString().isEmpty()) {
+                        sendPromocode(promocodeText.getText().toString().trim(), price_payable.getText().toString().trim(), v);
+                    } else {
                         //Toast.makeText(PaymentDetails.this, "Enter Promocode!", Toast.LENGTH_SHORT).show();
 
                         new SweetAlertDialog(PaymentDetails.this)
@@ -230,8 +234,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 }
             });
 
-            try
-            {
+            try {
 
                 price_total.setText(getIntent().getStringExtra("amount"));
                 price_payable.setText(getIntent().getStringExtra("amount"));
@@ -240,8 +243,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 walletCash.setText("Use cash from wallet" + " [ ₹ " + SharedPrefUtil.getUser(PaymentDetails.this).getData().getWalletAmount() + " ]");
                 //OrderID = getIntent().getStringExtra("orderID");
 
-            }catch (NullPointerException npe)
-            {
+            } catch (NullPointerException npe) {
 
             }
 
@@ -251,27 +253,19 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
                     btnSubmit.setClickable(false);
 
-                    if(price_payable.getText().toString().equalsIgnoreCase("0"))
-                    {
+                    if (price_payable.getText().toString().equalsIgnoreCase("0")) {
                         getVerifiedMobileNumber(SharedPrefUtil.getToken(PaymentDetails.this));
                         walletOnly = true;
-                    }
-                    else
-                    {
-                        if(online_payment.isChecked())
-                        {
+                    } else {
+                        if (online_payment.isChecked()) {
                             getVerifiedMobileNumber(SharedPrefUtil.getToken(PaymentDetails.this));
                             //addOrderListFromCart();
                             online = true;
-                        }
-                        else if(cash_on_delivery.isChecked())
-                        {
+                        } else if (cash_on_delivery.isChecked()) {
                             getVerifiedMobileNumber(SharedPrefUtil.getToken(PaymentDetails.this));
                             //addOrderListFromCart();
                             cod = true;
-                        }
-                        else
-                        {
+                        } else {
                             //Toast.makeText(PaymentDetails.this, "Select Payment Mode!!", Toast.LENGTH_SHORT).show();
                             btnSubmit.setClickable(true);
                             new SweetAlertDialog(PaymentDetails.this)
@@ -290,16 +284,14 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
                     promocodeText.setText("");
 
-                    if(isChecked)
-                    {
+                    if (isChecked) {
                         getProfileData();
                         TKFCash = true;
-                    }
-                    else
-                    {
+                        promocodeSubmit.setEnabled(true);
+                    } else {
                         wallet = false;
                         TKFCash = false;
-
+                        promocodeSubmit.setEnabled(true);
                         walletCash.setText("Use cash from wallet");
                         walletAmount = "";
                         price_payable.setText(getIntent().getStringExtra("amount"));
@@ -318,12 +310,10 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
     }
 
-    private void sendPromocode(final String Promocode, String Total)
-    {
-        try
-        {
+    private void sendPromocode(final String Promocode, String Total, final View v) {
+        try {
 
-            String url = Constants.PromocodeValidity ;
+            String url = Constants.PromocodeValidity;
 
             Log.i("url", url);
 
@@ -355,7 +345,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                         public void onResponse(JSONObject response) {
                             Log.d("response", response.toString());
                             //dialog.dismiss();
-                            PromocodeResponse(response.toString());
+                            PromocodeResponse(response.toString(),v);
                         }
                     }, new Response.ErrorListener() {
 
@@ -364,16 +354,15 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                     //VolleyLog.d("Error", "Error: " + error.getMessage());
                     //dialog.dismiss();
 
-                    try{
+                    try {
                         String json = null;
                         NetworkResponse response = error.networkResponse;
                         json = new String(response.data);
                         Log.d("Error", json);
 
-                        ErrorResponse(json,PaymentDetails.this);
+                        ErrorResponse(json, PaymentDetails.this);
 
-                    }catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         //Log.d("Error", e.getMessage());
                         //FireToast.customSnackbar(PaymentDetails.this, "Oops Something Went Wrong!!", "");
 
@@ -392,7 +381,8 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
                     return params;
                 }
-            };;
+            };
+            ;
 
             jsonObjReq.setRetryPolicy(new DefaultRetryPolicy(
                     30000,
@@ -407,13 +397,11 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
     }
 
-    private void ErrorResponse(String Response,Context context)
-    {
+    private void ErrorResponse(String Response, Context context) {
         gson = new Gson();
         errorPOJO = gson.fromJson(Response, ErrorPOJO.class);
 
-        if(errorPOJO.getErrors() != null)
-        {
+        if (errorPOJO.getErrors() != null) {
             String[] error = errorPOJO.getErrors();
             String errorString = error[0];
 
@@ -422,17 +410,13 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
             new SweetAlertDialog(PaymentDetails.this)
                     .setTitleText(errorString)
                     .show();
-        }
-        else if(errorPOJO.getMessage() != null)
-        {
+        } else if (errorPOJO.getMessage() != null) {
             //Toast.makeText(context, errorPOJO.getMessage(), Toast.LENGTH_SHORT).show();
 
             new SweetAlertDialog(PaymentDetails.this)
                     .setTitleText(errorPOJO.getMessage())
                     .show();
-        }
-        else
-        {
+        } else {
             //Toast.makeText(context, "Oops Something Went Wrong!!", Toast.LENGTH_SHORT).show();
 
             new SweetAlertDialog(PaymentDetails.this)
@@ -443,22 +427,37 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
     }
 
-    private void PromocodeResponse(String response)
-    {
+    private void PromocodeResponse(String response,View v) {
 
-        try
-        {
+        try {
             // {"newTotal":60}
 
             JSONObject jsonObject = new JSONObject(response);
-            String newTotal = jsonObject.getString("newTotal");
-            price_payable.setText(newTotal);
 
-            promocodeSubmit.setEnabled(false);
+            if(jsonObject != null)
+            {
+                String newTotal = jsonObject.getString("newTotal");
 
-        }catch (Exception e)
-        {
+                if(!newTotal.isEmpty())
+                {
+                    price_payable.setText(newTotal);
+                    promocodeSubmit.setEnabled(false);
 
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+                    Toast.makeText(PaymentDetails.this, "PromoCode Applied!!", Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    new SweetAlertDialog(PaymentDetails.this)
+                            .setTitleText("PromoCode Not Valid!!")
+                            .show();
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -470,10 +469,10 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
             Map<String, String> params = new HashMap<String, String>();
             params.put("Authorization", "JWT " + SharedPrefUtil.getToken(PaymentDetails.this));
 
-            ioUtils.getPOSTStringRequestHeader(PaymentDetails.this,Constants.Profile, params, new IOUtils.VolleyCallback() {
+            ioUtils.getPOSTStringRequestHeader(PaymentDetails.this, Constants.Profile, params, new IOUtils.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
-                    Log.i("profile_result",result);
+                    Log.i("profile_result", result);
                     profileDataResponse(result);
                 }
             }, new IOUtils.VolleyFailureCallback() {
@@ -489,28 +488,21 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
         }
     }
 
-    private void profileDataResponse(String Response)
-    {
-        try
-        {
+    private void profileDataResponse(String Response) {
+        try {
             SharedPrefUtil.setUser(getApplicationContext(), Response.toString());
 
-            profileMain = gson.fromJson(Response,ProfileMain.class);
+            profileMain = gson.fromJson(Response, ProfileMain.class);
 
-            if(profileMain.getData().getWalletAmount() != null)
-            {
-                if(!profileMain.getData().getWalletAmount().isEmpty() || !profileMain.getData().getWalletAmount().equalsIgnoreCase("0"))
-                {
+            if (profileMain.getData().getWalletAmount() != null) {
+                if (!profileMain.getData().getWalletAmount().isEmpty() || !profileMain.getData().getWalletAmount().equalsIgnoreCase("0")) {
                     wallet = true;
-                    if(amountTotal > Integer.parseInt(profileMain.getData().getWalletAmount()))
-                    {
+                    if (amountTotal > Integer.parseInt(profileMain.getData().getWalletAmount())) {
                         walletTotal = Integer.parseInt(profileMain.getData().getWalletAmount());
                         amountTotal = amountTotal - walletTotal;
                         price_payable.setText(String.valueOf(amountTotal));
                         walletCash.setText("Use cash from wallet" + " [ ₹ " + String.valueOf(0) + " ]");
-                    }
-                    else
-                    {
+                    } else {
                         walletTotal = Integer.parseInt(profileMain.getData().getWalletAmount());
                         walletTotal = walletTotal - amountTotal;
                         price_payable.setText(String.valueOf(0));
@@ -518,21 +510,16 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                     }
 
                     walletAmount = profileMain.getData().getWalletAmount();
-                }
-                else
-                {
+                } else {
                     walletCash.setText("Use cash from wallet" + " [ ₹ 0 ]");
                     walletAmount = "0";
                     wallet = false;
                 }
 
-                if(price_payable.getText().toString().equalsIgnoreCase("0"))
-                {
+                if (price_payable.getText().toString().equalsIgnoreCase("0")) {
                     payment_group.setVisibility(View.GONE);
                 }
-            }
-            else
-            {
+            } else {
                 walletAmount = "";
                 wallet = false;
             }
@@ -542,10 +529,8 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
         }
     }
 
-    private void getVerifiedMobileNumber(String Token)
-    {
-        try
-        {
+    private void getVerifiedMobileNumber(String Token) {
+        try {
 
             String url = Constants.VerifyMobile + SharedPrefUtil.getUser(PaymentDetails.this).getData().get_id();
 
@@ -554,7 +539,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
             Map<String, String> params = new HashMap<String, String>();
             params.put("Authorization", "JWT " + Token);
 
-            ioUtils.getGETStringRequestHeader(PaymentDetails.this, url , params , new IOUtils.VolleyCallback() {
+            ioUtils.getGETStringRequestHeader(PaymentDetails.this, url, params, new IOUtils.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
                     Log.d(TAG, result.toString());
@@ -574,23 +559,16 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
         }
     }
 
-    private void VerifyResponse(String Response)
-    {
-        try
-        {
+    private void VerifyResponse(String Response) {
+        try {
 
             verifyMobilePOJO = gson.fromJson(Response, VerifyMobilePOJO.class);
 
-            if(verifyMobilePOJO.getMessage().equalsIgnoreCase("Mobile number not found"))
-            {
+            if (verifyMobilePOJO.getMessage().equalsIgnoreCase("Mobile number not found")) {
                 verifyMobileNumber("");
-            }
-            else if(verifyMobilePOJO.getMessage().equalsIgnoreCase("Mobile not Verified"))
-            {
+            } else if (verifyMobilePOJO.getMessage().equalsIgnoreCase("Mobile not Verified")) {
                 verifyMobileNumber(verifyMobilePOJO.getMobileNo());
-            }
-            else if(verifyMobilePOJO.getMessage().equalsIgnoreCase("Mobile Verified"))
-            {
+            } else if (verifyMobilePOJO.getMessage().equalsIgnoreCase("Mobile Verified")) {
                 sendLATLONVehicle();
             }
 
@@ -599,12 +577,10 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
         }
     }
 
-    private void sendLATLONVehicle()
-    {
-        try
-        {
+    private void sendLATLONVehicle() {
+        try {
 
-            String url = Constants.VehicleNearestRoute ;
+            String url = Constants.VehicleNearestRoute;
 
             Log.i("url", url);
 
@@ -630,7 +606,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
             IOUtils ioUtils = new IOUtils();
 
-            ioUtils.sendJSONObjectRequestHeader(PaymentDetails.this, url,params, jsonObject, new IOUtils.VolleyCallback() {
+            ioUtils.sendJSONObjectRequestHeader(PaymentDetails.this, url, params, jsonObject, new IOUtils.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
                     NearestVehicleResponse(result);
@@ -648,14 +624,11 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
     }
 
-    private void NearestVehicleResponse(String Response)
-    {
-        try
-        {
+    private void NearestVehicleResponse(String Response) {
+        try {
             nearestRouteMainPOJO = gson.fromJson(Response, NearestRouteMainPOJO.class);
 
-            if(nearestRouteMainPOJO.getData().isEmpty())
-            {
+            if (nearestRouteMainPOJO.getData().isEmpty()) {
                 final Dialog dialog = new Dialog(PaymentDetails.this);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.item_unavailable_dialog);
@@ -675,9 +648,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                         finish();
                     }
                 });
-            }
-            else
-            {
+            } else {
                 addOrderListFromCart();
             }
 
@@ -686,8 +657,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
         }
     }
 
-    private void verifyMobileNumber(final String MobileNumber)
-    {
+    private void verifyMobileNumber(final String MobileNumber) {
         try {
 
             // Create custom dialog object
@@ -715,25 +685,17 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
                     String mobile_number = mobile.getText().toString();
 
-                    if(!mobile_number.isEmpty())
-                    {
-                        if (android.util.Patterns.PHONE.matcher(mobile_number).matches())
-                        {
+                    if (!mobile_number.isEmpty()) {
+                        if (android.util.Patterns.PHONE.matcher(mobile_number).matches()) {
                             if (mobile_number.length() >= 10) {
-                                sendMobileNumber(mobile.getText().toString(),mSnackbarContainer);
-                            }
-                            else
-                            {
+                                sendMobileNumber(mobile.getText().toString(), mSnackbarContainer);
+                            } else {
                                 mobile.setError(getString(R.string.less_than_10digit));
                             }
-                        }
-                        else
-                        {
+                        } else {
                             mobile.setError(getString(R.string.proper_mobile));
                         }
-                    }
-                    else
-                    {
+                    } else {
                         mobile.setError(getString(R.string.mobileno));
                     }
 
@@ -755,16 +717,14 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
             dialog.show();
 
-        }catch (Exception e)
-        {
-            Log.i(TAG,"dialog_Mobile");
+        } catch (Exception e) {
+            Log.i(TAG, "dialog_Mobile");
         }
 
     }
 
-    private void sendMobileNumber(final String MobileNo, ViewGroup viewGroup)
-    {
-        String url = Constants.SendOTP ;
+    private void sendMobileNumber(final String MobileNo, ViewGroup viewGroup) {
+        String url = Constants.SendOTP;
 
         Log.i("url", url);
 
@@ -775,7 +735,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
             JSONObject postObject = new JSONObject();
 
             postObject.put("mobileNo", MobileNo);
-            postObject.put("id",SharedPrefUtil.getUser(PaymentDetails.this).getData().get_id());
+            postObject.put("id", SharedPrefUtil.getUser(PaymentDetails.this).getData().get_id());
 
             jsonObject.put("post", postObject);
 
@@ -790,11 +750,11 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
         IOUtils ioUtils = new IOUtils();
 
-        ioUtils.sendJSONObjectRequestHeaderDialog(PaymentDetails.this, viewGroup, url, params ,jsonObject, new IOUtils.VolleyCallback() {
+        ioUtils.sendJSONObjectRequestHeaderDialog(PaymentDetails.this, viewGroup, url, params, jsonObject, new IOUtils.VolleyCallback() {
             @Override
             public void onSuccess(String result) {
 
-                OTPResponse(result,MobileNo);
+                OTPResponse(result, MobileNo);
             }
         }, new IOUtils.VolleyFailureCallback() {
             @Override
@@ -804,16 +764,13 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
         });
     }
 
-    private void OTPResponse(String Response,String mobile)
-    {
-        try
-        {
+    private void OTPResponse(String Response, String mobile) {
+        try {
             sendOtpPOJO = gson.fromJson(Response, SendOtpPOJO.class);
 
-            if(sendOtpPOJO.getMessage().equalsIgnoreCase("Otp Send"))
-            {
+            if (sendOtpPOJO.getMessage().equalsIgnoreCase("Otp Send")) {
                 Intent intent = new Intent(PaymentDetails.this, OTP.class);
-                intent.putExtra("mobile_num",mobile);
+                intent.putExtra("mobile_num", mobile);
                 startActivity(intent);
             }
 
@@ -822,12 +779,10 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
         }
     }
 
-    private void addOrderListFromCart()
-    {
-        try
-        {
+    private void addOrderListFromCart() {
+        try {
 
-            String url = Constants.AddOrder ;
+            String url = Constants.AddOrder;
 
             Log.i("url", url);
 
@@ -840,42 +795,40 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 JSONObject postObject = new JSONObject();
                 JSONArray cartItemsArray = new JSONArray();
                 JSONObject cartItemsObjedct;
-                for (int i = 0; i < myApplication.getProductsArraylist().size(); i++)
-                {
+                for (int i = 0; i < myApplication.getProductsArraylist().size(); i++) {
                     cartItemsObjedct = new JSONObject();
                     cartItemsObjedct.put("productId", myApplication.getProductsArraylist().get(i).getProductId());
-                    cartItemsObjedct.put("productName",myApplication.getProductsArraylist().get(i).getProductName());
-                    cartItemsObjedct.put("quantity",myApplication.getProductsArraylist().get(i).getQuantity());
-                    cartItemsObjedct.put("price",myApplication.getProductsArraylist().get(i).getPrice());
-                    cartItemsObjedct.put("active",myApplication.getProductsArraylist().get(i).getActive());
+                    cartItemsObjedct.put("productName", myApplication.getProductsArraylist().get(i).getProductName());
+                    cartItemsObjedct.put("quantity", myApplication.getProductsArraylist().get(i).getQuantity());
+                    cartItemsObjedct.put("price", myApplication.getProductsArraylist().get(i).getPrice());
+                    cartItemsObjedct.put("active", myApplication.getProductsArraylist().get(i).getActive());
 
                     //Below Items required for repeat orders
-                    cartItemsObjedct.put("productCategory",myApplication.getProductsArraylist().get(i).getProductCategory());
-                    cartItemsObjedct.put("_id",myApplication.getProductsArraylist().get(i).get_id());
-                    cartItemsObjedct.put("unitsOfMeasurement",myApplication.getProductsArraylist().get(i).getUnitsOfMeasurement());
-                    cartItemsObjedct.put("productCategoryId",myApplication.getProductsArraylist().get(i).getProductCategoryId());
-                    cartItemsObjedct.put("productDescription",myApplication.getProductsArraylist().get(i).getProductDescription());
-                    cartItemsObjedct.put("productDetails",myApplication.getProductsArraylist().get(i).getProductDetails());
-                    cartItemsObjedct.put("unit",myApplication.getProductsArraylist().get(i).getUnit());
-                    cartItemsObjedct.put("unitsOfMeasurementId",myApplication.getProductsArraylist().get(i).getUnitsOfMeasurementId());
-                    cartItemsObjedct.put("productImage",myApplication.getProductsArraylist().get(i).getProductImage());
-                    cartItemsObjedct.put("brand",myApplication.getProductsArraylist().get(i).getBrand());
-                    cartItemsObjedct.put("availableQuantity",myApplication.getProductsArraylist().get(i).getAvailableQuantity());
-                    cartItemsObjedct.put("MRP",myApplication.getProductsArraylist().get(i).getMRP());
+                    cartItemsObjedct.put("productCategory", myApplication.getProductsArraylist().get(i).getProductCategory());
+                    cartItemsObjedct.put("_id", myApplication.getProductsArraylist().get(i).get_id());
+                    cartItemsObjedct.put("unitsOfMeasurement", myApplication.getProductsArraylist().get(i).getUnitsOfMeasurement());
+                    cartItemsObjedct.put("productCategoryId", myApplication.getProductsArraylist().get(i).getProductCategoryId());
+                    cartItemsObjedct.put("productDescription", myApplication.getProductsArraylist().get(i).getProductDescription());
+                    cartItemsObjedct.put("productDetails", myApplication.getProductsArraylist().get(i).getProductDetails());
+                    cartItemsObjedct.put("unit", myApplication.getProductsArraylist().get(i).getUnit());
+                    cartItemsObjedct.put("unitsOfMeasurementId", myApplication.getProductsArraylist().get(i).getUnitsOfMeasurementId());
+                    cartItemsObjedct.put("productImage", myApplication.getProductsArraylist().get(i).getProductImage());
+                    cartItemsObjedct.put("brand", myApplication.getProductsArraylist().get(i).getBrand());
+                    cartItemsObjedct.put("availableQuantity", myApplication.getProductsArraylist().get(i).getAvailableQuantity());
+                    cartItemsObjedct.put("MRP", myApplication.getProductsArraylist().get(i).getMRP());
 
                     cartItemsArray.put(cartItemsObjedct);
                 }
 
-                postObject.put("orders",cartItemsArray);
-                postObject.put("total_price",getIntent().getStringExtra("amount"));
-                postObject.put("pickUp",getIntent().getBooleanExtra("isPickup",false));
+                postObject.put("orders", cartItemsArray);
+                postObject.put("total_price", getIntent().getStringExtra("amount"));
+                postObject.put("pickUp", getIntent().getBooleanExtra("isPickup", false));
 
-                if(TKFCash)
-                {
-                    postObject.put("walletAmount",walletAmount);
+                if (TKFCash) {
+                    postObject.put("walletAmount", walletAmount);
                 }
 
-                postObject.put("vehicleId",SharedPrefUtil.getNearestRouteMainPOJO(PaymentDetails.this).getData().get(0).getVehicleId());
+                postObject.put("vehicleId", SharedPrefUtil.getNearestRouteMainPOJO(PaymentDetails.this).getData().get(0).getVehicleId());
                 jsonObject.put("post", postObject);
 
                 Log.i("JSON CREATED", jsonObject.toString());
@@ -889,7 +842,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
             IOUtils ioUtils = new IOUtils();
 
-            ioUtils.sendJSONObjectRequestHeader(PaymentDetails.this, url,params, jsonObject, new IOUtils.VolleyCallback() {
+            ioUtils.sendJSONObjectRequestHeader(PaymentDetails.this, url, params, jsonObject, new IOUtils.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
                     Log.d(TAG, result.toString());
@@ -908,54 +861,39 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
     }
 
-    private void OrderSendResponse(String Response)
-    {
-        try
-        {
+    private void OrderSendResponse(String Response) {
+        try {
             orderAddPojo = gson.fromJson(Response, OrderAddPojo.class);
 
-            if(!orderAddPojo.getMessage().get_id().isEmpty())
-            {
+            if (!orderAddPojo.getMessage().get_id().isEmpty()) {
 
-                if(wallet)
-                {
+                if (wallet) {
 
-                    if(walletOnly)
-                    {
+                    if (walletOnly) {
                         Toast.makeText(PaymentDetails.this, "Wallet Payment!!", Toast.LENGTH_SHORT).show();
-                        updateOrderDetails(orderAddPojo.getMessage().get_id(),"Wallet","");
-                    }
-                    else if(online)
-                    {
-                        startPayment(orderAddPojo.getMessage().get_id(),getIntent().getStringExtra("amount"));
+                        updateOrderDetails(orderAddPojo.getMessage().get_id(), "Wallet", "");
+                    } else if (online) {
+                        startPayment(orderAddPojo.getMessage().get_id(), getIntent().getStringExtra("amount"));
                         Toast.makeText(PaymentDetails.this, "Online Payment & Wallet", Toast.LENGTH_SHORT).show();
-                    }
-                    else if(cod)
-                    {
+                    } else if (cod) {
                         Toast.makeText(PaymentDetails.this, "Cash On Delivery & Wallet!!", Toast.LENGTH_SHORT).show();
-                        updateOrderDetails(orderAddPojo.getMessage().get_id(),"COD,Wallet","");
+                        updateOrderDetails(orderAddPojo.getMessage().get_id(), "COD,Wallet", "");
                     }
 
-                }
-                else
-                {
-                    if(online)
-                    {
-                        startPayment(orderAddPojo.getMessage().get_id(),getIntent().getStringExtra("amount"));
+                } else {
+                    if (online) {
+                        startPayment(orderAddPojo.getMessage().get_id(), getIntent().getStringExtra("amount"));
                         Toast.makeText(PaymentDetails.this, "Online Payment", Toast.LENGTH_SHORT).show();
                     }
 
-                    if(cod)
-                    {
+                    if (cod) {
                         Toast.makeText(PaymentDetails.this, "Cash On Delivery!!", Toast.LENGTH_SHORT).show();
-                        updateOrderDetails(orderAddPojo.getMessage().get_id(),"COD","");
+                        updateOrderDetails(orderAddPojo.getMessage().get_id(), "COD", "");
                     }
                 }
 
 
-            }
-            else
-            {
+            } else {
                 //FireToast.customSnackbar(PaymentDetails.this, "Order Failed!!", "");
 
                 new SweetAlertDialog(PaymentDetails.this)
@@ -968,7 +906,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
         }
     }
 
-    public void startPayment(String orderID,String priceTotal) {
+    public void startPayment(String orderID, String priceTotal) {
         /**
          * Instantiate Checkout
          */
@@ -1014,7 +952,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
             options.put("amount", String.valueOf(orderWallet));
 
             checkout.open(activity, options);
-        } catch(Exception e) {
+        } catch (Exception e) {
             Log.e(TAG, "Error in starting Razorpay Checkout", e);
         }
     }
@@ -1025,16 +963,13 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
          * Add your logic here for a successfull payment response
          */
 
-        Log.i("Payment","Success");
-        Log.i("PaymentID",razorpayPaymentID);
+        Log.i("Payment", "Success");
+        Log.i("PaymentID", razorpayPaymentID);
 
-        if(wallet)
-        {
-            updateOrderDetails(orderAddPojo.getMessage().get_id(),"Online Payment,Wallet",razorpayPaymentID);
-        }
-        else
-        {
-            updateOrderDetails(orderAddPojo.getMessage().get_id(),"Online Payment",razorpayPaymentID);
+        if (wallet) {
+            updateOrderDetails(orderAddPojo.getMessage().get_id(), "Online Payment,Wallet", razorpayPaymentID);
+        } else {
+            updateOrderDetails(orderAddPojo.getMessage().get_id(), "Online Payment", razorpayPaymentID);
         }
 
     }
@@ -1047,9 +982,9 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
         //updateOrderDetails(OrderID,"Online Payment","SampLe123");
 
-        Log.i("Payment","Error");
-        Log.i("Payment",response);
-        CancelOrder(orderAddPojo.getMessage().get_id(),"Cancelled");
+        Log.i("Payment", "Error");
+        Log.i("Payment", response);
+        CancelOrder(orderAddPojo.getMessage().get_id(), "Cancelled");
     }
 
     private void CancelOrder(String orderID, String OrderStatus) {
@@ -1064,8 +999,8 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 JSONObject postObject = new JSONObject();
 
                 postObject.put("id", orderID);
-                postObject.put("status",OrderStatus);
-                postObject.put("cancelReason","Payment Failure");
+                postObject.put("status", OrderStatus);
+                postObject.put("cancelReason", "Payment Failure");
 
                 jsonObject.put("post", postObject);
 
@@ -1099,17 +1034,14 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
         }
     }
 
-    private void CancelResponse(String Response)
-    {
-        try
-        {
+    private void CancelResponse(String Response) {
+        try {
 
             JSONObject jsonObject = new JSONObject(Response);
 
             String message = jsonObject.getString("message");
 
-            if(message.equalsIgnoreCase("Updated Successfull!!"))
-            {
+            if (message.equalsIgnoreCase("Updated Successfull!!")) {
                 Log.i(TAG, Response);
                 Intent intent = new Intent(PaymentDetails.this, DashboardActivity.class);
                 startActivity(intent);
@@ -1122,7 +1054,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
         }
     }
 
-    private void updateOrderDetails(String orderID, String payment_mode,String paymentId) {
+    private void updateOrderDetails(String orderID, String payment_mode, String paymentId) {
         try {
 
             String url = Constants.UpdateOrder;
@@ -1134,30 +1066,21 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 JSONObject postObject = new JSONObject();
 
                 postObject.put("id", orderID);
-                postObject.put("status","Pending");
-                postObject.put("payment_Mode",payment_mode);
+                postObject.put("status", "Pending");
+                postObject.put("payment_Mode", payment_mode);
 
-                if(payment_mode.equalsIgnoreCase("Wallet"))
-                {
-                    postObject.put("payment_Status","Received");
-                }
-                else if(payment_mode.equalsIgnoreCase("Online Payment"))
-                {
-                    postObject.put("payment_Status","Received");
-                    postObject.put("payment_Id",paymentId);
-                }
-                else if(payment_mode.equalsIgnoreCase("Online Payment,Wallet"))
-                {
-                    postObject.put("payment_Status","Received");
-                    postObject.put("payment_Id",paymentId);
-                }
-                else if(payment_mode.equalsIgnoreCase("COD,Wallet"))
-                {
-                    postObject.put("payment_Status","Pending");
-                }
-                else if(payment_mode.equalsIgnoreCase("COD"))
-                {
-                    postObject.put("payment_Status","Pending");
+                if (payment_mode.equalsIgnoreCase("Wallet")) {
+                    postObject.put("payment_Status", "Received");
+                } else if (payment_mode.equalsIgnoreCase("Online Payment")) {
+                    postObject.put("payment_Status", "Received");
+                    postObject.put("payment_Id", paymentId);
+                } else if (payment_mode.equalsIgnoreCase("Online Payment,Wallet")) {
+                    postObject.put("payment_Status", "Received");
+                    postObject.put("payment_Id", paymentId);
+                } else if (payment_mode.equalsIgnoreCase("COD,Wallet")) {
+                    postObject.put("payment_Status", "Pending");
+                } else if (payment_mode.equalsIgnoreCase("COD")) {
+                    postObject.put("payment_Status", "Pending");
                 }
 
                 jsonObject.put("post", postObject);
@@ -1192,25 +1115,20 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
         }
     }
 
-    private void PaymentUpdateResponse(String Response)
-    {
-        try
-        {
+    private void PaymentUpdateResponse(String Response) {
+        try {
 
             JSONObject jsonObject = new JSONObject(Response);
 
             String message = jsonObject.getString("message");
 
-            if(message.equalsIgnoreCase("Updated Successfull!!"))
-            {
+            if (message.equalsIgnoreCase("Updated Successfull!!")) {
                 Intent intent = new Intent(PaymentDetails.this, OrderBikerTrackingActivity.class);
-                intent.putExtra("orderID",orderAddPojo.getMessage().get_id());
+                intent.putExtra("orderID", orderAddPojo.getMessage().get_id());
                 startActivity(intent);
                 finish();
                 myApplication.removeProductsItems();
-            }
-            else
-            {
+            } else {
                 //Toast.makeText(this, "Payment Failed", Toast.LENGTH_SHORT).show();
 
                 new SweetAlertDialog(PaymentDetails.this)
@@ -1247,9 +1165,8 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 Log.e(TAG, "Location service is stopped");
             }
 
-        }catch (Exception e)
-        {
-            Log.i(TAG,e.getMessage());
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
         }
     }
 
@@ -1287,9 +1204,8 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                         .show();
             }
 
-        }catch (Exception e)
-        {
-            Log.i(TAG,e.getMessage());
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
         }
     }
 
