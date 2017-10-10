@@ -6,10 +6,11 @@
     android:id="@+id/subItemCard_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
-    android:background="@color/white"
-    card_view:cardCornerRadius="0dp"
-    card_view:cardElevation="1dp">
+    android:clipChildren="false"
+    card_view:cardBackgroundColor="@color/white"
+    card_view:cardCornerRadius="1dp"
+    card_view:cardElevation="5dp"
+    card_view:cardUseCompatPadding="true" >
 
     <LinearLayout
         android:layout_width="match_parent"
