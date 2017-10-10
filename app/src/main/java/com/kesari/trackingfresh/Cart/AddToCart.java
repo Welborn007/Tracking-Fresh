@@ -114,7 +114,7 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
             relativeLayout = (RelativeLayout) findViewById(R.id.relativelay_reclview);
             valueTV = new TextView(AddToCart.this);
 
-            /*if(getIntent().getStringExtra("productRemoved") != null)
+            if(getIntent().getStringExtra("productRemoved") != null)
             {
                 if(getIntent().getStringExtra("productRemoved").equalsIgnoreCase("true"))
                 {
@@ -123,7 +123,7 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
                             .setContentText("Some products were not added as Out of Stock!")
                             .show();
                 }
-            }*/
+            }
 
             if(myApplication.getProductsArraylist() != null)
             {

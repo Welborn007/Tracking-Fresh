@@ -59,21 +59,14 @@
 <!--
 
             <TextView
-<<<<<<< HEAD
-                android:text="₹"
-                android:textColor="@color/MoneyGreen"
-=======
                 android:id="@+id/price_total"
                 android:text="500"
                 android:textColor="@color/black"
->>>>>>> 2a58579bc1199282eac5a7041f1bf569e564316f
                 android:layout_marginTop="5dp"
                 android:paddingTop="10dp"
-                android:textStyle="bold"
                 android:textSize="14sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
--->
 
         </LinearLayout>
 
@@ -162,11 +155,13 @@
                 android:hint="PROMOCODE"
                 android:textSize="18sp"
                 android:drawablePadding="10dp"
+                android:maxLines="1"
                 android:inputType="textCapCharacters"
                 android:layout_marginRight="25dp"
                 android:textColor="@color/DarkGray"
                 android:textColorHint="@color/DarkGray"
                 android:layout_gravity="center"
+                android:layout_width="130dp"
                 android:layout_width="0dp"
                 android:layout_weight="3"
                 android:layout_height="wrap_content" />

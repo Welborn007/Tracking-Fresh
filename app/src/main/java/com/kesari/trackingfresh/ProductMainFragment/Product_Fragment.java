@@ -771,7 +771,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 }, DURATION - 500);*/
 
                 Cust_Marker = map.addMarker(new MarkerOptions().position(Current_Origin)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_customer))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_customer_marker))
                         .title("Origin"));
 
             }
@@ -1213,6 +1213,8 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void setVehicleEmpty() {
+        GuestAddress.setText(getCompleteAddressString(Current_Origin.latitude, Current_Origin.longitude));
+
         isVehiclePresent = true;
         Current_Location = SharedPrefUtil.getLocation(getActivity());
         Current_Origin = new LatLng(Current_Location.getLatitude(), Current_Location.getLongitude());
@@ -1241,7 +1243,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
         addMarkers("1", "TKF Vehicle", lat, lon);
         getMapsApiDirectionsUrl(lat, lon);
 
-        //GuestAddress.setText(getCompleteAddressString(Current_Origin.latitude, Current_Origin.longitude));
+
         //kilometre.setText("Vehicle Not Available");
         //SharedPrefUtil.setNearestVehicle(getActivity(),"");
         SharedPrefUtil.setSocketLiveMainPOJO(getActivity(), "");

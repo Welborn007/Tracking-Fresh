@@ -315,51 +315,59 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
                 btnSubmit.setVisibility(View.GONE);
             }
 
-            if(orderReviewMainPOJO.getData().getPickUp() != null)
-            {
-                if(orderReviewMainPOJO.getData().getPickUp().equalsIgnoreCase("true"))
+
+                if(orderReviewMainPOJO.getData().getPickUp() != null)
                 {
-                    orderType.setText("Pick Up");
+                    if(orderReviewMainPOJO.getData().getPickUp().equalsIgnoreCase("true"))
+                    {
+                        orderType.setText("Pick Up");
+                    }
+                    else
+                    {
+                        orderType.setText("Delivery");
+                        if(!orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Rejected") && !orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Cancelled"))
+                        {
+                            if(orderReviewMainPOJO.getData().getBiker() != null)
+                            {
+                                BikerHolder.setVisibility(View.VISIBLE);
+                                bikerName.setText(orderReviewMainPOJO.getData().getBiker().getBikerName());
+
+                                btnCall.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        String phone = orderReviewMainPOJO.getData().getBiker().getMobileNo();
+                                        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
+                                        startActivity(intent);
+                                    }
+                                });
+                            }
+                        }
+
+                    }
                 }
                 else
                 {
                     orderType.setText("Delivery");
-
-                    if(orderReviewMainPOJO.getData().getBiker() != null)
+                    if(!orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Rejected") && !orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Cancelled"))
                     {
-                        BikerHolder.setVisibility(View.VISIBLE);
-                        bikerName.setText(orderReviewMainPOJO.getData().getBiker().getBikerName());
+                        if(orderReviewMainPOJO.getData().getBiker() != null)
+                        {
+                            BikerHolder.setVisibility(View.VISIBLE);
+                            bikerName.setText(orderReviewMainPOJO.getData().getBiker().getBikerName());
 
-                        btnCall.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                String phone = orderReviewMainPOJO.getData().getBiker().getMobileNo();
-                                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
-                                startActivity(intent);
-                            }
-                        });
-                    }
-                }
-            }
-            else
-            {
-                orderType.setText("Delivery");
-
-                if(orderReviewMainPOJO.getData().getBiker() != null)
-                {
-                    BikerHolder.setVisibility(View.VISIBLE);
-                    bikerName.setText(orderReviewMainPOJO.getData().getBiker().getBikerName());
-
-                    btnCall.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            String phone = orderReviewMainPOJO.getData().getBiker().getMobileNo();
-                            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
-                            startActivity(intent);
+                            btnCall.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    String phone = orderReviewMainPOJO.getData().getBiker().getMobileNo();
+                                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
+                                    startActivity(intent);
+                                }
+                            });
                         }
-                    });
+                    }
+
                 }
-            }
+
 
             adapterProducts = new OrderReViewRecyclerAdapter(orderReviewMainPOJO.getData().getOrder(),OrderReview.this);
             recListProducts.setAdapter(adapterProducts);

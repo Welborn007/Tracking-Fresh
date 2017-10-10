@@ -240,9 +240,21 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
             }
             else
             {
-                    holder.orderType.setText("Delivery");
+                holder.orderType.setText("Delivery");
             }
 
+            holder.repeat.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    myApplication.removeProductsItems();
+
+                    Gson gson = new Gson();
+                    String jsonText = gson.toJson(OrdersListReView.get(position).getOrders());
+                    Log.i("DataFromOrder", jsonText);
+                    RepeatOrders(jsonText);
+
+                }
+            });
             holder.repeat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -290,47 +302,47 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
 
                                     if(jsonObject.has("quantity"))
                                     {
-                                         quantity = jsonObject.getString("quantity");
+                                        quantity = jsonObject.getString("quantity");
                                     }
                                     else
                                     {
-                                         quantity = "0";
+                                        quantity = "0";
                                     }
 
                                     if(jsonObject.has("price"))
                                     {
-                                         price = jsonObject.getString("price");
+                                        price = jsonObject.getString("price");
                                     }
                                     else
                                     {
-                                         price = "";
+                                        price = "";
                                     }
 
                                     if(jsonObject.has("active"))
                                     {
-                                         active =  jsonObject.getString("active");
+                                        active =  jsonObject.getString("active");
                                     }
                                     else
                                     {
-                                         active =  "";
+                                        active =  "";
                                     }
 
                                     if(jsonObject.has("productCategory"))
                                     {
-                                         productCategory = jsonObject.getString("productCategory");
+                                        productCategory = jsonObject.getString("productCategory");
                                     }
                                     else
                                     {
-                                         productCategory = "";
+                                        productCategory = "";
                                     }
 
                                     if(jsonObject.has("_id"))
                                     {
-                                         _id = jsonObject.getString("_id");
+                                        _id = jsonObject.getString("_id");
                                     }
                                     else
                                     {
-                                         _id = "";
+                                        _id = "";
                                     }
 
                                     if(jsonObject.has("unitsOfMeasurement"))
@@ -505,6 +517,246 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
     @Override
     public int getItemCount() {
         return OrdersListReView.size();
+    }
+
+    private void RepeatOrders(String Products) {
+        try {
+
+            String url = Constants.RepeatOrder;
+
+            JSONObject jsonObject = new JSONObject();
+
+            try {
+
+                JSONObject postObject = new JSONObject();
+                JSONArray produtsArray = new JSONArray(Products);
+                postObject.put("products", produtsArray);
+
+                postObject.put("vehicleId", SharedPrefUtil.getNearestRouteMainPOJO(context).getData().get(0).getVehicleId());
+
+                jsonObject.put("post", postObject);
+
+                Log.i("JSON CREATED", jsonObject.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(context));
+
+            IOUtils ioUtils = new IOUtils();
+
+            ioUtils.sendJSONObjectRequestHeader(context, url, params, jsonObject, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.i(TAG, result);
+
+                    RepeatOrderResponse(result);
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
+
+    }
+
+    private void RepeatOrderResponse(String Response) {
+        try {
+            gson = new Gson();
+            repeatOrderMainPojo = gson.fromJson(Response, RepeatOrderMainPojo.class);
+
+            if (repeatOrderMainPojo.getData() != null) {
+                if (!repeatOrderMainPojo.getData().getProducts().isEmpty()) {
+                    try {
+
+                        JSONObject jsonObjectMain = new JSONObject(Response);
+                        JSONObject jsonObjectData = jsonObjectMain.getJSONObject("data");
+
+                        JSONArray jsonArray = jsonObjectData.getJSONArray("products");
+
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                            String productId, productName, quantity, price, active, productCategory, _id, unitsOfMeasurement, productCategoryId, productDescription,
+                                    productDetails, unit, unitsOfMeasurementId, productImage, brand, availableQuantity, MRP, selling_price, sub_total;
+
+                            if (jsonObject.has("productId")) {
+                                productId = jsonObject.getString("productId");
+                            } else {
+                                productId = "";
+                            }
+
+                            if (jsonObject.has("productName")) {
+                                productName = jsonObject.getString("productName");
+                            } else {
+                                productName = "";
+                            }
+
+                            if (jsonObject.has("quantity")) {
+                                quantity = jsonObject.getString("quantity");
+                            } else {
+                                quantity = "0";
+                            }
+
+                            if (jsonObject.has("price")) {
+                                price = jsonObject.getString("price");
+                            } else {
+                                price = "";
+                            }
+
+                            if (jsonObject.has("active")) {
+                                active = jsonObject.getString("active");
+                            } else {
+                                active = "";
+                            }
+
+                            if (jsonObject.has("productCategory")) {
+                                productCategory = jsonObject.getString("productCategory");
+                            } else {
+                                productCategory = "";
+                            }
+
+                            if (jsonObject.has("_id")) {
+                                _id = jsonObject.getString("_id");
+                            } else {
+                                _id = "";
+                            }
+
+                            if (jsonObject.has("unitsOfMeasurement")) {
+                                unitsOfMeasurement = jsonObject.getString("unitsOfMeasurement");
+                            } else {
+                                unitsOfMeasurement = "";
+                            }
+
+                            if (jsonObject.has("productCategoryId")) {
+                                productCategoryId = jsonObject.getString("productCategoryId");
+                            } else {
+                                productCategoryId = "";
+                            }
+
+                            if (jsonObject.has("productDescription")) {
+                                productDescription = jsonObject.getString("productDescription");
+                            } else {
+                                productDescription = "";
+                            }
+
+                            if (jsonObject.has("productDetails")) {
+                                productDetails = jsonObject.getString("productDetails");
+                            } else {
+                                productDetails = "";
+                            }
+
+                            if (jsonObject.has("unit")) {
+                                unit = jsonObject.getString("unit");
+                            } else {
+                                unit = "";
+                            }
+
+                            if (jsonObject.has("unitsOfMeasurementId")) {
+                                unitsOfMeasurementId = jsonObject.getString("unitsOfMeasurementId");
+                            } else {
+                                unitsOfMeasurementId = "";
+                            }
+
+                            if (jsonObject.has("productImage")) {
+                                productImage = jsonObject.getString("productImage");
+                            } else {
+                                productImage = "";
+                            }
+
+                            if (jsonObject.has("brand")) {
+                                brand = jsonObject.getString("brand");
+                            } else {
+                                brand = "";
+                            }
+
+                            if (jsonObject.has("availableQuantity")) {
+                                availableQuantity = jsonObject.getString("availableQuantity");
+                            } else {
+                                availableQuantity = "0";
+                            }
+
+                            if (jsonObject.has("MRP")) {
+                                MRP = jsonObject.getString("MRP");
+                            } else {
+                                MRP = "";
+                            }
+
+                            if (jsonObject.has("sub_total")) {
+                                sub_total = jsonObject.getString("sub_total");
+                            } else {
+                                sub_total = "";
+                            }
+
+                            if (jsonObject.has("selling_price")) {
+                                selling_price = jsonObject.getString("selling_price");
+                            } else {
+                                selling_price = "";
+                            }
+
+
+                            AddCart_model addCart_model = new AddCart_model();
+                            addCart_model.setProductId(productId);
+                            addCart_model.setProductName(productName);
+                            addCart_model.setPrice(selling_price);
+                            addCart_model.setActive(active);
+                            addCart_model.setProductCategory(productCategory);
+                            addCart_model.set_id(_id);
+                            addCart_model.setUnitsOfMeasurement(unitsOfMeasurement);
+                            addCart_model.setUnitsOfMeasurementId(unitsOfMeasurementId);
+                            addCart_model.setProductCategoryId(productCategoryId);
+                            addCart_model.setProductDescription(productDescription);
+                            addCart_model.setProductDetails(productDetails);
+                            addCart_model.setUnit(unit);
+                            addCart_model.setProductImage(productImage);
+                            addCart_model.setBrand(brand);
+                            addCart_model.setMRP(MRP);
+
+                            if (Integer.parseInt(quantity) > Integer.parseInt(availableQuantity)) {
+                                addCart_model.setQuantity(Integer.parseInt(availableQuantity));
+                                addCart_model.setAvailableQuantity(availableQuantity);
+
+                            } else {
+                                addCart_model.setQuantity(Integer.parseInt(quantity));
+                                addCart_model.setAvailableQuantity(availableQuantity);
+                            }
+
+
+                            myApplication.setProducts(addCart_model);
+                        }
+
+                        if(repeatOrderMainPojo.getData().getIsDeleted().equalsIgnoreCase("true"))
+                        {
+                            productRemoved = "true";
+                        }
+
+                        Intent intent = new Intent(context, AddToCart.class);
+                        intent.putExtra("productRemoved", productRemoved);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(intent);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText("Sorry...")
+                            .setContentText("Currently no products for the order are available in Vehicle!")
+                            .show();
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static class RecyclerViewHolder extends RecyclerView.ViewHolder
@@ -691,7 +943,7 @@ public class OrdersListRecycler_Adapter extends RecyclerView.Adapter<OrdersListR
                 public void onSuccess(String result) {
                     Log.d(TAG, result.toString());
 
-                  UpdateResponse(result);
+                    UpdateResponse(result);
                 }
             }, new IOUtils.VolleyFailureCallback() {
                 @Override

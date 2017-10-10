@@ -274,21 +274,38 @@ public class Add_DeliveryAddress extends AppCompatActivity implements NetworkUti
 
                     if(!FullName.isEmpty() && !EmailID.isEmpty() && !MobileNum.isEmpty() && !FlatNum.isEmpty() && !BuildingName.isEmpty() && !Landmark.isEmpty() && !City.isEmpty() && !State.isEmpty() && !Pincode.isEmpty() && !AddressType.isEmpty() && !Latitude.isEmpty() && !Longitude.isEmpty())
                     {
-                        if(Pincode.matches("^[1-9][0-9]{5}$"))
+                        if(FullName.matches("^[ A-Za-z]+$"))
                         {
-                            if(!State.matches(".*\\d.*")){
-                                AddNewAddress(FullName,EmailID,MobileNum,FlatNum,BuildingName,Landmark,City,State,Pincode,AddressType,DefaultAddress);
-                            } else{
+                            if(MobileNum.matches("^(?:(?:\\+|0{0,2})91(\\s*[\\-]\\s*)?|[0]?)?[789]\\d{9}$"))
+                            {
+                                if(Pincode.matches("^[1-9][0-9]{5}$"))
+                                {
+                                    if(!State.matches(".*\\d.*")){
+                                        AddNewAddress(FullName,EmailID,MobileNum,FlatNum,BuildingName,Landmark,City,State,Pincode,AddressType,DefaultAddress);
+                                    } else{
 
-                                state.setError(getString(R.string.valid_state));
-                                state.requestFocus();
+                                        state.setError(getString(R.string.valid_state));
+                                        state.requestFocus();
+                                    }
+                                }
+                                else
+                                {
+                                    pincode.setError(getString(R.string.valid_pincode));
+                                    pincode.requestFocus();
+                                }
+                            }
+                            else
+                            {
+                                mobile.setError(getString(R.string.proper_mobile));
+                                mobile.requestFocus();
                             }
                         }
-                        else
+                        else if(!FullName.matches("^[ A-Za-z]+$"))
                         {
-                            pincode.setError(getString(R.string.valid_pincode));
-                            pincode.requestFocus();
+                            name.setError(getString(R.string.valid_name));
+                            name.requestFocus();
                         }
+
                     }
                     else if(FullName.isEmpty())
                     {
