@@ -1511,9 +1511,9 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             Log.i("ChangedLatReceiver_Main", String.valueOf(lat));
             Log.i("ChangedLonReceiver_Main", String.valueOf(lon));
 
-            Current_Origin = new LatLng(lat, lon);
+            LatLng Current_OriginData = new LatLng(lat, lon);
 
-            animateMarker(map,Cust_Marker,Current_Origin,false);
+            animateMarker(map,Cust_Marker,Current_OriginData,false);
 
         }
     }

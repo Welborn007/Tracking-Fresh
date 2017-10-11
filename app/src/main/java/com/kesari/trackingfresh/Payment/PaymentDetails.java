@@ -239,8 +239,8 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
             try {
 
-                price_total.setText("₹ " +getIntent().getStringExtra("amount"));
-                price_payable.setText("₹ " +getIntent().getStringExtra("amount"));
+                price_total.setText(getIntent().getStringExtra("amount"));
+                price_payable.setText(getIntent().getStringExtra("amount"));
                 amountTotal = Integer.parseInt(getIntent().getStringExtra("amount"));
 
                 walletCash.setText("Use cash from wallet" + " [ ₹ " + SharedPrefUtil.getUser(PaymentDetails.this).getData().getWalletAmount() + " ]");
@@ -503,12 +503,12 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                     if (amountTotal > Integer.parseInt(profileMain.getData().getWalletAmount())) {
                         walletTotal = Integer.parseInt(profileMain.getData().getWalletAmount());
                         amountTotal = amountTotal - walletTotal;
-                        price_payable.setText("₹ " +String.valueOf(amountTotal));
+                        price_payable.setText(String.valueOf(amountTotal));
                         walletCash.setText("Use cash from wallet" + " [ ₹ " + String.valueOf(0) + " ]");
                     } else {
                         walletTotal = Integer.parseInt(profileMain.getData().getWalletAmount());
                         walletTotal = walletTotal - amountTotal;
-                        price_payable.setText("₹ " +String.valueOf(0));
+                        price_payable.setText(String.valueOf(0));
                         walletCash.setText("Use cash from wallet" + " [ ₹ " + String.valueOf(walletTotal) + " ]");
                     }
 

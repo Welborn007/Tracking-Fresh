@@ -46,6 +46,16 @@
                 android:layout_height="wrap_content"/>
 
             <TextView
+                android:text="₹"
+                android:textColor="@color/MoneyGreen"
+                android:layout_marginTop="5dp"
+                android:paddingTop="10dp"
+                android:textStyle="bold"
+                android:textSize="@dimen/text_size18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
                 android:id="@+id/price_total"
                 android:text="500"
                 android:textColor="@color/MoneyGreen"
@@ -56,17 +66,7 @@
                 android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-<!--
 
-            <TextView
-                android:id="@+id/price_total"
-                android:text="500"
-                android:textColor="@color/black"
-                android:layout_marginTop="5dp"
-                android:paddingTop="10dp"
-                android:textSize="14sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
 
         </LinearLayout>
 
@@ -161,7 +161,6 @@
                 android:textColor="@color/DarkGray"
                 android:textColorHint="@color/DarkGray"
                 android:layout_gravity="center"
-                android:layout_width="130dp"
                 android:layout_width="0dp"
                 android:layout_weight="3"
                 android:layout_height="wrap_content" />
@@ -269,29 +268,21 @@
                 android:textSize="@dimen/text_size18"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-<!--
+
             <TextView
-<<<<<<< HEAD
-                android:id="@+id/price_payable"
-                android:text="500"
-                android:textColor="@color/MoneyGreen"
-=======
                 android:text="₹"
-                android:textColor="@color/black"
->>>>>>> 2a58579bc1199282eac5a7041f1bf569e564316f
+                android:textColor="@color/MoneyGreen"
                 android:layout_marginTop="5dp"
-                android:layout_marginLeft="2dp"
                 android:paddingTop="10dp"
                 android:textStyle="bold"
-                android:textSize="14sp"
+                android:textSize="@dimen/text_size18"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>-->
+                android:layout_height="wrap_content"/>
 
             <TextView
-                android:text="₹"
+                android:text=""
                 android:textColor="@color/MoneyGreen"
                 android:id="@+id/price_payable"
-
                 android:layout_marginTop="5dp"
                 android:paddingTop="10dp"
                 android:textStyle="bold"
