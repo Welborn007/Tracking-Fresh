@@ -142,7 +142,6 @@ public class LocationServiceNew extends Service implements LocationListener,
         return Current_Origin;
     }
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -159,5 +158,16 @@ public class LocationServiceNew extends Service implements LocationListener,
     @Override
     public void onLocationChanged(Location arg0) {
         newLocation(arg0);
+
+        broadcastIntent(arg0.getLatitude(),arg0.getLongitude());
     }
+
+    public void broadcastIntent(Double lat,Double lon){
+        Intent intent = new Intent();
+        intent.setAction("SOMEACTION");
+        intent.putExtra("lat",lat);
+        intent.putExtra("lon",lon);
+        sendBroadcast(intent);
+    }
+
 }

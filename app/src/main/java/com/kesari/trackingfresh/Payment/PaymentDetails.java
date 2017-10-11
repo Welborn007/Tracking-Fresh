@@ -1044,6 +1044,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
             if (message.equalsIgnoreCase("Updated Successfull!!")) {
                 Log.i(TAG, Response);
                 Intent intent = new Intent(PaymentDetails.this, DashboardActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
                 myApplication.removeProductsItems();

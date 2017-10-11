@@ -2,6 +2,7 @@ package com.kesari.trackingfresh.ProductMainFragment;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -1212,6 +1213,19 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     private void setVehicleEmpty() {
         GuestAddress.setText(getCompleteAddressString(Current_Origin.latitude, Current_Origin.longitude));
 
+        Cust_Marker = map.addMarker(new MarkerOptions().position(Current_Origin)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_customer_marker))
+                .title("Origin"));
+
+        CameraPosition cameraPosition = new CameraPosition.Builder().
+                target(Current_Origin).
+                tilt(0).
+                zoom(15).
+                bearing(0).
+                build();
+
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
         isVehiclePresent = true;
         Current_Location = SharedPrefUtil.getLocation(getActivity());
         Current_Origin = new LatLng(Current_Location.getLatitude(), Current_Location.getLongitude());
@@ -1308,7 +1322,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             ioUtils.getGETStringRequestHeader(getActivity(), url, params, new IOUtils.VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
-                    Log.d(TAG, result.toString());
+                    Log.d("VehicleRoute", result.toString());
                     SetVehicleRouteResponse(result);
                 }
             }, new IOUtils.VolleyFailureCallback() {
@@ -1481,6 +1495,24 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public class MyReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //Toast.makeText(context, "Intent Detected.", Toast.LENGTH_LONG).show();
+
+            Double lat = intent.getDoubleExtra("lat",0.0);
+            Double lon = intent.getDoubleExtra("lon",0.0);
+
+            Log.i("ChangedLatReceiver_Main", String.valueOf(lat));
+            Log.i("ChangedLonReceiver_Main", String.valueOf(lon));
+
+            Current_Origin = new LatLng(lat, lon);
+
+            animateMarker(map,Cust_Marker,Current_Origin,false);
+
         }
     }
 }

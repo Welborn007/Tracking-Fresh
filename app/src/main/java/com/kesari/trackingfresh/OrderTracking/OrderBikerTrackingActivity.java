@@ -988,7 +988,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
 
                 custMarker = map.addMarker(new MarkerOptions().position(Delivery_Origin)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_customer_marker))
-                        .title("Customer"));
+                        .title(orderReviewMainPOJO.getData().getAddress().getFullName()));
 
                 //float bearing = (float) bearing(convertLatLngToLocation(oldLocation),convertLatLngToLocation(newLocation))
                 //rotateMarker(marker, bearing);
@@ -1030,7 +1030,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
 
                 map.addMarker(new MarkerOptions().position(Delivery_Origin)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_customer_marker))
-                        .title("Origin"));
+                        .title(orderReviewMainPOJO.getData().getAddress().getFullName()));
 
                 //float bearing = (float) bearing(convertLatLngToLocation(oldLocation),convertLatLngToLocation(newLocation))
                 //rotateMarker(marker, bearing);
