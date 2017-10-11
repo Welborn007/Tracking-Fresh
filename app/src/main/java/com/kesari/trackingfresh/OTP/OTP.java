@@ -18,6 +18,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -44,7 +45,7 @@ import mehdi.sakout.fancybuttons.FancyButton;
 public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt{
 
     private NetworkUtilsReceiver networkUtilsReceiver;
-    FancyButton send, skip, resend,call;
+    Button sendOTP;//send, skip, resend,call;
     EditText Otp1,Otp2,Otp3,Otp4;
     private String TAG = this.getClass().getSimpleName();
     Dialog dialog;
@@ -61,6 +62,7 @@ public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.Netwo
     public static final String SMS_RECEIVED_ACTION = "android.net.conn.CONNECTIVITY_CHANGE";
     public static final String SMS_RECEIVED_ACTION1 = "android.provider.Telephony.SMS_RECEIVED";
 
+    TextView callMeTextView,resendSmsTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,8 +94,8 @@ public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.Netwo
                 }
             }
 
-            send = (FancyButton) findViewById(R.id.sendOTP);
-            skip = (FancyButton) findViewById(R.id.skip);
+            sendOTP = (Button) findViewById(R.id.sendOTP);
+//            skip = (FancyButton) findViewById(R.id.skip);
 
             Otp1 = (EditText) findViewById(R.id.otp1);
             Otp2 = (EditText) findViewById(R.id.otp2);
@@ -194,8 +196,8 @@ public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.Netwo
                 }
             });
 
-            resend = (FancyButton) findViewById(R.id.resendOTP);
-            call = (FancyButton) findViewById(R.id.call);
+            resendSmsTextView = (TextView) findViewById(R.id.resendSmsTextView);
+            callMeTextView = (TextView) findViewById(R.id.callMeTextView);
             counter = (TextView) findViewById(R.id.counter);
             number = (TextView) findViewById(R.id.mobinumber);
 
@@ -203,29 +205,29 @@ public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.Netwo
 
             Timer();
 
-            resend.setEnabled(false);
-            call.setEnabled(false);
+            resendSmsTextView.setEnabled(false);
+            callMeTextView.setEnabled(false);
 
-            resend.setOnClickListener(new View.OnClickListener() {
+            resendSmsTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     sendMobileNumber(mobile);
-                    resend.setEnabled(false);
-                    call.setEnabled(false);
+                    resendSmsTextView.setEnabled(false);
+                    callMeTextView.setEnabled(false);
                 }
             });
 
-            call.setOnClickListener(new View.OnClickListener() {
+            callMeTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                     callVoiceOTP(mobile);
-                    resend.setEnabled(false);
-                    call.setEnabled(false);
+                    callMeTextView.setEnabled(false);
+                    callMeTextView.setEnabled(false);
                 }
             });
 
-            skip.setOnClickListener(new View.OnClickListener() {
+           /* skip.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(OTP.this, DashboardActivity.class);
@@ -233,8 +235,8 @@ public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.Netwo
                     finish();
                 }
             });
-
-            send.setOnClickListener(new View.OnClickListener() {
+*/
+            sendOTP.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
@@ -365,8 +367,8 @@ public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.Netwo
 
                 public void onFinish() {
                     counter.setText("click on 'Resend OTP'");
-                    resend.setEnabled(true);
-                    call.setEnabled(true);
+                    resendSmsTextView.setEnabled(true);
+                    callMeTextView.setEnabled(true);
                 }
             }.start();
 

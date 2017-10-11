@@ -4,11 +4,14 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -63,7 +66,9 @@ public class ReferralCodeActivity extends AppCompatActivity implements NetworkUt
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+            toolbar.setBackgroundColor(ContextCompat.getColor(this,R.color.porcelain));
+//            toolbar.setTitleTextColor(ContextCompat.getColor(this,R.color.white));
+//            toolbar.setTitle("Invite Friends");
             gson = new Gson();
 
             referral_holder = (LinearLayout) findViewById(R.id.referral_holder);
@@ -236,7 +241,9 @@ public class ReferralCodeActivity extends AppCompatActivity implements NetworkUt
         LayerDrawable icon = (LayerDrawable) item.getIcon();
 
         setBadgeCount(this, icon, mNotificationsCount);
-
+//        BitmapDrawable iconBitmap = (BitmapDrawable) item.getIcon();
+//        LayerDrawable iconLayer = new LayerDrawable(new Drawable[] { iconBitmap });
+//        setBadgeCount(this, iconLayer, mNotificationsCount);
         return super.onCreateOptionsMenu(menu);
     }
 

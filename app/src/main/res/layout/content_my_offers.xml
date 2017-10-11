@@ -6,14 +6,18 @@
     android:layout_width="match_parent"
     android:background="@color/LightGray"
     tools:showIn="@layout/activity_my_offers"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:layout_height="match_parent">
 
     <android.support.v4.widget.SwipeRefreshLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/swipeContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/bottomLayout">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -31,11 +35,21 @@
                 android:layout_height="match_parent"
                 android:id="@+id/recyclerView"
                 android:scrollbars="vertical"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:background="@color/LightGray">
             </android.support.v7.widget.RecyclerView>
 
-            <GridView
+
+
+            <com.kesari.trackingfresh.MyOffers.HorizontalRecyclerView
+                android:id="@+id/offersRecyclerView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:clipChildren="false"
+                android:visibility="gone"
+                android:orientation="horizontal" />
+            <ListView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/list"
@@ -45,11 +59,122 @@
                 android:verticalSpacing="5dp"
                 android:horizontalSpacing="5dp"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true">
-            </GridView>
+                android:layout_alignParentStart="true"
+                android:visibility="gone">
+            </ListView>
 
         </RelativeLayout>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
+
+    <LinearLayout
+        android:id="@+id/bottomLayout"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/addFavourateTextView"
+        android:text="ADD TO FAVOURATE"
+        android:gravity="center_vertical"
+        android:background="@color/whitegray"
+        android:textColor="@color/Gray"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        android:drawableLeft="@drawable/star"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="50dp"
+        android:padding="5dp"
+        />
+    <TextView
+        android:id="@+id/addtoCart"
+        android:text="ADD TO CART"
+        android:textColor="@color/white"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        android:background="@color/MoneyGreen"
+        android:padding="10dp"
+        android:gravity="center_vertical"
+
+        android:drawableLeft="@drawable/cart"
+        android:drawablePadding="5dp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="50dp"
+        android:visibility="visible"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:background="@color/whitegray"
+            android:layout_height="50dp"
+            android:visibility="gone"
+            android:id="@+id/holder_count">
+
+            <Button
+                android:id="@+id/minus"
+                android:background="@drawable/cart_circular_drawable"
+                android:text="-"
+                android:textColor="@color/white"
+                android:textSize="18dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+
+            <mehdi.sakout.fancybuttons.FancyButton
+                fancy:fb_fontIconResource="&#xf067;"
+                fancy:fb_textColor="@color/white"
+                fancy:fb_borderColor="@color/Gray"
+                fancy:fb_defaultColor="#00000000"
+                fancy:fb_focusColor="@color/colorHighlight"
+                fancy:fb_textSize="8sp"
+                fancy:fb_text=""
+                android:visibility="gone"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:padding="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <TextView
+                android:id="@+id/count"
+                android:text="0"
+                android:layout_width="50dp"
+                android:gravity="center"
+                android:background="#78ab2b"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size"
+                android:layout_height="50dp" />
+
+            <Button
+                android:id="@+id/plus"
+                android:background="@drawable/cart_circular_drawable"
+                android:text="+"
+                android:textSize="18dp"
+                android:textColor="@color/white"
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+
+            <mehdi.sakout.fancybuttons.FancyButton
+                fancy:fb_fontIconResource="&#xf068;"
+                fancy:fb_textColor="@color/white"
+                fancy:fb_borderColor="@color/Gray"
+                fancy:fb_defaultColor="#00000000"
+                fancy:fb_focusColor="@color/colorHighlight"
+                fancy:fb_textSize="8sp"
+                android:visibility="gone"
+                fancy:fb_text=""
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
 </RelativeLayout>

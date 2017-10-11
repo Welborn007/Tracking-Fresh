@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#e5e5e5</color>
-    <color name="colorPrimaryDark">#FE0000</color>
+    <color name="colorPrimaryDark">#8DC33A</color>
     <!--<color name="colorPrimaryDark">#D50000</color>-->
+    <color name="colorAccent">#8DC33A</color>
+<!--
     <color name="colorAccent">#E91E63</color>
+-->
 
     <color name="colorHighlight">#B6B6B6</color>
     <color name="windowBackground">#EF9A9A</color>
@@ -14,7 +17,8 @@
     <color name="teal">#26A69A</color>
     <color name="Blue">#2196f3</color>
     <color name="Gray">#757575</color>
-    <color name="MoneyGreen">#4CAF50</color>
+    <color name="whitegray">#EFEEF4</color>
+    <color name="MoneyGreen">#8DC33A</color>
     <color name="bluegray100">#CFD8DC</color>
 
     <color name="LightGray">#E0E0E0</color>
@@ -62,6 +66,7 @@
 
     <color name="green">#0F0</color>
     <color name="yellow">#FF0</color>
+    <color name="Darkyellow">#f4d41e</color>
     <integer-array name="color_array">
         <item>@color/red</item>
         <item>@color/green</item>
@@ -123,8 +128,14 @@
     <!--Client colors-->
     <color name="mint">#B3DBC0</color>
     <color name="red">#FE0000</color>
+    <color name="porcelain">#000000</color>
+<!--
+    <color name="porcelain">#a6000000</color>
+-->
+<!--
     <color name="porcelain">#FDF6F6</color>
+-->
     <color name="fresh_blue">#67BACA</color>
 
-
+    <color name="arrowColor">#A3A2A2</color>
 </resources>

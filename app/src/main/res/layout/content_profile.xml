@@ -2,262 +2,325 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/white"
-    tools:showIn="@layout/activity_profile"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:showIn="@layout/activity_profile">
+
+    <RelativeLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/MoneyGreen"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="Basic Profile"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size18"
+            android:textStyle="bold" />
+
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/header"
-        android:background="@color/colorPrimaryDark"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/headerLayout"
+        android:background="#a6000000"
+        android:padding="15dp">
+
 
         <RelativeLayout
             android:id="@+id/holder"
-            android:layout_centerInParent="true"
             android:layout_width="96dp"
-            android:layout_height="96dp">
+            android:layout_height="96dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="30dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/profile_image"
                 android:layout_width="96dp"
                 android:layout_height="96dp"
                 android:layout_centerInParent="true"
-                android:src="@drawable/default_logo"
-                app:civ_border_width="2dp"
-                app:civ_border_color="#FFFFFFFF"/>
-
-            <ImageView
-                android:id="@+id/photo_edit"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_alignParentRight="true"
-                android:src="@drawable/ic_edit_logo"
-                />
+                android:src="@drawable/camera"
+                app:civ_border_color="#FFFFFFFF"
+                app:civ_border_width="2dp" />
+            <!--
+                        <ImageView
+                            android:id="@+id/photo_edit"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentRight="true"
+                            android:src="@drawable/ic_edit_logo"
+                            />-->
 
         </RelativeLayout>
 
         <LinearLayout
-            android:layout_below="@+id/holder"
-            android:gravity="center"
-            android:layout_marginTop="30dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="40dp"
+            android:layout_toRightOf="@+id/holder"
+            android:gravity="left"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/customer_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="jbsdjnsknskn"
                 android:textColor="@color/white"
+                android:textSize="@dimen/text_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/photo_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit Photo"
+                android:textColor="@color/MoneyGreen"
                 android:textSize="@dimen/text_size"
                 android:textStyle="bold" />
 
         </LinearLayout>
 
+
+        <ImageView
+            android:id="@+id/profile_edit"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_edit_logo" />
     </RelativeLayout>
 
     <LinearLayout
-        android:layout_below="@+id/header"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/header"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_margin="10dp"
-            android:orientation="vertical"
-            android:background="@drawable/border_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="15dp">
 
-            <RelativeLayout
-                android:background="@color/LightGray"
-                android:padding="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Basic Profile"
-                    android:textStyle="bold"
-                    android:layout_centerVertical="true"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size18"
-                    />
-
-                <ImageView
-                    android:id="@+id/profile_edit"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_alignParentRight="true"
-                    android:src="@drawable/ic_edit_logo"
-                    />
-
-            </RelativeLayout>
 
             <LinearLayout
-                android:padding="5dp"
                 android:id="@+id/phoneHolder"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="5dp">
+<!--
                 <mehdi.sakout.fancybuttons.FancyButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
+                    android:visibility="gone"
                     fancy:fb_borderColor="#FFFFFF"
                     fancy:fb_borderWidth="1dp"
-                    fancy:fb_iconPosition="right"
-                    fancy:fb_iconPaddingLeft="10dp"
-                    fancy:fb_text=""
-                    fancy:fb_fontIconResource="&#xf095;"
-                    fancy:fb_defaultColor="@color/full_trans"
+                    fancy:fb_defaultColor="@color/MoneyGreen"
                     fancy:fb_focusColor="@color/full_trans"
-                    fancy:fb_radius="5dp"
-                    fancy:fb_textColor="@color/Gray"
-                    fancy:fb_textSize="18sp" />
+                    fancy:fb_fontIconResource="&#xf095;"
+                    fancy:fb_iconPaddingLeft="10dp"
+                    fancy:fb_iconPosition="right"
+                    fancy:fb_radius="0dp"
+                    fancy:fb_text=""
+                    fancy:fb_textColor="@color/white"
+                    fancy:fb_textSize="18sp" />-->
 
                 <TextView
-                    android:id="@+id/Phonenumber"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="left"
                     android:text="Phone"
-                    android:layout_marginLeft="20dp"
-                    android:layout_gravity="center"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size"
-                    />
+                    android:textColor="@color/MoneyGreen"
+                    android:textSize="@dimen/text_size14" />
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="0dp">
+                <TextView
+                    android:id="@+id/Phonenumber"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:text="Phone"
+                    android:textColor="@color/Gray"
+                    android:textSize="@dimen/text_size" />
+
+
+                    <mehdi.sakout.fancybuttons.FancyButton
+                        android:id="@+id/verifiedStatus"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_gravity="center"
+                        android:padding="5dp"
+                        android:visibility="visible"
+                        fancy:fb_borderColor="#FFFFFF"
+                        fancy:fb_borderWidth="0dp"
+                        fancy:fb_defaultColor="@color/MoneyGreen"
+                        fancy:fb_focusColor="@color/whitegray"
+                        fancy:fb_fontIconResource="&#xf058;"
+                        fancy:fb_iconPaddingLeft="10dp"
+                        fancy:fb_iconPosition="right"
+                        app:fb_radius="360dp"
+                        fancy:fb_text=""
+                        fancy:fb_textColor="@color/white"
+                        fancy:fb_textSize="18sp" />
+<!--
                 <mehdi.sakout.fancybuttons.FancyButton
                     android:id="@+id/verifiedStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    fancy:fb_borderColor="#FFFFFF"
-                    fancy:fb_borderWidth="1dp"
-                    fancy:fb_iconPosition="right"
-                    fancy:fb_iconPaddingLeft="10dp"
-                    android:visibility="gone"
-                    fancy:fb_text="Verified"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_marginLeft="10dp"
+                    android:layout_gravity="right"
+                    android:padding="5dp"
+                    android:visibility="visible"
+                    fancy:fb_borderWidth="1dp"
+                    fancy:fb_defaultColor="@color/MoneyGreen"
+                    fancy:fb_focusColor="@color/whitegray"
                     fancy:fb_fontIconResource="&#xf00c;"
-                    fancy:fb_defaultColor="@color/full_trans"
-                    fancy:fb_focusColor="@color/full_trans"
-                    fancy:fb_radius="5dp"
-                    fancy:fb_textColor="@color/MoneyGreen"
+                    fancy:fb_iconPaddingLeft="10dp"
+                    fancy:fb_iconPosition="right"
+                    app:fb_radius="360dp"
+                    fancy:fb_radius="1dp"
+                    fancy:fb_text=""
+                    fancy:fb_textColor="@color/white"
                     fancy:fb_textSize="18sp" />
+-->
+                    </LinearLayout>
 
             </LinearLayout>
 
-            <LinearLayout
-                android:padding="5dp"
-                android:orientation="horizontal"
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="1dp"
+                android:background="@color/gray" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="5dp">
 
 
                 <mehdi.sakout.fancybuttons.FancyButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
+                    android:visibility="gone"
                     fancy:fb_borderColor="#FFFFFF"
                     fancy:fb_borderWidth="1dp"
-                    fancy:fb_defaultColor="@color/full_trans"
+                    fancy:fb_defaultColor="@color/MoneyGreen"
                     fancy:fb_focusColor="@color/full_trans"
                     fancy:fb_fontIconResource="&#xf0e0;"
                     fancy:fb_iconPaddingLeft="10dp"
                     fancy:fb_iconPosition="right"
-                    fancy:fb_radius="5dp"
+                    fancy:fb_radius="0dp"
                     fancy:fb_text=""
-                    fancy:fb_textColor="@color/Gray"
+                    fancy:fb_textColor="@color/white"
                     fancy:fb_textSize="18sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:text="Email"
+                    android:textColor="@color/MoneyGreen"
+                    android:textSize="@dimen/text_size14" />
 
                 <TextView
                     android:id="@+id/Email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="left"
                     android:text="Email"
-                    android:layout_marginLeft="20dp"
-                    android:layout_gravity="center"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size"
-                    />
+                    android:textColor="@color/Gray"
+                    android:textSize="@dimen/text_size" />
             </LinearLayout>
 
-            <LinearLayout
-                android:padding="5dp"
-                android:orientation="horizontal"
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="1dp"
+                android:background="@color/gray" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="5dp">
 
                 <mehdi.sakout.fancybuttons.FancyButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:padding="5dp"
+                    android:visibility="gone"
                     fancy:fb_borderColor="#FFFFFF"
                     fancy:fb_borderWidth="1dp"
-                    fancy:fb_iconPosition="right"
-                    fancy:fb_iconPaddingLeft="10dp"
-                    fancy:fb_text=""
-                    fancy:fb_fontIconResource="&#xf041;"
-                    fancy:fb_defaultColor="@color/full_trans"
+                    fancy:fb_defaultColor="@color/MoneyGreen"
                     fancy:fb_focusColor="#2e5071"
+                    fancy:fb_fontIconResource="&#xf041;"
+                    fancy:fb_iconPaddingLeft="10dp"
+                    fancy:fb_iconPosition="right"
                     fancy:fb_radius="5dp"
-                    fancy:fb_textColor="@color/Gray"
+                    fancy:fb_text=""
+                    fancy:fb_textColor="@color/white"
                     fancy:fb_textSize="18sp" />
 
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_margin="5dp"
-                    android:padding="5dp"
-                    android:background="@drawable/border_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
                     <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="Address"
-                        android:textColor="@color/black"
-                        android:paddingLeft="10dp"
-                        android:visibility="gone"
-                        android:textSize="@dimen/text_size"
-                        android:textStyle="bold"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:textColor="@color/MoneyGreen"
+                        android:textSize="@dimen/text_size14"
+                        android:visibility="visible" />
 
                     <TextView
                         android:id="@+id/address"
-                        android:textColor="@color/Gray"
-                        android:layout_marginLeft="15dp"
-                        android:textSize="14sp"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/Gray"
+                        android:textSize="@dimen/text_size" />
 
                     <LinearLayout
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/city"
-                            android:textColor="@color/Gray"
-                            android:layout_marginLeft="15dp"
-                            android:textSize="14sp"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/Gray"
+                            android:textSize="@dimen/text_size" />
 
                         <TextView
                             android:id="@+id/pincode"
-                            android:textColor="@color/Gray"
-                            android:layout_marginLeft="10dp"
-                            android:textSize="14sp"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:textColor="@color/Gray"
+                            android:textSize="@dimen/text_size" />
 
                     </LinearLayout>
 
@@ -265,61 +328,62 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:padding="5dp"
-                android:id="@+id/referral_holder"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal"
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="1dp"
+                android:background="@color/gray" />
+
+            <LinearLayout
+                android:id="@+id/referral_holder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:orientation="vertical"
+                android:padding="5dp"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Refferral Code"
-                    android:layout_marginLeft="10dp"
                     android:layout_gravity="center"
-                    android:textColor="@color/Gray"
-                    android:textSize="22sp"
-                    />
+                    android:layout_marginLeft="10dp"
+                    android:text="Referral Code"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
 
                 <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:gravity="center"
-                    android:padding="10dp"
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/border_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:gravity="center"
+                    android:padding="10dp">
 
                     <TextView
                         android:id="@+id/refferal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:textStyle="bold"
                         android:layout_gravity="center"
-                        android:textColor="@color/black"
+                        android:gravity="center"
+                        android:textColor="@color/Gray"
                         android:textSize="@dimen/text_size"
-                        />
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
                 <mehdi.sakout.fancybuttons.FancyButton
                     android:id="@+id/Share"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    fancy:fb_borderColor="#FFFFFF"
-                    fancy:fb_borderWidth="1dp"
-                    fancy:fb_iconPosition="right"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="10dp"
-                    fancy:fb_text=""
-                    fancy:fb_fontIconResource="&#xf1e0;"
-                    fancy:fb_defaultColor="@color/full_trans"
-                    fancy:fb_focusColor="#2e5071"
+                    android:layout_marginTop="0dp"
+                    fancy:fb_borderWidth="1dp"
+                    fancy:fb_defaultColor="@color/MoneyGreen"
+                    fancy:fb_focusColor="@color/MoneyGreen"
                     fancy:fb_radius="5dp"
-                    fancy:fb_textColor="@color/Gray"
+                    fancy:fb_text="SHARE"
+                    fancy:fb_textColor="@color/white"
                     fancy:fb_textSize="18sp" />
 
             </LinearLayout>

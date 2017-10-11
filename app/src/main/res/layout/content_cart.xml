@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
     tools:showIn="@layout/activity_add_to_cart"
-    android:background="@color/LightGray"
+    android:background="@color/whitegray"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:layout_height="match_parent">
 
@@ -20,7 +20,8 @@
         android:textSize="@dimen/text_size"
         android:background="@color/Button_Color"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
 
     <RelativeLayout
         android:id="@+id/relativelay_reclview"
@@ -37,10 +38,9 @@
         android:id="@+id/list"
         android:numColumns="1"
         android:padding="5dp"
-        android:layout_margin="5dp"
         android:layout_below="@+id/cart_count"
         android:layout_above="@+id/checkOut"
-        android:background="@color/LightGray"
+        android:background="@color/whitegray"
         android:scrollbars="vertical"
         android:verticalSpacing="5dp"
         android:horizontalSpacing="5dp">
@@ -49,18 +49,16 @@
 
     <mehdi.sakout.fancybuttons.FancyButton
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:padding="5dp"
         fancy:fb_text="CheckOut"
         android:id="@+id/checkOut"
         fancy:fb_iconPosition="right"
-        android:layout_marginLeft="10dp"
-        android:layout_margin="5dp"
+        android:layout_margin="0dp"
         android:layout_alignParentBottom="true"
-        fancy:fb_fontIconResource="&#xf046;"
-        fancy:fb_defaultColor="@color/fresh_blue"
+        fancy:fb_defaultColor="@color/MoneyGreen"
         fancy:fb_focusColor="@color/colorPrimary"
-        fancy:fb_radius="5dp"
+        fancy:fb_radius="0dp"
         fancy:fb_textColor="@color/white"
         fancy:fb_textSize="18sp" />
 

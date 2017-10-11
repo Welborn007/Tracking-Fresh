@@ -9,7 +9,10 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.location.LocationManager;
 import android.media.RingtoneManager;
@@ -23,7 +26,11 @@ import android.provider.Settings;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -40,7 +47,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -126,8 +132,8 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
     String subAdminArea = "";
     String subLocality = "";
     public static MyApplication myApplication;
-    RelativeLayout my_orders_holder, profile_holder, help_holder, route_holder, refer_earn, legalHolder,setting_layout,my_offers_holder;
-
+    RelativeLayout my_orders_holder, menu_holder,my_cart_holder,notification_holder, help_holder, route_holder, refer_earn, legalHolder,setting_layout,my_offers_holder;
+    TextView profile_holder;
     private Gson gson;
     VerifyMobilePOJO verifyMobilePOJO;
     SendOtpPOJO sendOtpPOJO;
@@ -135,7 +141,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
     private ViewGroup mSnackbarContainer;
     CircleImageView profile_image;
     //ScheduledExecutorService scheduleTaskExecutor;
-    TextView walletAmount;
+    TextView walletAmount,menuTextView,mapTextView;
 
     PopupWindow popupwindow_obj;
 
@@ -153,7 +159,12 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
+            toolbar.setBackgroundColor(ContextCompat.getColor(DashboardActivity.this,R.color.porcelain));
 
+            Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_menu, null);
+            drawable = DrawableCompat.wrap(drawable);
+            DrawableCompat.setTint(drawable, Color.WHITE);
+            getSupportActionBar().setHomeAsUpIndicator(drawable);
             myApplication = (MyApplication) getApplicationContext();
 
             gson = new Gson();
@@ -173,24 +184,76 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             logo = (ImageView) findViewById(R.id.logo);
             filter = (ImageView) findViewById(R.id.filter);
             map_View = (ImageView) findViewById(R.id.map_View);
+            mapTextView = (TextView) findViewById(R.id.mapTextView);
+            menuTextView = (TextView) findViewById(R.id.menuTextView);
+
+
+            menuTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    menuTextView.setBackgroundColor(getResources().getColor(R.color.MoneyGreen));
+                    mapTextView.setBackgroundColor(getResources().getColor(R.color.whitegray));
+                    menuTextView.setTextColor(getResources().getColor(R.color.white));
+                    mapTextView.setTextColor(getResources().getColor(R.color.gray));
+                    Product_Fragment.fragment_holder.setVisibility(View.GONE);
+                    Product_Fragment.layout_holder.setVisibility(View.VISIBLE);
+                    Product_Fragment.frameLayout.setVisibility(View.GONE);
+                    Product_Fragment.product_holder.setVisibility(View.VISIBLE);
+                }
+            });
+
+
+            mapTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+
+                    mapTextView.setBackgroundColor(getResources().getColor(R.color.MoneyGreen));
+                    menuTextView.setBackgroundColor(getResources().getColor(R.color.whitegray));
+                    menuTextView.setTextColor(getResources().getColor(R.color.gray));
+                    mapTextView.setTextColor(getResources().getColor(R.color.white));
+                    Product_Fragment.product_holder.setVisibility(View.GONE);
+
+                    Product_Fragment.map_Holder.setVisibility(View.VISIBLE);
+                    Product_Fragment.fragment_holder.setVisibility(View.VISIBLE);
+                    Product_Fragment.layout_holder.setVisibility(View.GONE);
+                    Product_Fragment.frameLayout.setVisibility(View.GONE);}
+            });
 
             getProfileDataOnCreate();
 
             map_View.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+
+                    mapTextView.setBackgroundColor(getResources().getColor(R.color.MoneyGreen));
+                    menuTextView.setBackgroundColor(getResources().getColor(R.color.whitegray));
+                    menuTextView.setTextColor(getResources().getColor(R.color.gray));
+                    mapTextView.setTextColor(getResources().getColor(R.color.white));
+                    Product_Fragment.product_holder.setVisibility(View.GONE);
+
                     Product_Fragment.map_Holder.setVisibility(View.VISIBLE);
+                    Product_Fragment.fragment_holder.setVisibility(View.VISIBLE);
+                    Product_Fragment.layout_holder.setVisibility(View.GONE);
                     Product_Fragment.frameLayout.setVisibility(View.GONE);
+
+//                    Product_Fragment.map_Holder.setVisibility(View.VISIBLE);
+//                    Product_Fragment.frameLayout.setVisibility(View.GONE);
                 }
             });
 
-            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            final DrawerLayout mDrawerLayout;
+            mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+            mDrawerLayout.closeDrawers();
+            final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             View header = navigationView.getHeaderView(0);
 
             my_orders_holder = (RelativeLayout) header.findViewById(R.id.my_orders_holder);
             name_Login = (TextView) header.findViewById(R.id.name_Login);
 
-            profile_holder = (RelativeLayout) header.findViewById(R.id.profile_holder);
+            profile_holder = (TextView) header.findViewById(R.id.profile_holder);
             help_holder = (RelativeLayout) header.findViewById(R.id.help_holder);
             route_holder = (RelativeLayout) header.findViewById(R.id.route_holder);
             refer_earn = (RelativeLayout) header.findViewById(R.id.refer_earn);
@@ -199,12 +262,17 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             legalHolder = (RelativeLayout) header.findViewById(R.id.legalHolder);
             setting_layout = (RelativeLayout) header.findViewById(R.id.setting_layout);
             my_offers_holder = (RelativeLayout) header.findViewById(R.id.my_offers_holder);
+            notification_holder = (RelativeLayout) header.findViewById(R.id.notification_holder);
+            my_cart_holder = (RelativeLayout) header.findViewById(R.id.my_cart_holder);
+            menu_holder = (RelativeLayout) header.findViewById(R.id.menu_holder);
 
             my_offers_holder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(DashboardActivity.this, MyOffersActivity.class);
                     startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
                 }
             });
 
@@ -213,6 +281,8 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 public void onClick(View v) {
                     Intent intent = new Intent(DashboardActivity.this, SettingsActivity.class);
                     startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
                 }
             });
 
@@ -221,6 +291,8 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 public void onClick(View v) {
                     Intent intent = new Intent(DashboardActivity.this, ReferralCodeActivity.class);
                     startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
                 }
             });
 
@@ -229,6 +301,8 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 public void onClick(View v) {
                     Intent intent = new Intent(DashboardActivity.this, RouteActivity.class);
                     startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
                 }
             });
 
@@ -239,6 +313,8 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 public void onClick(View v) {
                     Intent intent = new Intent(DashboardActivity.this, HelpActivity.class);
                     startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
                 }
             });
 
@@ -247,6 +323,8 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 public void onClick(View v) {
                     Intent intent = new Intent(DashboardActivity.this, LegalActivity.class);
                     startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
                 }
             });
 
@@ -255,6 +333,8 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 public void onClick(View v) {
                     Intent intent = new Intent(DashboardActivity.this, OrderListActivity.class);
                     startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
                 }
             });
 
@@ -263,6 +343,34 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 public void onClick(View v) {
                     Intent intent = new Intent(DashboardActivity.this, ProfileActivity.class);
                     startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
+                }
+            });
+            menu_holder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mDrawerLayout.closeDrawers();
+
+                }
+            });
+            my_cart_holder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(DashboardActivity.this, AddToCart.class);
+                    startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
+
+                }
+            });
+            notification_holder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(DashboardActivity.this, NotificationListActivity.class);
+                    startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
                 }
             });
 
@@ -759,11 +867,18 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
         getMenuInflater().inflate(R.menu.menu_add_tocart, menu);
 
         MenuItem item = menu.findItem(R.id.menu_hot);
-        LayerDrawable icon = (LayerDrawable) item.getIcon();
-
-        setBadgeCount(this, icon, mNotificationsCount);
+        LayerDrawable iconLayer = (LayerDrawable) item.getIcon();
+//        BitmapDrawable iconBitmap = (BitmapDrawable) item.getIcon();
+//        LayerDrawable iconLayer = new LayerDrawable(new Drawable [] { iconBitmap });
+        setBadgeCount(this, iconLayer, mNotificationsCount);
 
         return super.onCreateOptionsMenu(menu);
+
+//        MenuItem itemCart = menu.findItem(R.id.menu_hot);
+//        BitmapDrawable iconBitmap = (BitmapDrawable) itemCart.getIcon();
+//        LayerDrawable iconLayer = new LayerDrawable(new Drawable [] { iconBitmap });
+//        setBadgeCount(this, iconLayer, mNotificationsCount);
+//        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -825,14 +940,15 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
         TextView nameTxt = (TextView) view.findViewById(R.id.name);
         nameTxt.setText("Hello " + name);
 
+
         TextView my_account = (TextView) view.findViewById(R.id.my_account);
         TextView my_orders = (TextView) view.findViewById(R.id.my_orders);
         TextView tkcash = (TextView) view.findViewById(R.id.tkcash);
         TextView notificationList = (TextView) view.findViewById(R.id.notificationList);
 
-        LinearLayout layout = (LinearLayout) view.findViewById(R.id.change_password);
+        TextView change_password = (TextView) view.findViewById(R.id.change_password);
 
-        layout.setOnClickListener(new View.OnClickListener() {
+        change_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(DashboardActivity.this, ChangePasswordActivity.class);

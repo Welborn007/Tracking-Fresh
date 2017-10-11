@@ -26,6 +26,7 @@
         android:layout_above="@+id/confirmAddress"
         android:layout_below="@+id/delivery_text"
         android:layout_width="match_parent"
+        android:padding="10dp"
         android:layout_height="match_parent">
 
         <LinearLayout
@@ -34,145 +35,269 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+<!--
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+-->
 
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/Full_Name"
+                android:textColor="@color/MoneyGreen"
+                android:textSize="14dp" />
                 <EditText
                     android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:textSize="@dimen/text_size"
+                    android:background="@drawable/edittextback"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
                     android:inputType="text"
                     android:layout_height="wrap_content"
                     android:hint="@string/Full_Name" />
+<!--
 
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+-->
 
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/Email_id"
+                android:textColor="@color/MoneyGreen"
+                android:textSize="14dp" />
                 <EditText
                     android:id="@+id/email"
                     android:layout_width="match_parent"
+
+                    android:background="@drawable/edittextback"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
                     android:textSize="@dimen/text_size"
                     android:inputType="textEmailAddress"
                     android:layout_height="wrap_content"
                     android:hint="@string/Email_id" />
 
-            </android.support.design.widget.TextInputLayout>
+           <!-- </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+-->
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/Mobile_no"
+                android:textColor="@color/MoneyGreen"
+                android:textSize="14dp" />
 
                 <EditText
                     android:id="@+id/mobile"
                     android:layout_width="match_parent"
                     android:textSize="@dimen/text_size"
                     android:inputType="number"
+
+                    android:background="@drawable/edittextback"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
                     android:layout_height="wrap_content"
                     android:hint="@string/Mobile_no" />
 
-            </android.support.design.widget.TextInputLayout>
+       <!--     </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+-->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/flat_no"
+                android:textColor="@color/MoneyGreen"
+                android:textSize="14dp" />
                 <EditText
                     android:id="@+id/flat_no"
                     android:layout_width="match_parent"
                     android:textSize="@dimen/text_size"
+                    android:background="@drawable/edittextback"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
                     android:inputType="number"
                     android:layout_height="wrap_content"
                     android:hint="@string/flat_no" />
 
-            </android.support.design.widget.TextInputLayout>
+   <!--         </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+-->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/building_name"
+                android:textColor="@color/MoneyGreen"
+                android:textSize="14dp" />
 
                 <EditText
                     android:id="@+id/building_name"
                     android:layout_width="match_parent"
+
+                    android:background="@drawable/edittextback"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
                     android:textSize="@dimen/text_size"
                     android:inputType="text"
                     android:layout_height="wrap_content"
                     android:hint="@string/building_name" />
 
-            </android.support.design.widget.TextInputLayout>
+      <!--      </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+-->
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/landmark"
+                android:textColor="@color/MoneyGreen"
+                android:textSize="14dp" />
 
                 <EditText
                     android:id="@+id/landmark"
                     android:layout_width="match_parent"
+                    android:background="@drawable/edittextback"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
                     android:textSize="@dimen/text_size"
                     android:inputType="text"
                     android:layout_height="wrap_content"
                     android:hint="@string/landmark" />
 
+<!--
             </android.support.design.widget.TextInputLayout>
+-->
 
-            <android.support.design.widget.TextInputLayout
+          <!--  <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+-->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/city"
+                android:textColor="@color/MoneyGreen"
+                android:textSize="14dp" />
 
                 <EditText
                     android:id="@+id/city"
                     android:layout_width="match_parent"
+                    android:background="@drawable/edittextback"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
                     android:textSize="@dimen/text_size"
                     android:inputType="text"
                     android:layout_height="wrap_content"
                     android:hint="@string/city" />
 
+<!--
             </android.support.design.widget.TextInputLayout>
+-->
 
-            <android.support.design.widget.TextInputLayout
+       <!--     <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+-->
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/state"
+                android:textColor="@color/MoneyGreen"
+                android:textSize="14dp" />
                 <EditText
                     android:id="@+id/state"
                     android:layout_width="match_parent"
+                    android:background="@drawable/edittextback"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
                     android:textSize="@dimen/text_size"
                     android:inputType="text"
                     android:layout_height="wrap_content"
                     android:hint="@string/state" />
 
+<!--
             </android.support.design.widget.TextInputLayout>
+-->
 
-            <android.support.design.widget.TextInputLayout
+            <!--<android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+-->
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/pin_code"
+                android:textColor="@color/MoneyGreen"
+                android:textSize="14dp" />
                 <EditText
                     android:id="@+id/pincode"
                     android:layout_width="match_parent"
+                    android:background="@drawable/edittextback"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_size"
                     android:inputType="number"
                     android:hint="@string/pin_code" />
 
+<!--
             </android.support.design.widget.TextInputLayout>
+-->
 
-            <android.support.design.widget.TextInputLayout
+           <!-- <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+-->
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/addressType"
+                android:textColor="@color/MoneyGreen"
+                android:textSize="14dp" />
                 <EditText
                     android:id="@+id/addressType"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_size"
                     android:inputType="text"
+                    android:background="@drawable/edittextback"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
                     android:hint="@string/AddressType" />
 
+<!--
             </android.support.design.widget.TextInputLayout>
+-->
 
             <CheckBox
                 android:id="@+id/defaultAddress"
@@ -214,7 +339,7 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="5dp"
         android:id="@+id/confirmAddress"
-        fancy:fb_defaultColor="@color/fresh_blue"
+        fancy:fb_defaultColor="@color/MoneyGreen"
         fancy:fb_focusColor="@color/colorPrimary"
         fancy:fb_radius="5dp"
         fancy:fb_textColor="@color/white"

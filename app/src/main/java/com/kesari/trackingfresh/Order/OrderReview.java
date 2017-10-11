@@ -3,12 +3,15 @@ package com.kesari.trackingfresh.Order;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +21,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -60,8 +64,8 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
     OrderReviewMainPOJO orderReviewMainPOJO;
     private RecyclerView.Adapter adapterProducts;
     TextView total_price,payment_status,payment_mode,fullName,buildingName,landmark,address,mobileNo,bikerName,deliveryCharge,orderDate,orderDeliverDate,delivery_textData,orderNo,orderType;
-    FancyButton btnSubmit,btnCall,btnSupport;
-
+    Button btnCall,btnSupport;
+    FancyButton btnSubmit;
     LinearLayout BikerHolder,deliveryDateHolder;
 
     //ScheduledExecutorService scheduleTaskExecutor;
@@ -86,6 +90,7 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.setBackgroundColor(ContextCompat.getColor(this,R.color.porcelain));
 
         /*Register receiver*/
             networkUtilsReceiver = new NetworkUtilsReceiver(this);
@@ -119,8 +124,8 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
             BikerHolder = (LinearLayout) findViewById(R.id.BikerHolder);
             deliveryDateHolder = (LinearLayout) findViewById(R.id.deliveryDateHolder);
             bikerName = (TextView) findViewById(R.id.bikerName);
-            btnCall = (FancyButton) findViewById(R.id.btnCall);
-            btnSupport = (FancyButton) findViewById(R.id.btnSupport);
+            btnCall = (Button) findViewById(R.id.btnCall);
+            btnSupport = (Button) findViewById(R.id.btnSupport);
 
             ratingBar = (RatingBar) findViewById(R.id.ratingBar);
             FeedbackHolder = (LinearLayout) findViewById(R.id.FeedbackHolder);
@@ -487,7 +492,9 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
         LayerDrawable icon = (LayerDrawable) item.getIcon();
 
         setBadgeCount(this, icon, mNotificationsCount);
-
+//        BitmapDrawable iconBitmap = (BitmapDrawable) item.getIcon();
+//        LayerDrawable iconLayer = new LayerDrawable(new Drawable[] { iconBitmap });
+//        setBadgeCount(this, iconLayer, mNotificationsCount);
         return super.onCreateOptionsMenu(menu);
     }
 

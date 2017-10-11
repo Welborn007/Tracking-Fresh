@@ -12,7 +12,7 @@
 
     <string name="payment">Payment</string>
     <string name="myaccount">My Account</string>
-    <string name="myOrders">My Orders</string>
+    <string name="myOrders">Last Orders</string>
     <string name="refer_earn">Refer &amp; Earn</string>
     <string name="help">Help</string>
     <string name="settings">Settings</string>
@@ -86,6 +86,25 @@
         <item>Address</item>
         <item>Cards</item>
     </string-array>
+    <string name="splash_text">No matter where you are: \n whether your at home, or in the \n office ,or the bench - we will find \n you and we will feed you</string>
+    <string name="sign_in_header">SIGN IN</string>
+    <string name="sign_up_header">SIGN UP</string>
+    <string name="sign_in_header_two">enter your data</string>
+    <string name="phone_header">Phone</string>
+    <string name="password_header">Password</string>
+    <string name="forgot_password"><u>Forgot Password</u></string>
+    <string name="new_register"><u> Sign Up</u></string>
+    <string name="repeat"><u> Repeat</u></string>
+    <string name="repeat_sms"><u> Resend SMS</u></string>
+    <string name="repeat_call"><u> Call Me</u></string>
+    <string name="SMS_verification">Enter Code</string>
+    <string name="from_sms">from sms</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="menu">Menu</string>
+    <string name="my_cart">My Cart</string>
+    <string name="notification">Notification</string>
+    <string name="invite_friends">Invite friends</string>
+    <string name="invite_msg">Refer the TrackingFresh to your \n friends and family and earn money \n to enjoy fresh food.</string>
 
     <string name="first_name_2_char">First Name less than 2 characters!!</string>
     <string name="last_name_2_char">Last Name less than 2 characters!!</string>
@@ -94,5 +113,15 @@
 
     <string name="valid_pincode">Enter Valid Pincode</string>
     <string name="valid_state">State cannot be a number</string>
+    <string name="ordering">Confirm Order</string>
+    <string name="order_review">Order Review</string>
+    <string name="last_order">Last Order</string>
+    <string name="profile">Profile</string>
+    <string name="change_pass">Change Password</string>
+    <string name="offers">Offers</string>
+    <string name="update_address">Update Address</string>
+    <string name="tkfwallet">Wallet</string>
+    <string name="payment_details">Payment Details</string>
+    <string name="delivery_address">Delivery Address</string>
 
 </resources>

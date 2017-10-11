@@ -72,7 +72,7 @@ public class IOUtils {
     private Gson gson;
     ErrorPOJO errorPOJO;
 
-    public static DraweeController getFrescoImageController(Context context,String url) {
+    public static DraweeController getFrescoImageController(Context context, String url) {
 
         ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
             @Override
@@ -115,7 +115,7 @@ public class IOUtils {
         return hierarchy;
     }
 
-    private String getCompleteAddressString(double LATITUDE, double LONGITUDE,Context context) {
+    private String getCompleteAddressString(double LATITUDE, double LONGITUDE, Context context) {
         String strAdd = "";
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         try {
@@ -143,16 +143,17 @@ public class IOUtils {
         return String.format("%.2f%n", paramFloat);
     }
 
-    public static void slideToRight(View view){
-        TranslateAnimation animate = new TranslateAnimation(0,view.getWidth(),0,0);
+    public static void slideToRight(View view) {
+        TranslateAnimation animate = new TranslateAnimation(0, view.getWidth(), 0, 0);
         animate.setDuration(500);
         animate.setFillAfter(true);
         view.startAnimation(animate);
         view.setVisibility(View.GONE);
     }
+
     // To animate view slide out from right to left
-    public static void slideToLeft(View view){
-        TranslateAnimation animate = new TranslateAnimation(0,-view.getWidth(),0,0);
+    public static void slideToLeft(View view) {
+        TranslateAnimation animate = new TranslateAnimation(0, -view.getWidth(), 0, 0);
         animate.setDuration(500);
         animate.setFillAfter(true);
         view.startAnimation(animate);
@@ -160,8 +161,8 @@ public class IOUtils {
     }
 
     // To animate view slide out from top to bottom
-    public static void slideToBottom(View view){
-        TranslateAnimation animate = new TranslateAnimation(0,0,0,view.getHeight());
+    public static void slideToBottom(View view) {
+        TranslateAnimation animate = new TranslateAnimation(0, 0, 0, view.getHeight());
         animate.setDuration(500);
         animate.setFillAfter(true);
         view.startAnimation(animate);
@@ -169,14 +170,27 @@ public class IOUtils {
     }
 
     // To animate view slide out from bottom to top
-    public static void slideToTop(View view){
-        TranslateAnimation animate = new TranslateAnimation(0,0,0,-view.getHeight());
+    public static void slideToTop(View view) {
+        TranslateAnimation animate = new TranslateAnimation(0, 0, 0, -view.getHeight());
         animate.setDuration(500);
         animate.setFillAfter(true);
         view.startAnimation(animate);
         view.setVisibility(View.GONE);
     }
 
+    public static void setBadgeCount(Context context, LayerDrawable icon, int count) {
+        BadgeDrawable badge;
+        Drawable reuse = icon.findDrawableByLayerId(R.id.ic_badge);
+        if (reuse != null && reuse instanceof BadgeDrawable) {
+            badge = (BadgeDrawable) reuse;
+        } else {
+            badge = new BadgeDrawable(context);
+        }
+        badge.setCount(count);
+        icon.mutate();
+        icon.setDrawableByLayerId(R.id.ic_badge, badge);
+    }
+/*
     public static void setBadgeCount(Context context, LayerDrawable icon, int count) {
 
         BadgeDrawable badge;
@@ -193,9 +207,10 @@ public class IOUtils {
         icon.mutate();
         icon.setDrawableByLayerId(R.id.ic_badge, badge);
     }
+*/
 
     // Volley String Get Request
-    public void getGETStringRequest(final Context context, String url, final VolleyCallback callback,final VolleyFailureCallback failureCallback) {
+    public void getGETStringRequest(final Context context, String url, final VolleyCallback callback, final VolleyFailureCallback failureCallback) {
 
         Log.i("url", url);
         // custom dialog
@@ -221,16 +236,15 @@ public class IOUtils {
                 Log.d("Error", error.toString());
                 //dialog.dismiss();
 
-                try{
+                try {
                     String json = null;
                     NetworkResponse response = error.networkResponse;
                     json = new String(response.data);
                     Log.d("Error", json);
 
-                    failureCallback.onFailure(ErrorResponse(json,context));
+                    failureCallback.onFailure(ErrorResponse(json, context));
 
-                }catch (Exception e)
-                {
+                } catch (Exception e) {
                     //Log.d("Error", e.getMessage());
                     new SweetAlertDialog(context)
                             .setTitleText("Oops Something Went Wrong!!")
@@ -245,7 +259,7 @@ public class IOUtils {
     }
 
     // Volley String Get Request with Header
-    public void getGETStringRequestHeader(final Context context, String url, final Map<String, String> paramsHeaders , final VolleyCallback callback,final VolleyFailureCallback failureCallback) {
+    public void getGETStringRequestHeader(final Context context, String url, final Map<String, String> paramsHeaders, final VolleyCallback callback, final VolleyFailureCallback failureCallback) {
 
         //RequestQueue queue = Volley.newRequestQueue(this);
         Log.i("url", url);
@@ -258,8 +272,7 @@ public class IOUtils {
         dialog.show();*/
 
         StringRequest postRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>()
-                {
+                new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         // response
@@ -268,24 +281,22 @@ public class IOUtils {
                         callback.onSuccess(response);
                     }
                 },
-                new Response.ErrorListener()
-                {
+                new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // TODO Auto-generated method stub
                         //Log.d("ERROR","error => "+error.toString());
                         //dialog.dismiss();
 
-                        try{
+                        try {
                             String json = null;
                             NetworkResponse response = error.networkResponse;
                             json = new String(response.data);
                             Log.d("Error", json);
 
-                            failureCallback.onFailure(ErrorResponse(json,context));
+                            failureCallback.onFailure(ErrorResponse(json, context));
 
-                        }catch (Exception e)
-                        {
+                        } catch (Exception e) {
                             //Log.d("Error", e.getMessage());
                             /*new SweetAlertDialog(context)
                                     .setTitleText("Oops Something Went Wrong!!")
@@ -310,7 +321,7 @@ public class IOUtils {
     }
 
     // Volley String Delete Request with Header
-    public void getDeleteStringRequestHeader(final Context context, String url, final Map<String, String> paramsHeaders , final VolleyCallback callback,final VolleyFailureCallback failureCallback) {
+    public void getDeleteStringRequestHeader(final Context context, String url, final Map<String, String> paramsHeaders, final VolleyCallback callback, final VolleyFailureCallback failureCallback) {
 
         //RequestQueue queue = Volley.newRequestQueue(this);
         Log.i("url", url);
@@ -323,8 +334,7 @@ public class IOUtils {
         dialog.show();
 
         StringRequest postRequest = new StringRequest(Request.Method.DELETE, url,
-                new Response.Listener<String>()
-                {
+                new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         // response
@@ -333,24 +343,22 @@ public class IOUtils {
                         callback.onSuccess(response);
                     }
                 },
-                new Response.ErrorListener()
-                {
+                new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // TODO Auto-generated method stub
                         //Log.d("ERROR","error => "+error.toString());
                         dialog.dismiss();
 
-                        try{
+                        try {
                             String json = null;
                             NetworkResponse response = error.networkResponse;
                             json = new String(response.data);
                             Log.d("Error", json);
 
-                            failureCallback.onFailure(ErrorResponse(json,context));
+                            failureCallback.onFailure(ErrorResponse(json, context));
 
-                        }catch (Exception e)
-                        {
+                        } catch (Exception e) {
                             //Log.d("Error", e.getMessage());
                             new SweetAlertDialog(context)
                                     .setTitleText("Oops Something Went Wrong!!")
@@ -374,7 +382,7 @@ public class IOUtils {
     }
 
     // Volley String POST Request with Header
-    public void getPOSTStringRequestHeader(final Context context, String url, final Map<String, String> paramsHeaders , final VolleyCallback callback,final VolleyFailureCallback failureCallback) {
+    public void getPOSTStringRequestHeader(final Context context, String url, final Map<String, String> paramsHeaders, final VolleyCallback callback, final VolleyFailureCallback failureCallback) {
 
         //RequestQueue queue = Volley.newRequestQueue(this);
         final Dialog dialog = new Dialog(context);
@@ -386,8 +394,7 @@ public class IOUtils {
 
         Log.i("url", url);
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>()
-                {
+                new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         // response
@@ -396,24 +403,22 @@ public class IOUtils {
                         callback.onSuccess(response);
                     }
                 },
-                new Response.ErrorListener()
-                {
+                new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // TODO Auto-generated method stub
                         //Log.d("ERROR","error => "+error.toString());
                         dialog.dismiss();
 
-                        try{
+                        try {
                             String json = null;
                             NetworkResponse response = error.networkResponse;
                             json = new String(response.data);
                             Log.d("Error", json);
 
-                            failureCallback.onFailure(ErrorResponse(json,context));
+                            failureCallback.onFailure(ErrorResponse(json, context));
 
-                        }catch (Exception e)
-                        {
+                        } catch (Exception e) {
                             //Log.d("Error", e.getMessage());
                             new SweetAlertDialog(context)
                                     .setTitleText("Oops Something Went Wrong!!")
@@ -436,16 +441,16 @@ public class IOUtils {
         MyApplication.getInstance().addRequestToQueue(postRequest, "");
     }
 
-    public interface VolleyCallback{
+    public interface VolleyCallback {
         void onSuccess(String result);
     }
 
-    public interface VolleyFailureCallback{
+    public interface VolleyFailureCallback {
         void onFailure(String result);
     }
 
     //Volley JSON Object Post Request
-    public void sendJSONObjectRequest(final Context context, String url, JSONObject jsonObject, final VolleyCallback callback,final VolleyFailureCallback failureCallback) {
+    public void sendJSONObjectRequest(final Context context, String url, JSONObject jsonObject, final VolleyCallback callback, final VolleyFailureCallback failureCallback) {
 
         Log.i("url", url);
         Log.i("JSON CREATED", jsonObject.toString());
@@ -473,16 +478,15 @@ public class IOUtils {
                 //VolleyLog.d("Error", "Error: " + error.getMessage());
                 dialog.dismiss();
 
-                try{
+                try {
                     String json = null;
                     NetworkResponse response = error.networkResponse;
                     json = new String(response.data);
                     Log.d("Error", json);
 
-                    failureCallback.onFailure(ErrorResponse(json,context));
+                    failureCallback.onFailure(ErrorResponse(json, context));
 
-                }catch (Exception e)
-                {
+                } catch (Exception e) {
                     //Log.d("Error", e.getMessage());
                     new SweetAlertDialog(context)
                             .setTitleText("Oops Something Went Wrong!!")
@@ -502,7 +506,7 @@ public class IOUtils {
     }
 
     //Volley JSON Object Post Request for Dialog
-    public void sendJSONObjectRequestHeaderDialog(final Context context, final ViewGroup viewGroup, String url, final Map<String, String> paramsHeaders, JSONObject jsonObject, final VolleyCallback callback,final VolleyFailureCallback failureCallback) {
+    public void sendJSONObjectRequestHeaderDialog(final Context context, final ViewGroup viewGroup, String url, final Map<String, String> paramsHeaders, JSONObject jsonObject, final VolleyCallback callback, final VolleyFailureCallback failureCallback) {
 
         Log.i("url", url);
         Log.i("JSON CREATED", jsonObject.toString());
@@ -530,7 +534,7 @@ public class IOUtils {
                 //VolleyLog.d("Error", "Error: " + error.getMessage());
                 dialog.dismiss();
 
-                try{
+                try {
                     String json = null;
                     NetworkResponse response = error.networkResponse;
                     json = new String(response.data);
@@ -538,10 +542,9 @@ public class IOUtils {
 
                     //ErrorResponseDialog(json,context,viewGroup);
 
-                    failureCallback.onFailure(ErrorResponseDialog(json,context,viewGroup));
+                    failureCallback.onFailure(ErrorResponseDialog(json, context, viewGroup));
 
-                }catch (Exception e)
-                {
+                } catch (Exception e) {
                     //Log.d("Error", e.getMessage());
                     FireToast.customSnackbarDialog(context, "Oops Something Went Wrong!!", "", viewGroup, new ActionSwipeListener() {
                         @Override
@@ -561,7 +564,8 @@ public class IOUtils {
 
                 return paramsHeaders;
             }
-        };;
+        };
+        ;
 
         jsonObjReq.setRetryPolicy(new DefaultRetryPolicy(
                 30000,
@@ -574,7 +578,7 @@ public class IOUtils {
     }
 
     //Volley JSON Object Post Request
-    public void sendJSONObjectRequestHeader(final Context context, String url, final Map<String, String> paramsHeaders, JSONObject jsonObject, final VolleyCallback callback,final VolleyFailureCallback failureCallback) {
+    public void sendJSONObjectRequestHeader(final Context context, String url, final Map<String, String> paramsHeaders, JSONObject jsonObject, final VolleyCallback callback, final VolleyFailureCallback failureCallback) {
 
         /*Log.i("url", url);
         Log.i("JSON CREATED", jsonObject.toString());
@@ -602,16 +606,15 @@ public class IOUtils {
                 //VolleyLog.d("Error", "Error: " + error.getMessage());
                 //dialog.dismiss();
 
-                try{
+                try {
                     String json = null;
                     NetworkResponse response = error.networkResponse;
                     json = new String(response.data);
                     Log.d("Error", json);
 
-                    failureCallback.onFailure(ErrorResponse(json,context));
+                    failureCallback.onFailure(ErrorResponse(json, context));
 
-                }catch (Exception e)
-                {
+                } catch (Exception e) {
                     //Log.d("Error", e.getMessage());
                     new SweetAlertDialog(context)
                             .setTitleText("Oops Something Went Wrong!!")
@@ -629,7 +632,8 @@ public class IOUtils {
 
                 return paramsHeaders;
             }
-        };;
+        };
+        ;
 
         jsonObjReq.setRetryPolicy(new DefaultRetryPolicy(
                 30000,
@@ -642,7 +646,7 @@ public class IOUtils {
     }
 
     //Volley JSON Object Put Request
-    public void sendJSONObjectPutRequestHeader(final Context context, String url, final Map<String, String> paramsHeaders, JSONObject jsonObject, final VolleyCallback callback,final VolleyFailureCallback failureCallback) {
+    public void sendJSONObjectPutRequestHeader(final Context context, String url, final Map<String, String> paramsHeaders, JSONObject jsonObject, final VolleyCallback callback, final VolleyFailureCallback failureCallback) {
 
         Log.i("url", url);
         Log.i("JSON CREATED", jsonObject.toString());
@@ -670,16 +674,15 @@ public class IOUtils {
                 //VolleyLog.d("Error", "Error: " + error.getMessage());
                 dialog.dismiss();
 
-                try{
+                try {
                     String json = null;
                     NetworkResponse response = error.networkResponse;
                     json = new String(response.data);
                     Log.d("Error", json);
 
-                    failureCallback.onFailure(ErrorResponse(json,context));
+                    failureCallback.onFailure(ErrorResponse(json, context));
 
-                }catch (Exception e)
-                {
+                } catch (Exception e) {
                     //Log.d("Error", e.getMessage());
                     new SweetAlertDialog(context)
                             .setTitleText("Oops Something Went Wrong!!")
@@ -697,7 +700,8 @@ public class IOUtils {
 
                 return paramsHeaders;
             }
-        };;
+        };
+        ;
 
         jsonObjReq.setRetryPolicy(new DefaultRetryPolicy(
                 30000,
@@ -709,14 +713,12 @@ public class IOUtils {
 
     }
 
-    private String ErrorResponse(String Response,Context context)
-    {
+    private String ErrorResponse(String Response, Context context) {
         gson = new Gson();
         errorPOJO = gson.fromJson(Response, ErrorPOJO.class);
         String FailureReason = "Oops Something Went Wrong!!";
 
-        if(errorPOJO.getErrors() != null)
-        {
+        if (errorPOJO.getErrors() != null) {
             String[] error = errorPOJO.getErrors();
             String errorString = error[0];
 
@@ -727,18 +729,14 @@ public class IOUtils {
                     .show();
 
             FailureReason = errorString;
-        }
-        else if(errorPOJO.getMessage() != null)
-        {
+        } else if (errorPOJO.getMessage() != null) {
             new SweetAlertDialog(context)
                     .setTitleText(errorPOJO.getMessage())
                     .show();
 
             FailureReason = errorPOJO.getMessage();
             //FireToast.customSnackbar(context, errorPOJO.getMessage(),"");
-        }
-        else
-        {
+        } else {
             /*new SweetAlertDialog(context)
                     .setTitleText("Oops Something Went Wrong!!")
                     .show();*/
@@ -750,14 +748,12 @@ public class IOUtils {
         return FailureReason;
     }
 
-    private String ErrorResponseDialog(String Response, Context context, final ViewGroup viewGroup)
-    {
+    private String ErrorResponseDialog(String Response, Context context, final ViewGroup viewGroup) {
         gson = new Gson();
         errorPOJO = gson.fromJson(Response, ErrorPOJO.class);
         String FailureReason = "Oops Something Went Wrong!!";
 
-        if(errorPOJO.getErrors() != null)
-        {
+        if (errorPOJO.getErrors() != null) {
             String[] error = errorPOJO.getErrors();
             String errorString = error[0];
 
@@ -770,9 +766,7 @@ public class IOUtils {
 
             FailureReason = errorString;
 
-        }
-        else if(errorPOJO.getMessage() != null)
-        {
+        } else if (errorPOJO.getMessage() != null) {
             FireToast.customSnackbarDialog(context, errorPOJO.getMessage(), "", viewGroup, new ActionSwipeListener() {
                 @Override
                 public void onSwipeToDismiss() {
@@ -781,9 +775,7 @@ public class IOUtils {
             });
 
             FailureReason = errorPOJO.getMessage();
-        }
-        else
-        {
+        } else {
             FireToast.customSnackbarDialog(context, "Oops Something Went Wrong!!", "", viewGroup, new ActionSwipeListener() {
                 @Override
                 public void onSwipeToDismiss() {
@@ -797,10 +789,10 @@ public class IOUtils {
         return FailureReason;
     }
 
-    public static void showRipples(LatLng latLng,GoogleMap map,int DURATION) {
+    public static void showRipples(LatLng latLng, GoogleMap map, int DURATION) {
         GradientDrawable d = new GradientDrawable();
         d.setShape(GradientDrawable.OVAL);
-        d.setSize(500,500);
+        d.setSize(500, 500);
         d.setColor(0x5500ff00);
         d.setStroke(0, Color.TRANSPARENT);
 

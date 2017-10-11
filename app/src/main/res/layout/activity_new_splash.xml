@@ -1,70 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@drawable/background_overlay"
     android:fillViewport="true"
     tools:context="com.kesari.trackingfresh.Splash.NewSplash">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-                <ImageView
-                    android:id="@+id/imageView5"
-                    android:visibility="gone"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/splash" />
+        <LinearLayout
+            android:id="@+id/topLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/text_size18"
+            android:layout_marginTop="30dp"
+            android:gravity="center">
 
-                <pl.droidsonroids.gif.GifImageView
-                    android:id="@+id/splash"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/splashgif"
-                    />
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="220dp"
+                android:layout_height="190dp"
+                android:src="@drawable/trucklogo" />
+        </LinearLayout>
 
-                <LinearLayout
-                    android:layout_alignParentBottom="true"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
 
-                    <Button
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="GET STARTED"
-                        android:id="@+id/btnLogin"
-                        android:background="@drawable/splash_button"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_above="@+id/login"
-                        android:textStyle="bold"
-                        android:textSize="@dimen/text_size"
-                        android:elevation="10dp"
-                        android:textColor="@color/TextColor"
-                        android:textAppearance="?android:textAppearanceMedium"
-                        />
+        <TextView
+            android:layout_below="@+id/topLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="10dp"
+            android:textColor="@android:color/white"
+            android:text="@string/splash_text"
+            android:textStyle="normal"
 
-                    <Button
-                        android:id="@+id/login"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="LOG IN WITH TRACKING FRESH"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_alignParentBottom="true"
-                        android:textSize="@dimen/text_size"
-                        android:textStyle="bold"
-                        android:textColor="@color/white"
-                        android:background="@android:color/transparent"
-                        android:textAppearance="?android:textAppearanceMedium"
-                        />
+            android:textSize="20dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="20dp"
+            android:layout_marginBottom="20dp">
+        <Button
+            android:id="@+id/buttonSignUp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/login"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/greenround"
+            android:text="SIGN UP"
+            android:textStyle="bold"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="@color/TextColor"
+            android:textSize="@dimen/text_size18" />
 
-                </LinearLayout>
 
-            </RelativeLayout>
+            <Button
+                android:id="@+id/buttonLogin"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/whiteround"
+                android:text="SIGN IN"
+                android:textStyle="bold"
 
-</RelativeLayout>
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textColor="@color/Gray"
+                android:textSize="@dimen/text_size18"
+                android:visibility="visible" />
+
+
+        </LinearLayout>
+        <Button
+            android:id="@+id/login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/transparent"
+            android:text="LOG IN WITH TRACKING FRESH"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+</ScrollView>

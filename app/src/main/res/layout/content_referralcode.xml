@@ -1,98 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/white"
-    tools:showIn="@layout/activity_referral_code"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    android:layout_height="match_parent">
+    tools:showIn="@layout/activity_referral_code">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:background="#e1dede"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_margin="10dp"
-            android:orientation="vertical"
-            android:background="@drawable/border_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
 
             <RelativeLayout
-                android:background="@color/LightGray"
-                android:padding="5dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="5dp">
 
+
+                <ImageView
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+                    android:src="@drawable/invite"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Referral Code"
                     android:layout_centerVertical="true"
+                    android:text="@string/invite_friends"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_size"
-                    />
+                    android:visibility="gone"/>
             </RelativeLayout>
 
             <LinearLayout
-                android:padding="5dp"
                 android:id="@+id/referral_holder"
-                android:layout_marginTop="20dp"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical"
+                android:padding="5dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Refferral Code"
-                    android:layout_marginLeft="10dp"
                     android:layout_gravity="center"
-                    android:textColor="@color/Gray"
-                    android:textSize="22sp"
-                    />
-
+                    android:layout_marginLeft="10dp"
+                    android:text="Share your refreel code"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
                 <LinearLayout
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:padding="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:background="@drawable/border_layout"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center"
+                    android:padding="10dp">
 
                     <TextView
                         android:id="@+id/refferal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:textStyle="bold"
                         android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="DQUHIY1313"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/text_size"
-                        />
+                        android:textSize="22dp"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:text="@string/invite_msg"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
                 <mehdi.sakout.fancybuttons.FancyButton
                     android:id="@+id/Share"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    fancy:fb_borderColor="#FFFFFF"
-                    fancy:fb_borderWidth="1dp"
-                    fancy:fb_iconPosition="right"
+                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
-                    fancy:fb_text=""
-                    fancy:fb_fontIconResource="&#xf1e0;"
-                    fancy:fb_defaultColor="@color/full_trans"
-                    fancy:fb_focusColor="#2e5071"
+                    fancy:fb_borderWidth="1dp"
+                    fancy:fb_defaultColor="@color/MoneyGreen"
+                    fancy:fb_focusColor="@color/MoneyGreen"
                     fancy:fb_radius="5dp"
-                    fancy:fb_textColor="@color/Gray"
+                    fancy:fb_text="SHARE"
+                    fancy:fb_textColor="@color/white"
                     fancy:fb_textSize="18sp" />
 
             </LinearLayout>

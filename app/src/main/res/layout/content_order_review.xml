@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/whitegray"
     tools:showIn="@layout/activity_order_review"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -28,16 +28,24 @@
 
                 <TextView
                     android:id="@+id/delivery_text"
-                    android:text="Order Review"
-                    android:textColor="@color/white"
+                    android:text="Your Order"
+                    android:textColor="@color/Gray"
                     android:drawablePadding="-190dp"
                     android:padding="10dp"
                     android:textStyle="bold"
                     android:textSize="@dimen/text_size"
-                    android:background="@color/Button_Color"
+                    android:background="@color/whitegray"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
+
+                <android.support.v7.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/recyclerView"
+                    android:scrollbars="vertical"
+                    android:background="@color/white">
+                </android.support.v7.widget.RecyclerView>
                 <LinearLayout
                     android:orientation="vertical"
                     android:padding="10dp"
@@ -51,20 +59,23 @@
 
                         <TextView
                             android:text="Order no: "
-                            android:textColor="@color/black"
+                            android:textColor="@color/DarkGray"
                             android:textStyle="bold"
                             android:textSize="14sp"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="3"
+                            android:gravity="left"
                             android:layout_height="wrap_content"/>
 
                         <TextView
                             android:id="@+id/orderNo"
-                            android:text="nil"
+                            android:text=""
                             android:layout_marginLeft="5dp"
                             android:textColor="@color/black"
-                            android:gravity="center"
                             android:textSize="14sp"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="3"
+                            android:gravity="left"
                             android:layout_height="wrap_content"/>
 
                     </LinearLayout>
@@ -76,20 +87,23 @@
 
                         <TextView
                             android:text="Order Placed On: "
-                            android:textColor="@color/black"
+                            android:textColor="@color/DarkGray"
                             android:textStyle="bold"
                             android:textSize="14sp"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="3"
+                            android:gravity="left"
                             android:layout_height="wrap_content"/>
 
                         <TextView
                             android:id="@+id/orderDate"
-                            android:text="nil"
+                            android:text=""
                             android:layout_marginLeft="5dp"
                             android:textColor="@color/black"
-                            android:gravity="center"
                             android:textSize="14sp"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="3"
+                            android:gravity="left"
                             android:layout_height="wrap_content"/>
 
                     </LinearLayout>
@@ -102,20 +116,23 @@
 
                         <TextView
                             android:text="Order Delivered On: "
-                            android:textColor="@color/black"
+                            android:textColor="@color/DarkGray"
                             android:textStyle="bold"
                             android:textSize="14sp"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="3"
+                            android:gravity="left"
                             android:layout_height="wrap_content"/>
 
                         <TextView
                             android:id="@+id/orderDeliverDate"
-                            android:text="nil"
+                            android:text=""
                             android:layout_marginLeft="5dp"
                             android:textColor="@color/black"
-                            android:gravity="center"
                             android:textSize="14sp"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="3"
+                            android:gravity="left"
                             android:layout_height="wrap_content"/>
 
                     </LinearLayout>
@@ -127,20 +144,24 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="3"
+                            android:gravity="left"
                             android:layout_height="wrap_content"
                             android:text="Order type:"
                             android:textColor="@color/DarkGray"
                             android:textSize="@dimen/text_size14"
+                            android:textStyle="bold"
                             />
 
                         <TextView
                             android:id="@+id/orderType"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="3"
+                            android:gravity="left"
                             android:layout_height="wrap_content"
                             android:text=""
                             android:layout_marginLeft="10dp"
-                            android:gravity="center"
                             android:textColor="@color/black"
                             android:textSize="@dimen/text_size14"
                             />
@@ -165,16 +186,19 @@
                             android:textColor="@color/black"
                             android:textStyle="bold"
                             android:textSize="14sp"
-                            android:layout_width="160dp"
+                            android:layout_width="0dp"
+                            android:layout_weight="3"
+                            android:gravity="left"
                             android:layout_height="wrap_content"/>
 
                         <TextView
                             android:id="@+id/deliveryCharge"
-                            android:text="nil"
+                            android:text=""
                             android:textColor="@color/black"
-                            android:gravity="end"
+                            android:gravity="left"
                             android:textSize="14sp"
-                            android:layout_width="50dp"
+                            android:layout_width="0dp"
+                            android:layout_weight="3"
                             android:layout_height="wrap_content"/>
 
                     </LinearLayout>
@@ -190,30 +214,33 @@
                             android:textColor="@color/black"
                             android:textSize="14sp"
                             android:textStyle="bold"
-                            android:layout_width="160dp"
+                            android:layout_width="0dp"
+                            android:layout_weight="3"
+                            android:gravity="left"
                             android:layout_height="wrap_content"/>
 
                         <TextView
                             android:id="@+id/total_price"
-                            android:text="nil"
-                            android:textColor="@color/black"
-                            android:gravity="end"
-                            android:textSize="14sp"
-                            android:layout_width="50dp"
+                            android:text=""
+                            android:textColor="@color/MoneyGreen"
+                            android:gravity="left"
+                            android:textSize="18sp"
+                            android:layout_width="0dp"
+                            android:layout_weight="3"
                             android:layout_height="wrap_content"/>
 
                     </LinearLayout>
 
                 </LinearLayout>
 
-
+<!--
                 <android.support.v7.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/recyclerView"
                     android:scrollbars="vertical"
                     android:background="@color/white">
-                </android.support.v7.widget.RecyclerView>
+                </android.support.v7.widget.RecyclerView>-->
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -223,19 +250,22 @@
 
                     <TextView
                         android:text="Payment Status"
-                        android:textColor="@color/black"
+                        android:textColor="@color/DarkGray"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        android:layout_width="160dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="3"
+                        android:gravity="left"
                         android:layout_height="wrap_content"/>
 
                     <TextView
                         android:id="@+id/payment_status"
-                        android:text="nil"
+                        android:text=""
                         android:textColor="@color/black"
-                        android:gravity="center"
                         android:textSize="14sp"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="3"
+                        android:gravity="left"
                         android:layout_height="wrap_content"/>
 
                 </LinearLayout>
@@ -253,19 +283,22 @@
 
                     <TextView
                         android:text="Payment Mode"
-                        android:textColor="@color/black"
+                        android:textColor="@color/DarkGray"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        android:layout_width="160dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="3"
+                        android:gravity="left"
                         android:layout_height="wrap_content"/>
 
                     <TextView
                         android:id="@+id/payment_mode"
-                        android:text="nil"
+                        android:text=""
                         android:textColor="@color/black"
-                        android:gravity="center"
                         android:textSize="14sp"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="3"
+                        android:gravity="left"
                         android:layout_height="wrap_content"/>
 
                 </LinearLayout>
@@ -280,18 +313,27 @@
                     android:padding="10dp"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:background="@drawable/edittext_border"
                     android:textSize="14sp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
-
+                <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                    xmlns:fancy="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/subItemCard_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    card_view:cardBackgroundColor="@color/white"
+                    card_view:cardCornerRadius="1dp"
+                    card_view:cardElevation="5dp"
+                    card_view:cardUseCompatPadding="true">
                 <TextView
                     android:id="@+id/fullName"
                     android:text=""
-                    android:textColor="@color/black"
+                    android:textColor="@color/MoneyGreen"
                     android:textSize="14sp"
                     android:layout_marginLeft="10dp"
-                    android:layout_width="160dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
                 <TextView
@@ -300,7 +342,7 @@
                     android:textColor="@color/black"
                     android:textSize="14sp"
                     android:layout_marginLeft="10dp"
-                    android:layout_width="160dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
                 <TextView
@@ -309,7 +351,7 @@
                     android:textColor="@color/black"
                     android:textSize="14sp"
                     android:layout_marginLeft="10dp"
-                    android:layout_width="160dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
                 <TextView
@@ -321,6 +363,7 @@
                     android:layout_width="160dp"
                     android:layout_height="wrap_content"/>
 
+                </android.support.v7.widget.CardView>
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
@@ -351,7 +394,7 @@
                         android:drawablePadding="-190dp"
                         android:padding="10dp"
                         android:textSize="@dimen/text_size"
-                        android:background="@color/Button_Color"
+                        android:background="@color/MoneyGreen"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
 
@@ -397,37 +440,66 @@
 
                     <LinearLayout
                         android:orientation="horizontal"
-                        android:weightSum="2"
                         android:layout_margin="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
+<!--
                         <mehdi.sakout.fancybuttons.FancyButton
-                            android:layout_width="match_parent"
+
+                            android:layout_width="0dp"
+                            android:layout_weight="3"
                             android:layout_height="wrap_content"
                             android:padding="5dp"
                             android:text="Call"
-                            android:layout_weight="1"
                             android:id="@+id/btnCall"
-                            fancy:fb_defaultColor="@color/Button_Color"
+                            fancy:fb_defaultColor="@color/MoneyGreen"
                             fancy:fb_focusColor="@color/colorPrimary"
-                            fancy:fb_radius="5dp"
+                            fancy:fb_radius="1dp"
                             fancy:fb_textColor="@color/white"
                             fancy:fb_textSize="18sp" />
+-->
 
-                        <mehdi.sakout.fancybuttons.FancyButton
-                            android:layout_width="match_parent"
+
+                        <Button
+
+                            android:layout_width="0dp"
+                            android:layout_weight="3"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:text="Call"
+                            android:id="@+id/btnCall"
+                            android:background="@color/MoneyGreen"
+                            android:textColor="@color/white"
+                            android:textSize="18sp" />
+                        <Button
+
+                            android:layout_width="0dp"
+                            android:layout_weight="3"
                             android:layout_height="wrap_content"
                             android:padding="5dp"
                             android:text="Support"
-                            android:layout_weight="1"
                             android:layout_marginLeft="10dp"
                             android:id="@+id/btnSupport"
-                            fancy:fb_defaultColor="@color/Button_Color"
+                            android:background="@color/MoneyGreen"
+                            android:textColor="@color/white"
+                            android:textSize="18sp" />
+<!--
+                        <mehdi.sakout.fancybuttons.FancyButton
+
+                            android:layout_width="0dp"
+                            android:layout_weight="3"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:text="Support"
+                            android:layout_marginLeft="10dp"
+                            android:id="@+id/btnSupport"
+                            fancy:fb_defaultColor="@color/MoneyGreen"
                             fancy:fb_focusColor="@color/colorPrimary"
-                            fancy:fb_radius="5dp"
+                            fancy:fb_radius="0dp"
                             fancy:fb_textColor="@color/white"
                             fancy:fb_textSize="18sp" />
+-->
 
                     </LinearLayout>
 
@@ -446,7 +518,7 @@
                         android:textColor="@color/white"
                         android:padding="10dp"
                         android:textSize="@dimen/text_size"
-                        android:background="@color/Button_Color"
+                        android:background="@color/MoneyGreen"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
 
@@ -456,7 +528,7 @@
                         android:layout_margin="5dp"
                         android:isIndicator="false"
                         android:layout_gravity="center"
-                        android:progressTint="@android:color/holo_red_dark"
+                        android:progressTint="@color/MoneyGreen"
                         style="?android:attr/ratingBarStyleIndicator"
                         android:numStars="5"
                         android:id="@+id/ratingBar"
@@ -500,9 +572,9 @@
                         android:layout_marginRight="5dp"
                         android:layout_marginTop="5dp"
                         android:id="@+id/btnFeedback"
-                        fancy:fb_defaultColor="@color/Button_Color"
+                        fancy:fb_defaultColor="@color/MoneyGreen"
                         fancy:fb_focusColor="@color/colorPrimary"
-                        fancy:fb_radius="5dp"
+                        fancy:fb_radius="0dp"
                         fancy:fb_textColor="@color/white"
                         fancy:fb_textSize="18sp" />
 
@@ -523,7 +595,7 @@
         android:layout_margin="5dp"
         android:layout_alignParentBottom="true"
         android:id="@+id/btnSubmit"
-        fancy:fb_defaultColor="@color/fresh_blue"
+        fancy:fb_defaultColor="@color/MoneyGreen"
         fancy:fb_focusColor="@color/colorPrimary"
         fancy:fb_radius="5dp"
         fancy:fb_textColor="@color/white"

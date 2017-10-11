@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/whitegray"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
     tools:showIn="@layout/activity_default__delivery_address"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -18,6 +18,7 @@
         android:padding="10dp"
         android:textSize="@dimen/text_size"
         android:textStyle="bold"
+        android:visibility="gone"
         android:background="@color/Button_Color"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -36,35 +37,43 @@
             android:layout_height="wrap_content">
 
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_margin="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <TextView
                     android:text="Default Delivery Address"
-                    android:textColor="@color/black"
+                    android:textColor="@color/Gray"
                     android:layout_margin="5dp"
                     android:padding="10dp"
-                    android:textSize="@dimen/text_size14"
-                    android:layout_width="wrap_content"
+                    android:textSize="@dimen/text_size"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
                 <mehdi.sakout.fancybuttons.FancyButton
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     fancy:fb_text="New"
                     android:layout_gravity="center"
                     android:id="@+id/btnNew"
-                    fancy:fb_defaultColor="@color/fresh_blue"
+                    fancy:fb_defaultColor="@color/MoneyGreen"
                     fancy:fb_focusColor="@color/colorPrimary"
                     fancy:fb_radius="5dp"
                     fancy:fb_textColor="@color/white"
                     fancy:fb_textSize="18sp" />
 
                 <mehdi.sakout.fancybuttons.FancyButton
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     fancy:fb_text="Change"
@@ -72,11 +81,13 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    fancy:fb_defaultColor="@color/fresh_blue"
+                    fancy:fb_defaultColor="@color/MoneyGreen"
                     fancy:fb_focusColor="@color/colorPrimary"
                     fancy:fb_radius="5dp"
                     fancy:fb_textColor="@color/white"
                     fancy:fb_textSize="18sp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -84,13 +95,13 @@
                 android:orientation="vertical"
                 android:layout_margin="5dp"
                 android:padding="5dp"
-                android:background="@drawable/border_layout"
+                android:background="@drawable/address_fram"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/name"
-                    android:textColor="@color/black"
+                    android:textColor="@color/Gray"
                     android:paddingLeft="10dp"
                     android:textSize="@dimen/text_size"
                     android:textStyle="bold"
@@ -128,6 +139,11 @@
 
                 </LinearLayout>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/Gray"
+                    android:visibility="gone"/>
             </LinearLayout>
 
         </LinearLayout>
@@ -138,6 +154,8 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="10dp"
+            android:textColor="@color/Gray"
+            android:buttonTint="@color/MoneyGreen"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -145,13 +163,13 @@
 
     <mehdi.sakout.fancybuttons.FancyButton
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:padding="5dp"
         fancy:fb_text="View Order"
         android:layout_alignParentBottom="true"
         android:id="@+id/btnSubmit"
         android:layout_margin="5dp"
-        fancy:fb_defaultColor="@color/fresh_blue"
+        fancy:fb_defaultColor="@color/MoneyGreen"
         fancy:fb_focusColor="@color/colorPrimary"
         fancy:fb_radius="5dp"
         fancy:fb_textColor="@color/white"

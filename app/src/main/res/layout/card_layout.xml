@@ -5,172 +5,223 @@
     android:id="@+id/subItemCard_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
-    android:background="@color/white"
-    card_view:cardCornerRadius="4dp"
-    card_view:cardElevation="1dp">
+    android:clipChildren="false"
+    card_view:cardBackgroundColor="@color/white"
+    card_view:cardCornerRadius="1dp"
+    card_view:cardElevation="5dp"
+    card_view:cardUseCompatPadding="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="120dp">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/images"
-            android:layout_gravity="center"
             android:layout_width="100dp"
-            android:layout_height="100dp" />
+            android:layout_height="100dp"
+            android:layout_gravity="center" />
 
         <LinearLayout
-            android:layout_toRightOf="@+id/images"
-            android:orientation="vertical"
-            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:layout_gravity="center"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_toRightOf="@+id/images"
+            android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_toLeftOf="@+id/button_Holder"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
 
                     <LinearLayout
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/product_name"
-                            android:text="Product Name"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/black"
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="8"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/product_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Product Name"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/weight"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="0dp"
+                                android:text="Weight"
+                                android:textColor="@color/Gray"
+                                android:textSize="14sp" />
+
+
+                        </LinearLayout>
+
+                        <mehdi.sakout.fancybuttons.FancyButton
+                            android:id="@+id/delete"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-
-                        <TextView
-                            android:id="@+id/weight"
-                            android:text="Weight"
-                            android:textSize="14sp"
-                            android:layout_marginLeft="10dp"
-                            android:textColor="@color/Gray"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-
-
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_marginRight="10dp"
+                            fancy:fb_borderColor="@color/Gray"
+                            fancy:fb_defaultColor="#00000000"
+                            fancy:fb_focusColor="@color/colorHighlight"
+                            fancy:fb_fontIconResource="&#xf014;"
+                            fancy:fb_text=""
+                            fancy:fb_textColor="@color/Gray"
+                            fancy:fb_textSize="14sp" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_marginTop="5dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="5dp"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/price"
-                            android:text="100"
-                            android:textColor="@color/black"
-                            android:textSize="14sp"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:text="100"
+
+                            android:textColor="@color/black"
+                            android:textSize="14sp" />
 
                         <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
                             android:text=" / Quantity"
                             android:textColor="@color/Gray"
                             android:textSize="14sp"
+                            android:visibility="gone"/>
+
+                        <TextView
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:text=" X "
+
+                            android:textColor="@color/Gray"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:gravity="center_vertical"
+                            android:text="0"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/text_size" />
+
+                        <LinearLayout
+                            android:id="@+id/button_Holder"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginLeft="10dp"
+                            android:gravity="right"
+                            android:orientation="horizontal">
+
+                            <Button
+                                android:id="@+id/plus"
+                                android:layout_width="35dp"
+                                android:layout_height="35dp"
+                                android:background="@drawable/cart_circular_drawable"
+                                android:text="+"
+                                android:textColor="@color/white"
+                                android:textSize="18dp" />
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="35dp"
+                                android:background="@color/whitegray" />
+
+                            <mehdi.sakout.fancybuttons.FancyButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:padding="5dp"
+                                android:visibility="gone"
+                                fancy:fb_borderColor="@color/Gray"
+                                fancy:fb_defaultColor="#00000000"
+                                fancy:fb_focusColor="@color/colorHighlight"
+                                fancy:fb_fontIconResource="&#xf067;"
+                                fancy:fb_text=""
+                                fancy:fb_textColor="@color/white"
+                                fancy:fb_textSize="8sp" />
+
+                            <!--  <TextView
+                                  android:id="@+id/count"
+                                  android:text="0"
+                                  android:layout_width="wrap_content"
+                                  android:gravity="center"
+                                  android:layout_marginLeft="5dp"
+                                  android:layout_marginRight="5dp"
+                                  android:textColor="@color/black"
+                                  android:textSize="@dimen/text_size"
+                                  android:layout_height="match_parent" />
+          -->
+                            <Button
+                                android:id="@+id/minus"
+                                android:layout_width="35dp"
+                                android:layout_height="35dp"
+                                android:background="@drawable/cart_circular_drawable"
+                                android:text="-"
+                                android:textColor="@color/white"
+                                android:textSize="18dp" />
+
+                            <mehdi.sakout.fancybuttons.FancyButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:padding="5dp"
+                                android:visibility="gone"
+                                fancy:fb_borderColor="@color/Gray"
+                                fancy:fb_defaultColor="#00000000"
+                                fancy:fb_focusColor="@color/colorHighlight"
+                                fancy:fb_fontIconResource="&#xf068;"
+                                fancy:fb_text=""
+                                fancy:fb_textColor="@color/white"
+                                fancy:fb_textSize="8sp" />
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
-
-
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/button_Holder"
-                    android:orientation="horizontal"
-                    android:layout_centerInParent="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_alignParentRight="true"
-                    android:gravity="center"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp">
-
-                    <Button
-                        android:id="@+id/plus"
-                        android:background="@drawable/cart_circular_drawable"
-                        android:text="+"
-                        android:textColor="@color/Gray"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp" />
-
-                    <mehdi.sakout.fancybuttons.FancyButton
-                        android:visibility="gone"
-                        fancy:fb_fontIconResource="&#xf067;"
-                        fancy:fb_textColor="@color/white"
-                        fancy:fb_borderColor="@color/Gray"
-                        fancy:fb_defaultColor="#00000000"
-                        fancy:fb_focusColor="@color/colorHighlight"
-                        fancy:fb_textSize="8sp"
-                        fancy:fb_text=""
-                        android:layout_gravity="center"
-                        android:padding="5dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"/>
-
-                    <TextView
-                        android:id="@+id/count"
-                        android:text="0"
-                        android:layout_width="wrap_content"
-                        android:gravity="center"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/text_size"
-                        android:layout_height="match_parent" />
-
-                    <Button
-                        android:id="@+id/minus"
-                        android:background="@drawable/cart_circular_drawable"
-                        android:text="-"
-                        android:textColor="@color/Gray"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp" />
-
-                    <mehdi.sakout.fancybuttons.FancyButton
-                        android:visibility="gone"
-                        fancy:fb_fontIconResource="&#xf068;"
-                        fancy:fb_textColor="@color/white"
-                        fancy:fb_borderColor="@color/Gray"
-                        fancy:fb_defaultColor="#00000000"
-                        fancy:fb_focusColor="@color/colorHighlight"
-                        fancy:fb_textSize="8sp"
-                        fancy:fb_text=""
-                        android:padding="5dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"/>
-
-                </LinearLayout>
 
                 <Button
+                    android:id="@+id/addtoCart"
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
-                    android:text="Add to Cart"
-                    android:id="@+id/addtoCart"
-                    android:visibility="gone"
-                    android:textSize="@dimen/text_size"
                     android:background="@drawable/rounded_btn"
-                    android:textStyle="bold"
-                    android:textColor="@color/TextColor"
+                    android:text="Add to Cart"
                     android:textAppearance="?android:textAppearanceMedium"
-                    />
+                    android:textColor="@color/TextColor"
+                    android:textSize="@dimen/text_size"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
 
             </RelativeLayout>
 
@@ -179,35 +230,35 @@
                 android:layout_height="wrap_content">
 
                 <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_marginTop="5dp"
-                    android:layout_toLeftOf="@+id/delete"
-                    android:layout_marginRight="20dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
 
                     <TextView
                         android:id="@+id/quantity_price"
-                        android:text="100"
-                        android:layout_gravity="center"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="100"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
                     <TextView
-                        android:text=" /- SubTotal"
-                        android:layout_gravity="center"
-                        android:textSize="14sp"
-                        android:layout_marginLeft="5dp"
-                        android:textColor="@color/Gray"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:text=" /- SubTotal"
+                        android:textColor="@color/Gray"
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
-                <mehdi.sakout.fancybuttons.FancyButton
+                <!--<mehdi.sakout.fancybuttons.FancyButton
                     android:id="@+id/delete"
                     fancy:fb_fontIconResource="&#xf014;"
                     fancy:fb_textColor="@color/Gray"
@@ -222,7 +273,7 @@
                     android:layout_marginRight="10dp"
                     fancy:fb_text=""
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"/>-->
 
             </RelativeLayout>
 
@@ -230,4 +281,4 @@
 
     </RelativeLayout>
 
-    </android.support.v7.widget.CardView>
+</android.support.v7.widget.CardView>

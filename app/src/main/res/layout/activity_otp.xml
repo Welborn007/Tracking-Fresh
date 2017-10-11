@@ -5,9 +5,41 @@
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@drawable/background_overlay">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/custom_toolbar" />
+    <TextView
+        android:id="@+id/logintext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:textAlignment="center"
+        android:text="@string/SMS_verification"
+        android:textSize="20sp"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/MoneyGreen"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:textAllCaps="true"
+        android:layout_marginTop="20dp"/>
+    <TextView
+        android:id="@+id/logintextheder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/logintext"
+        android:textAlignment="center"
+        android:text="@string/from_sms"
+        android:textSize="18sp"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"/>
 
     <LinearLayout
+        android:layout_below="@+id/logintextheder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -18,7 +50,8 @@
             android:layout_marginTop="40dp"
             android:layout_gravity="center"
             android:layout_width="150dp"
-            android:layout_height="150dp" />
+            android:layout_height="150dp"
+            android:visibility="gone"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -41,7 +74,7 @@
                 android:layout_below="@+id/verificationHeader"
                 android:layout_margin="10dp"
                 android:gravity="center"
-                android:textColor="@color/Gray"
+                android:textColor="@color/MoneyGreen"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -52,11 +85,18 @@
                 android:textSize="16sp"
                 android:text=""
                 android:textStyle="bold"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/MoneyGreen"
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
-
+<!--
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/password_header"
+                android:layout_below="@+id/mobinumber"
+                android:textColor="@color/MoneyGreen"
+                android:textSize="14dp"/>-->
 
             <LinearLayout
                 android:id="@+id/otp"
@@ -66,6 +106,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+
                 <EditText
                     android:id="@+id/otp1"
                     android:textSize="16sp"
@@ -73,7 +114,12 @@
                     android:maxLength="1"
                     android:gravity="center"
                     android:layout_width="40dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittextback"
+                    android:hint="*"
+                    android:textColorHint="@color/white"
+                    android:textColor="@color/white"
+                    />
 
                 <EditText
                     android:id="@+id/otp2"
@@ -82,7 +128,11 @@
                     android:maxLength="1"
                     android:gravity="center"
                     android:layout_width="40dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittextback"
+                    android:hint="*"
+                    android:textColorHint="@color/white"
+                    android:textColor="@color/white" />
 
                 <EditText
                     android:id="@+id/otp3"
@@ -91,7 +141,11 @@
                     android:maxLength="1"
                     android:gravity="center"
                     android:layout_width="40dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittextback"
+                    android:hint="*"
+                    android:textColorHint="@color/white"
+                    android:textColor="@color/white" />
 
                 <EditText
                     android:id="@+id/otp4"
@@ -100,7 +154,11 @@
                     android:inputType="numberPassword"
                     android:gravity="center"
                     android:layout_width="40dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittextback"
+                    android:hint="*"
+                    android:textColorHint="@color/white"
+                    android:textColor="@color/white" />
 
             </LinearLayout>
 
@@ -111,6 +169,7 @@
                 android:gravity="center"
                 android:textSize="16sp"
                 android:layout_below="@+id/otp"
+                android:textColor="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -119,23 +178,37 @@
                 android:layout_below="@+id/counter"
                 android:orientation="horizontal"
                 android:weightSum="2"
-                android:layout_margin="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <mehdi.sakout.fancybuttons.FancyButton
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="DONE"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/sendOTP"
+                    android:background="@drawable/greenround"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginTop="20dp"
+                    android:textSize="@dimen/text_size"
+                    android:textColor="@color/TextColor"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    />
+             <!--   <mehdi.sakout.fancybuttons.FancyButton
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    fancy:fb_text="Verify"
+                    fancy:fb_text="DONE"
                     android:id="@+id/sendOTP"
                     android:layout_weight="1"
-                    fancy:fb_defaultColor="@color/fresh_blue"
+                    fancy:fb_defaultColor="@color/MoneyGreen"
                     fancy:fb_focusColor="@color/colorPrimary"
                     fancy:fb_radius="10dp"
+                    android:layout_margin="30dp"
                     fancy:fb_textColor="@color/white"
                     fancy:fb_textSize="18sp" />
-
+-->
 
                 <mehdi.sakout.fancybuttons.FancyButton
                     android:layout_width="match_parent"
@@ -149,7 +222,8 @@
                     fancy:fb_focusColor="@color/colorPrimary"
                     fancy:fb_radius="10dp"
                     fancy:fb_textColor="@color/white"
-                    fancy:fb_textSize="18sp" />
+                    fancy:fb_textSize="18sp"
+                    android:visibility="gone"/>
 
             </LinearLayout>
 
@@ -161,7 +235,9 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+
 
 
                 <mehdi.sakout.fancybuttons.FancyButton
@@ -200,6 +276,80 @@
 
             </LinearLayout>
 
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/repeatLineraLayout"
+                android:layout_centerInParent="true"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:padding="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Do not receive sms."
+                    android:textColor="@color/white"
+                    android:textSize="20dp"/>
+
+
+                <TextView
+                    android:id="@+id/signupTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/repeat"
+                    android:textColor="@color/MoneyGreen"
+                    android:textSize="20dp"
+                    android:visibility="gone"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/repeatLineraLayout"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linearLayout"
+                android:layout_centerInParent="true"
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal"
+                android:layout_marginBottom="20dp"
+                android:gravity="center">
+                <TextView
+                    android:id="@+id/resendSmsTextView"
+                    android:layout_width="0dp"
+                    android:layout_weight="4"
+                    android:layout_height="wrap_content"
+                    android:text="@string/repeat_sms"
+                    android:textColor="@color/MoneyGreen"
+                    android:gravity="center"
+                    android:textAllCaps="false"
+                    android:textSize="20dp"/>
+
+                <TextView
+                    android:id="@+id/orTextView"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:layout_height="wrap_content"
+                    android:text="OR"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    android:textAllCaps="true"
+                    android:textSize="20dp"/>
+
+
+                <TextView
+                    android:id="@+id/callMeTextView"
+                    android:layout_width="0dp"
+                    android:layout_weight="4"
+                    android:layout_height="wrap_content"
+                    android:text="@string/repeat_call"
+                    android:textColor="@color/MoneyGreen"
+                    android:gravity="center"
+                    android:textAllCaps="false"
+                    android:textSize="20dp"/>
+            </LinearLayout>
         </RelativeLayout>
 
     </LinearLayout>

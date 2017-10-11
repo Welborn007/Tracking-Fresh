@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -69,7 +71,8 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
     Button plus, minus;
     FancyButton  delete;
     LinearLayout holder_count;
-    FancyButton gotoCart, addtoCart, checkOut;
+    FancyButton gotoCart,  checkOut;
+    TextView addtoCart;
     TextView price, percent, disclaimer, related_searches, package_contents, product_description, product_category, title_productname;
     private String TAG = this.getClass().getSimpleName();
     private String productDescription = "";
@@ -126,7 +129,8 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            toolbar.setTitleTextColor(ContextCompat.getColor(DetailsActivity.this,R.color.black));
+//            toolbar.setTitleTextColor(ContextCompat.getColor(DetailsActivity.this,R.color.black));
+            toolbar.setBackgroundColor(ContextCompat.getColor(this,R.color.porcelain));
 
             /*Register receiver*/
             networkUtilsReceiver = new NetworkUtilsReceiver(this);
@@ -272,7 +276,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             title_productname = (TextView) findViewById(R.id.title_productname);
             Share = (FancyButton) findViewById(R.id.Share);
 
-            addtoCart = (FancyButton) findViewById(R.id.addtoCart);
+            addtoCart = (TextView) findViewById(R.id.addtoCart);
             holder_count = (LinearLayout) findViewById(R.id.holder_count);
 
             mfgDateTxt = (TextView) findViewById(R.id.mfgDateTxt);
@@ -688,7 +692,9 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
         LayerDrawable icon = (LayerDrawable) item.getIcon();
 
         setBadgeCount(this, icon, mNotificationsCount);
-
+//        BitmapDrawable iconBitmap = (BitmapDrawable) item.getIcon();
+//        LayerDrawable iconLayer = new LayerDrawable(new Drawable[] { iconBitmap });
+//        setBadgeCount(this, iconLayer, mNotificationsCount);
         return super.onCreateOptionsMenu(menu);
     }
 

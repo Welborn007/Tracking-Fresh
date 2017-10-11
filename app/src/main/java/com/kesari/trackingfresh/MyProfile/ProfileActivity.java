@@ -10,6 +10,8 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -19,6 +21,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -87,7 +90,8 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
     private String TAG = this.getClass().getSimpleName();
     private NetworkUtilsReceiver networkUtilsReceiver;
     TextView Phonenumber,Email,address,customer_name;
-    ImageView photo_edit,profile_edit;
+    ImageView profile_edit;
+    TextView photo_edit;
     CircleImageView profile_image;
 
     private Gson gson;
@@ -118,6 +122,7 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.setBackgroundColor(ContextCompat.getColor(this,R.color.porcelain));
 
             gson = new Gson();
 
@@ -125,7 +130,7 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
             Email = (TextView) findViewById(R.id.Email);
             customer_name = (TextView) findViewById(R.id.customer_name);
 
-            photo_edit = (ImageView) findViewById(R.id.photo_edit);
+            photo_edit = (TextView) findViewById(R.id.photo_edit);
             profile_edit = (ImageView) findViewById(R.id.profile_edit);
             profile_image = (CircleImageView) findViewById(R.id.profile_image);
             referral_holder = (LinearLayout) findViewById(R.id.referral_holder);
@@ -337,12 +342,12 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
                 if(!SharedPrefUtil.getUser(ProfileActivity.this).getData().getReferralCode().isEmpty())
                 {
                     refferal.setText(SharedPrefUtil.getUser(ProfileActivity.this).getData().getReferralCode());
-                    referral_holder.setVisibility(View.VISIBLE);
+//                    referral_holder.setVisibility(View.VISIBLE);
                     getVerifiedMobileNumber();
                 }
                 else
                 {
-                    referral_holder.setVisibility(View.GONE);
+//                    referral_holder.setVisibility(View.GONE);
                 }
             }
 
@@ -755,7 +760,7 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
 
                 updateImageDialog();
 
-                Log.w("path of image from gallery......******************.........", picturePath + "");
+//                Log.w("path of image ****.........", picturePath + "");
 
                 //a.setImageBitmap(thumbnail);
 
@@ -988,8 +993,11 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
         LayerDrawable icon = (LayerDrawable) item.getIcon();
 
         setBadgeCount(this, icon, mNotificationsCount);
-
-        return super.onCreateOptionsMenu(menu);
+//
+//        BitmapDrawable iconBitmap = (BitmapDrawable) item.getIcon();
+//        LayerDrawable iconLayer = new LayerDrawable(new Drawable[] { iconBitmap });
+//        setBadgeCount(this, iconLayer, mNotificationsCount)
+ return super.onCreateOptionsMenu(menu);
     }
 
     @Override

@@ -5,6 +5,7 @@
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:paddingBottom="10dp"
+    android:background="@drawable/background_new"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -15,7 +16,7 @@
         android:padding="10dp"
         android:textStyle="bold"
         android:textSize="@dimen/text_size"
-        android:background="@color/Button_Color"
+        android:background="@color/MoneyGreen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
@@ -29,7 +30,7 @@
             android:layout_height="80dp">
 
             <android.support.design.widget.TextInputLayout
-                android:textColorHint="@color/Button_Color"
+                android:textColorHint="@color/MoneyGreen"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -38,7 +39,7 @@
                     android:layout_width="match_parent"
                     android:textSize="@dimen/text_size"
                     android:inputType="number"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:layout_height="wrap_content"
                     android:hint="@string/Mobile_no" />
 
@@ -48,12 +49,12 @@
 
     <mehdi.sakout.fancybuttons.FancyButton
         android:layout_width="250dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:padding="5dp"
         fancy:fb_text="Confirm"
         android:id="@+id/confirmNumber"
         android:layout_centerInParent="true"
-        fancy:fb_defaultColor="@color/fresh_blue"
+        fancy:fb_defaultColor="@color/MoneyGreen"
         fancy:fb_focusColor="@color/colorPrimary"
         android:layout_below="@+id/holder"
         fancy:fb_radius="5dp"

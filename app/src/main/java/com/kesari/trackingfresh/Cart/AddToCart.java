@@ -5,12 +5,15 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -83,6 +86,7 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.setBackgroundColor(ContextCompat.getColor(this,R.color.porcelain));
 
             myApplication = (MyApplication) getApplicationContext();
 
@@ -476,7 +480,9 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
         LayerDrawable icon = (LayerDrawable) item.getIcon();
 
         setBadgeCount(this, icon, mNotificationsCount);
-
+//        BitmapDrawable iconBitmap = (BitmapDrawable) item.getIcon();
+//        LayerDrawable iconLayer = new LayerDrawable(new Drawable[] { iconBitmap });
+//        setBadgeCount(this, iconLayer, mNotificationsCount);
         return super.onCreateOptionsMenu(menu);
     }
 
