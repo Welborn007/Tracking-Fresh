@@ -44,7 +44,7 @@
                     android:layout_height="match_parent"
                     android:id="@+id/recyclerView"
                     android:scrollbars="vertical"
-                    android:background="@color/white">
+                    android:background="@color/whitegray">
                 </android.support.v7.widget.RecyclerView>
                 <LinearLayout
                     android:orientation="vertical"
@@ -60,18 +60,19 @@
                         <TextView
                             android:text="Order no: "
                             android:textColor="@color/DarkGray"
-                            android:textStyle="bold"
+                            android:textStyle="normal"
                             android:textSize="14sp"
                             android:layout_width="0dp"
                             android:layout_weight="3"
                             android:gravity="left"
+                            android:textAllCaps="true"
                             android:layout_height="wrap_content"/>
 
                         <TextView
                             android:id="@+id/orderNo"
                             android:text=""
                             android:layout_marginLeft="5dp"
-                            android:textColor="@color/black"
+                            android:textColor="@color/Gray"
                             android:textSize="14sp"
                             android:layout_width="0dp"
                             android:layout_weight="3"
@@ -88,7 +89,8 @@
                         <TextView
                             android:text="Order Placed On: "
                             android:textColor="@color/DarkGray"
-                            android:textStyle="bold"
+                            android:textStyle="normal"
+                            android:textAllCaps="true"
                             android:textSize="14sp"
                             android:layout_width="0dp"
                             android:layout_weight="3"
@@ -99,7 +101,7 @@
                             android:id="@+id/orderDate"
                             android:text=""
                             android:layout_marginLeft="5dp"
-                            android:textColor="@color/black"
+                            android:textColor="@color/Gray"
                             android:textSize="14sp"
                             android:layout_width="0dp"
                             android:layout_weight="3"
@@ -117,7 +119,8 @@
                         <TextView
                             android:text="Order Delivered On: "
                             android:textColor="@color/DarkGray"
-                            android:textStyle="bold"
+                            android:textStyle="normal"
+                            android:textAllCaps="true"
                             android:textSize="14sp"
                             android:layout_width="0dp"
                             android:layout_weight="3"
@@ -128,7 +131,7 @@
                             android:id="@+id/orderDeliverDate"
                             android:text=""
                             android:layout_marginLeft="5dp"
-                            android:textColor="@color/black"
+                            android:textColor="@color/Gray"
                             android:textSize="14sp"
                             android:layout_width="0dp"
                             android:layout_weight="3"
@@ -147,11 +150,12 @@
                             android:layout_width="0dp"
                             android:layout_weight="3"
                             android:gravity="left"
+                            android:textAllCaps="true"
                             android:layout_height="wrap_content"
                             android:text="Order type:"
                             android:textColor="@color/DarkGray"
                             android:textSize="@dimen/text_size14"
-                            android:textStyle="bold"
+                            android:textStyle="normal"
                             />
 
                         <TextView
@@ -162,7 +166,7 @@
                             android:layout_height="wrap_content"
                             android:text=""
                             android:layout_marginLeft="10dp"
-                            android:textColor="@color/black"
+                            android:textColor="@color/Gray"
                             android:textSize="@dimen/text_size14"
                             />
 
@@ -173,7 +177,7 @@
                         android:layout_height="1dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="5dp"
-                        android:background="@color/Gray"/>
+                        android:background="#CBCAD0"/>
 
                     <LinearLayout
                         android:gravity="end"
@@ -183,7 +187,7 @@
 
                         <TextView
                             android:text="Delivery Charges"
-                            android:textColor="@color/black"
+                            android:textColor="@color/Gray"
                             android:textStyle="bold"
                             android:textSize="14sp"
                             android:layout_width="0dp"
@@ -194,7 +198,7 @@
                         <TextView
                             android:id="@+id/deliveryCharge"
                             android:text=""
-                            android:textColor="@color/black"
+                            android:textColor="@color/Gray"
                             android:gravity="left"
                             android:textSize="14sp"
                             android:layout_width="0dp"
@@ -211,7 +215,7 @@
 
                         <TextView
                             android:text="Grand Total"
-                            android:textColor="@color/black"
+                            android:textColor="@color/Gray"
                             android:textSize="14sp"
                             android:textStyle="bold"
                             android:layout_width="0dp"
@@ -261,7 +265,7 @@
                     <TextView
                         android:id="@+id/payment_status"
                         android:text=""
-                        android:textColor="@color/black"
+                        android:textColor="@color/MoneyGreen"
                         android:textSize="14sp"
                         android:layout_width="0dp"
                         android:layout_weight="3"
@@ -273,7 +277,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/black"/>
+                    android:background="#CBCAD0"/>
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -294,7 +298,7 @@
                     <TextView
                         android:id="@+id/payment_mode"
                         android:text=""
-                        android:textColor="@color/black"
+                        android:textColor="@color/MoneyGreen"
                         android:textSize="14sp"
                         android:layout_width="0dp"
                         android:layout_weight="3"
@@ -306,14 +310,14 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/black"/>
+                    android:background="#CBCAD0"/>
 
                 <TextView
-                    android:text="Your Delivery Address"
+                    android:text="Delivery Address"
                     android:padding="10dp"
-                    android:textColor="@color/black"
+                    android:textColor="@color/Gray"
                     android:textStyle="bold"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
                 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -327,58 +331,58 @@
                     card_view:cardCornerRadius="1dp"
                     card_view:cardElevation="5dp"
                     card_view:cardUseCompatPadding="true">
-                <TextView
-                    android:id="@+id/fullName"
-                    android:text=""
-                    android:textColor="@color/MoneyGreen"
-                    android:textSize="14sp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:padding="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/fullName"
+                            android:text=""
+                            android:textColor="@color/MoneyGreen"
+                            android:textSize="14sp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:id="@+id/buildingName"
+                                android:text=""
+                                android:textColor="@color/Gray"
+                                android:textSize="14sp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
 
-                <TextView
-                    android:id="@+id/buildingName"
-                    android:text=""
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                            <TextView
+                                android:id="@+id/landmark"
+                                android:text=""
+                                android:textColor="@color/Gray"
+                                android:textSize="14sp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                        </LinearLayout>
+                        <TextView
+                            android:id="@+id/address"
+                            android:text=""
+                            android:textColor="@color/Gray"
+                            android:textSize="14sp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
 
-                <TextView
-                    android:id="@+id/landmark"
-                    android:text=""
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
 
-                <TextView
-                    android:id="@+id/address"
-                    android:text=""
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_width="160dp"
-                    android:layout_height="wrap_content"/>
+                        <TextView
+                            android:id="@+id/mobileNo"
+                            android:textColor="@color/Gray"
+                            android:textSize="16sp"
+                            android:layout_gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
 
+                    </LinearLayout>
                 </android.support.v7.widget.CardView>
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
 
-                    <TextView
-                        android:id="@+id/mobileNo"
-                        android:textColor="@color/black"
-                        android:textSize="14sp"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="10dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-
-                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/BikerHolder"
@@ -421,7 +425,7 @@
                             android:layout_marginLeft="5dp"
                             android:textStyle="bold"
                             android:layout_gravity="center"
-                            android:textColor="@color/black"
+                            android:textColor="@color/Gray"
                             android:textSize="@dimen/text_size"
                             />
 
@@ -444,21 +448,21 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-<!--
-                        <mehdi.sakout.fancybuttons.FancyButton
+                        <!--
+                                                <mehdi.sakout.fancybuttons.FancyButton
 
-                            android:layout_width="0dp"
-                            android:layout_weight="3"
-                            android:layout_height="wrap_content"
-                            android:padding="5dp"
-                            android:text="Call"
-                            android:id="@+id/btnCall"
-                            fancy:fb_defaultColor="@color/MoneyGreen"
-                            fancy:fb_focusColor="@color/colorPrimary"
-                            fancy:fb_radius="1dp"
-                            fancy:fb_textColor="@color/white"
-                            fancy:fb_textSize="18sp" />
--->
+                                                    android:layout_width="0dp"
+                                                    android:layout_weight="3"
+                                                    android:layout_height="wrap_content"
+                                                    android:padding="5dp"
+                                                    android:text="Call"
+                                                    android:id="@+id/btnCall"
+                                                    fancy:fb_defaultColor="@color/MoneyGreen"
+                                                    fancy:fb_focusColor="@color/colorPrimary"
+                                                    fancy:fb_radius="1dp"
+                                                    fancy:fb_textColor="@color/white"
+                                                    fancy:fb_textSize="18sp" />
+                        -->
 
 
                         <Button
@@ -484,22 +488,22 @@
                             android:background="@color/MoneyGreen"
                             android:textColor="@color/white"
                             android:textSize="18sp" />
-<!--
-                        <mehdi.sakout.fancybuttons.FancyButton
+                        <!--
+                                                <mehdi.sakout.fancybuttons.FancyButton
 
-                            android:layout_width="0dp"
-                            android:layout_weight="3"
-                            android:layout_height="wrap_content"
-                            android:padding="5dp"
-                            android:text="Support"
-                            android:layout_marginLeft="10dp"
-                            android:id="@+id/btnSupport"
-                            fancy:fb_defaultColor="@color/MoneyGreen"
-                            fancy:fb_focusColor="@color/colorPrimary"
-                            fancy:fb_radius="0dp"
-                            fancy:fb_textColor="@color/white"
-                            fancy:fb_textSize="18sp" />
--->
+                                                    android:layout_width="0dp"
+                                                    android:layout_weight="3"
+                                                    android:layout_height="wrap_content"
+                                                    android:padding="5dp"
+                                                    android:text="Support"
+                                                    android:layout_marginLeft="10dp"
+                                                    android:id="@+id/btnSupport"
+                                                    fancy:fb_defaultColor="@color/MoneyGreen"
+                                                    fancy:fb_focusColor="@color/colorPrimary"
+                                                    fancy:fb_radius="0dp"
+                                                    fancy:fb_textColor="@color/white"
+                                                    fancy:fb_textSize="18sp" />
+                        -->
 
                     </LinearLayout>
 
@@ -532,7 +536,7 @@
                         style="?android:attr/ratingBarStyleIndicator"
                         android:numStars="5"
                         android:id="@+id/ratingBar"
-                       />
+                        />
 
                     <TextView
                         android:id="@+id/feedbackTxt"
@@ -541,7 +545,7 @@
                         android:visibility="gone"
                         android:textStyle="bold"
                         android:layout_gravity="center"
-                        android:textColor="@color/black"
+                        android:textColor="@color/Gray"
                         android:textSize="@dimen/text_size"
                         />
 
@@ -555,7 +559,7 @@
                             android:id="@+id/feedback_remark"
                             android:layout_width="match_parent"
                             android:textSize="@dimen/text_size"
-                            android:textColor="@color/black"
+                            android:textColor="@color/Gray"
                             android:inputType="text"
                             android:layout_height="wrap_content"
                             android:hint="Feedback" />
@@ -589,15 +593,14 @@
 
     <mehdi.sakout.fancybuttons.FancyButton
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:padding="5dp"
         android:text="Check Vehicle on Map"
-        android:layout_margin="5dp"
         android:layout_alignParentBottom="true"
         android:id="@+id/btnSubmit"
         fancy:fb_defaultColor="@color/MoneyGreen"
         fancy:fb_focusColor="@color/colorPrimary"
-        fancy:fb_radius="5dp"
+        fancy:fb_radius="0dp"
         fancy:fb_textColor="@color/white"
         fancy:fb_textSize="18sp" />
 

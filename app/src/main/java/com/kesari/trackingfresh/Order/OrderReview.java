@@ -64,8 +64,11 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
     OrderReviewMainPOJO orderReviewMainPOJO;
     private RecyclerView.Adapter adapterProducts;
     TextView total_price,payment_status,payment_mode,fullName,buildingName,landmark,address,mobileNo,bikerName,deliveryCharge,orderDate,orderDeliverDate,delivery_textData,orderNo,orderType;
-    Button btnCall,btnSupport;
+//    Button btnCall,btnSupport;
+//    FancyButton btnSubmit;
     FancyButton btnSubmit;
+    Button btnCall,btnSupport;
+
     LinearLayout BikerHolder,deliveryDateHolder;
 
     //ScheduledExecutorService scheduleTaskExecutor;

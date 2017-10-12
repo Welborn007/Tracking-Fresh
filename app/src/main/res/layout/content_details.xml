@@ -364,7 +364,8 @@
                     android:layout_height="1dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    android:background="@color/Gray" />
+                    android:background="@color/Gray"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:text="Category"
@@ -388,7 +389,8 @@
                     android:layout_height="1dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    android:background="@color/Gray" />
+                    android:background="@color/Gray"
+                    android:visibility="gone"/>
 
 
 
@@ -537,7 +539,9 @@
                     android:layout_height="1dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    android:background="@color/Gray" />
+                    android:background="@color/Gray"
+                    android:visibility="gone"/>
+
 
                 <TextView
                     android:text="Disclaimer"

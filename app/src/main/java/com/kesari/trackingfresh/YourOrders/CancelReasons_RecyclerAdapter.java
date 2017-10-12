@@ -46,13 +46,13 @@ public class CancelReasons_RecyclerAdapter extends RecyclerView.Adapter<CancelRe
 
            holder.reasons.setText(OrdersListReView.get(position).getReason());
 
-            if(selected_position == position){
-
-                ((CardView)holder.itemView).setCardBackgroundColor(Color.parseColor("#ffffff"));
-
-            }else {
-                ((CardView) holder.itemView).setCardBackgroundColor(Color.parseColor("#9e9e9e"));
-            }
+//            if(selected_position == position){
+//
+//                ((CardView)holder.itemView).setCardBackgroundColor(Color.parseColor("#ffffff"));
+//
+//            }else {
+//                ((CardView) holder.itemView).setCardBackgroundColor(Color.parseColor("#9e9e9e"));
+//            }
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

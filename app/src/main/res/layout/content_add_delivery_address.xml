@@ -282,6 +282,8 @@
                 android:text="Set as Default Address"
                 android:padding="10dp"
                 android:layout_margin="10dp"
+                android:textColor="@color/white"
+                android:buttonTint="@color/MoneyGreen"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -311,15 +313,14 @@
 
     <mehdi.sakout.fancybuttons.FancyButton
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:padding="5dp"
         fancy:fb_text="Confirm Address"
         android:layout_alignParentBottom="true"
-        android:layout_margin="5dp"
         android:id="@+id/confirmAddress"
         fancy:fb_defaultColor="@color/MoneyGreen"
         fancy:fb_focusColor="@color/colorPrimary"
-        fancy:fb_radius="5dp"
+        fancy:fb_radius="0dp"
         fancy:fb_textColor="@color/white"
         fancy:fb_textSize="18sp" />
 

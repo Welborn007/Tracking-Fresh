@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Settings.Address.AddressSettingsFragment;
@@ -23,6 +24,7 @@ public class SettingsActivity extends AppCompatActivity {
     private SlidingTabLayout tourTabs;
     private ViewPager tourPager;
     CircleImageView profile_image;
+    TextView name_Login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +44,18 @@ public class SettingsActivity extends AppCompatActivity {
         tourTabs.setSelectedIndicatorColors(ContextCompat.getColor(SettingsActivity.this,R.color.colorPrimaryDark));
 
         profile_image = (CircleImageView) findViewById(R.id.profile_image);
+        name_Login = (TextView) findViewById(R.id.name_Login);
+
 
         if (SharedPrefUtil.getUser(SettingsActivity.this).getData().getProfileImage() != null) {
             Picasso
                     .with(SettingsActivity.this)
                     .load(SharedPrefUtil.getUser(SettingsActivity.this).getData().getProfileImage())
                     .into(profile_image);
+        }
+
+        if(SharedPrefUtil.getUser(SettingsActivity.this).getData().getFirstName()!=null){
+            name_Login.setText(SharedPrefUtil.getUser(SettingsActivity.this).getData().getFirstName());
         }
     }
 

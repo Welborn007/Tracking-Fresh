@@ -48,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/MoneyGreen"
                     android:textSize="20sp"
-                    android:text="Guest"
+                    android:text=""
                     />
 
             </LinearLayout>

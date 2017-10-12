@@ -197,7 +197,7 @@ public class Product_categoryFragment extends Fragment {
 
                 viewHolder.imageView.setController(IOUtils.getFrescoImageController(activity, product_pojo.getProductImage()));
                 viewHolder.imageView.setHierarchy(IOUtils.getFrescoImageHierarchy(activity));
-                viewHolder.quantity.setText(product_pojo.getAvailableQuantity() + " pieces");
+                viewHolder.quantity.setText(product_pojo.getAvailableQuantity() + " quantity");
                 viewHolder.weight.setText(product_pojo.getUnit() + product_pojo.getUnitsOfMeasurement());
                 viewHolder.price.setText("₹ " + product_pojo.getSelling_price());
 

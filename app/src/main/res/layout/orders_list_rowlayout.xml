@@ -9,7 +9,9 @@
         android:clipChildren="false"
         card_view:cardBackgroundColor="@color/white"
         card_view:cardCornerRadius="1dp"
-        card_view:cardElevation="10dp"
+        card_view:cardElevation="5dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
         card_view:cardUseCompatPadding="true">
     <RelativeLayout
         android:layout_width="match_parent"

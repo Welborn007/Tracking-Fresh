@@ -5,10 +5,11 @@
     android:id="@+id/subItemCard_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
     android:padding="10dp"
-    card_view:cardCornerRadius="5dp"
-    card_view:cardElevation="1dp">
+    card_view:cardCornerRadius="0dp"
+    card_view:cardElevation="5dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,7 +32,7 @@
             android:layout_height="wrap_content"
             android:gravity="right"
             android:text="erewreeetete"
-            android:textColor="@color/black"
+            android:textColor="@color/Gray"
             android:textSize="12sp" />
 
     </LinearLayout>

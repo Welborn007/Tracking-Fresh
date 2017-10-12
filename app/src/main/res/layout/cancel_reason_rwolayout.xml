@@ -6,9 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
-    android:background="@color/LightGray"
-    card_view:cardCornerRadius="4dp"
-    card_view:cardElevation="1dp">
+    android:background="@color/white"
+    card_view:cardCornerRadius="1dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    card_view:cardElevation="5dp">
 
     <RelativeLayout
         android:padding="10dp"
@@ -20,9 +22,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Reasons"
-                android:textColor="@color/black"
+                android:textColor="@color/Gray"
                 android:textSize="@dimen/text_size18"
-                android:textStyle="bold" />
+                android:textStyle="normal" />
 
     </RelativeLayout>
 

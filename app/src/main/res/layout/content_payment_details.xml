@@ -155,13 +155,13 @@
                 android:hint="PROMOCODE"
                 android:textSize="18sp"
                 android:drawablePadding="10dp"
-                android:maxLines="1"
                 android:inputType="textCapCharacters"
                 android:layout_marginRight="25dp"
                 android:textColor="@color/DarkGray"
                 android:textColorHint="@color/DarkGray"
                 android:layout_gravity="center"
                 android:layout_width="0dp"
+                android:maxLines="3"
                 android:layout_weight="3"
                 android:layout_height="wrap_content" />
 

@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:paddingBottom="10dp"
+    android:background="@color/white"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/delivery_text"
@@ -21,7 +21,6 @@
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_margin="5dp"
         android:id="@+id/holder"
         android:gravity="center"
         android:layout_below="@+id/delivery_text"
@@ -33,7 +32,7 @@
             android:layout_height="match_parent"
             android:id="@+id/recyclerView"
             android:scrollbars="vertical"
-            android:background="@color/LightGray">
+            android:background="@color/whitegray">
         </android.support.v7.widget.RecyclerView>
 
         <EditText
@@ -49,15 +48,14 @@
 
     <mehdi.sakout.fancybuttons.FancyButton
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:padding="5dp"
         fancy:fb_text="Submit"
-        android:layout_margin="5dp"
         android:layout_below="@+id/holder"
         android:id="@+id/cancel"
-        fancy:fb_defaultColor="@color/fresh_blue"
+        fancy:fb_defaultColor="@color/MoneyGreen"
         fancy:fb_focusColor="@color/colorPrimary"
-        fancy:fb_radius="5dp"
+        fancy:fb_radius="0dp"
         fancy:fb_textColor="@color/white"
         fancy:fb_textSize="18sp" />
 
