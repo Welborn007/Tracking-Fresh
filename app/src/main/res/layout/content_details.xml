@@ -126,7 +126,7 @@
 
                     <Button
                         android:id="@+id/minus"
-                        android:background="@drawable/cart_circular_drawable"
+                        android:background="@drawable/plus_minus_back"
                         android:text="-"
                         android:textColor="@color/white"
                         android:textSize="18dp"
@@ -155,12 +155,12 @@
                         android:gravity="center"
                         android:background="#78ab2b"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/text_size"
+                        android:textSize="18dp"
                         android:layout_height="50dp" />
 
                     <Button
                         android:id="@+id/plus"
-                        android:background="@drawable/cart_circular_drawable"
+                        android:background="@drawable/plus_minus_back"
                         android:text="+"
                         android:textSize="18dp"
                         android:textColor="@color/white"

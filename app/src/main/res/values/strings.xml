@@ -84,7 +84,9 @@
 
     <string-array name="setting">
         <item>Address</item>
+<!--
         <item>Cards</item>
+-->
     </string-array>
     <string name="splash_text">No matter where you are: \n whether your at home, or in the \n office ,or the bench - we will find \n you and we will feed you</string>
     <string name="sign_in_header">SIGN IN</string>
@@ -123,5 +125,9 @@
     <string name="tkfwallet">Wallet</string>
     <string name="payment_details">Payment Details</string>
     <string name="delivery_address">Delivery Address</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="logout">LogOut</string>
+    <string name="tk_cash">TK Cash</string>
+    <string name="total_payable_amount">Total Payable amount</string>
 
 </resources>

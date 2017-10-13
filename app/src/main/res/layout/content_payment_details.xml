@@ -33,6 +33,7 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
+            android:gravity="center_horizontal"
             android:layout_height="wrap_content">
 
             <TextView
@@ -152,13 +153,12 @@
 
             <EditText
                 android:id="@+id/promocodeText"
-                android:hint="PROMOCODE"
+                android:hint="Coupon Code"
                 android:textSize="18sp"
                 android:drawablePadding="10dp"
                 android:inputType="textCapCharacters"
-                android:layout_marginRight="25dp"
                 android:textColor="@color/DarkGray"
-                android:textColorHint="@color/DarkGray"
+                android:textColorHint="@color/MoneyGreen"
                 android:layout_gravity="center"
                 android:layout_width="0dp"
                 android:maxLines="3"
@@ -167,11 +167,10 @@
 
             <mehdi.sakout.fancybuttons.FancyButton
                 android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
+                android:layout_weight="1.7"
+                android:layout_height="40dp"
                 android:padding="5dp"
                 fancy:fb_text="Apply"
-                android:layout_margin="5dp"
                 android:id="@+id/promocodeSubmit"
                 fancy:fb_defaultColor="@color/MoneyGreen"
                 fancy:fb_focusColor="@color/colorPrimary"
@@ -211,7 +210,8 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/Gray"/>
+            android:background="@color/Gray"
+            android:visibility="gone"/>
 
         <LinearLayout
             android:id="@+id/promocodeDeductHolder"
@@ -254,42 +254,44 @@
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:gravity="left"
-            android:layout_marginRight="10dp"
+            android:orientation="vertical"
+            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
-                android:text="Total Payable amount :-"
+                android:text="@string/total_payable_amount"
                 android:textColor="@color/DarkGray"
                 android:layout_margin="5dp"
-                android:padding="10dp"
+                android:padding="5dp"
                 android:textSize="@dimen/text_size18"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
             <TextView
                 android:text="₹"
                 android:textColor="@color/MoneyGreen"
-                android:layout_marginTop="5dp"
-                android:paddingTop="10dp"
+                android:padding="5dp"
                 android:textStyle="bold"
-                android:textSize="@dimen/text_size18"
+                android:textSize="25dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <TextView
-                android:text=""
+                android:text="13232"
                 android:textColor="@color/MoneyGreen"
                 android:id="@+id/price_payable"
-                android:layout_marginTop="5dp"
-                android:paddingTop="10dp"
+                android:padding="5dp"
                 android:textStyle="bold"
-                android:textSize="@dimen/text_size18"
+                android:textSize="25dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>

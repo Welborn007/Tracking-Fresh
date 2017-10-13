@@ -312,7 +312,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             title_productname.setText(productName);
             setTitle(productName);
 
-            price.setText("Price ₹ " + productPrice);
+            price.setText("₹ " + productPrice);
 
             /*if (!myApplication.checkifproductexists(productId)) {
                 holder_count.setVisibility(View.VISIBLE);

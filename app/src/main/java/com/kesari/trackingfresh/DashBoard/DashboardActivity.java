@@ -132,7 +132,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
     String subAdminArea = "";
     String subLocality = "";
     public static MyApplication myApplication;
-    RelativeLayout my_orders_holder, menu_holder,my_cart_holder,notification_holder, help_holder, route_holder, refer_earn, legalHolder,setting_layout,my_offers_holder;
+    RelativeLayout my_orders_holder, menu_holder,my_cart_holder,notification_holder, help_holder, route_holder, refer_earn, legalHolder,setting_layout,my_offers_holder,tkfRelativeLayout,restPassRelativeLayout,logoutRelativeLayout;
     TextView profile_holder;
     private Gson gson;
     VerifyMobilePOJO verifyMobilePOJO;
@@ -265,6 +265,9 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             notification_holder = (RelativeLayout) header.findViewById(R.id.notification_holder);
             my_cart_holder = (RelativeLayout) header.findViewById(R.id.my_cart_holder);
             menu_holder = (RelativeLayout) header.findViewById(R.id.menu_holder);
+            tkfRelativeLayout = (RelativeLayout) header.findViewById(R.id.tkfRelativeLayout);
+            restPassRelativeLayout = (RelativeLayout) header.findViewById(R.id.restPassRelativeLayout);
+            logoutRelativeLayout = (RelativeLayout) header.findViewById(R.id.logoutRelativeLayout);
 
             my_offers_holder.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -347,9 +350,47 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
 
                 }
             });
+            tkfRelativeLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(DashboardActivity.this, TKWalletActivity.class);
+                    startActivity(intent);
+
+                    mDrawerLayout.closeDrawers();
+
+                }
+            });
+            restPassRelativeLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(DashboardActivity.this, ChangePasswordActivity.class);
+                    startActivity(intent);
+                    mDrawerLayout.closeDrawers();
+
+                }
+            });
+            logoutRelativeLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    LogOutFunc(DashboardActivity.this);
+
+                    mDrawerLayout.closeDrawers();
+
+                }
+            });
             menu_holder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+
+                    menuTextView.setBackgroundColor(getResources().getColor(R.color.MoneyGreen));
+                    mapTextView.setBackgroundColor(getResources().getColor(R.color.whitegray));
+                    menuTextView.setTextColor(getResources().getColor(R.color.white));
+                    mapTextView.setTextColor(getResources().getColor(R.color.gray));
+                    Product_Fragment.fragment_holder.setVisibility(View.GONE);
+                    Product_Fragment.layout_holder.setVisibility(View.VISIBLE);
+                    Product_Fragment.frameLayout.setVisibility(View.GONE);
+                    Product_Fragment.product_holder.setVisibility(View.VISIBLE);
                     mDrawerLayout.closeDrawers();
 
                 }

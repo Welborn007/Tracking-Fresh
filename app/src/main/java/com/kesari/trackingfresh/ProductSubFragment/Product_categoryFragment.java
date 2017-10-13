@@ -380,7 +380,7 @@ public class Product_categoryFragment extends Fragment {
                     }
                 });
 
-                viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
+                convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 

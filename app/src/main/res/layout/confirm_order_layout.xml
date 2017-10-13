@@ -1,145 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        xmlns:fancy="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/guestCardview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipChildren="false"
-        card_view:cardBackgroundColor="@color/white"
-        card_view:cardCornerRadius="1dp"
-        card_view:cardElevation="5dp"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/guestCardview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
-        card_view:cardUseCompatPadding="true">
+    android:clipChildren="false"
+    card_view:cardBackgroundColor="@color/white"
+    card_view:cardCornerRadius="1dp"
+    card_view:cardElevation="5dp"
+    card_view:cardUseCompatPadding="true">
+
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/images"
-            android:layout_gravity="center"
             android:layout_width="100dp"
-            android:layout_height="100dp" />
+            android:layout_height="100dp"
+            android:layout_gravity="center" />
 
 
         <LinearLayout
-            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:gravity="center"
             android:layout_marginLeft="10dp"
-            android:layout_gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/product_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="0dp"
                 android:text="Product"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
                 android:textColor="@color/black"
                 android:textSize="@dimen/text_size"
-                android:textStyle="bold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:textStyle="bold" />
 
             <View
-                android:background="#000000"
                 android:layout_width="1dp"
-                android:visibility="gone"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
-                android:layout_height="match_parent"/>
+                android:background="#000000"
+                android:visibility="gone" />
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <TextView
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
                     android:text="Quantity :"
                     android:textColor="@color/gray"
                     android:textSize="@dimen/text_size14"
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/quantity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="3"
                     android:textColor="@color/black"
-                    android:textStyle="normal"
                     android:textSize="@dimen/text_size14"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:textStyle="normal" />
 
             </LinearLayout>
 
             <View
-                android:background="#000000"
                 android:layout_width="1dp"
-                android:visibility="gone"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="5dp"
-                android:layout_height="match_parent"/>
+                android:background="#000000"
+                android:visibility="gone" />
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <TextView
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
                     android:text="Price :"
                     android:textColor="@color/gray"
                     android:textSize="@dimen/text_size14"
-                    android:layout_width="70dp"
-                    android:visibility="gone"
-                    android:layout_height="wrap_content"/>
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/price"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
                     android:text="100"
-                    android:textStyle="normal"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size14"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:textColor="@color/MoneyGreen"
+                    android:textSize="@dimen/text_size18"
+                    android:textStyle="normal" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+
+                    android:gravity="right"
+                    android:orientation="horizontal"
+                    >
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2.5"
+                        android:gravity="right"
+                        android:text="SubTotal :"
+                        android:textColor="@color/gray"
+                        android:textSize="@dimen/text_size" />
+
+                    <TextView
+                        android:id="@+id/subtotal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:gravity="left"
+                        android:text="100"
+                        android:textColor="@color/MoneyGreen"
+                        android:textSize="@dimen/text_size18"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
 
             </LinearLayout>
 
             <View
-                android:background="#000000"
                 android:layout_width="1dp"
-                android:visibility="gone"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="5dp"
-                android:layout_height="match_parent"/>
+                android:background="#000000"
+                android:visibility="gone" />
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:gravity="right"
-                android:padding="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:text="SubTotal :"
-                    android:textColor="@color/gray"
-                    android:textSize="@dimen/text_size14"
-                    android:layout_width="0dp"
-                    android:layout_weight="3"
-                    android:gravity="right"
-                    android:layout_height="wrap_content"/>
-
-                <TextView
-                    android:id="@+id/subtotal"
-                    android:text="100"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size14"
-                    android:layout_width="0dp"
-                    android:layout_weight="2"
-                    android:gravity="left"
-                    android:layout_height="wrap_content"/>
-
-            </LinearLayout>
 
         </LinearLayout>
 

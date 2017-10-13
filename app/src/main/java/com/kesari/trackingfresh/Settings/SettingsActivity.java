@@ -78,10 +78,10 @@ public class SettingsActivity extends AppCompatActivity {
                     f = new AddressSettingsFragment();
                     break;
                 }
-                case 1: {
+                /*case 1: {
                     f = new CardsSettingFragment();
                     break;
-                }
+                }*/
 
             }
             return f;
@@ -94,7 +94,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 2;
+//            return 2;
+            return 1;
         }
     }
 

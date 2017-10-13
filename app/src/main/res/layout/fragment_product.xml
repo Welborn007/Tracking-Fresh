@@ -112,7 +112,7 @@
                 android:layout_below="@+id/sourceCardview"
                 android:id="@+id/destinationCardview"
                 android:background="@color/LightGray"
-                card_view:cardCornerRadius="0dp"
+                card_view:cardCornerRadius="4dp"
                 android:layout_margin="5dp"
 
                 card_view:cardElevation="1dp">

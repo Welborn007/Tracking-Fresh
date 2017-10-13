@@ -24,7 +24,10 @@
     <color name="LightGray">#E0E0E0</color>
     <color name="LightCyan">#80DEEA</color>
     <color name="LightRed">#EF9A9A</color>
+    <color name="DarkGray">#A6A5AA</color>
+<!--
     <color name="DarkGray">#616161</color>
+-->
 
     <color name="DarkCyan">#00BCD4</color>
     <color name="DarkRed">#F44336</color>
