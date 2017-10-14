@@ -9,6 +9,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 
 import com.kesari.trackingfresh.R;
 
@@ -30,7 +31,7 @@ public class BadgeDrawable extends Drawable {
         mTextSize = context.getResources().getDimension(R.dimen.badge_text_size);
 
         mBadgePaint = new Paint();
-        mBadgePaint.setColor(Color.RED);
+        mBadgePaint.setColor(ContextCompat.getColor(context,R.color.MoneyGreen));
         mBadgePaint.setAntiAlias(true);
         mBadgePaint.setStyle(Paint.Style.FILL);
 

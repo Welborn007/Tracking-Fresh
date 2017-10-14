@@ -145,12 +145,13 @@
                             android:gravity="right"
                             android:orientation="horizontal">
 
-                            <Button
+                            <ImageView
                                 android:id="@+id/plus"
+
                                 android:layout_width="35dp"
                                 android:layout_height="35dp"
                                 android:background="@drawable/cart_circular_drawable"
-                                android:text="+"
+                                android:src="@drawable/ic_add"
                                 android:textColor="@color/white"
                                 android:textSize="18dp" />
 
@@ -184,12 +185,12 @@
                                   android:textSize="@dimen/text_size"
                                   android:layout_height="match_parent" />
           -->
-                            <Button
+                            <ImageView
                                 android:id="@+id/minus"
                                 android:layout_width="35dp"
                                 android:layout_height="35dp"
-                                android:background="@drawable/cart_circular_drawable"
-                                android:text="-"
+                                android:background="@drawable/plus_back_right"
+                                android:src="@drawable/ic_remove"
                                 android:textColor="@color/white"
                                 android:textSize="18dp" />
 
@@ -245,8 +246,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="100"
-                        android:textColor="@color/black"
-                        android:textSize="16sp"
+                        android:textColor="@color/MoneyGreen"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
                     <TextView

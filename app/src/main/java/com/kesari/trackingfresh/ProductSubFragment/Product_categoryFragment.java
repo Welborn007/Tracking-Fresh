@@ -173,8 +173,8 @@ public class Product_categoryFragment extends Fragment {
                 viewHolder.price = (TextView) convertView.findViewById(R.id.price);
                 viewHolder.quantity = (TextView) convertView.findViewById(R.id.quantity);
                 viewHolder.count = (TextView) convertView.findViewById(R.id.count);
-                viewHolder.plus = (Button) convertView.findViewById(R.id.plus);
-                viewHolder.minus = (Button) convertView.findViewById(R.id.minus);
+                viewHolder.plus = (ImageView) convertView.findViewById(R.id.plus);
+                viewHolder.minus = (ImageView) convertView.findViewById(R.id.minus);
                 viewHolder.mrp = (TextView) convertView.findViewById(R.id.mrp);
                 viewHolder.crossTextView = (TextView) convertView.findViewById(R.id.crossTextView);
 
@@ -480,7 +480,7 @@ public class Product_categoryFragment extends Fragment {
         private class ViewHolder {
             TextView product_name, weight, price, count,quantity,mrp,crossTextView;
             SimpleDraweeView imageView;
-            Button plus, minus;
+            ImageView plus, minus;
             ImageView addtoCart;
             LinearLayout holder_count;
         }

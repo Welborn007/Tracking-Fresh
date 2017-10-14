@@ -267,13 +267,15 @@
                         android:orientation="horizontal"
                         android:visibility="gone">
 
-                        <Button
+                        <ImageView
                             android:id="@+id/minus"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
+                            android:padding="5dp"
+
                             android:background="@drawable/cart_circular_drawable"
                             android:gravity="center"
-                            android:text="-"
+                            android:src="@drawable/ic_remove"
                             android:textColor="@color/white"
                             android:textSize="18dp" />
 
@@ -311,13 +313,15 @@
                         -->
 
 
-                        <Button
+                        <ImageView
                             android:id="@+id/plus"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
-                            android:background="@drawable/cart_circular_drawable"
+                            android:padding="5dp"
+
+                            android:background="@drawable/plus_back_right"
                             android:gravity="center"
-                            android:text="+"
+                            android:src="@drawable/ic_add"
                             android:textColor="@color/white"
                             android:textSize="18dp" />
 

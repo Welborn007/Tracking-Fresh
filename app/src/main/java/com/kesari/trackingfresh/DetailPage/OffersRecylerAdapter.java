@@ -343,7 +343,7 @@ public class OffersRecylerAdapter  extends RecyclerView.Adapter<OffersRecylerAda
     {
         TextView product_name, weight, price, count,quantity,mrp;
         SimpleDraweeView imageView;
-        Button plus, minus;
+        ImageView plus, minus;
         ImageView addtoCart;
         LinearLayout holder_count;
         TextView crossTextView;
@@ -357,8 +357,8 @@ public class OffersRecylerAdapter  extends RecyclerView.Adapter<OffersRecylerAda
             price = (TextView) convertView.findViewById(R.id.price);
             quantity = (TextView) convertView.findViewById(R.id.quantity);
             count = (TextView) convertView.findViewById(R.id.count);
-            plus = (Button) convertView.findViewById(R.id.plus);
-            minus = (Button) convertView.findViewById(R.id.minus);
+            plus = (ImageView) convertView.findViewById(R.id.plus);
+            minus = (ImageView) convertView.findViewById(R.id.minus);
             mrp = (TextView) convertView.findViewById(R.id.mrp);
             addtoCart = (ImageView) convertView.findViewById(R.id.addtoCart);
             holder_count = (LinearLayout) convertView.findViewById(R.id.holder_count);

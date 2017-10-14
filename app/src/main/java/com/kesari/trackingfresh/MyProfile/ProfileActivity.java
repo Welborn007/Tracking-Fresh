@@ -31,6 +31,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -90,7 +91,7 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
     private String TAG = this.getClass().getSimpleName();
     private NetworkUtilsReceiver networkUtilsReceiver;
     TextView Phonenumber,Email,address,customer_name;
-    ImageView profile_edit;
+    Button profile_edit;
     TextView photo_edit;
     CircleImageView profile_image;
 
@@ -131,7 +132,7 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
             customer_name = (TextView) findViewById(R.id.customer_name);
 
             photo_edit = (TextView) findViewById(R.id.photo_edit);
-            profile_edit = (ImageView) findViewById(R.id.profile_edit);
+            profile_edit = (Button) findViewById(R.id.profile_edit);
             profile_image = (CircleImageView) findViewById(R.id.profile_image);
             referral_holder = (LinearLayout) findViewById(R.id.referral_holder);
             refferal = (TextView) findViewById(R.id.refferal);

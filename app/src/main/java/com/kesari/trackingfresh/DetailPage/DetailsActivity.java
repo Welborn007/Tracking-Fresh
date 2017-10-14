@@ -68,12 +68,12 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
 
     private SliderLayout mDemoSlider;
     TextView mrp, count;
-    Button plus, minus;
+    ImageView plus, minus;
     FancyButton  delete;
     LinearLayout holder_count;
     FancyButton gotoCart,  checkOut;
     TextView addtoCart;
-    TextView price, percent, disclaimer, related_searches, package_contents, product_description, product_category, title_productname;
+    TextView price, percent, quantity,disclaimer, related_searches, package_contents, product_description, product_category, title_productname;
     private String TAG = this.getClass().getSimpleName();
     private String productDescription = "";
     private String unitsOfMeasurement = "";
@@ -260,11 +260,12 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             mrp = (TextView) findViewById(R.id.mrp);
             mrp.setPaintFlags(mrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             mrp.setText("₹ " + MRP);
-            plus = (Button) findViewById(R.id.plus);
-            minus = (Button) findViewById(R.id.minus);
+            plus = (ImageView) findViewById(R.id.plus);
+            minus = (ImageView) findViewById(R.id.minus);
             delete = (FancyButton) findViewById(R.id.delete);
             price = (TextView) findViewById(R.id.price);
             percent = (TextView) findViewById(R.id.percent);
+            quantity = (TextView) findViewById(R.id.quantity);
             disclaimer = (TextView) findViewById(R.id.disclaimer);
             related_searches = (TextView) findViewById(R.id.related_searches);
             package_contents = (TextView) findViewById(R.id.package_contents);
@@ -304,6 +305,7 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
 
             qcCertTxt.setText(qc);
             batchNoTxt.setText(batchNo);
+            quantity.setText(availableQuantity+" quantity");
 
             //Setting value
             product_description.setText(productDetails);

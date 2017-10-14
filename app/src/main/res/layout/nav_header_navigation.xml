@@ -54,7 +54,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
+                    android:textSize="20dp"
                     android:text="Guest"
                     />
 
@@ -63,7 +63,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/edit_profile"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="0dp"
                     android:textColor="@color/MoneyGreen"
                     android:textSize="@dimen/text_size"
                     />
@@ -161,11 +161,10 @@
                 <ImageView
                     android:id="@+id/menu_logo"
                     android:src="@drawable/menu"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerInParent="true"
                     android:layout_width="30dp"
                     android:layout_marginLeft="5dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"/>
 
                 <TextView
                     android:text="@string/menu"
@@ -391,7 +390,7 @@
 
                 <ImageView
                     android:id="@+id/tkfCashImagView"
-                    android:src="@drawable/refer_earn"
+                    android:src="@drawable/tkf_cash"
                     android:layout_alignParentLeft="true"
                     android:layout_centerInParent="true"
                     android:layout_marginLeft="5dp"
@@ -602,7 +601,7 @@
 
                 <ImageView
                     android:id="@+id/restPassImagView"
-                    android:src="@drawable/ic_tune"
+                    android:src="@drawable/setting"
                     android:layout_alignParentLeft="true"
                     android:layout_centerInParent="true"
                     android:layout_marginLeft="5dp"
@@ -643,7 +642,7 @@
 
                 <ImageView
                     android:id="@+id/logoutImageView"
-                    android:src="@drawable/setting"
+                    android:src="@drawable/ic_power_settings_new"
                     android:layout_alignParentLeft="true"
                     android:layout_centerInParent="true"
                     android:layout_width="30dp"

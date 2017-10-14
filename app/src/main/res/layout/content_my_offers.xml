@@ -117,10 +117,11 @@
             android:visibility="gone"
             android:id="@+id/holder_count">
 
-            <Button
+            <ImageView
                 android:id="@+id/minus"
-                android:background="@drawable/cart_circular_drawable"
-                android:text="-"
+                android:background="@drawable/cart_circular_drawable"                                                                   android:padding="5dp"
+
+                android:src="@drawable/ic_remove"
                 android:textColor="@color/white"
                 android:textSize="18dp"
                 android:layout_width="50dp"
@@ -151,11 +152,12 @@
                 android:textSize="@dimen/text_size"
                 android:layout_height="50dp" />
 
-            <Button
+            <ImageView
                 android:id="@+id/plus"
-                android:background="@drawable/cart_circular_drawable"
-                android:text="+"
-                android:textSize="18dp"
+                android:background="@drawable/plus_back_right"
+                android:src="@drawable/ic_add"
+                android:textSize="18dp"                                                            android:padding="5dp"
+
                 android:textColor="@color/white"
                 android:layout_width="50dp"
                 android:layout_height="50dp" />

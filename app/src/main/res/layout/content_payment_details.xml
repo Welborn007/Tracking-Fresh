@@ -110,8 +110,8 @@
                 android:text="Cash On Delivery"
                 android:textSize="@dimen/text_size"
 
-                android:buttonTint="@color/DarkGray"
-                android:textColor="@color/DarkGray"
+                android:buttonTint="@color/Gray"
+                android:textColor="@color/Gray"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -119,8 +119,8 @@
                 android:id="@+id/online_payment"
                 android:textSize="@dimen/text_size"
                 android:text="Credit/Debit Card,Net Banking"
-                android:textColor="@color/DarkGray"
-                android:buttonTint="@color/DarkGray"
+                android:textColor="@color/Gray"
+                android:buttonTint="@color/Gray"
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -132,10 +132,10 @@
             android:id="@+id/walletCash"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
-            android:textColor="@color/DarkGray"
+            android:textColor="@color/Gray"
             android:text="Use cash from wallet"
             android:layout_width="match_parent"
-            android:buttonTint="@color/DarkGray"
+            android:buttonTint="@color/Gray"
 
             android:layout_height="wrap_content" />
 
@@ -158,7 +158,7 @@
                 android:drawablePadding="10dp"
                 android:inputType="textCapCharacters"
                 android:textColor="@color/DarkGray"
-                android:textColorHint="@color/MoneyGreen"
+                android:textColorHint="@color/DarkGray"
                 android:layout_gravity="center"
                 android:layout_width="0dp"
                 android:maxLines="3"
@@ -256,14 +256,16 @@
         <LinearLayout
             android:orientation="vertical"
             android:gravity="center"
+            android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
                 android:text="@string/total_payable_amount"
-                android:textColor="@color/DarkGray"
-                android:layout_margin="5dp"
+                android:textColor="@color/Gray"
+                android:layout_margin="0dp"
                 android:padding="5dp"
+                android:textAllCaps="true"
                 android:textSize="@dimen/text_size18"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
@@ -275,7 +277,7 @@
                 android:orientation="horizontal">
             <TextView
                 android:text="₹"
-                android:textColor="@color/MoneyGreen"
+                android:textColor="@color/black"
                 android:padding="5dp"
                 android:textStyle="bold"
                 android:textSize="25dp"
@@ -284,7 +286,7 @@
 
             <TextView
                 android:text="13232"
-                android:textColor="@color/MoneyGreen"
+                android:textColor="@color/black"
                 android:id="@+id/price_payable"
                 android:padding="5dp"
                 android:textStyle="bold"

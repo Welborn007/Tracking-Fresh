@@ -148,7 +148,7 @@
             android:textStyle="bold"
             android:gravity="center"
             android:textSize="@dimen/text_size"
-            android:background="@color/Button_Color"
+            android:background="@color/MoneyGreen"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 

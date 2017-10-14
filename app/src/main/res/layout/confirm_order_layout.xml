@@ -68,7 +68,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="3"
-                    android:textColor="@color/black"
+                    android:textColor="@color/DarkGray"
                     android:textSize="@dimen/text_size14"
                     android:textStyle="normal" />
 
@@ -100,7 +100,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:text="100"
-                    android:textColor="@color/MoneyGreen"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/text_size18"
                     android:textStyle="normal" />
 

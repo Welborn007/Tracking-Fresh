@@ -13,9 +13,9 @@
 
     <corners
         android:bottomLeftRadius="4dip"
-        android:bottomRightRadius="4dip"
+        android:bottomRightRadius="0dip"
         android:topLeftRadius="4dip"
-        android:topRightRadius="4dip" />
+        android:topRightRadius="0dip" />
 </shape>
 
 <!--

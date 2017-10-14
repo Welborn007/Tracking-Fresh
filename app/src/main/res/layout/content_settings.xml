@@ -60,6 +60,8 @@
             android:layout_height="wrap_content"
             android:background="#EFEEF4"
             android:padding="10dp"
+            android:visibility="gone"
+
             android:gravity="center_vertical">
         <Switch
             android:text="Push Notifications"
@@ -80,7 +82,8 @@ android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="2dp"
-            app:tabIndicatorColor="@color/MoneyGreen"
+            app:tabIndicatorColor="@color/Gray"
+            android:background="@color/white"
             />
 
         <android.support.v4.view.ViewPager

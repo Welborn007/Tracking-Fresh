@@ -83,7 +83,7 @@
     <string name="confirmNewPassword">Confirm New Password</string>
 
     <string-array name="setting">
-        <item>Address</item>
+        <item>My Addresses</item>
 <!--
         <item>Cards</item>
 -->

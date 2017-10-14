@@ -25,14 +25,24 @@
             android:background="@color/porcelain"
             android:layout_height="wrap_content">
             <TextView
-                android:id="@+id/mrp"
-                android:text=""
-                android:gravity="right"
-                android:textSize="@dimen/text_size"
+                android:id="@+id/quantity"
+                android:text="12"
+                android:gravity="left"
+                android:textSize="@dimen/text_size14"
                 android:layout_marginLeft="10dp"
                 android:textColor="@color/white"
                 android:layout_width="0dp"
-                android:layout_weight="3"
+                android:layout_weight="4"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/mrp"
+                android:text=""
+                android:gravity="right"
+                android:textSize="@dimen/text_size14"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/white"
+                android:layout_width="0dp"
+                android:layout_weight="2"
                 android:layout_height="wrap_content" />
 
             <TextView
@@ -50,7 +60,7 @@
             <TextView
                 android:id="@+id/price"
                 android:text="25"
-                android:gravity="right"
+                android:gravity="center"
                 android:textColor="@color/MoneyGreen"
                 android:textSize="@dimen/text_size18"
                 android:textStyle="bold"
@@ -119,15 +129,17 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:gravity="right"
-                    android:background="@color/whitegray"
+                    android:background="@color/MoneyGreen"
                     android:layout_height="50dp"
                     android:visibility="gone"
                     android:id="@+id/holder_count">
 
-                    <Button
+                    <ImageView
                         android:id="@+id/minus"
+                        android:padding="5dp"
+
                         android:background="@drawable/plus_minus_back"
-                        android:text="-"
+                        android:src="@drawable/ic_remove"
                         android:textColor="@color/white"
                         android:textSize="18dp"
                         android:layout_width="50dp"
@@ -151,20 +163,22 @@
                     <TextView
                         android:id="@+id/count"
                         android:text="0"
-                        android:layout_width="50dp"
+                        android:layout_width="60dp"
                         android:gravity="center"
                         android:background="#78ab2b"
                         android:textColor="@color/white"
                         android:textSize="18dp"
                         android:layout_height="50dp" />
 
-                    <Button
+                    <ImageView
                         android:id="@+id/plus"
+                        android:padding="5dp"
+
                         android:background="@drawable/plus_minus_back"
-                        android:text="+"
                         android:textSize="18dp"
+                        android:src="@drawable/ic_add"
                         android:textColor="@color/white"
-                        android:layout_width="50dp"
+                        android:layout_width="60dp"
                         android:layout_height="50dp" />
 
                     <mehdi.sakout.fancybuttons.FancyButton
