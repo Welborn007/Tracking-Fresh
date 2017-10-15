@@ -66,7 +66,7 @@ public class UpdateDeleteDeliveryAddress_RecyclerAdpater extends RecyclerView.Ad
 
             if(AddressPOJOs.get(position).isDefault())
             {
-                holder.default_text.setBackgroundColor(ContextCompat.getColor(context,R.color.button_green));
+                holder.default_text.setBackgroundColor(ContextCompat.getColor(context,R.color.MoneyGreen));
                 holder.default_text.setText("Default Address");
             }
             else

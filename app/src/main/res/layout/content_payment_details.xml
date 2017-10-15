@@ -163,7 +163,7 @@
                 android:layout_width="0dp"
                 android:maxLines="3"
                 android:layout_weight="3"
-                android:layout_height="wrap_content" />
+                android:layout_height="50dp" />
 
             <mehdi.sakout.fancybuttons.FancyButton
                 android:layout_width="0dp"

@@ -316,6 +316,9 @@ public class Product_categoryFragment extends Fragment {
                             if(t < Integer.parseInt(product_pojo.getAvailableQuantity()))
                             {
                                 viewHolder.count.setText(String.valueOf(t + 1));
+
+                                viewHolder.count.setVisibility(View.VISIBLE);
+                                viewHolder.crossTextView.setVisibility(View.VISIBLE);
                                 if (!myApplication.IncrementProductQuantity(product_pojo.getProductId())) {
 
                                 } else {
@@ -370,6 +373,8 @@ public class Product_categoryFragment extends Fragment {
                                 myApplication.RemoveProductonZeroQuantity(product_pojo.getProductId());
 
                                 viewHolder.holder_count.setVisibility(View.GONE);
+                                viewHolder.count.setVisibility(View.GONE);
+                                viewHolder.crossTextView.setVisibility(View.GONE);
                                 viewHolder.addtoCart.setVisibility(View.VISIBLE);
 
                                 viewHolder.count.setText("0");

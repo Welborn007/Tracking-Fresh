@@ -5,46 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_overlay"
-    android:padding="10dp"
     tools:context="com.kesari.trackingfresh.Register.RegisterActivity">
 
-<!--
-    <android.support.v7.widget.Toolbar
-    android:id="@+id/toolbar"
-    android:layout_marginTop="24dp"
-    android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
-    app:popupTheme="@style/AppTheme.PopupOverlay"
-        android:visibility="gone"
->
-    <RelativeLayout
-        android:layout_marginTop="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Register"
-            android:gravity="center"
-            android:paddingLeft="-40dp"
-            android:textSize="14sp"
-            android:layout_centerInParent="true"
-            android:textColor="@color/black" />
-
-    </RelativeLayout>
-
-    </android.support.v7.widget.Toolbar>
--->
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-
-        android:theme="@style/ToolbarStyle"
-        app:popupTheme="@style/AppTheme.PopupOverlay">
-    </android.support.v7.widget.Toolbar>
 <!--
     <include
         android:id="@+id/toolbar"
@@ -52,25 +14,30 @@
         android:visibility="gone"/>
 -->
 
-    <LinearLayout
-        android:id="@+id/topLinearLayout"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
-        android:gravity="center"
-        android:visibility="gone">
+        android:id="@+id/topLinearLayout"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/camera" />
-    </LinearLayout>
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:theme="@style/ToolbarStyle"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/btnRegister"
-        android:layout_below="@+id/toolbar">
+        android:padding="10dp"
+        android:layout_below="@+id/topLinearLayout">
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -303,7 +270,7 @@
     <Button
         android:id="@+id/btnRegister"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:layout_below="@+id/btnForget"
         android:layout_centerHorizontal="true"

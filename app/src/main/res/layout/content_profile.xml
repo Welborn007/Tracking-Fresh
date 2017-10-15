@@ -432,10 +432,11 @@ android:layout_below="@+id/topLayout"
     <Button
         android:id="@+id/profile_edit"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:background="@color/MoneyGreen"
         android:text="@string/edit_profile"
+        android:textSize="@dimen/text_size18"
         android:textColor="@color/white" />
 
 </RelativeLayout>

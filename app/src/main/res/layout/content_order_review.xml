@@ -593,9 +593,9 @@
 
     <mehdi.sakout.fancybuttons.FancyButton
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:padding="5dp"
-        android:text="Check Vehicle on Map"
+        android:text="@string/check_vehicle_on_map"
         android:layout_alignParentBottom="true"
         android:id="@+id/btnSubmit"
         fancy:fb_defaultColor="@color/MoneyGreen"

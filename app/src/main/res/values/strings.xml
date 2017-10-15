@@ -101,7 +101,7 @@
     <string name="repeat_call"><u> Call Me</u></string>
     <string name="SMS_verification">Enter Code</string>
     <string name="from_sms">from sms</string>
-    <string name="edit_profile">Edit Profile</string>
+    <string name="edit_profile">EDIT PROFILE</string>
     <string name="menu">Menu</string>
     <string name="my_cart">My Cart</string>
     <string name="notification">Notification</string>
@@ -130,9 +130,10 @@
     <string name="tk_cash">TK Cash</string>
     <string name="total_payable_amount">Total Payable amount</string>
     <string name="new_here">New here? </string>
-    <string name="track_order">Track Order</string>
+    <string name="track_order">TRACK ORDER</string>
     <string name="thank_you">THANK YOU</string>
     <string name="for_your_order">for your Order</string>
     <string name="order_placed">Order Placed</string>
+    <string name="check_vehicle_on_map">CHECK VEHICLE ON MAP</string>
 
 </resources>

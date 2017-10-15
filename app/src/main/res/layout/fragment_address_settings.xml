@@ -14,13 +14,12 @@
 
     <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Add New Address"
-        android:layout_margin="5dp"
+        android:layout_height="50dp"
+        android:text="ADD NEW ADDRESS"
         android:layout_alignParentBottom="true"
         android:id="@+id/btnSubmit"
-        android:textSize="@dimen/text_size"
-        android:background="@drawable/rounded_btn"
+        android:textSize="@dimen/text_size18"
+        android:background="@color/Button_Color"
         android:textStyle="bold"
         android:textColor="@color/TextColor"
         android:textAppearance="?android:textAppearanceMedium"

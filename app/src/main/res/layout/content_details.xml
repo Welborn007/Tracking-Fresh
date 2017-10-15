@@ -589,9 +589,9 @@
 
             <mehdi.sakout.fancybuttons.FancyButton
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:padding="5dp"
-                fancy:fb_text="Go to Cart"
+                fancy:fb_text="GO TO CART"
                 android:layout_weight="1"
                 fancy:fb_iconPosition="left"
                 android:id="@+id/gotoCart"
@@ -604,9 +604,9 @@
 
             <mehdi.sakout.fancybuttons.FancyButton
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:padding="5dp"
-                fancy:fb_text="CheckOut"
+                fancy:fb_text="CHECKOUT"
                 android:id="@+id/checkOut"
                 fancy:fb_iconPosition="right"
                 android:layout_marginLeft="10dp"

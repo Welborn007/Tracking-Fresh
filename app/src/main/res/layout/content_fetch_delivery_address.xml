@@ -18,8 +18,8 @@
 
     <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Set Default Address"
+        android:layout_height="50dp"
+        android:text="SET DEFAULT ADDRESSs"
         android:layout_margin="5dp"
         android:visibility="gone"
         android:layout_alignParentBottom="true"

@@ -248,9 +248,9 @@
 
     <mehdi.sakout.fancybuttons.FancyButton
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:padding="5dp"
-        fancy:fb_text="Confirm Order and Pay"
+        fancy:fb_text="CONFIRM ORDER AND PAY"
         android:layout_alignParentBottom="true"
         android:id="@+id/btnSubmit"
         fancy:fb_defaultColor="@color/MoneyGreen"

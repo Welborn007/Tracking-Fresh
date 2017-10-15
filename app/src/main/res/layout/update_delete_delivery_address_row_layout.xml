@@ -9,7 +9,7 @@
     android:layout_margin="5dp"
     android:background="@color/LightGray"
     card_view:cardCornerRadius="4dp"
-    card_view:cardElevation="1dp">
+    card_view:cardElevation="5dp">
 
     <LinearLayout
         android:orientation="vertical"
@@ -150,7 +150,7 @@
             android:textSize="@dimen/text_size"
             android:background="@color/MoneyGreen"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="50dp"/>
 
     </LinearLayout>
 

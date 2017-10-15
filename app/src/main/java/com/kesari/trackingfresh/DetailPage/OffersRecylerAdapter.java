@@ -36,16 +36,14 @@ import mehdi.sakout.fancybuttons.FancyButton;
  * Created by SNK Consulting on 26-09-2017.
  */
 
-public class OffersRecylerAdapter  extends RecyclerView.Adapter<OffersRecylerAdapter.RecyclerViewHolder>
-{
+public class OffersRecylerAdapter extends RecyclerView.Adapter<OffersRecylerAdapter.RecyclerViewHolder> {
     List<SubProductSubPOJO> ProductCategorySubPOJOs;
     Context context;
     MyApplication myApplication;
     int selected_position = -1;
     private String TAG = this.getClass().getSimpleName();
 
-    public OffersRecylerAdapter(List<SubProductSubPOJO> ProductCategorySubPOJOs, Context context, MyApplication myApplication)
-    {
+    public OffersRecylerAdapter(List<SubProductSubPOJO> ProductCategorySubPOJOs, Context context, MyApplication myApplication) {
         this.ProductCategorySubPOJOs = ProductCategorySubPOJOs;
         this.context = context;
         this.myApplication = myApplication;
@@ -79,8 +77,7 @@ public class OffersRecylerAdapter  extends RecyclerView.Adapter<OffersRecylerAda
     @Override
     public void onBindViewHolder(final OffersRecylerAdapter.RecyclerViewHolder viewHolder, final int position) {
 
-        try
-        {
+        try {
 
 /*
             if(selected_position == position){
@@ -112,7 +109,7 @@ public class OffersRecylerAdapter  extends RecyclerView.Adapter<OffersRecylerAda
             holder.product_image.setHierarchy(IOUtils.getFrescoImageHierarchy(context));
 */
 
-            try{
+            try {
 
                 final SubProductSubPOJO product_pojo = ProductCategorySubPOJOs.get(position);
 
@@ -134,13 +131,13 @@ public class OffersRecylerAdapter  extends RecyclerView.Adapter<OffersRecylerAda
                     public void onClick(View v) {
                         viewHolder.holder_count.setVisibility(View.VISIBLE);
                         viewHolder.crossTextView.setVisibility(View.VISIBLE);
+                        viewHolder.count.setVisibility(View.VISIBLE);
                         viewHolder.addtoCart.setVisibility(View.GONE);
                         viewHolder.count.setText("1");
 
 
                         if (!myApplication.checkifproductexists(product_pojo.getProductId())) {
-                            try
-                            {
+                            try {
                                 AddCart_model addCart_model = new AddCart_model();
                                 addCart_model.setProductCategory(product_pojo.getProductCategory());
                                 addCart_model.setProductId(product_pojo.getProductId());
@@ -154,12 +151,9 @@ public class OffersRecylerAdapter  extends RecyclerView.Adapter<OffersRecylerAda
                                 addCart_model.setPrice(product_pojo.getSelling_price());
                                 addCart_model.setUnitsOfMeasurementId(product_pojo.getUnitsOfMeasurementId());
 
-                                if(product_pojo.getProductImages().isEmpty())
-                                {
+                                if (product_pojo.getProductImages().isEmpty()) {
                                     addCart_model.setProductImage(product_pojo.getProductImage());
-                                }
-                                else
-                                {
+                                } else {
                                     addCart_model.setProductImage(product_pojo.getProductImages().get(0).getUrl());
                                 }
 
@@ -169,18 +163,14 @@ public class OffersRecylerAdapter  extends RecyclerView.Adapter<OffersRecylerAda
                                 addCart_model.setAvailableQuantity(product_pojo.getAvailableQuantity());
                                 addCart_model.setMRP(product_pojo.getMRP());
 
-                                if(product_pojo.getOffer() != null)
-                                {
+                                if (product_pojo.getOffer() != null) {
                                     addCart_model.setOffer(product_pojo.getOffer());
-                                }
-                                else
-                                {
+                                } else {
                                     addCart_model.setOffer("false");
                                 }
 
                                 myApplication.setProducts(addCart_model);
-                            }catch (Exception e)
-                            {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
 
@@ -201,17 +191,16 @@ public class OffersRecylerAdapter  extends RecyclerView.Adapter<OffersRecylerAda
 
                             //DashboardActivity.updateNotificationsBadge(t + 1);
 
-                            if(t < Integer.parseInt(product_pojo.getAvailableQuantity()))
-                            {
+                            if (t < Integer.parseInt(product_pojo.getAvailableQuantity())) {
+                                viewHolder.count.setVisibility(View.VISIBLE);
+                                viewHolder.crossTextView.setVisibility(View.VISIBLE);
                                 viewHolder.count.setText(String.valueOf(t + 1));
-                                if (!myApplication.IncrementProductQuantity(product_pojo.getProductId())) {
+                              if (!myApplication.IncrementProductQuantity(product_pojo.getProductId())) {
 
                                 } else {
 
                                 }
-                            }
-                            else
-                            {
+                            } else {
                                 final Dialog dialog = new Dialog(context);
                                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                 dialog.setContentView(R.layout.item_unavailable_dialog);
@@ -258,7 +247,8 @@ public class OffersRecylerAdapter  extends RecyclerView.Adapter<OffersRecylerAda
                                 myApplication.RemoveProductonZeroQuantity(product_pojo.getProductId());
 
                                 viewHolder.holder_count.setVisibility(View.GONE);
-                                viewHolder.crossTextView.setVisibility(View.VISIBLE);
+                                viewHolder.count.setVisibility(View.GONE);
+                                viewHolder.crossTextView.setVisibility(View.GONE);
                                 viewHolder.addtoCart.setVisibility(View.VISIBLE);
 
                                 viewHolder.count.setText("0");
@@ -285,33 +275,27 @@ public class OffersRecylerAdapter  extends RecyclerView.Adapter<OffersRecylerAda
                             in.putExtra("unit", product_pojo.getUnit());
                             in.putExtra("unitsOfMeasurementId", product_pojo.getUnitsOfMeasurementId());
                             in.putExtra("productId", product_pojo.getProductId());
-                            if(product_pojo.getProductImages().isEmpty())
-                            {
+                            if (product_pojo.getProductImages().isEmpty()) {
                                 in.putExtra("productImage", product_pojo.getProductImage());
-                                in.putExtra("productImages","");
-                            }
-                            else
-                            {
+                                in.putExtra("productImages", "");
+                            } else {
                                 in.putExtra("productImage", product_pojo.getProductImages().get(0).getUrl());
 
                                 //Set the values
                                 Gson gson = new Gson();
                                 String jsonText = gson.toJson(product_pojo.getProductImages());
-                                in.putExtra("productImages",jsonText);
+                                in.putExtra("productImages", jsonText);
                             }
                             in.putExtra("active", product_pojo.getActive());
-                            in.putExtra("price",product_pojo.getSelling_price());
-                            in.putExtra("brand",product_pojo.getBrand());
-                            in.putExtra("quantity",product_pojo.getAvailableQuantity());
-                            in.putExtra("MRP",product_pojo.getMRP());
+                            in.putExtra("price", product_pojo.getSelling_price());
+                            in.putExtra("brand", product_pojo.getBrand());
+                            in.putExtra("quantity", product_pojo.getAvailableQuantity());
+                            in.putExtra("MRP", product_pojo.getMRP());
 
-                            if(product_pojo.getOffer() != null)
-                            {
-                                in.putExtra("Offer",product_pojo.getOffer());
-                            }
-                            else
-                            {
-                                in.putExtra("Offer","false");
+                            if (product_pojo.getOffer() != null) {
+                                in.putExtra("Offer", product_pojo.getOffer());
+                            } else {
+                                in.putExtra("Offer", "false");
                             }
 
                             //in.putExtra("quantity",String.valueOf(viewHolder.count.getText().toString().trim()));
@@ -339,16 +323,15 @@ public class OffersRecylerAdapter  extends RecyclerView.Adapter<OffersRecylerAda
         return ProductCategorySubPOJOs.size();
     }
 
-    public static class RecyclerViewHolder extends RecyclerView.ViewHolder
-    {
-        TextView product_name, weight, price, count,quantity,mrp;
+    public static class RecyclerViewHolder extends RecyclerView.ViewHolder {
+        TextView product_name, weight, price, count, quantity, mrp;
         SimpleDraweeView imageView;
         ImageView plus, minus;
         ImageView addtoCart;
         LinearLayout holder_count;
         TextView crossTextView;
-        public RecyclerViewHolder(View convertView)
-        {
+
+        public RecyclerViewHolder(View convertView) {
             super(convertView);
             product_name = (TextView) convertView.findViewById(R.id.product_name);
             imageView = (SimpleDraweeView) convertView.findViewById(R.id.images);

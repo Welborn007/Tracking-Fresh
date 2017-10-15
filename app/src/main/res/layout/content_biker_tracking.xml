@@ -202,9 +202,9 @@
 
             <mehdi.sakout.fancybuttons.FancyButton
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:padding="5dp"
-                fancy:fb_text="View Order Details"
+                fancy:fb_text="VIEW ORDER DETAILS"
                 android:id="@+id/btnSubmit"
                 android:layout_alignParentBottom="true"
                 fancy:fb_defaultColor="@color/MoneyGreen"
