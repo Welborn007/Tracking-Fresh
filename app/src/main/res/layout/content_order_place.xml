@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:fancy="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    >
+
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/thank_you"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:textColor="@color/MoneyGreen"
+        android:textSize="35dp"
+        android:visibility="visible"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/for_your_order"
+        android:textColor="@color/Gray"
+        android:textAllCaps="true"
+        android:textSize="@dimen/text_size18"
+        android:visibility="visible"/>
+    <TextView
+        android:layout_marginTop="30dp"
+        android:id="@+id/orderNumberTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Order Number: TRACK3324345"
+        android:textColor="@color/Gray"
+        android:textSize="@dimen/text_size18"
+        android:visibility="visible"/>
+
+</LinearLayout>
+
+
+<ImageView
+    android:layout_width="wrap_content"
+    android:layout_height="220dp"
+    android:src="@drawable/bike"
+    android:layout_above="@+id/trackOrderTextView"
+    android:layout_marginBottom="50dp"/>
+<mehdi.sakout.fancybuttons.FancyButton
+    android:layout_alignParentBottom="true"
+    android:id="@+id/trackOrderTextView"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:layout_gravity="center"
+    android:layout_marginLeft="0dp"
+    fancy:fb_borderWidth="0dp"
+    fancy:fb_defaultColor="@color/MoneyGreen"
+    fancy:fb_focusColor="@color/MoneyGreen"
+    fancy:fb_radius="0dp"
+    fancy:fb_text="@string/track_order"
+    fancy:fb_textColor="@color/white"
+    fancy:fb_textSize="18sp" />
+
+</RelativeLayout>

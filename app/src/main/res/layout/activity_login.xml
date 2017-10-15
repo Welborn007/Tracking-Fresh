@@ -370,11 +370,12 @@
         android:layout_centerInParent="true"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
+        android:layout_marginBottom="15dp"
         android:gravity="center">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New here ?"
+            android:text="@string/new_here"
             android:textColor="@color/white"
             android:textSize="20dp"/>
 

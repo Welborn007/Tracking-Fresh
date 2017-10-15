@@ -216,6 +216,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/notification"></activity>
+        <activity android:name=".orderPlace.OrderPlaceActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/order_placed"/>
     </application>
 
 </manifest>

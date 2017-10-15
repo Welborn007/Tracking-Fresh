@@ -12,7 +12,7 @@
     card_view:cardElevation="5dp"
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
-    card_view:cardUseCompatPadding="true">
+    card_view:cardUseCompatPadding="false">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -254,7 +254,7 @@
                         android:id="@+id/addtoCart"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:background="@color/MoneyGreen"
+                        android:background="@drawable/cart_back"
                         android:padding="8dp"
                         android:src="@drawable/cart"
                         android:visibility="visible" />

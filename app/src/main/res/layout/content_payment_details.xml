@@ -167,10 +167,10 @@
 
             <mehdi.sakout.fancybuttons.FancyButton
                 android:layout_width="0dp"
-                android:layout_weight="1.7"
-                android:layout_height="40dp"
+                android:layout_weight="1.5"
+                android:layout_height="50dp"
                 android:padding="5dp"
-                fancy:fb_text="Apply"
+                fancy:fb_text="APPLY"
                 android:id="@+id/promocodeSubmit"
                 fancy:fb_defaultColor="@color/MoneyGreen"
                 fancy:fb_focusColor="@color/colorPrimary"
@@ -301,9 +301,9 @@
 
     <mehdi.sakout.fancybuttons.FancyButton
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:padding="5dp"
-        fancy:fb_text="Place Order"
+        fancy:fb_text="PLACE ORDER"
         android:layout_alignParentBottom="true"
         android:id="@+id/btnSubmit"
         fancy:fb_defaultColor="@color/MoneyGreen"

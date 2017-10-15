@@ -57,6 +57,7 @@ import com.kesari.trackingfresh.VehicleNearestRoute.NearestRouteMainPOJO;
 import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
+import com.kesari.trackingfresh.orderPlace.OrderPlaceActivity;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
 
@@ -1127,8 +1128,14 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
             String message = jsonObject.getString("message");
 
             if (message.equalsIgnoreCase("Updated Successfull!!")) {
-                Intent intent = new Intent(PaymentDetails.this, OrderBikerTrackingActivity.class);
+                /*Intent intent = new Intent(PaymentDetails.this, OrderBikerTrackingActivity.class);
                 intent.putExtra("orderID", orderAddPojo.getMessage().get_id());
+                startActivity(intent);
+                finish();
+                */
+                Intent intent = new Intent(PaymentDetails.this, OrderPlaceActivity.class);
+                intent.putExtra("orderID", orderAddPojo.getMessage().get_id());
+                intent.putExtra("orderNO", orderAddPojo.getMessage().get_id());
                 startActivity(intent);
                 finish();
                 myApplication.removeProductsItems();

@@ -59,10 +59,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Order No:"
-                        android:textColor="@color/DarkGray"
-                        android:textSize="@dimen/text_size14"
-                        android:visibility="gone" />
+                        android:text="#"
+                        android:textColor="@color/black"
+                        android:textSize="20dp"
+                        android:visibility="visible"
+                        android:textStyle="bold" />
+
 
                     <TextView
                         android:id="@+id/orderNo"
@@ -384,7 +386,7 @@
             <Button
                 android:id="@+id/repeat"
                 android:layout_width="0dp"
-                android:layout_height="30dp"
+                android:layout_height="40dp"
                 android:layout_weight="1"
                 android:background="@color/MoneyGreen"
                 android:text="Repeat Order"
@@ -398,7 +400,7 @@
             <Button
                 android:id="@+id/cancel"
                 android:layout_width="0dp"
-                android:layout_height="30dp"
+                android:layout_height="40dp"
                 android:layout_weight="1"
                 android:background="@color/Button_Color"
                 android:text="Cancel"

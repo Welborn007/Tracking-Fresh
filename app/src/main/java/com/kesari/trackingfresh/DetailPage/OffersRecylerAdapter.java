@@ -258,7 +258,7 @@ public class OffersRecylerAdapter  extends RecyclerView.Adapter<OffersRecylerAda
                                 myApplication.RemoveProductonZeroQuantity(product_pojo.getProductId());
 
                                 viewHolder.holder_count.setVisibility(View.GONE);
-                                viewHolder.crossTextView.setVisibility(View.GONE);
+                                viewHolder.crossTextView.setVisibility(View.VISIBLE);
                                 viewHolder.addtoCart.setVisibility(View.VISIBLE);
 
                                 viewHolder.count.setText("0");

@@ -88,13 +88,13 @@
         <item>Cards</item>
 -->
     </string-array>
-    <string name="splash_text">No matter where you are: \n whether your at home, or in the \n office ,or the bench - we will find \n you and we will feed you</string>
+    <string name="splash_text">No matter where you are \n whether your at home, or in the \n office, or the beach - we will find \n you and we will feed you</string>
     <string name="sign_in_header">SIGN IN</string>
     <string name="sign_up_header">SIGN UP</string>
     <string name="sign_in_header_two">enter your data</string>
     <string name="phone_header">Phone</string>
     <string name="password_header">Password</string>
-    <string name="forgot_password"><u>Forgot Password</u></string>
+    <string name="forgot_password"><u>Forgot Password?</u></string>
     <string name="new_register"><u> Sign Up</u></string>
     <string name="repeat"><u> Repeat</u></string>
     <string name="repeat_sms"><u> Resend SMS</u></string>
@@ -129,5 +129,10 @@
     <string name="logout">LogOut</string>
     <string name="tk_cash">TK Cash</string>
     <string name="total_payable_amount">Total Payable amount</string>
+    <string name="new_here">New here? </string>
+    <string name="track_order">Track Order</string>
+    <string name="thank_you">THANK YOU</string>
+    <string name="for_your_order">for your Order</string>
+    <string name="order_placed">Order Placed</string>
 
 </resources>

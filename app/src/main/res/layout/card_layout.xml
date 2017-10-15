@@ -144,16 +144,15 @@
                             android:layout_marginLeft="10dp"
                             android:gravity="right"
                             android:orientation="horizontal">
-
                             <ImageView
-                                android:id="@+id/plus"
-
+                                android:id="@+id/minus"
                                 android:layout_width="35dp"
                                 android:layout_height="35dp"
                                 android:background="@drawable/cart_circular_drawable"
-                                android:src="@drawable/ic_add"
+                                android:src="@drawable/ic_remove"
                                 android:textColor="@color/white"
                                 android:textSize="18dp" />
+
 
                             <View
                                 android:layout_width="1dp"
@@ -185,12 +184,14 @@
                                   android:textSize="@dimen/text_size"
                                   android:layout_height="match_parent" />
           -->
+
                             <ImageView
-                                android:id="@+id/minus"
+                                android:id="@+id/plus"
+
                                 android:layout_width="35dp"
                                 android:layout_height="35dp"
                                 android:background="@drawable/plus_back_right"
-                                android:src="@drawable/ic_remove"
+                                android:src="@drawable/ic_add"
                                 android:textColor="@color/white"
                                 android:textSize="18dp" />
 
@@ -257,7 +258,8 @@
                         android:layout_marginLeft="5dp"
                         android:text=" /- SubTotal"
                         android:textColor="@color/Gray"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
 
