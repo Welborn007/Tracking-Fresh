@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -181,6 +182,8 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     NearestVehicleMainPOJO nearestVehicleMainPOJO;
     boolean isDirectionSet = true;
     private Location Current_Location,old_Location;
+
+    private BroadcastReceiver _refreshReceiver = new MyReceiver();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -436,6 +439,9 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     public void onResume() {
         super.onResume();
 
+        IntentFilter filter = new IntentFilter("SOMEACTION");
+        getActivity().registerReceiver(_refreshReceiver, filter);
+
         if (!NetworkUtils.isNetworkConnectionOn(getActivity())) {
                 /*FireToast.customSnackbarWithListner(getActivity(), "No internet access", "Settings", new ActionClickListener() {
                     @Override
@@ -655,8 +661,14 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void stopSocket() {
-        socket.disconnect();
-        Log.i("SocketService", "Disconnected");
+        try
+        {
+            socket.disconnect();
+            Log.i("SocketService", "Disconnected");
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private double bearingBetweenLocations(LatLng latLng1, LatLng latLng2) {
@@ -742,9 +754,9 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 marker.remove();
             }
 
-            if (Cust_Marker != null) {
+           /* if (Cust_Marker != null) {
                 Cust_Marker.remove();
-            }
+            }*/
 
             final LatLng dest = new LatLng(latitude, longitude);
 
@@ -771,9 +783,9 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                     }
                 }, DURATION - 500);*/
 
-                Cust_Marker = map.addMarker(new MarkerOptions().position(Current_Origin)
+               /* Cust_Marker = map.addMarker(new MarkerOptions().position(Current_Origin)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_customer_marker))
-                        .title("Origin"));
+                        .title("Origin"));*/
 
             }
 
@@ -1290,6 +1302,14 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     public void onPause() {
         super.onPause();
 
+        try
+        {
+            getActivity().unregisterReceiver(this._refreshReceiver);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
         stopSocket();
 
         if(!scheduleTaskExecutor.isShutdown())
@@ -1299,10 +1319,41 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        if(!scheduleTaskExecutor.isShutdown())
+        {
+            scheduleTaskExecutor.shutdown();
+        }
+
+        /*if(!scheduleTaskExecutorOnlyVehicle.isShutdown())
+        {
+            scheduleTaskExecutorOnlyVehicle.shutdown();
+        }*/
+
+        try
+        {
+            getActivity().unregisterReceiver(this._refreshReceiver);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
 
         stopSocket();
+
+        try
+        {
+            getActivity().unregisterReceiver(this._refreshReceiver);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 
         if(!scheduleTaskExecutor.isShutdown())
         {
@@ -1512,6 +1563,10 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             Log.i("ChangedLonReceiver_Main", String.valueOf(lon));
 
             LatLng Current_OriginData = new LatLng(lat, lon);
+
+            //Cust_Marker.setPosition(Current_OriginData);
+
+            GuestAddress.setText(getCompleteAddressString(Current_OriginData.latitude, Current_OriginData.longitude));
 
             animateMarker(map,Cust_Marker,Current_OriginData,false);
 

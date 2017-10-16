@@ -26,6 +26,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -47,7 +48,6 @@ import com.kesari.trackingfresh.Login.ProfileMain;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.OTP.OTP;
 import com.kesari.trackingfresh.OTP.SendOtpPOJO;
-import com.kesari.trackingfresh.OrderTracking.OrderBikerTrackingActivity;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.ErrorPOJO;
@@ -103,6 +103,11 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
     boolean clearDrawable = false;
     NearestRouteMainPOJO nearestRouteMainPOJO;
 
+    LinearLayout promocodeDeductHolder;
+    TextView promocodeDeduction,promo_type;
+    String promoCode = "";
+    boolean promocodeApplied;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,6 +157,11 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
             promocodeText = (EditText) findViewById(R.id.promocodeText);
             cancel = (FancyButton) findViewById(R.id.cancel);
 
+            //PromoCODE
+            promocodeDeductHolder = (LinearLayout) findViewById(R.id.promocodeDeductHolder);
+            promocodeDeduction = (TextView) findViewById(R.id.promocodeDeduction);
+            promo_type = (TextView) findViewById(R.id.promo_type);
+
             promocodeText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -190,6 +200,8 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
                                 if(TKFCash)
                                 {
+                                    promocodeDeductHolder.setVisibility(View.GONE);
+
                                     promocodeText.setText("");
                                     int price =  Integer.parseInt(getIntent().getStringExtra("amount")) - Integer.parseInt(SharedPrefUtil.getUser(PaymentDetails.this).getData().getWalletAmount());
                                     price_payable.setText(String.valueOf(price));
@@ -197,15 +209,20 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                                     clearDrawable = false;
 
                                     promocodeSubmit.setEnabled(true);
+                                    promocodeApplied = false;
                                 }
                                 else
                                 {
+                                    promocodeDeductHolder.setVisibility(View.GONE);
+
                                     promocodeText.setText("");
                                     price_payable.setText(getIntent().getStringExtra("amount"));
                                     promocodeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                                     clearDrawable = false;
 
                                     promocodeSubmit.setEnabled(true);
+
+                                    promocodeApplied = false;
                                 }
                                 return true;
                             }
@@ -243,6 +260,11 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 price_total.setText(getIntent().getStringExtra("amount"));
                 price_payable.setText(getIntent().getStringExtra("amount"));
                 amountTotal = Integer.parseInt(getIntent().getStringExtra("amount"));
+
+                if(SharedPrefUtil.getUser(PaymentDetails.this).getData().getWalletAmount().equalsIgnoreCase("0"))
+                {
+                    walletCash.setClickable(false);
+                }
 
                 walletCash.setText("Use cash from wallet" + " [ ₹ " + SharedPrefUtil.getUser(PaymentDetails.this).getData().getWalletAmount() + " ]");
                 //OrderID = getIntent().getStringExtra("orderID");
@@ -287,15 +309,20 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                     promocodeText.setText("");
+                    promocodeDeductHolder.setVisibility(View.GONE);
 
                     if (isChecked) {
                         getProfileData();
                         TKFCash = true;
                         promocodeSubmit.setEnabled(true);
+
+                        promocodeApplied = false;
                     } else {
                         wallet = false;
                         TKFCash = false;
                         promocodeSubmit.setEnabled(true);
+                        promocodeApplied = false;
+
                         walletCash.setText("Use cash from wallet");
                         walletAmount = "";
                         price_payable.setText(getIntent().getStringExtra("amount"));
@@ -440,12 +467,20 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
             if(jsonObject != null)
             {
+                promocodeDeductHolder.setVisibility(View.VISIBLE);
+
                 String newTotal = jsonObject.getString("newTotal");
+                String discount = jsonObject.getString("discount");
+                promoCode = jsonObject.getString("promoCode");
+                String discountType = jsonObject.getString("discountType");
 
                 if(!newTotal.isEmpty())
                 {
                     price_payable.setText(newTotal);
+                    promocodeDeduction.setText(discount);
+                    promo_type.setText(promoCode);
                     promocodeSubmit.setEnabled(false);
+                    promocodeApplied = true;
 
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
@@ -828,6 +863,11 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 postObject.put("total_price", getIntent().getStringExtra("amount"));
                 postObject.put("pickUp", getIntent().getBooleanExtra("isPickup", false));
 
+                if(promocodeApplied)
+                {
+                    postObject.put("promoCode",promoCode);
+                }
+
                 if (TKFCash) {
                     postObject.put("walletAmount", walletAmount);
                 }
@@ -1135,7 +1175,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 */
                 Intent intent = new Intent(PaymentDetails.this, OrderPlaceActivity.class);
                 intent.putExtra("orderID", orderAddPojo.getMessage().get_id());
-                intent.putExtra("orderNO", orderAddPojo.getMessage().get_id());
+                intent.putExtra("orderNO", orderAddPojo.getMessage().getOrderNo());
                 startActivity(intent);
                 finish();
                 myApplication.removeProductsItems();
@@ -1170,11 +1210,11 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
         try {
             unregisterReceiver(networkUtilsReceiver);
 
-            if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
+            /*if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
                 // LOCATION SERVICE
                 stopService(new Intent(this, LocationServiceNew.class));
                 Log.e(TAG, "Location service is stopped");
-            }
+            }*/
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());

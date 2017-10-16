@@ -253,6 +253,10 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                 oldLocation = Delivery_Origin;
                 newLocation = Delivery_Origin;
 
+                custMarker = map.addMarker(new MarkerOptions().position(Delivery_Origin)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_customer_marker))
+                        .title(orderReviewMainPOJO.getData().getAddress().getFullName()));
+
                 oldLocationSet = false;
 
                 old_Location = new Location(LocationManager.GPS_PROVIDER);
@@ -1239,11 +1243,11 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                stopBikerSocket();
            }
 
-            if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
+            /*if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
                 // LOCATION SERVICE
                 stopService(new Intent(this, LocationServiceNew.class));
                 Log.e(TAG, "Location service is stopped");
-            }
+            }*/
 
             if(!scheduleTaskExecutor.isShutdown())
             {

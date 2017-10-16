@@ -5,9 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -23,7 +21,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -635,11 +632,11 @@ public class DetailsActivity extends AppCompatActivity implements BaseSliderView
             unregisterReceiver(networkUtilsReceiver);
             //scheduleTaskExecutor.shutdown();
 
-            if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
+            /*if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
                 // LOCATION SERVICE
                 stopService(new Intent(this, LocationServiceNew.class));
                 Log.e(TAG, "Location service is stopped");
-            }
+            }*/
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());

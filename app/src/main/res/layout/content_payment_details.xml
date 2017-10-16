@@ -58,7 +58,7 @@
 
             <TextView
                 android:id="@+id/price_total"
-                android:text="500"
+                android:text=""
                 android:textColor="@color/MoneyGreen"
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="2dp"
@@ -159,6 +159,7 @@
                 android:inputType="textCapCharacters"
                 android:textColor="@color/DarkGray"
                 android:textColorHint="@color/DarkGray"
+                android:layout_marginRight="10dp"
                 android:layout_gravity="center"
                 android:layout_width="0dp"
                 android:maxLines="3"
@@ -218,36 +219,61 @@
             android:orientation="horizontal"
             android:gravity="right"
             android:visibility="gone"
-            android:layout_marginRight="10dp"
+            android:layout_margin="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
-                android:text="Promocode Applied :-"
+                android:text="Promocode "
+                android:textColor="@color/DarkGray"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="10dp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:textSize="@dimen/text_size18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:text=""
                 android:textColor="@color/black"
-                android:layout_margin="5dp"
+                android:id="@+id/promo_type"
                 android:padding="10dp"
-                android:textSize="@dimen/text_size"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:text="Applied :-"
+                android:textColor="@color/DarkGray"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingRight="10dp"
+                android:layout_gravity="center"
+                android:textStyle="bold"
+                android:textSize="@dimen/text_size18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:text="- ₹"
+                android:textColor="@color/MoneyGreen"
+                android:layout_marginLeft="5dp"
+                android:paddingTop="10dp"
+                android:textStyle="bold"
+                android:textSize="@dimen/text_size18"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <TextView
                 android:id="@+id/promocodeDeduction"
-                android:text="40"
-                android:textColor="@color/black"
-                android:layout_marginTop="5dp"
+                android:text=""
+                android:textColor="@color/MoneyGreen"
+                android:textStyle="bold"
                 android:paddingTop="10dp"
-                android:textSize="14sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:text="₹"
-                android:textColor="@color/black"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="2dp"
-                android:paddingTop="10dp"
-                android:textSize="14sp"
+                android:textSize="@dimen/text_size18"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
@@ -256,6 +282,7 @@
         <LinearLayout
             android:orientation="vertical"
             android:gravity="center"
+            android:layout_marginTop="5dp"
             android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -285,7 +312,7 @@
                 android:layout_height="wrap_content"/>
 
             <TextView
-                android:text="13232"
+                android:text=""
                 android:textColor="@color/black"
                 android:id="@+id/price_payable"
                 android:padding="5dp"

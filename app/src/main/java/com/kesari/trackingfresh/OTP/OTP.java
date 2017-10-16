@@ -40,7 +40,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import mehdi.sakout.fancybuttons.FancyButton;
 
 public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt{
 
@@ -454,11 +453,11 @@ public class OTP extends AppCompatActivity implements NetworkUtilsReceiver.Netwo
             unregisterReceiver(myReceiver);
             unregisterReceiver(networkUtilsReceiver);
 
-            if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
+            /*if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
                 // LOCATION SERVICE
                 stopService(new Intent(this, LocationServiceNew.class));
                 Log.e(TAG, "Location service is stopped");
-            }
+            }*/
 
         }catch (Exception e)
         {

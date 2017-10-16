@@ -3,8 +3,6 @@ package com.kesari.trackingfresh.YourOrders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -290,11 +288,11 @@ public class OrderListActivity extends AppCompatActivity implements NetworkUtils
             unregisterReceiver(networkUtilsReceiver);
             //scheduleTaskExecutor.shutdown();
 
-            if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
+            /*if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
                 // LOCATION SERVICE
                 stopService(new Intent(this, LocationServiceNew.class));
                 Log.e(TAG, "Location service is stopped");
-            }
+            }*/
 
         }catch (Exception e)
         {

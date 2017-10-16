@@ -40,7 +40,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import mehdi.sakout.fancybuttons.FancyButton;
 
 public class RegisterActivity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt {
 
@@ -544,11 +543,11 @@ public class RegisterActivity extends AppCompatActivity implements NetworkUtilsR
         try {
             unregisterReceiver(networkUtilsReceiver);
 
-            if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
+            /*if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
                 // LOCATION SERVICE
                 stopService(new Intent(this, LocationServiceNew.class));
                 Log.e(TAG, "Location service is stopped");
-            }
+            }*/
 
         }catch (Exception e)
         {

@@ -1,33 +1,22 @@
 package com.kesari.trackingfresh.DashBoard;
 
 import android.app.Dialog;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.location.LocationManager;
-import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -87,12 +76,7 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.jsoup.Jsoup;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -144,10 +128,6 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
     TextView walletAmount,menuTextView,mapTextView;
 
     PopupWindow popupwindow_obj;
-
-    public static String versionName ="";
-    public static String versionCode ="";
-    Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1136,11 +1116,11 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 popupwindow_obj.dismiss();
             }
 
-            if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
+            /*if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
                 // LOCATION SERVICE
                 stopService(new Intent(this, LocationServiceNew.class));
                 Log.e(TAG, "Location service is stopped");
-            }
+            }*/
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
@@ -1149,7 +1129,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
 
     @Override
     public void NetworkOpen() {
-            checkVersion();
+            //checkFirstRun();
     }
 
     @Override
@@ -1182,129 +1162,6 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
-        }
-    }
-
-    private void checkVersion()
-    {
-        try {
-            versionCode = String.valueOf(getApplicationContext().getPackageManager()
-                    .getPackageInfo(getApplicationContext().getPackageName(), 0).versionCode);
-
-            versionName = getApplicationContext().getPackageManager()
-                    .getPackageInfo(getApplicationContext().getPackageName(), 0).versionName;
-
-            Log.d("Version Code",versionCode);
-            Log.d("Version Name",versionName);
-
-            new GetVersionCode().execute();
-
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    private class GetVersionCode extends AsyncTask<Void, String, String> {
-        @Override
-        protected String doInBackground(Void... voids) {
-
-            String newVersion = null;
-            try {
-                newVersion = Jsoup.connect("https://play.google.com/store/apps/details?id=" + DashboardActivity.this.getPackageName() + "&hl=it")
-                        .timeout(30000)
-                        .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-                        .referrer("http://www.google.com")
-                        .get()
-                        .select("div[itemprop=softwareVersion]")
-                        .first()
-                        .ownText();
-                return newVersion;
-            } catch (Exception e) {
-                return newVersion;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String onlineVersion) {
-            super.onPostExecute(onlineVersion);
-            if (onlineVersion != null && !onlineVersion.isEmpty()) {
-                if (!versionName.equalsIgnoreCase(onlineVersion)) {
-                    //show dialog
-                    //displayVersionAlert("This is not a updated version. Please update this version");
-                    //Toast.makeText(getApplicationContext(), "Version not updated", Toast.LENGTH_LONG).show();
-
-                    sendNotification("This is not a updated version. Please update this version","");
-                }
-                else {
-                    //startApp();
-                    //Toast.makeText(getApplicationContext(), "Version updated", Toast.LENGTH_LONG).show();
-                }
-
-            }
-            Log.d("update", "Current version " + versionName + " playstore version " + onlineVersion);
-        }
-    }
-
-    private void sendNotification(String messageBody,String Image) {
-        try
-        {
-
-            String url = "https://play.google.com/store/apps/details?id=com.kesari.trackingfresh";
-            Intent i = new Intent(Intent.ACTION_VIEW);
-            i.setData(Uri.parse(url));
-            //startActivity(i);
-
-            /*Intent intent = new Intent(DashboardActivity.this, NewSplash.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);*/
-            PendingIntent pendingIntent = PendingIntent.getActivity(DashboardActivity.this, 0, i,
-                    PendingIntent.FLAG_ONE_SHOT);
-
-            Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-
-            Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(DashboardActivity.this)
-                    .setContentTitle("Tracking Fresh")
-                    //.setContentText(messageBody)
-                    //.setLargeIcon(largeIcon)
-                    .setAutoCancel(true)
-                    .setSound(defaultSoundUri)
-                    .setContentIntent(pendingIntent);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                notificationBuilder.setSmallIcon(R.drawable.ic_stat_tkf);
-            } else {
-                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
-            }
-
-            if(!Image.isEmpty())
-            {
-                try {
-                    bitmap = BitmapFactory.decodeStream((InputStream) new URL(Image).getContent());
-                    bitmap = Bitmap.createScaledBitmap(bitmap, 350, 150, false);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                notificationBuilder.setStyle(new NotificationCompat.BigPictureStyle()
-                        .bigPicture(bitmap)).setSubText(messageBody);
-            }
-            else
-            {
-                //notificationBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody)).setContentText(messageBody);
-                //Bitmap defaultImage = BitmapFactory.decodeResource(getResources(), R.drawable.tracking_banner);
-                notificationBuilder.setStyle(new NotificationCompat.BigTextStyle()).setContentText(messageBody);
-            }
-
-            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-            notificationManager.notify(0, notificationBuilder.build());
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

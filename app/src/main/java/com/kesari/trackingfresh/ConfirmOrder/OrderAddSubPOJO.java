@@ -27,6 +27,16 @@ public class OrderAddSubPOJO {
 
     private String addressId;
 
+    private String orderNo;
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
+
     private List<OrderAddListPOJO> order = new ArrayList<OrderAddListPOJO>();
 
     public String get_id() {

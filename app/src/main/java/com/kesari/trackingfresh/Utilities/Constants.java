@@ -136,6 +136,10 @@ public interface Constants {
 
     String RepeatOrder = "http://"+ LIVEIP + "/api/vehicleStock/repeatOrder";
 
+    //Send Customer Live Cooords
+
+    String Cust_LocationUpdates = "http://"+ LIVEIP + "/api/customer/";
+
     // Milliseconds per second
     public static final int MILLISECONDS_PER_SECOND = 1000;
     // Update frequency in seconds

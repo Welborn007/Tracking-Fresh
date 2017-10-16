@@ -3,8 +3,6 @@ package com.kesari.trackingfresh.Order;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -53,7 +51,7 @@ import mehdi.sakout.fancybuttons.FancyButton;
 
 import static com.kesari.trackingfresh.Utilities.IOUtils.setBadgeCount;
 
-public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt{
+public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt {
     private String TAG = this.getClass().getSimpleName();
     private NetworkUtilsReceiver networkUtilsReceiver;
 
@@ -63,13 +61,13 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
     private Gson gson;
     OrderReviewMainPOJO orderReviewMainPOJO;
     private RecyclerView.Adapter adapterProducts;
-    TextView total_price,payment_status,payment_mode,fullName,buildingName,landmark,address,mobileNo,bikerName,deliveryCharge,orderDate,orderDeliverDate,delivery_textData,orderNo,orderType;
-//    Button btnCall,btnSupport;
+    TextView total_price, payment_status, payment_mode, fullName, buildingName, landmark, address, mobileNo, bikerName, deliveryCharge, orderDate, orderDeliverDate, delivery_textData, orderNo, orderType;
+    //    Button btnCall,btnSupport;
 //    FancyButton btnSubmit;
     FancyButton btnSubmit;
-    Button btnCall,btnSupport;
+    Button btnCall, btnSupport;
 
-    LinearLayout BikerHolder,deliveryDateHolder;
+    LinearLayout BikerHolder, deliveryDateHolder;
 
     //ScheduledExecutorService scheduleTaskExecutor;
     MyApplication myApplication;
@@ -83,17 +81,19 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
     EditText feedback_remark;
     FancyButton btnFeedback;
 
+    LinearLayout promocodeDeductHolder;
+    TextView promocodeDeduction, promo_type;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_review);
 
-        try
-        {
+        try {
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            toolbar.setBackgroundColor(ContextCompat.getColor(this,R.color.porcelain));
+            toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.porcelain));
 
         /*Register receiver*/
             networkUtilsReceiver = new NetworkUtilsReceiver(this);
@@ -136,6 +136,10 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
             feedback_remark = (EditText) findViewById(R.id.feedback_remark);
             btnFeedback = (FancyButton) findViewById(R.id.btnFeedback);
 
+            promocodeDeductHolder = (LinearLayout) findViewById(R.id.promocodeDeductHolder);
+            promocodeDeduction = (TextView) findViewById(R.id.promocodeDeduction);
+            promo_type = (TextView) findViewById(R.id.promo_type);
+
             final String orderID = getIntent().getStringExtra("orderID");
 
             btnFeedback.setOnClickListener(new View.OnClickListener() {
@@ -145,12 +149,9 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
                     String RatingtXt = String.valueOf(ratingBar.getRating());
                     String feedbackTxt = feedback_remark.getText().toString().trim();
 
-                    if(!RatingtXt.equalsIgnoreCase("0.0"))
-                    {
-                        sendRatingsFeedback(orderID,RatingtXt,feedbackTxt);
-                    }
-                    else
-                    {
+                    if (!RatingtXt.equalsIgnoreCase("0.0")) {
+                        sendRatingsFeedback(orderID, RatingtXt, feedbackTxt);
+                    } else {
                         //Toast.makeText(OrderReview.this, "Please Rate!!", Toast.LENGTH_SHORT).show();
 
                         new SweetAlertDialog(OrderReview.this)
@@ -174,27 +175,23 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(OrderReview.this, OrderBikerTrackingActivity.class);
-                    intent.putExtra("orderID",orderID);
+                    intent.putExtra("orderID", orderID);
                     startActivity(intent);
                     finish();
                 }
             });
 
-            final LocationManager locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+            final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-            if ( !locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) )
-            {
+            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 IOUtils.buildAlertMessageNoGps(OrderReview.this);
-            }
-            else
-            {
+            } else {
                 if (!IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
                     // LOCATION SERVICE
                     startService(new Intent(this, LocationServiceNew.class));
                     Log.e(TAG, "Location service is already running");
                 }
             }
-
 
 
             swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
@@ -227,7 +224,7 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
 
     }
 
-    private void sendRatingsFeedback(String orderID, String Rating,String Feedback) {
+    private void sendRatingsFeedback(String orderID, String Rating, String Feedback) {
         try {
 
             String url = Constants.UpdateOrder;
@@ -239,9 +236,9 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
                 JSONObject postObject = new JSONObject();
 
                 postObject.put("id", orderID);
-                postObject.put("feedback",Feedback);
-                postObject.put("rating",Rating);
-                postObject.put("status","Delivered");
+                postObject.put("feedback", Feedback);
+                postObject.put("rating", Rating);
+                postObject.put("status", "Delivered");
 
                 jsonObject.put("post", postObject);
 
@@ -303,58 +300,24 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
         }
     }
 
-    private void OrderDetailsResponse(String Response)
-    {
-        try
-        {
+    private void OrderDetailsResponse(String Response) {
+        try {
             orderReviewMainPOJO = gson.fromJson(Response, OrderReviewMainPOJO.class);
 
-            if(orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Pending") || orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Accepted"))
-            {
+            if (orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Pending") || orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Accepted")) {
                 btnSubmit.setVisibility(View.VISIBLE);
-            }
-            else
-            {
+            } else {
                 btnSubmit.setVisibility(View.GONE);
             }
 
 
-                if(orderReviewMainPOJO.getData().getPickUp() != null)
-                {
-                    if(orderReviewMainPOJO.getData().getPickUp().equalsIgnoreCase("true"))
-                    {
-                        orderType.setText("Pick Up");
-                    }
-                    else
-                    {
-                        orderType.setText("Delivery");
-                        if(!orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Rejected") && !orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Cancelled"))
-                        {
-                            if(orderReviewMainPOJO.getData().getBiker() != null)
-                            {
-                                BikerHolder.setVisibility(View.VISIBLE);
-                                bikerName.setText(orderReviewMainPOJO.getData().getBiker().getBikerName());
-
-                                btnCall.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        String phone = orderReviewMainPOJO.getData().getBiker().getMobileNo();
-                                        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
-                                        startActivity(intent);
-                                    }
-                                });
-                            }
-                        }
-
-                    }
-                }
-                else
-                {
+            if (orderReviewMainPOJO.getData().getPickUp() != null) {
+                if (orderReviewMainPOJO.getData().getPickUp().equalsIgnoreCase("true")) {
+                    orderType.setText("Pick Up");
+                } else {
                     orderType.setText("Delivery");
-                    if(!orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Rejected") && !orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Cancelled"))
-                    {
-                        if(orderReviewMainPOJO.getData().getBiker() != null)
-                        {
+                    if (!orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Rejected") && !orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Cancelled")) {
+                        if (orderReviewMainPOJO.getData().getBiker() != null) {
                             BikerHolder.setVisibility(View.VISIBLE);
                             bikerName.setText(orderReviewMainPOJO.getData().getBiker().getBikerName());
 
@@ -370,21 +333,50 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
                     }
 
                 }
+            } else {
+                orderType.setText("Delivery");
+                if (!orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Rejected") && !orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Cancelled")) {
+                    if (orderReviewMainPOJO.getData().getBiker() != null) {
+                        BikerHolder.setVisibility(View.VISIBLE);
+                        bikerName.setText(orderReviewMainPOJO.getData().getBiker().getBikerName());
+
+                        btnCall.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                String phone = orderReviewMainPOJO.getData().getBiker().getMobileNo();
+                                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
+                                startActivity(intent);
+                            }
+                        });
+                    }
+                }
+
+            }
+
+            if(orderReviewMainPOJO.getData().getPromoCode() !=null)
+            {
+                promocodeDeductHolder.setVisibility(View.VISIBLE);
+
+                promo_type.setText(orderReviewMainPOJO.getData().getPromoCode());
+                promocodeDeduction.setText(orderReviewMainPOJO.getData().getDiscount());
+            }
+            else
+            {
+                promocodeDeductHolder.setVisibility(View.GONE);
+            }
 
 
-            adapterProducts = new OrderReViewRecyclerAdapter(orderReviewMainPOJO.getData().getOrder(),OrderReview.this);
+            adapterProducts = new OrderReViewRecyclerAdapter(orderReviewMainPOJO.getData().getOrder(), OrderReview.this);
             recListProducts.setAdapter(adapterProducts);
 
             total_price.setText("₹ " + orderReviewMainPOJO.getData().getTotal_price());
             deliveryCharge.setText("₹ " + orderReviewMainPOJO.getData().getDelivery_charge());
 
-            if(orderReviewMainPOJO.getData().getPayment_Status() != null)
-            {
+            if (orderReviewMainPOJO.getData().getPayment_Status() != null) {
                 payment_status.setText(orderReviewMainPOJO.getData().getPayment_Status());
             }
 
-            if(orderReviewMainPOJO.getData().getPayment_Mode() != null)
-            {
+            if (orderReviewMainPOJO.getData().getPayment_Mode() != null) {
                 payment_mode.setText(orderReviewMainPOJO.getData().getPayment_Mode());
             }
 
@@ -401,8 +393,7 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
             String orderDateFormatted = sdfOutput.format(d);
             orderDate.setText(orderDateFormatted);
 
-            if(orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Delivered"))
-            {
+            if (orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Delivered")) {
                 deliveryDateHolder.setVisibility(View.VISIBLE);
                 SimpleDateFormat deliverInput = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                 SimpleDateFormat deliverOutput = new SimpleDateFormat("dd-MM-yyyy");
@@ -411,73 +402,50 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
                 orderDeliverDate.setText(orderdeliverDateFormatted);
 
                 delivery_textData.setText(" delivered the order.");
-            }
-            else
-            {
+            } else {
                 deliveryDateHolder.setVisibility(View.GONE);
                 delivery_textData.setText(" will deliver the order.");
             }
 
-            if(orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Delivered"))
-            {
+            if (orderReviewMainPOJO.getData().getStatus().equalsIgnoreCase("Delivered")) {
                 FeedbackHolder.setVisibility(View.VISIBLE);
-            }
-            else
-            {
+            } else {
                 FeedbackHolder.setVisibility(View.GONE);
             }
 
-            if(orderReviewMainPOJO.getData().getRating() != null)
-            {
-                if(!orderReviewMainPOJO.getData().getRating().isEmpty())
-                {
+            if (orderReviewMainPOJO.getData().getRating() != null) {
+                if (!orderReviewMainPOJO.getData().getRating().isEmpty()) {
                     ratingBar.setRating(Float.parseFloat(orderReviewMainPOJO.getData().getRating()));
                     ratingBar.setIsIndicator(true);
-                }
-                else
-                {
+                } else {
                     ratingBar.setRating(5);
                 }
-            }
-            else
-            {
+            } else {
                 ratingBar.setRating(5);
             }
 
 
-            if(orderReviewMainPOJO.getData().getFeedback() != null)
-            {
-                if(!orderReviewMainPOJO.getData().getFeedback().isEmpty())
-                {
+            if (orderReviewMainPOJO.getData().getFeedback() != null) {
+                if (!orderReviewMainPOJO.getData().getFeedback().isEmpty()) {
                     feedbackTxt.setText(orderReviewMainPOJO.getData().getFeedback());
                     feedbackTxt.setVisibility(View.VISIBLE);
                     feedback_remark.setVisibility(View.GONE);
-                }
-                else
-                {
+                } else {
                     feedback_remark.setVisibility(View.VISIBLE);
                     feedbackTxt.setVisibility(View.GONE);
                 }
-            }
-            else
-            {
+            } else {
                 feedback_remark.setVisibility(View.VISIBLE);
                 feedbackTxt.setVisibility(View.GONE);
             }
 
-            if(orderReviewMainPOJO.getData().getRating() != null && orderReviewMainPOJO.getData().getFeedback() != null)
-            {
-                if(!orderReviewMainPOJO.getData().getFeedback().isEmpty() && !orderReviewMainPOJO.getData().getRating().isEmpty())
-                {
+            if (orderReviewMainPOJO.getData().getRating() != null && orderReviewMainPOJO.getData().getFeedback() != null) {
+                if (!orderReviewMainPOJO.getData().getFeedback().isEmpty() && !orderReviewMainPOJO.getData().getRating().isEmpty()) {
                     btnFeedback.setVisibility(View.GONE);
-                }
-                else
-                {
+                } else {
                     btnFeedback.setVisibility(View.VISIBLE);
                 }
-            }
-            else
-            {
+            } else {
                 btnFeedback.setVisibility(View.VISIBLE);
             }
 
@@ -540,15 +508,14 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
             unregisterReceiver(networkUtilsReceiver);
             //scheduleTaskExecutor.shutdown();
 
-            if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
+           /* if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
                 // LOCATION SERVICE
                 stopService(new Intent(this, LocationServiceNew.class));
                 Log.e(TAG, "Location service is stopped");
-            }
+            }*/
 
-        }catch (Exception e)
-        {
-            Log.i(TAG,e.getMessage());
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
         }
     }
 
@@ -586,9 +553,8 @@ public class OrderReview extends AppCompatActivity implements NetworkUtilsReceiv
                         .show();
             }
 
-        }catch (Exception e)
-        {
-            Log.i(TAG,e.getMessage());
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
         }
     }
 }

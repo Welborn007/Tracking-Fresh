@@ -6,7 +6,6 @@ import android.content.IntentFilter;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +16,6 @@ import android.widget.TextView;
 
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.OrderTracking.OrderBikerTrackingActivity;
-import com.kesari.trackingfresh.Payment.PaymentDetails;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.network.NetworkUtils;
@@ -36,7 +34,7 @@ public class OrderPlaceActivity extends AppCompatActivity implements NetworkUtil
 
     TextView orderNumberTextView;
     FancyButton trackOrderTextView;
-    private String orderId;
+    private String orderId,orderNO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +53,9 @@ public class OrderPlaceActivity extends AppCompatActivity implements NetworkUtil
             trackOrderTextView = (FancyButton) findViewById(R.id.trackOrderTextView);
 
             orderId = getIntent().getStringExtra("orderID");
+            orderNO = getIntent().getStringExtra("orderNO");
 
-            orderNumberTextView.setText("Order Number: "+orderId);//
+            orderNumberTextView.setText("Order Number: "+orderNO);//
          /*Register receiver*/
             networkUtilsReceiver = new NetworkUtilsReceiver(this);
             registerReceiver(networkUtilsReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
@@ -96,11 +95,11 @@ public class OrderPlaceActivity extends AppCompatActivity implements NetworkUtil
             unregisterReceiver(networkUtilsReceiver);
             //scheduleTaskExecutor.shutdown();
 
-            if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
+            /*if (IOUtils.isServiceRunning(LocationServiceNew.class, this)) {
                 // LOCATION SERVICE
                 stopService(new Intent(this, LocationServiceNew.class));
                 Log.e(TAG, "Location service is stopped");
-            }
+            }*/
 
         }catch (Exception e)
         {
