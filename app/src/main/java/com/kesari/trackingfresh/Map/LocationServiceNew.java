@@ -20,7 +20,14 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.kesari.trackingfresh.Utilities.Constants;
+import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by kesari on 24/05/17.
@@ -160,6 +167,19 @@ public class LocationServiceNew extends Service implements LocationListener,
         newLocation(arg0);
 
         broadcastIntent(arg0.getLatitude(),arg0.getLongitude());
+
+        try
+        {
+            if (SharedPrefUtil.getToken(this) != null) {
+                if (!SharedPrefUtil.getToken(this).isEmpty()) {
+
+                    sendCustomerLocationData(arg0.getLatitude(),arg0.getLongitude());
+                }
+            }
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public void broadcastIntent(Double lat,Double lon){
@@ -170,4 +190,64 @@ public class LocationServiceNew extends Service implements LocationListener,
         sendBroadcast(intent);
     }
 
+
+    public void sendCustomerLocationData(double LAT, double LON){
+
+        try
+        {
+
+            String url = Constants.Cust_LocationUpdates;
+
+            JSONObject jsonObject = new JSONObject();
+
+            try {
+
+                JSONObject postObject = new JSONObject();
+
+                postObject.put("latitude",LAT);
+                postObject.put("longitude",LON);
+
+                jsonObject.put("post",postObject);
+
+                Log.i("JSON CREATED", jsonObject.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "JWT " + SharedPrefUtil.getToken(this));
+
+            IOUtils ioUtils = new IOUtils();
+
+            ioUtils.sendJSONObjectPutRequestHeader(this,url, params ,jsonObject, new IOUtils.VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d("Cust_Updates_Send", result.toString());
+
+                    if(SharedPrefUtil.getLocationUpdates(getApplicationContext()))
+                    {
+                        if (IOUtils.isServiceRunning(LocationServiceNew.class, getApplicationContext())) {
+                            // LOCATION SERVICE
+                            stopService(new Intent(getApplicationContext(), LocationServiceNew.class));
+                            SharedPrefUtil.sendLocationUpdates(getApplicationContext(),false);
+                            Log.e("SERVICE STARTED", "Location service is already running");
+                        }
+                    }
+
+
+                }
+            }, new IOUtils.VolleyFailureCallback() {
+                @Override
+                public void onFailure(String result) {
+
+                }
+            });
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i("Driver_Update_Exception", e.getMessage());
+        }
+    }
 }

@@ -149,6 +149,15 @@ public class AddToCart extends AppCompatActivity implements NetworkUtilsReceiver
                 ((RelativeLayout) relativeLayout).addView(valueTV);
             }
 
+            if(SharedPrefUtil.getNearestRouteMainPOJO(AddToCart.this) != null)
+            {
+                checkOut.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                checkOut.setVisibility(View.GONE);
+            }
+
             checkOut.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

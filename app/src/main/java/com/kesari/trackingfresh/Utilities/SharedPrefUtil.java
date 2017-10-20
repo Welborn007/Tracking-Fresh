@@ -32,6 +32,8 @@ public class SharedPrefUtil {
     private static String KEY_LAT_DEFAULT = "latitude_def";
     private static String KEY_LONGI_DEFAULT = "longitude_def";
 
+    private static String KEY_SEND_UPDATES = "location_updates";
+
     public static ProfileMain getUser(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         String data = preferences.getString(KEY_USER, null);
@@ -175,6 +177,18 @@ public class SharedPrefUtil {
         SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         preferences.edit().putString(KEY_VEHICLE_SOCKET, value).apply();
 
+    }
+
+    public static void sendLocationUpdates(Context context, boolean updates) {
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        preferences.edit().putBoolean(KEY_SEND_UPDATES, updates).apply();
+    }
+
+    public static boolean getLocationUpdates(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        boolean Token = preferences.getBoolean(KEY_SEND_UPDATES, false);
+
+        return Token;
     }
 
     public static void setClear(Context context) {

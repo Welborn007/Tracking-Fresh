@@ -220,6 +220,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/order_placed"/>
+
+        <receiver android:name=".Map.RestartServiceReceiver" >
+        </receiver>
     </application>
 
 </manifest>

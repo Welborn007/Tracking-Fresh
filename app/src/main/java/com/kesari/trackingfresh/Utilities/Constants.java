@@ -24,7 +24,7 @@ public interface Constants {
     //String LocationAPI = "http://"+ LIVEIP +"/api/vehicle_positions/by_driver_id/dr001";
 
     //Nearest Vehicle Check
-    String CheckNearestVehicle = "http://" + LIVEIP + "/api/vehicle_positions/nearest/";
+    //String CheckNearestVehicle = "http://" + LIVEIP + "/api/vehicle_positions/nearest/";
 
     //Product Category
     String Product_Category = "http://" + LIVEIP + "/api/productCategory/vehicle/list?vehicleId=";
@@ -45,7 +45,7 @@ public interface Constants {
     String Profile = "http://" + LIVEIP +"/api/customer/profile";
 
     //Profile Edit
-    String ProfileEdit = "http://" + LIVEIP + "/api/customer/";
+    String ProfileEdit = "http://" + LIVEIP + "/api/customer/update";
 
     //Profile Image Upload
     String ProfileImagePath = "http://" + LIVEIP + "/api/upload";
@@ -138,7 +138,7 @@ public interface Constants {
 
     //Send Customer Live Cooords
 
-    String Cust_LocationUpdates = "http://"+ LIVEIP + "/api/customer/";
+    String Cust_LocationUpdates = "http://"+ LIVEIP + "/api/customer/update";
 
     // Milliseconds per second
     public static final int MILLISECONDS_PER_SECOND = 1000;

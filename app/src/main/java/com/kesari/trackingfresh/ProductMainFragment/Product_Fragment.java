@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -20,6 +21,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -36,6 +38,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.LinearLayout;
@@ -45,6 +49,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -53,8 +58,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
-import com.kesari.trackingfresh.CheckNearestVehicleAvailability.CheckVehicleActivity;
-import com.kesari.trackingfresh.CheckNearestVehicleAvailability.NearestVehicleMainPOJO;
 import com.kesari.trackingfresh.Map.HttpConnection;
 import com.kesari.trackingfresh.Map.JSON_POJO;
 import com.kesari.trackingfresh.Map.PathJSONParser;
@@ -101,7 +104,6 @@ import mehdi.sakout.fancybuttons.FancyButton;
 import pl.droidsonroids.gif.GifImageView;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
-import static com.kesari.trackingfresh.OrderTracking.OrderBikerTrackingActivity.animateMarker;
 
 /**
  * Created by kesari on 11/04/17.
@@ -179,7 +181,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     private static final String TAG_TO_TIME = "";
     Marker markerVehicle, Cust_Marker;
 
-    NearestVehicleMainPOJO nearestVehicleMainPOJO;
+    //NearestVehicleMainPOJO nearestVehicleMainPOJO;
     boolean isDirectionSet = true;
     private Location Current_Location,old_Location;
 
@@ -300,6 +302,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             );
 
         } catch (Exception e) {
+            e.printStackTrace();
             Log.i(TAG, e.getMessage());
         }
 
@@ -335,6 +338,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             old_Location.setLongitude(Current_Origin.longitude);
 
         } catch (Exception e) {
+            e.printStackTrace();
             Log.i(TAG, e.getMessage());
         }
 
@@ -356,7 +360,10 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
             map.getUiSettings().setRotateGesturesEnabled(false);
 
-            getVehicleRoute(SharedPrefUtil.getNearestRouteMainPOJO(getActivity()).getData().get(0).getVehicleId());
+            if(SharedPrefUtil.getNearestRouteMainPOJO(getActivity()) != null)
+            {
+                getVehicleRoute(SharedPrefUtil.getNearestRouteMainPOJO(getActivity()).getData().get(0).getVehicleId());
+            }
 
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
@@ -430,6 +437,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             setVehicleEmpty();
 
         } catch (Exception e) {
+            e.printStackTrace();
             Log.i(TAG, e.getMessage());
         }
 
@@ -484,7 +492,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
         try
         {
 
-            String url = Constants.CheckNearestVehicle ;
+            String url = Constants.VehicleNearestRoute ;
 
             Log.i("url", url);
 
@@ -525,6 +533,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             });
 
         } catch (Exception e) {
+            e.printStackTrace();
             Log.i(TAG, e.getMessage());
         }
 
@@ -534,9 +543,9 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     {
         try
         {
-            nearestVehicleMainPOJO = gson.fromJson(Response, NearestVehicleMainPOJO.class);
+            nearestRouteMainPOJO = gson.fromJson(Response, NearestRouteMainPOJO.class);
 
-            SharedPrefUtil.setNearestVehicle(getActivity(),Response);
+            SharedPrefUtil.setNearestRouteMainPOJO(getActivity(),Response);
                 /*aviFailed.setVisibility(View.GONE);
                 avi.setVisibility(View.VISIBLE);
 
@@ -545,6 +554,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 finish();*/
 
         } catch (Exception e) {
+            e.printStackTrace();
             Log.i(TAG, e.getMessage());
         }
     }
@@ -603,6 +613,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             }
 
         } catch (Exception e) {
+            e.printStackTrace();
             Log.i(TAG, e.getMessage());
         }
 
@@ -715,6 +726,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             downloadTask.execute(url);
 
         } catch (Exception e) {
+            e.printStackTrace();
             Log.i(TAG, e.getMessage());
         }
     }
@@ -742,6 +754,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             Old_Origin = new LatLng(destLatitude, destLongitude);
 
         } catch (Exception e) {
+            e.printStackTrace();
             Log.i(TAG, e.getMessage());
         }
 
@@ -794,6 +807,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             isDirectionSet = false;
 
         } catch (Exception e) {
+            e.printStackTrace();
             Log.i(TAG, e.getMessage());
         }
 
@@ -854,6 +868,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             product_recyclerAdapter.notifyDataSetChanged();
 
         } catch (Exception e) {
+            e.printStackTrace();
             Log.i("exception", e.toString());
         }
     }
@@ -869,6 +884,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 data = http.readUrl(url[0]);
             } catch (Exception e) {
                 Log.d("Background Task", e.toString());
+                e.printStackTrace();
             }
             return data;
         }
@@ -925,6 +941,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                     Instructions = new String(utf8, "UTF-8");
 
                 } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
                 }
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -954,6 +971,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 data = http.readUrl(url[0]);
             } catch (Exception e) {
                 Log.d("Background Task", e.toString());
+                e.printStackTrace();
             }
             return data;
         }
@@ -1012,6 +1030,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                     Instructions = new String(utf8, "UTF-8");
 
                 } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
                 }
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -1124,7 +1143,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             nearestRouteMainPOJO = SharedPrefUtil.getNearestRouteMainPOJO(getActivity());
 
 
-            if (nearestRouteMainPOJO.getData() != null) {
+            if (nearestRouteMainPOJO != null) {
                 if (!nearestRouteMainPOJO.getData().isEmpty()) {
 
                     if (scoketLiveMainPOJO.getData() != null) {
@@ -1220,6 +1239,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             }
 
         } catch (Exception e) {
+            e.printStackTrace();
             //Toast.makeText(getActivity(), "exception", Toast.LENGTH_SHORT).show();
             Log.i(TAG, e.getMessage());
         }
@@ -1254,13 +1274,16 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
         try {
             recyclerView.setAdapter(null);
-            productCategoryMainPojo.getData().clear();
+            if(productCategoryMainPojo != null)
+            {
+                productCategoryMainPojo.getData().clear();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
 
-        String[] geoArrayNew = SharedPrefUtil.getNearestVehicle(getActivity()).getData().get(0).getDist().getLocation().getCoordinates();
+        String[] geoArrayNew = SharedPrefUtil.getNearestRouteMainPOJO(getActivity()).getData().get(0).getDist().getLocation().getCoordinates();
         Double lat = Double.valueOf(geoArrayNew[1]);
         Double lon = Double.valueOf(geoArrayNew[0]);
 
@@ -1376,7 +1399,12 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 @Override
                 public void onSuccess(String result) {
                     Log.d("VehicleRoute", result.toString());
-                    SetVehicleRouteResponse(result);
+
+                    if(nearestRouteMainPOJO != null)
+                    {
+                        SetVehicleRouteResponse(result);
+                    }
+
                 }
             }, new IOUtils.VolleyFailureCallback() {
                 @Override
@@ -1386,6 +1414,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             });
 
         } catch (Exception e) {
+            e.printStackTrace();
             Log.i(TAG, e.getMessage());
         }
     }
@@ -1487,6 +1516,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             oldLocation = newLocation;
 
         } catch (Exception e) {
+            e.printStackTrace();
             Log.i(TAG, e.getMessage());
         }
     }
@@ -1571,5 +1601,40 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             animateMarker(map,Cust_Marker,Current_OriginData,false);
 
         }
+    }
+
+    public static void animateMarker(final GoogleMap map, final Marker marker, final LatLng toPosition,
+                                     final boolean hideMarker) {
+        final Handler handler = new Handler();
+        final long start = SystemClock.uptimeMillis();
+        Projection proj = map.getProjection();
+        Point startPoint = proj.toScreenLocation(marker.getPosition());
+        final LatLng startLatLng = proj.fromScreenLocation(startPoint);
+        final long duration = 3000;
+
+        final Interpolator interpolator = new LinearInterpolator();
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                float t = interpolator.getInterpolation((float) elapsed / duration);
+                double lng = t * toPosition.longitude + (1 - t) * startLatLng.longitude;
+                double lat = t * toPosition.latitude + (1 - t) * startLatLng.latitude;
+
+                marker.setPosition(new LatLng(lat, lng));
+
+                if (t < 1.0) {
+                    // Post again 16ms later.
+                    handler.postDelayed(this, 16);
+                } else {
+                    if (hideMarker) {
+                        marker.setVisible(false);
+                    } else {
+                        marker.setVisible(true);
+                    }
+                }
+            }
+        });
     }
 }

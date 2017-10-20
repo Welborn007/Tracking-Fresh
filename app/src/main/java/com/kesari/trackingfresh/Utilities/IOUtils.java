@@ -615,10 +615,11 @@ public class IOUtils {
                     failureCallback.onFailure(ErrorResponse(json, context));
 
                 } catch (Exception e) {
+                    e.printStackTrace();
                     //Log.d("Error", e.getMessage());
-                    new SweetAlertDialog(context)
+                    /*new SweetAlertDialog(context)
                             .setTitleText("Oops Something Went Wrong!!")
-                            .show();
+                            .show();*/
                     //FireToast.customSnackbar(context, "Oops Something Went Wrong!!", "");
                 }
             }
@@ -650,12 +651,7 @@ public class IOUtils {
 
         Log.i("url", url);
         Log.i("JSON CREATED", jsonObject.toString());
-        final Dialog dialog = new Dialog(context);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.progressdialog);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.show();
+
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.PUT,
                 url, jsonObject,
@@ -664,7 +660,6 @@ public class IOUtils {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d("response", response.toString());
-                        dialog.dismiss();
                         callback.onSuccess(response.toString());
                     }
                 }, new Response.ErrorListener() {
@@ -672,7 +667,6 @@ public class IOUtils {
             @Override
             public void onErrorResponse(VolleyError error) {
                 //VolleyLog.d("Error", "Error: " + error.getMessage());
-                dialog.dismiss();
 
                 try {
                     String json = null;
@@ -684,9 +678,9 @@ public class IOUtils {
 
                 } catch (Exception e) {
                     //Log.d("Error", e.getMessage());
-                    new SweetAlertDialog(context)
+                   /* new SweetAlertDialog(context)
                             .setTitleText("Oops Something Went Wrong!!")
-                            .show();
+                            .show();*/
                     //FireToast.customSnackbar(context, "Oops Something Went Wrong!!", "");
                 }
             }

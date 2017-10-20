@@ -33,6 +33,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.BuildConfig;
@@ -507,7 +508,7 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
     private void updateCustomerProfile(String CustomerID, String firstName,String lastName,String emailID) {
         try {
 
-            String url = Constants.ProfileEdit + CustomerID;
+            String url = Constants.ProfileEdit;
 
             JSONObject jsonObject = new JSONObject();
 
@@ -888,20 +889,15 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
 
                 if(message.equalsIgnoreCase("uploaded"))
                 {
-                    //Toast.makeText(getApplicationContext(), "file uploaded", Toast.LENGTH_LONG).show();
-                    new SweetAlertDialog(getApplicationContext())
-                            .setTitleText("file uploaded")
-                            .show();
+                    Toast.makeText(getApplicationContext(), "photo uploaded", Toast.LENGTH_LONG).show();
 
                     updateCustomerProfileImage(SharedPrefUtil.getUser(ProfileActivity.this).getData().get_id(),url);
                 }
                 else
                 {
-                    //Toast.makeText(getApplicationContext(), "file uploaded failed",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "photo uploaded failed",Toast.LENGTH_LONG).show();
 
-                    new SweetAlertDialog(getApplicationContext())
-                            .setTitleText("file uploaded failed")
-                            .show();
+
                 }
 
             } catch (JSONException e) {
@@ -916,7 +912,7 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
     private void updateCustomerProfileImage(String CustomerID, String profileImage) {
         try {
 
-            String url = Constants.ProfileEdit + CustomerID;
+            String url = Constants.ProfileEdit;
 
             JSONObject jsonObject = new JSONObject();
 

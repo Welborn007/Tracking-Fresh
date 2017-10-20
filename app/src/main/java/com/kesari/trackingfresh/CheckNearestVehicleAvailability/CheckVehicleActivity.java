@@ -42,7 +42,7 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
     private String TAG = this.getClass().getSimpleName();
     private NetworkUtilsReceiver networkUtilsReceiver;
     private Gson gson;
-    NearestVehicleMainPOJO nearestVehicleMainPOJO;
+    //NearestVehicleMainPOJO nearestVehicleMainPOJO;
     NearestRouteMainPOJO nearestRouteMainPOJO;
 
     private Location Current_Location;
@@ -101,7 +101,7 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
                 }, 0, 10, TimeUnit.SECONDS);*/
 
                 sendLATLONVehicle();
-                sendLATLONNearestVehicle();
+                //sendLATLONNearestVehicle();
             }
 
         } catch (Exception e) {
@@ -156,6 +156,7 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
                     //scheduleTaskExecutor.shutdown();
                     //NearestVehicleResponse(result);
 
+                    Log.i("VehicleNearestRoute",result);
                     NearestVehicleRouteResponse(result);
                 }
             }, new IOUtils.VolleyFailureCallback() {
@@ -204,7 +205,7 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
         }
     }
 
-    private void sendLATLONNearestVehicle()
+    /*private void sendLATLONNearestVehicle()
     {
         try
         {
@@ -240,6 +241,7 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
                 public void onSuccess(String result) {
                     //scheduleTaskExecutor.shutdown();
                     NearestVehicleResponse(result);
+                    Log.i("CheckNearestVehicle",result);
 
                 }
             }, new IOUtils.VolleyFailureCallback() {
@@ -262,17 +264,17 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
             nearestVehicleMainPOJO = gson.fromJson(Response, NearestVehicleMainPOJO.class);
 
                 SharedPrefUtil.setNearestVehicle(CheckVehicleActivity.this,Response);
-                /*aviFailed.setVisibility(View.GONE);
+                *//*aviFailed.setVisibility(View.GONE);
                 avi.setVisibility(View.VISIBLE);
 
                 Intent intent = new Intent(CheckVehicleActivity.this, DashboardActivity.class);
                 startActivity(intent);
-                finish();*/
+                finish();*//*
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
-    }
+    }*/
 
 
     @Override

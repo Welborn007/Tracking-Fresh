@@ -1,6 +1,8 @@
 package com.kesari.trackingfresh.DashBoard;
 
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -54,6 +56,7 @@ import com.kesari.trackingfresh.HelpAndFAQ.HelpActivity;
 import com.kesari.trackingfresh.Legal.LegalActivity;
 import com.kesari.trackingfresh.Login.LoginActivity;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
+import com.kesari.trackingfresh.Map.RestartServiceReceiver;
 import com.kesari.trackingfresh.MyOffers.MyOffersActivity;
 import com.kesari.trackingfresh.MyProfile.ProfileActivity;
 import com.kesari.trackingfresh.NotificationList.NotificationListActivity;
@@ -129,6 +132,9 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
 
     PopupWindow popupwindow_obj;
 
+    private PendingIntent pendingIntent;
+    private AlarmManager manager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,6 +158,12 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
         /*Register receiver*/
             networkUtilsReceiver = new NetworkUtilsReceiver(this);
             registerReceiver(networkUtilsReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
+            // Retrieve a PendingIntent that will perform a broadcast
+            Intent alarmIntent = new Intent(this, RestartServiceReceiver.class);
+            pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
+
+            startAlarm();
 
             drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             toggle = new ActionBarDrawerToggle(
@@ -450,6 +462,14 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
+    }
+
+    public void startAlarm() {
+        manager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        int interval = 60000;
+
+        manager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
+        //Toast.makeText(this, "Alarm Set", Toast.LENGTH_SHORT).show();
     }
 
     private void sendToken(String TOKEN) {

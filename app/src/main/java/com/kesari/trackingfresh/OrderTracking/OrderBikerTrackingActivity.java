@@ -43,7 +43,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
-import com.kesari.trackingfresh.CheckNearestVehicleAvailability.NearestVehicleMainPOJO;
 import com.kesari.trackingfresh.DashBoard.DashboardActivity;
 import com.kesari.trackingfresh.Map.HttpConnection;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
@@ -121,7 +120,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
     boolean connectedBiker = false;
     boolean oldLocationSet = true;
 
-    NearestVehicleMainPOJO nearestVehicleMainPOJO;
+    //NearestVehicleMainPOJO nearestVehicleMainPOJO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -263,7 +262,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                 old_Location.setLatitude(Delivery_Origin.latitude);
                 old_Location.setLongitude(Delivery_Origin.longitude);
 
-                setVehicleEmpty();
+
             }
 
             if(orderReviewMainPOJO.getData().getBiker() != null)
@@ -329,6 +328,8 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                 }
             });
 
+            setVehicleEmpty();
+
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
@@ -389,7 +390,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
         try
         {
 
-            String url = Constants.CheckNearestVehicle ;
+            String url = Constants.VehicleNearestRoute ;
 
             Log.i("url", url);
 
@@ -439,9 +440,9 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
     {
         try
         {
-            nearestVehicleMainPOJO = gson.fromJson(Response, NearestVehicleMainPOJO.class);
+            nearestRouteMainPOJO = gson.fromJson(Response, NearestRouteMainPOJO.class);
 
-            SharedPrefUtil.setNearestVehicle(OrderBikerTrackingActivity.this,Response);
+            SharedPrefUtil.setNearestRouteMainPOJO(OrderBikerTrackingActivity.this,Response);
                 /*aviFailed.setVisibility(View.GONE);
                 avi.setVisibility(View.VISIBLE);
 
@@ -456,6 +457,9 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
 
     private void startSocket()
     {
+        isDirectionSet = true;
+        map.clear();
+
         try {
             socket = IO.socket(Constants.VehicleLiveLocation);
         } catch (URISyntaxException e) {
@@ -518,6 +522,9 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
 
     private void startBikerSocket()
     {
+        isDirectionSet = true;
+        map.clear();
+
         try {
             socketBiker = IO.socket(Constants.BikerLiveLocation);
         } catch (URISyntaxException e) {
@@ -776,6 +783,9 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
 
                         if(NearestVehicleRouteID.equalsIgnoreCase(SocketVehicleID))
                         {
+
+                            Log.i("Inside","BikerSocket");
+
                             SharedPrefUtil.setSocketLiveMainPOJO(OrderBikerTrackingActivity.this,resp);
 
                             geoArray = bikerSocketLivePOJO.getData().getGeo().getCoordinates();
@@ -919,24 +929,10 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
 
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-        String[] geoArrayNew = SharedPrefUtil.getNearestVehicle(OrderBikerTrackingActivity.this).getData().get(0).getDist().getLocation().getCoordinates();
+        String[] geoArrayNew = SharedPrefUtil.getNearestRouteMainPOJO(OrderBikerTrackingActivity.this).getData().get(0).getDist().getLocation().getCoordinates();
         Double lat = Double.valueOf(geoArrayNew[1]);
         Double lon = Double.valueOf(geoArrayNew[0]);
 
-        Log.d("DataLOng",String.valueOf(lon) + " " + String.valueOf(lat));
-
-        //Delivery_Origin = new LatLng(lat,lon);
-        if(isDirectionSet)
-        {
-            addMarkers("1", "TKF Vehicle", lat, lon);
-            getMapsApiDirectionsUrl(lat, lon);
-        }
-
-        //isDirectionSet = true;
-
-       /* map.addMarker(new MarkerOptions().position(Current_Origin)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_customer))
-                .title("Origin"));*/
     }
 
     private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {

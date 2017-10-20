@@ -1,13 +1,9 @@
 package com.kesari.trackingfresh.Settings.MyCards;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,18 +15,6 @@ import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.network.MyApplication;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
-import id.zelory.compressor.Compressor;
-import io.card.payment.CardIOActivity;
-import io.card.payment.CreditCard;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -86,14 +70,14 @@ public class CardsSettingFragment extends Fragment {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               onScanPress(v);
+               //onScanPress(v);
             }
         });
 
         return view;
     }
 
-    public void onScanPress(View v) {
+    /*public void onScanPress(View v) {
         Intent scanIntent = new Intent(getActivity(), CardIOActivity.class);
 
         // customize these values to suit your needs.
@@ -174,14 +158,14 @@ public class CardsSettingFragment extends Fragment {
                                 cardPOJO.setExpiry(scanResult.expiryMonth + "/" + scanResult.expiryYear);
                                 cardPOJO.setFormattedCardNumber(scanResult.getFormattedCardNumber());
 
-                                /*for (Iterator<CardPOJO> it = myApplication.getCardList().iterator(); it.hasNext(); ) {
+                                *//*for (Iterator<CardPOJO> it = myApplication.getCardList().iterator(); it.hasNext(); ) {
                                     CardPOJO cardPOJO1 = it.next();
 
                                     if (!cardPOJO1.isDefault())
                                     {
                                        cardPOJO.setDefault(true);
                                     }
-                                }*/
+                                }*//*
 
                                 myApplication.addCards(cardPOJO);
 
@@ -238,5 +222,5 @@ public class CardsSettingFragment extends Fragment {
         int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
 
         return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
-    }
+    }*/
 }

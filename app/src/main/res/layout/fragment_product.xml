@@ -82,7 +82,7 @@
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:src="@drawable/car"
+                            android:src="@drawable/user"
                             android:background="@color/MoneyGreen"/>
 
                         <TextView
@@ -147,7 +147,7 @@
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:src="@drawable/user"
+                            android:src="@drawable/car"
                             android:background="@color/MoneyGreen"/>
 
                         <TextView
