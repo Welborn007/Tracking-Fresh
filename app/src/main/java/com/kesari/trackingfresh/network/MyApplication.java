@@ -25,6 +25,7 @@ import com.kesari.trackingfresh.Order.OrderReview;
 import com.kesari.trackingfresh.ReferEarn.ReferralCodeActivity;
 import com.kesari.trackingfresh.Settings.MyCards.CardPOJO;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
+import com.kesari.trackingfresh.Utilities.TypefaceUtil;
 import com.kesari.trackingfresh.YourOrders.OrderListActivity;
 
 import java.lang.reflect.Type;
@@ -59,6 +60,8 @@ public class MyApplication extends Application
 
         initFresco();
         Fabric.with(this, new Crashlytics());
+        TypefaceUtil.overrideFont(this, "SERIF", "fonts/Montserrat-Medium.ttf");
+
 
         Gson gson = new Gson();
         Type type = new TypeToken<List<AddCart_model>>(){}.getType();

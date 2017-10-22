@@ -1,142 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:background="@color/whitegray"
-    tools:showIn="@layout/activity_order_review"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/whitegray"
+    android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    android:layout_height="match_parent">
+    tools:showIn="@layout/activity_order_review">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/swipeContainer"
-        android:layout_above="@+id/btnSubmit"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_above="@+id/btnSubmit">
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/delivery_text"
-                    android:text="Your Order"
-                    android:textColor="@color/Gray"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/whitegray"
                     android:drawablePadding="-190dp"
                     android:padding="10dp"
-                    android:textStyle="bold"
+                    android:text="Your Order"
+                    android:textColor="@color/Gray"
                     android:textSize="@dimen/text_size"
-                    android:background="@color/whitegray"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:textStyle="bold" />
 
 
                 <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/recyclerView"
-                    android:scrollbars="vertical"
-                    android:background="@color/whitegray">
-                </android.support.v7.widget.RecyclerView>
+                    android:background="@color/whitegray"
+                    android:scrollbars="vertical"></android.support.v7.widget.RecyclerView>
+
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:padding="10dp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="10dp">
 
                     <LinearLayout
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
                         <TextView
-                            android:text="Order no: "
-                            android:textColor="@color/DarkGray"
-                            android:textStyle="normal"
-                            android:textSize="14sp"
                             android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="3"
                             android:gravity="left"
+                            android:text="Order no: "
                             android:textAllCaps="true"
-                            android:layout_height="wrap_content"/>
+                            android:textColor="@color/DarkGray"
+                            android:textSize="14sp"
+                            android:textStyle="normal" />
 
                         <TextView
                             android:id="@+id/orderNo"
-                            android:text=""
-                            android:layout_marginLeft="5dp"
-                            android:textColor="@color/Gray"
-                            android:textSize="14sp"
                             android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
                             android:layout_weight="3"
                             android:gravity="left"
-                            android:layout_height="wrap_content"/>
+                            android:text=""
+                            android:textColor="@color/Gray"
+                            android:textSize="14sp" />
 
                     </LinearLayout>
 
                     <LinearLayout
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
                         <TextView
-                            android:text="Order Placed On: "
-                            android:textColor="@color/DarkGray"
-                            android:textStyle="normal"
-                            android:textAllCaps="true"
-                            android:textSize="14sp"
                             android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="3"
                             android:gravity="left"
-                            android:layout_height="wrap_content"/>
+                            android:text="Order Placed On: "
+                            android:textAllCaps="true"
+                            android:textColor="@color/DarkGray"
+                            android:textSize="14sp"
+                            android:textStyle="normal" />
 
                         <TextView
                             android:id="@+id/orderDate"
-                            android:text=""
-                            android:layout_marginLeft="5dp"
-                            android:textColor="@color/Gray"
-                            android:textSize="14sp"
                             android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
                             android:layout_weight="3"
                             android:gravity="left"
-                            android:layout_height="wrap_content"/>
+                            android:text=""
+                            android:textColor="@color/Gray"
+                            android:textSize="14sp" />
 
                     </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/deliveryDateHolder"
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
                         <TextView
-                            android:text="Order Delivered On: "
-                            android:textColor="@color/DarkGray"
-                            android:textStyle="normal"
-                            android:textAllCaps="true"
-                            android:textSize="14sp"
                             android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="3"
                             android:gravity="left"
-                            android:layout_height="wrap_content"/>
+                            android:text="Order Delivered On: "
+                            android:textAllCaps="true"
+                            android:textColor="@color/DarkGray"
+                            android:textSize="14sp"
+                            android:textStyle="normal" />
 
                         <TextView
                             android:id="@+id/orderDeliverDate"
-                            android:text=""
-                            android:layout_marginLeft="5dp"
-                            android:textColor="@color/Gray"
-                            android:textSize="14sp"
                             android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
                             android:layout_weight="3"
                             android:gravity="left"
-                            android:layout_height="wrap_content"/>
+                            android:text=""
+                            android:textColor="@color/Gray"
+                            android:textSize="14sp" />
 
                     </LinearLayout>
 
@@ -148,232 +147,235 @@
 
                         <TextView
                             android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="3"
                             android:gravity="left"
-                            android:textAllCaps="true"
-                            android:layout_height="wrap_content"
                             android:text="Order type:"
+                            android:textAllCaps="true"
                             android:textColor="@color/DarkGray"
                             android:textSize="@dimen/text_size14"
-                            android:textStyle="normal"
-                            />
+                            android:textStyle="normal" />
 
                         <TextView
                             android:id="@+id/orderType"
                             android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
                             android:layout_weight="3"
                             android:gravity="left"
-                            android:layout_height="wrap_content"
                             android:text=""
-                            android:layout_marginLeft="10dp"
                             android:textColor="@color/Gray"
-                            android:textSize="@dimen/text_size14"
-                            />
+                            android:textSize="@dimen/text_size14" />
 
                     </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginTop="5dp"
                         android:layout_marginBottom="5dp"
-                        android:background="#CBCAD0"/>
+                        android:layout_marginTop="5dp"
+                        android:background="#CBCAD0" />
 
                     <LinearLayout
-                        android:gravity="end"
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:orientation="horizontal">
 
                         <TextView
-                            android:text="Delivery Charges"
-                            android:textColor="@color/Gray"
-                            android:textStyle="bold"
-                            android:textSize="14sp"
                             android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="3"
                             android:gravity="left"
-                            android:layout_height="wrap_content"/>
+                            android:text="Delivery Charges"
+                            android:textColor="@color/Gray"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/deliveryCharge"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:gravity="left"
                             android:text=""
                             android:textColor="@color/Gray"
-                            android:gravity="left"
-                            android:textSize="14sp"
-                            android:layout_width="0dp"
-                            android:layout_weight="3"
-                            android:layout_height="wrap_content"/>
+                            android:textSize="14sp" />
 
                     </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/promocodeDeductHolder"
-                        android:visibility="gone"
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
 
                         <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
                             android:text="Promocode "
                             android:textColor="@color/Gray"
-                            android:textStyle="bold"
-                            android:layout_gravity="center"
                             android:textSize="@dimen/text_size14"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:textStyle="bold"
+                            android:visibility="gone" />
 
                         <TextView
+                            android:id="@+id/promo_type"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
                             android:text=""
                             android:textColor="@color/black"
-                            android:id="@+id/promo_type"
-                            android:layout_marginLeft="5dp"
-                            android:textStyle="bold"
                             android:textSize="18dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-
-                        <TextView
-                            android:text="Applied "
-                            android:textColor="@color/Gray"
-                            android:layout_gravity="center"
                             android:textStyle="bold"
-                            android:layout_marginLeft="5dp"
-                            android:textSize="@dimen/text_size14"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:visibility="gone" />
 
                         <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:text="Coupons"
+
+                            android:textColor="@color/Gray"
+                            android:textSize="@dimen/text_size14"
+                            android:textStyle="normal" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:text="- ₹"
                             android:textColor="@color/MoneyGreen"
-                            android:layout_marginLeft="5dp"
-                            android:textSize="@dimen/text_size18"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:textSize="@dimen/text_size18" />
 
                         <TextView
                             android:id="@+id/promocodeDeduction"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+
                             android:text=""
-                            android:textColor="@color/MoneyGreen"
-                            android:textSize="@dimen/text_size18"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:textColor="@color/Gray"
+                            android:textSize="14sp" />
 
                     </LinearLayout>
 
                     <LinearLayout
-                        android:gravity="end"
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:orientation="horizontal">
 
                         <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:gravity="left"
                             android:text="Grand Total"
                             android:textColor="@color/Gray"
                             android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:layout_width="0dp"
-                            android:layout_weight="3"
-                            android:gravity="left"
-                            android:layout_height="wrap_content"/>
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/total_price"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:gravity="left"
                             android:text=""
                             android:textColor="@color/MoneyGreen"
-                            android:gravity="left"
-                            android:textSize="18sp"
-                            android:layout_width="0dp"
-                            android:layout_weight="3"
-                            android:layout_height="wrap_content"/>
+                            android:textSize="18sp" />
 
                     </LinearLayout>
 
                 </LinearLayout>
 
-<!--
-                <android.support.v7.widget.RecyclerView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/recyclerView"
-                    android:scrollbars="vertical"
-                    android:background="@color/white">
-                </android.support.v7.widget.RecyclerView>-->
+                <!--
+                                <android.support.v7.widget.RecyclerView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:id="@+id/recyclerView"
+                                    android:scrollbars="vertical"
+                                    android:background="@color/white">
+                                </android.support.v7.widget.RecyclerView>-->
 
                 <LinearLayout
-                    android:orientation="horizontal"
-                    android:padding="10dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
 
                     <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:gravity="left"
                         android:text="Payment Status"
                         android:textColor="@color/DarkGray"
                         android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:layout_width="0dp"
-                        android:layout_weight="3"
-                        android:gravity="left"
-                        android:layout_height="wrap_content"/>
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/payment_status"
-                        android:text=""
-                        android:textColor="@color/MoneyGreen"
-                        android:textSize="14sp"
                         android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:gravity="left"
-                        android:layout_height="wrap_content"/>
+                        android:text=""
+                        android:textColor="@color/MoneyGreen"
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#CBCAD0"/>
+                    android:background="#CBCAD0" />
 
                 <LinearLayout
-                    android:orientation="horizontal"
-                    android:padding="10dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
 
                     <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:gravity="left"
                         android:text="Payment Mode"
                         android:textColor="@color/DarkGray"
                         android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:layout_width="0dp"
-                        android:layout_weight="3"
-                        android:gravity="left"
-                        android:layout_height="wrap_content"/>
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/payment_mode"
-                        android:text=""
-                        android:textColor="@color/MoneyGreen"
-                        android:textSize="14sp"
                         android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:gravity="left"
-                        android:layout_height="wrap_content"/>
+                        android:text=""
+                        android:textColor="@color/MoneyGreen"
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#CBCAD0"/>
+                    android:background="#CBCAD0" />
 
                 <TextView
-                    android:text="Delivery Address"
-                    android:padding="10dp"
-                    android:textColor="@color/Gray"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="Delivery Address"
+                    android:textColor="@color/Gray"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
                 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
                     xmlns:card_view="http://schemas.android.com/apk/res-auto"
                     xmlns:fancy="http://schemas.android.com/apk/res-auto"
@@ -385,54 +387,59 @@
                     card_view:cardCornerRadius="1dp"
                     card_view:cardElevation="5dp"
                     card_view:cardUseCompatPadding="true">
+
                     <LinearLayout
-                        android:orientation="vertical"
-                        android:padding="5dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="5dp">
+
                         <TextView
                             android:id="@+id/fullName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:text=""
                             android:textColor="@color/MoneyGreen"
-                            android:textSize="14sp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
+                            android:textSize="14sp" />
+
                         <LinearLayout
-                            android:orientation="horizontal"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
                             <TextView
                                 android:id="@+id/buildingName"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
                                 android:text=""
                                 android:textColor="@color/Gray"
-                                android:textSize="14sp"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
+                                android:textSize="14sp" />
 
                             <TextView
                                 android:id="@+id/landmark"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
                                 android:text=""
                                 android:textColor="@color/Gray"
-                                android:textSize="14sp"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
+                                android:textSize="14sp" />
                         </LinearLayout>
+
                         <TextView
                             android:id="@+id/address"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:text=""
                             android:textColor="@color/Gray"
-                            android:textSize="14sp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
+                            android:textSize="14sp" />
 
 
                         <TextView
                             android:id="@+id/mobileNo"
-                            android:textColor="@color/Gray"
-                            android:textSize="16sp"
-                            android:layout_gravity="center"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:textColor="@color/Gray"
+                            android:textSize="16sp" />
 
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
@@ -440,67 +447,64 @@
 
                 <LinearLayout
                     android:id="@+id/BikerHolder"
-                    android:visibility="gone"
-                    android:orientation="vertical"
-                    android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <TextView
-                        android:text="Biker Details"
-                        android:textColor="@color/white"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/MoneyGreen"
                         android:drawablePadding="-190dp"
                         android:padding="10dp"
-                        android:textSize="@dimen/text_size"
-                        android:background="@color/MoneyGreen"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:text="Biker Details"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size" />
 
                     <LinearLayout
-                        android:padding="5dp"
                         android:id="@+id/bikerNameHolder"
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="5dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Biker "
                             android:layout_gravity="center"
+                            android:text="Biker "
                             android:textColor="@color/Gray"
-                            android:textSize="@dimen/text_size"
-                            />
+                            android:textSize="@dimen/text_size" />
 
                         <TextView
                             android:id="@+id/bikerName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:textStyle="bold"
                             android:layout_gravity="center"
+                            android:layout_marginLeft="5dp"
                             android:textColor="@color/Gray"
                             android:textSize="@dimen/text_size"
-                            />
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/delivery_textData"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text=" will deliver the order."
-                            android:layout_marginLeft="5dp"
                             android:layout_gravity="center"
+                            android:layout_marginLeft="5dp"
+                            android:text=" will deliver the order."
                             android:textColor="@color/Gray"
-                            android:textSize="@dimen/text_size"
-                            />
+                            android:textSize="@dimen/text_size" />
 
                     </LinearLayout>
 
                     <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_margin="5dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:orientation="horizontal">
 
                         <!--
                                                 <mehdi.sakout.fancybuttons.FancyButton
@@ -521,25 +525,26 @@
 
                         <Button
 
+                            android:id="@+id/btnCall"
                             android:layout_width="0dp"
-                            android:layout_weight="3"
                             android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:background="@color/MoneyGreen"
                             android:padding="5dp"
                             android:text="Call"
-                            android:id="@+id/btnCall"
-                            android:background="@color/MoneyGreen"
                             android:textColor="@color/white"
                             android:textSize="18sp" />
+
                         <Button
 
+                            android:id="@+id/btnSupport"
                             android:layout_width="0dp"
-                            android:layout_weight="3"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_weight="3"
+                            android:background="@color/MoneyGreen"
                             android:padding="5dp"
                             android:text="Support"
-                            android:layout_marginLeft="10dp"
-                            android:id="@+id/btnSupport"
-                            android:background="@color/MoneyGreen"
                             android:textColor="@color/white"
                             android:textSize="18sp" />
                         <!--
@@ -565,74 +570,72 @@
 
                 <LinearLayout
                     android:id="@+id/FeedbackHolder"
-                    android:orientation="vertical"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
 
                     <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/MoneyGreen"
+                        android:padding="10dp"
                         android:text="Order Feedback"
                         android:textColor="@color/white"
-                        android:padding="10dp"
-                        android:textSize="@dimen/text_size"
-                        android:background="@color/MoneyGreen"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:textSize="@dimen/text_size" />
 
                     <RatingBar
+                        android:id="@+id/ratingBar"
+                        style="?android:attr/ratingBarStyleIndicator"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:layout_margin="5dp"
                         android:isIndicator="false"
-                        android:layout_gravity="center"
-                        android:progressTint="@color/MoneyGreen"
-                        style="?android:attr/ratingBarStyleIndicator"
                         android:numStars="5"
-                        android:id="@+id/ratingBar"
-                        />
+                        android:progressTint="@color/MoneyGreen" />
 
                     <TextView
                         android:id="@+id/feedbackTxt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:visibility="gone"
-                        android:textStyle="bold"
                         android:layout_gravity="center"
                         android:textColor="@color/Gray"
                         android:textSize="@dimen/text_size"
-                        />
+                        android:textStyle="bold"
+                        android:visibility="gone" />
 
                     <android.support.design.widget.TextInputLayout
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp">
 
                         <EditText
                             android:id="@+id/feedback_remark"
                             android:layout_width="match_parent"
-                            android:textSize="@dimen/text_size"
-                            android:textColor="@color/Gray"
-                            android:inputType="text"
                             android:layout_height="wrap_content"
-                            android:hint="Feedback" />
+                            android:hint="Feedback"
+                            android:inputType="text"
+                            android:textColor="@color/Gray"
+                            android:textSize="@dimen/text_size" />
 
                     </android.support.design.widget.TextInputLayout>
 
                     <mehdi.sakout.fancybuttons.FancyButton
+                        android:id="@+id/btnFeedback"
                         android:layout_width="wrap_content"
-                        android:layout_gravity="center"
                         android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        fancy:fb_text="Submit"
+                        android:layout_gravity="center"
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
                         android:layout_marginTop="5dp"
-                        android:id="@+id/btnFeedback"
+                        android:padding="5dp"
                         fancy:fb_defaultColor="@color/MoneyGreen"
                         fancy:fb_focusColor="@color/colorPrimary"
                         fancy:fb_radius="0dp"
+                        fancy:fb_text="Submit"
                         fancy:fb_textColor="@color/white"
                         fancy:fb_textSize="18sp" />
 
@@ -646,12 +649,12 @@
 
 
     <mehdi.sakout.fancybuttons.FancyButton
+        android:id="@+id/btnSubmit"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
         android:padding="5dp"
         android:text="@string/check_vehicle_on_map"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/btnSubmit"
         fancy:fb_defaultColor="@color/MoneyGreen"
         fancy:fb_focusColor="@color/colorPrimary"
         fancy:fb_radius="0dp"
@@ -661,12 +664,11 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:textSize="@dimen/text_size"
         android:background="@drawable/rounded_btn"
-        android:textStyle="bold"
-        android:textColor="@color/TextColor"
         android:textAppearance="?android:textAppearanceMedium"
-        />
+        android:textColor="@color/TextColor"
+        android:textSize="@dimen/text_size"
+        android:textStyle="bold"
+        android:visibility="gone" />
 
 </RelativeLayout>
