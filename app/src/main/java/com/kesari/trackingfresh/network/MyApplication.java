@@ -60,7 +60,7 @@ public class MyApplication extends Application
 
         initFresco();
         Fabric.with(this, new Crashlytics());
-        TypefaceUtil.overrideFont(this, "SERIF", "fonts/Montserrat-Medium.ttf");
+        TypefaceUtil.overrideFont(this, "SERIF", "fonts/Montserrat-Regular.ttf");
 
 
         Gson gson = new Gson();

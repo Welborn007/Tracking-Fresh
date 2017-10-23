@@ -135,5 +135,6 @@
     <string name="for_your_order">for your Order</string>
     <string name="order_placed">Order Placed</string>
     <string name="check_vehicle_on_map">CHECK VEHICLE ON MAP</string>
+    <string name="select_payment_mode">Select Payment Mode</string>
 
 </resources>

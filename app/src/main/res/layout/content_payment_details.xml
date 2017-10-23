@@ -37,26 +37,35 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:padding="10dp"
-                android:text="Total amount :-"
+                android:text="@string/select_payment_mode"
                 android:textColor="@color/DarkGray"
                 android:textSize="@dimen/text_size18"
                 android:textStyle="bold" />
+            <!--   <TextView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_margin="5dp"
+                   android:padding="10dp"
+                   android:text="Total amount :-"
+                   android:textColor="@color/DarkGray"
+                   android:textSize="@dimen/text_size18"
+                   android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:paddingTop="10dp"
-                android:text="₹"
-                android:textColor="@color/MoneyGreen"
-                android:textSize="@dimen/text_size18"
-                android:textStyle="bold" />
-
-            <TextView
+               <TextView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_marginTop="5dp"
+                   android:paddingTop="10dp"
+                   android:text="₹"
+                   android:textColor="@color/MoneyGreen"
+                   android:textSize="@dimen/text_size18"
+                   android:textStyle="bold" />
+   -->
+            <!--<TextView
                 android:id="@+id/price_total"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -67,7 +76,7 @@
                 android:textColor="@color/MoneyGreen"
                 android:textSize="@dimen/text_size18"
                 android:textStyle="bold" />
-
+-->
 
         </LinearLayout>
 
@@ -213,10 +222,53 @@
             android:visibility="gone" />
 
         <LinearLayout
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:gravity="left"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:text="SUBTotal"
+                android:textAllCaps="true"
+                android:textColor="@color/DarkGray"
+                android:textSize="@dimen/text_size18"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="0.5"
+                android:gravity="right"
+                android:text="  ₹"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_size18"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/price_total"
+
+                android:layout_width="0dp"
+                android:layout_weight="1.2"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_size18"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/promocodeDeductHolder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:gravity="left"
             android:orientation="horizontal"
             android:visibility="gone">
@@ -250,9 +302,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:paddingBottom="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="10dp"
                 android:text="Coupons"
                 android:textAllCaps="true"
                 android:textColor="@color/DarkGray"
@@ -262,9 +311,8 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
                 android:layout_marginLeft="5dp"
-                android:paddingTop="10dp"
+                android:layout_weight="0.5"
                 android:gravity="right"
                 android:text="- ₹"
                 android:textColor="@color/MoneyGreen"
@@ -277,7 +325,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1.2"
                 android:gravity="left"
-                android:paddingTop="10dp"
                 android:text=""
                 android:textColor="@color/MoneyGreen"
                 android:textSize="@dimen/text_size18"
