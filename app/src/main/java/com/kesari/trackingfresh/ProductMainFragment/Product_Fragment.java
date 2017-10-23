@@ -35,6 +35,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Html;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -186,6 +187,8 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
     private Location Current_Location,old_Location;
 
     private BroadcastReceiver _refreshReceiver = new MyReceiver();
+    public static RelativeLayout relativeLayout;
+    public static TextView valueTV;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -226,6 +229,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             layout_holder = (LinearLayout) V.findViewById(R.id.layout_holder);
             product_holder = (LinearLayout) V.findViewById(R.id.product_holder);
             product_category = (FancyButton) V.findViewById(R.id.product_category);
+            relativeLayout = (RelativeLayout) V.findViewById(R.id.relativelay_reclview);
 
             frameLayout = (FrameLayout) V.findViewById(R.id.fragment_data);
 
@@ -603,14 +607,28 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
         try {
             nearestRouteMainPOJO = gson.fromJson(Response, NearestRouteMainPOJO.class);
 
+            valueTV = new TextView(getActivity());
+
             if (nearestRouteMainPOJO.getData().isEmpty()) {
 
                 SharedPrefUtil.setNearestRouteMainPOJO(getActivity(), "");
+
+                relativeLayout.setVisibility(View.VISIBLE);
+                relativeLayout.removeAllViews();
+                valueTV.setText("Sorry! We don't serve on this route currently!!!");
+                valueTV.setGravity(Gravity.CENTER);
+                valueTV.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+                ((RelativeLayout) relativeLayout).addView(valueTV);
+
                 //setVehicleEmpty();
             } else {
+                relativeLayout.setVisibility(View.GONE);
+
                 SharedPrefUtil.setNearestRouteMainPOJO(getActivity(), Response);
                 getProductDataListing();
             }
+
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -777,7 +795,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
 
             if (map != null) {
                 marker = map.addMarker(new MarkerOptions().position(dest)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_red_car))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_truck))
                         //.rotation((float) bearingBetweenLocations(oldLocation,newLocation))
                         .title(location_name));
 
@@ -1509,7 +1527,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                         15));
 
                /* markerVehicle = map.addMarker(new MarkerOptions().position(newLocation)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_red_car))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_truck))
                         .title("TKF Vehicle"));*/
             }
 

@@ -209,55 +209,73 @@
 
                     <LinearLayout
                         android:id="@+id/promocodeDeductHolder"
+                        android:gravity="end"
                         android:visibility="gone"
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <TextView
-                            android:text="Promocode "
-                            android:textColor="@color/Gray"
-                            android:textStyle="bold"
-                            android:layout_gravity="center"
-                            android:textSize="@dimen/text_size14"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                        <LinearLayout
+                            android:layout_weight="3"
+                            android:orientation="horizontal"
+                            android:layout_width="0dp"
+                            android:gravity="left"
+                            android:layout_height="wrap_content">
 
-                        <TextView
-                            android:text=""
-                            android:textColor="@color/black"
-                            android:id="@+id/promo_type"
-                            android:layout_marginLeft="5dp"
-                            android:textStyle="bold"
-                            android:textSize="18dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            <TextView
+                                android:text="Promocode "
+                                android:textColor="@color/Gray"
+                                android:textStyle="bold"
+                                android:layout_gravity="center"
+                                android:textSize="@dimen/text_size14"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
 
-                        <TextView
-                            android:text="Applied "
-                            android:textColor="@color/Gray"
-                            android:layout_gravity="center"
-                            android:textStyle="bold"
-                            android:layout_marginLeft="5dp"
-                            android:textSize="@dimen/text_size14"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            <TextView
+                                android:text=""
+                                android:textColor="@color/black"
+                                android:id="@+id/promo_type"
+                                android:layout_marginLeft="5dp"
+                                android:textStyle="bold"
+                                android:layout_gravity="center"
+                                android:textSize="@dimen/text_size14"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
 
-                        <TextView
-                            android:text="- ₹"
-                            android:textColor="@color/MoneyGreen"
-                            android:layout_marginLeft="5dp"
-                            android:textSize="@dimen/text_size18"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            <TextView
+                                android:text=" Applied "
+                                android:textColor="@color/Gray"
+                                android:layout_gravity="center"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/text_size14"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
 
-                        <TextView
-                            android:id="@+id/promocodeDeduction"
-                            android:text=""
-                            android:textColor="@color/MoneyGreen"
-                            android:textSize="@dimen/text_size18"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_weight="3"
+                            android:orientation="horizontal"
+                            android:layout_width="0dp"
+                            android:gravity="left"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:text="- ₹"
+                                android:textColor="@color/MoneyGreen"
+                                android:textSize="16sp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                            <TextView
+                                android:id="@+id/promocodeDeduction"
+                                android:text=""
+                                android:textColor="@color/MoneyGreen"
+                                android:textSize="16sp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                            </LinearLayout>
 
                     </LinearLayout>
 
