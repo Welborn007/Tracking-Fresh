@@ -271,7 +271,7 @@
             android:layout_marginRight="10dp"
             android:gravity="left"
             android:orientation="horizontal"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
