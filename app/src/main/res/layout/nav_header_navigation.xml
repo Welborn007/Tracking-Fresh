@@ -62,7 +62,7 @@
                     android:id="@+id/profile_holder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/edit_profile"
+                    android:text="Edit Profile"
                     android:layout_marginTop="0dp"
                     android:textColor="@color/MoneyGreen"
                     android:textSize="@dimen/text_size"
