@@ -555,7 +555,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
                 newLocation = new LatLng(Double.parseDouble(geoArray[1]), Double.parseDouble(geoArray[0]));
 
                 markerVehicle = map.addMarker(new MarkerOptions().position(newLocation)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_red_car))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_truck))
                         .title("TKF Vehicle"));
             }
 

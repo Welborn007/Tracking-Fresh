@@ -284,6 +284,13 @@
 
         </RelativeLayout>
 
+        <RelativeLayout
+            android:id="@+id/relativelay_reclview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+        </RelativeLayout>
+
         <LinearLayout
             android:id="@+id/product_holder"
             android:orientation="vertical"
