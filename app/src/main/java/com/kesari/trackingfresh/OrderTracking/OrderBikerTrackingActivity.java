@@ -43,6 +43,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
+import com.kesari.trackingfresh.Cart.AddToCart;
 import com.kesari.trackingfresh.DashBoard.DashboardActivity;
 import com.kesari.trackingfresh.Map.HttpConnection;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
@@ -103,7 +104,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
     private static final String TAG_LONGITUDE = "longitude";
 
     TextView kilometre, GuestAddress,ETA;
-    FancyButton btnSubmit;
+    FancyButton btnSubmit,btnHome;
     private Gson gson;
     //NearestVehicleMainPOJO nearestVehicleMainPOJO;
     String[] geoArray;
@@ -160,7 +161,16 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
             GuestAddress = (TextView) findViewById(R.id.GuestAddress);
 
             btnSubmit = (FancyButton) findViewById(R.id.btnSubmit);
+            btnHome = (FancyButton) findViewById(R.id.btnHome);
 
+            btnHome.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(OrderBikerTrackingActivity.this, DashboardActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
             OrderID = getIntent().getStringExtra("orderID");
 
             btnSubmit.setOnClickListener(new View.OnClickListener() {

@@ -1,326 +1,332 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:background="@color/whitegray"
-    tools:showIn="@layout/activity_payment_details"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/whitegray"
+    android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    android:layout_height="match_parent">
+    tools:showIn="@layout/activity_payment_details">
 
     <TextView
         android:id="@+id/delivery_text"
-        android:text="Payment Details"
-        android:textColor="@color/white"
-        android:drawablePadding="-190dp"
-        android:padding="10dp"
-        android:textStyle="bold"
-        android:textSize="@dimen/text_size"
-        android:background="@color/Button_Color"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"/>
+        android:background="@color/Button_Color"
+        android:drawablePadding="-190dp"
+        android:padding="10dp"
+        android:text="Payment Details"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size"
+        android:textStyle="bold"
+        android:visibility="gone" />
 
     <LinearLayout
-        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_above="@+id/btnSubmit"
         android:layout_below="@+id/delivery_text"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:orientation="vertical">
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:layout_height="wrap_content">
+            android:orientation="horizontal">
 
             <TextView
-                android:text="Total amount :-"
-                android:textColor="@color/DarkGray"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:padding="10dp"
+                android:text="Total amount :-"
+                android:textColor="@color/DarkGray"
                 android:textSize="@dimen/text_size18"
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textStyle="bold" />
 
             <TextView
-                android:text="₹"
-                android:textColor="@color/MoneyGreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:paddingTop="10dp"
-                android:textStyle="bold"
+                android:text="₹"
+                android:textColor="@color/MoneyGreen"
                 android:textSize="@dimen/text_size18"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/price_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="5dp"
+                android:paddingTop="10dp"
                 android:text=""
                 android:textColor="@color/MoneyGreen"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="2dp"
-                android:paddingTop="10dp"
                 android:textSize="@dimen/text_size18"
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textStyle="bold" />
 
 
         </LinearLayout>
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:background="@drawable/edittext_border"
             android:orientation="vertical"
-            android:layout_margin="5dp"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:visibility="gone">
 
             <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layoutDirection="rtl"
-                android:textSize="@dimen/text_size"
                 android:text="Use Wallet amount for payment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:textSize="@dimen/text_size" />
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:text="Available Balance: ₹ 200"
                 android:textColor="@color/black"
-                android:layout_marginLeft="10dp"
-                android:textSize="14sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textSize="14sp" />
 
         </LinearLayout>
 
         <RadioGroup
             android:id="@+id/payment_group"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp">
 
             <RadioButton
                 android:id="@+id/cash_on_delivery"
-                android:text="Cash On Delivery"
-                android:textSize="@dimen/text_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
 
                 android:buttonTint="@color/Gray"
+                android:text="Cash On Delivery"
                 android:textColor="@color/Gray"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:textSize="@dimen/text_size" />
 
             <RadioButton
                 android:id="@+id/online_payment"
-                android:textSize="@dimen/text_size"
-                android:text="Credit/Debit Card,Net Banking"
-                android:textColor="@color/Gray"
-                android:buttonTint="@color/Gray"
-
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/Gray"
+                android:text="Credit/Debit Card,Net Banking"
+
+                android:textColor="@color/Gray"
+                android:textSize="@dimen/text_size" />
 
 
         </RadioGroup>
 
         <CheckBox
             android:id="@+id/walletCash"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:textColor="@color/Gray"
-            android:text="Use cash from wallet"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
             android:buttonTint="@color/Gray"
+            android:text="Use cash from wallet"
 
-            android:layout_height="wrap_content" />
-
+            android:textColor="@color/Gray" />
 
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_marginTop="20dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:gravity="end"
-            android:layout_gravity="end"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="20dp"
+            android:gravity="end"
+            android:orientation="horizontal"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
 
             <EditText
                 android:id="@+id/promocodeText"
-                android:hint="Coupon Code"
-                android:textSize="18sp"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_weight="3"
                 android:drawablePadding="10dp"
+                android:hint="Coupon Code"
                 android:inputType="textCapCharacters"
+                android:maxLines="3"
                 android:textColor="@color/DarkGray"
                 android:textColorHint="@color/DarkGray"
-                android:layout_marginRight="10dp"
-                android:layout_gravity="center"
-                android:layout_width="0dp"
-                android:maxLines="3"
-                android:layout_weight="3"
-                android:layout_height="50dp" />
+                android:textSize="18sp" />
 
             <mehdi.sakout.fancybuttons.FancyButton
-                android:layout_width="0dp"
-                android:layout_weight="1.5"
-                android:layout_height="50dp"
-                android:padding="5dp"
-                fancy:fb_text="APPLY"
                 android:id="@+id/promocodeSubmit"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1.5"
+                android:padding="5dp"
                 fancy:fb_defaultColor="@color/MoneyGreen"
                 fancy:fb_focusColor="@color/colorPrimary"
                 fancy:fb_radius="5dp"
+                fancy:fb_text="APPLY"
                 fancy:fb_textColor="@color/white"
                 fancy:fb_textSize="18sp" />
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
-                android:text="Apply"
-                android:visibility="gone"
-                android:padding="5dp"
                 android:layout_alignParentBottom="true"
-                android:textSize="@dimen/text_size"
                 android:background="@drawable/rounded_btn"
-                android:textStyle="bold"
-                android:textColor="@color/TextColor"
+                android:padding="5dp"
+                android:text="Apply"
                 android:textAppearance="?android:textAppearanceMedium"
-                />
+                android:textColor="@color/TextColor"
+                android:textSize="@dimen/text_size"
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/cancel"
-                fancy:fb_fontIconResource="&#xf00d;"
-                fancy:fb_textColor="@color/black"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:padding="5dp"
+                android:visibility="gone"
                 fancy:fb_borderColor="@color/Gray"
                 fancy:fb_defaultColor="#00000000"
-                android:visibility="gone"
                 fancy:fb_focusColor="@color/colorHighlight"
-                fancy:fb_textSize="8sp"
+                fancy:fb_fontIconResource="&#xf00d;"
                 fancy:fb_text=""
-                android:padding="5dp"
-                android:layout_width="40dp"
-                android:layout_height="match_parent"/>
+                fancy:fb_textColor="@color/black"
+                fancy:fb_textSize="8sp" />
 
         </LinearLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/Gray"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/promocodeDeductHolder"
-            android:orientation="horizontal"
-            android:gravity="right"
-            android:visibility="gone"
-            android:layout_margin="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:gravity="left"
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
-                android:text="Promocode"
-                android:textColor="@color/DarkGray"
-                android:paddingTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:paddingBottom="10dp"
                 android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:text="Promocode "
+                android:textColor="@color/DarkGray"
+                android:textSize="@dimen/text_size18"
                 android:textStyle="bold"
-                android:layout_gravity="center"
-                android:textSize="@dimen/text_size14"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:visibility="gone" />
 
             <TextView
+                android:id="@+id/promo_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
                 android:text=""
                 android:textColor="@color/black"
-                android:id="@+id/promo_type"
-                android:padding="10dp"
+                android:textSize="20dp"
                 android:textStyle="bold"
-                android:layout_gravity="center"
-                android:textSize="@dimen/text_size14"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:visibility="gone" />
 
             <TextView
-                android:text="Applied :-"
-                android:textColor="@color/DarkGray"
-                android:paddingTop="10dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
                 android:paddingBottom="10dp"
                 android:paddingRight="10dp"
-                android:layout_gravity="center"
-                android:textStyle="bold"
-                android:textSize="@dimen/text_size14"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:paddingTop="10dp"
+                android:text="Coupons"
+                android:textAllCaps="true"
+                android:textColor="@color/DarkGray"
+                android:textSize="@dimen/text_size18"
+                android:textStyle="bold" />
 
             <TextView
-                android:text="- ₹"
-                android:textColor="@color/MoneyGreen"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
                 android:layout_marginLeft="5dp"
                 android:paddingTop="10dp"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:gravity="right"
+                android:text="- ₹"
+                android:textColor="@color/MoneyGreen"
+                android:textSize="@dimen/text_size18"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/promocodeDeduction"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.2"
+                android:gravity="left"
+                android:paddingTop="10dp"
                 android:text=""
                 android:textColor="@color/MoneyGreen"
-                android:textStyle="bold"
-                android:paddingTop="10dp"
-                android:textSize="16sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textSize="@dimen/text_size18"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="vertical"
-            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:background="@color/white"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <TextView
-                android:text="@string/total_payable_amount"
-                android:textColor="@color/Gray"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_margin="0dp"
                 android:padding="5dp"
+                android:text="@string/total_payable_amount"
                 android:textAllCaps="true"
-                android:textSize="@dimen/text_size18"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textColor="@color/Gray"
+                android:textSize="@dimen/text_size18" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="horizontal">
-            <TextView
-                android:text="₹"
-                android:textColor="@color/black"
-                android:padding="5dp"
-                android:textStyle="bold"
-                android:textSize="25dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
 
-            <TextView
-                android:text=""
-                android:textColor="@color/black"
-                android:id="@+id/price_payable"
-                android:padding="5dp"
-                android:textStyle="bold"
-                android:textSize="25dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="₹"
+                    android:textColor="@color/black"
+                    android:textSize="25dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/price_payable"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="25dp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
 
@@ -328,28 +334,27 @@
 
 
     <mehdi.sakout.fancybuttons.FancyButton
+        android:id="@+id/btnSubmit"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:padding="5dp"
-        fancy:fb_text="PLACE ORDER"
         android:layout_alignParentBottom="true"
-        android:id="@+id/btnSubmit"
+        android:padding="5dp"
         fancy:fb_defaultColor="@color/MoneyGreen"
         fancy:fb_focusColor="@color/colorPrimary"
         fancy:fb_radius="0dp"
+        fancy:fb_text="PLACE ORDER"
         fancy:fb_textColor="@color/white"
         fancy:fb_textSize="18sp" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Place Order"
-        android:visibility="gone"
-        android:textSize="@dimen/text_size"
         android:background="@drawable/rounded_btn"
-        android:textStyle="bold"
-        android:textColor="@color/TextColor"
+        android:text="Place Order"
         android:textAppearance="?android:textAppearanceMedium"
-        />
+        android:textColor="@color/TextColor"
+        android:textSize="@dimen/text_size"
+        android:textStyle="bold"
+        android:visibility="gone" />
 
 </RelativeLayout>
