@@ -171,6 +171,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     if (promocodeText.getText().toString().trim().isEmpty()) {
+                        promocodeText.setFocusable(true);
                         promocodeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                         clearDrawable = false;
                     } else {
@@ -195,6 +196,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
 
                     if (event.getAction() == MotionEvent.ACTION_UP) {
                         if (clearDrawable) {
+                            promocodeText.setFocusable(true);
                             if (event.getRawX() >= (promocodeText.getRight() - promocodeText.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
                                 // your action here
 
@@ -207,6 +209,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                                     price_payable.setText(String.valueOf(price));
                                     promocodeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                                     clearDrawable = false;
+                                    promocodeText.setFocusable(true);
 
                                     promocodeSubmit.setEnabled(true);
                                     promocodeApplied = false;
@@ -214,6 +217,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                                 else
                                 {
                                     promocodeDeductHolder.setVisibility(View.GONE);
+                                    promocodeText.setFocusable(true);
 
                                     promocodeText.setText("");
                                     price_payable.setText(getIntent().getStringExtra("amount"));
@@ -221,7 +225,6 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                                     clearDrawable = false;
 
                                     promocodeSubmit.setEnabled(true);
-
                                     promocodeApplied = false;
                                 }
                                 return true;
@@ -236,6 +239,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 @Override
                 public void onClick(View v) {
                     promocodeText.setText("");
+                    promocodeText.setFocusable(true);
                     price_payable.setText(getIntent().getStringExtra("amount"));
                 }
             });
@@ -244,10 +248,11 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 @Override
                 public void onClick(View v) {
                     if (!promocodeText.getText().toString().isEmpty()) {
+//                        promocodeText.setFocusable(false);
                         sendPromocode(promocodeText.getText().toString().trim(), price_payable.getText().toString().trim(), v);
                     } else {
                         //Toast.makeText(PaymentDetails.this, "Enter Promocode!", Toast.LENGTH_SHORT).show();
-
+                        promocodeText.setFocusable(true);
                         new SweetAlertDialog(PaymentDetails.this)
                                 .setTitleText("Enter Promocode!")
                                 .show();
@@ -315,6 +320,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                         getProfileData();
                         TKFCash = true;
                         promocodeSubmit.setEnabled(true);
+                        promocodeText.setFocusable(true);
 
                         promocodeApplied = false;
                     } else {
@@ -322,6 +328,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                         TKFCash = false;
                         promocodeSubmit.setEnabled(true);
                         promocodeApplied = false;
+                        promocodeText.setFocusable(true);
 
                         walletCash.setText("Use cash from wallet");
                         walletAmount = "";
@@ -431,6 +438,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
     private void ErrorResponse(String Response, Context context) {
         gson = new Gson();
         errorPOJO = gson.fromJson(Response, ErrorPOJO.class);
+        promocodeText.setFocusable(true);
 
         if (errorPOJO.getErrors() != null) {
             String[] error = errorPOJO.getErrors();
@@ -443,6 +451,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                     .show();
         } else if (errorPOJO.getMessage() != null) {
             //Toast.makeText(context, errorPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+            promocodeText.setFocusable(true);
 
             new SweetAlertDialog(PaymentDetails.this)
                     .setTitleText(errorPOJO.getMessage())
@@ -480,6 +489,7 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                     promocodeDeduction.setText(discount);
                     promo_type.setText(promoCode);
                     promocodeSubmit.setEnabled(false);
+                    promocodeText.setFocusable(false);
                     promocodeApplied = true;
 
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -489,6 +499,8 @@ public class PaymentDetails extends AppCompatActivity implements PaymentResultLi
                 }
                 else
                 {
+                    promocodeText.setFocusable(true);
+                    promocodeSubmit.setEnabled(true);
                     new SweetAlertDialog(PaymentDetails.this)
                             .setTitleText("PromoCode Not Valid!!")
                             .show();
