@@ -162,7 +162,14 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
             }, new IOUtils.VolleyFailureCallback() {
                 @Override
                 public void onFailure(String result) {
+                    search_text.setText("Sorry! We don't serve on this route currently");
+                    aviFailed.setVisibility(View.VISIBLE);
+                    avi.setVisibility(View.GONE);
+                    SharedPrefUtil.setNearestRouteMainPOJO(CheckVehicleActivity.this,"");
 
+                    Intent intent = new Intent(CheckVehicleActivity.this, DashboardActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
             });
 

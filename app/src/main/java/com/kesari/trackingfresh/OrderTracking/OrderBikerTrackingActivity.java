@@ -1086,7 +1086,8 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
 
                 extraMarkerInfo.put(marker.getId(), data);
 
-
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(dest,
+                        18));
 
             }
         } catch (Exception e) {

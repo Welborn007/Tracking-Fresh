@@ -1218,7 +1218,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                                         CameraPosition cameraPosition = new CameraPosition.Builder().
                                                 target(finalPosition).
                                                 tilt(0).
-                                                zoom(15).
+                                                zoom(16).
                                                 bearing(0).
                                                 build();
 
@@ -1270,14 +1270,14 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_customer_marker))
                 .title("Origin"));
 
-        CameraPosition cameraPosition = new CameraPosition.Builder().
+        /*CameraPosition cameraPosition = new CameraPosition.Builder().
                 target(Current_Origin).
                 tilt(0).
                 zoom(15).
                 bearing(0).
                 build();
 
-        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));*/
 
         isVehiclePresent = true;
         Current_Location = SharedPrefUtil.getLocation(getActivity());
@@ -1300,16 +1300,23 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             e.printStackTrace();
         }
 
+        if(SharedPrefUtil.getNearestRouteMainPOJO(getActivity()) != null)
+        {
+            String[] geoArrayNew = SharedPrefUtil.getNearestRouteMainPOJO(getActivity()).getData().get(0).getDist().getLocation().getCoordinates();
+            Double lat = Double.valueOf(geoArrayNew[1]);
+            Double lon = Double.valueOf(geoArrayNew[0]);
 
-        String[] geoArrayNew = SharedPrefUtil.getNearestRouteMainPOJO(getActivity()).getData().get(0).getDist().getLocation().getCoordinates();
-        Double lat = Double.valueOf(geoArrayNew[1]);
-        Double lon = Double.valueOf(geoArrayNew[0]);
-
-        LatLng dest = new LatLng(lat, lon);
-
-        addMarkers("1", "TKF Vehicle", lat, lon);
-        getMapsApiDirectionsUrl(lat, lon);
-
+            LatLng dest = new LatLng(lat, lon);
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(dest,
+                    18));
+            addMarkers("1", "TKF Vehicle", lat, lon);
+            getMapsApiDirectionsUrl(lat, lon);
+        }
+        else
+        {
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(Current_Origin,
+                    18));
+        }
 
         //kilometre.setText("Vehicle Not Available");
         //SharedPrefUtil.setNearestVehicle(getActivity(),"");
@@ -1522,9 +1529,6 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 String[] geoArray = nearestRouteMainPOJO.getData().get(0).getDist().getLocation().getCoordinates();
 
                 newLocation = new LatLng(Double.parseDouble(geoArray[1]), Double.parseDouble(geoArray[0]));
-
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(Current_Origin,
-                        15));
 
                /* markerVehicle = map.addMarker(new MarkerOptions().position(newLocation)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_truck))
