@@ -46,7 +46,7 @@
                 xmlns:fancy="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_margin="2dp"
                 android:id="@+id/sourceCardview"
                 android:background="@color/LightGray"
                 card_view:cardCornerRadius="4dp"
@@ -95,7 +95,7 @@
                             android:text=""
                             android:layout_marginLeft="10dp"
                             android:textColor="@color/black"
-                            android:textSize="@dimen/text_size14"
+                            android:textSize="12dp"
                             android:textStyle="bold" />
 
                     </LinearLayout>
@@ -113,7 +113,7 @@
                 android:id="@+id/destinationCardview"
                 android:background="@color/LightGray"
                 card_view:cardCornerRadius="4dp"
-                android:layout_margin="5dp"
+                android:layout_margin="2dp"
 
                 card_view:cardElevation="1dp">
 
@@ -159,7 +159,7 @@
                             android:layout_marginLeft="10dp"
                             android:text=""
                             android:textColor="@color/black"
-                            android:textSize="@dimen/text_size14"
+                            android:textSize="12dp"
                             android:textStyle="bold" />
 
                     </LinearLayout>
