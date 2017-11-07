@@ -95,6 +95,22 @@
                 android:layout_height="wrap_content">
                 <TextView
                     android:id="@+id/addFavourateTextView"
+                    android:text=""
+                    android:gravity="center_vertical"
+                    android:background="@color/whitegray"
+                    android:textColor="@color/Gray"
+                    android:textSize="14dp"
+                    android:textStyle="bold"
+                    android:drawableLeft="@drawable/star"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="50dp"
+                    android:padding="5dp"
+                    android:visibility="gone"
+                    />
+<!--
+                <TextView
+                    android:id="@+id/addFavourateTextView"
                     android:text="ADD TO FAVOURATE"
                     android:gravity="center_vertical"
                     android:background="@color/whitegray"
@@ -107,6 +123,7 @@
                     android:layout_height="50dp"
                     android:padding="5dp"
                     />
+-->
                 <TextView
                     android:id="@+id/addtoCart"
                     android:text="ADD TO CART"
@@ -115,8 +132,7 @@
                     android:textStyle="bold"
                     android:background="@color/MoneyGreen"
                     android:padding="10dp"
-                    android:gravity="center_vertical"
-
+                    android:gravity="center"
                     android:drawableLeft="@drawable/cart"
                     android:drawablePadding="5dp"
                     android:layout_width="0dp"
@@ -128,7 +144,7 @@
                     android:orientation="horizontal"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:gravity="right"
+                    android:gravity="center"
                     android:background="@color/MoneyGreen"
                     android:layout_height="50dp"
                     android:visibility="gone"
@@ -597,7 +613,6 @@
                 android:layout_weight="1"
                 fancy:fb_iconPosition="left"
                 android:id="@+id/gotoCart"
-                fancy:fb_fontIconResource="&#xf217;"
                 fancy:fb_defaultColor="@color/MoneyGreen"
                 fancy:fb_focusColor="@color/colorPrimary"
                 fancy:fb_radius="2dp"
@@ -613,7 +628,6 @@
                 fancy:fb_iconPosition="right"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                fancy:fb_fontIconResource="&#xf046;"
                 fancy:fb_defaultColor="@color/MoneyGreen"
                 fancy:fb_focusColor="@color/colorPrimary"
                 fancy:fb_radius="2dp"

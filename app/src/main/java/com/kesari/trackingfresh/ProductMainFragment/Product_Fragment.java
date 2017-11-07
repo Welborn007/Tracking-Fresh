@@ -1608,6 +1608,7 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
         public void onReceive(Context context, Intent intent) {
             //Toast.makeText(context, "Intent Detected.", Toast.LENGTH_LONG).show();
 
+            try{
             Double lat = intent.getDoubleExtra("lat",0.0);
             Double lon = intent.getDoubleExtra("lon",0.0);
 
@@ -1621,42 +1622,45 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
             GuestAddress.setText(getCompleteAddressString(Current_OriginData.latitude, Current_OriginData.longitude));
 
             animateMarker(map,Cust_Marker,Current_OriginData,false);
-
+            }catch(Exception e){}
         }
     }
 
     public static void animateMarker(final GoogleMap map, final Marker marker, final LatLng toPosition,
                                      final boolean hideMarker) {
-        final Handler handler = new Handler();
-        final long start = SystemClock.uptimeMillis();
-        Projection proj = map.getProjection();
-        Point startPoint = proj.toScreenLocation(marker.getPosition());
-        final LatLng startLatLng = proj.fromScreenLocation(startPoint);
-        final long duration = 3000;
+        try {
+            final Handler handler = new Handler();
+            final long start = SystemClock.uptimeMillis();
+            Projection proj = map.getProjection();
+            Point startPoint = proj.toScreenLocation(marker.getPosition());
+            final LatLng startLatLng = proj.fromScreenLocation(startPoint);
+            final long duration = 3000;
 
-        final Interpolator interpolator = new LinearInterpolator();
+            final Interpolator interpolator = new LinearInterpolator();
 
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                long elapsed = SystemClock.uptimeMillis() - start;
-                float t = interpolator.getInterpolation((float) elapsed / duration);
-                double lng = t * toPosition.longitude + (1 - t) * startLatLng.longitude;
-                double lat = t * toPosition.latitude + (1 - t) * startLatLng.latitude;
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    long elapsed = SystemClock.uptimeMillis() - start;
+                    float t = interpolator.getInterpolation((float) elapsed / duration);
+                    double lng = t * toPosition.longitude + (1 - t) * startLatLng.longitude;
+                    double lat = t * toPosition.latitude + (1 - t) * startLatLng.latitude;
 
-                marker.setPosition(new LatLng(lat, lng));
+                    marker.setPosition(new LatLng(lat, lng));
 
-                if (t < 1.0) {
-                    // Post again 16ms later.
-                    handler.postDelayed(this, 16);
-                } else {
-                    if (hideMarker) {
-                        marker.setVisible(false);
+                    if (t < 1.0) {
+                        // Post again 16ms later.
+                        handler.postDelayed(this, 16);
                     } else {
-                        marker.setVisible(true);
+                        if (hideMarker) {
+                            marker.setVisible(false);
+                        } else {
+                            marker.setVisible(true);
+                        }
                     }
                 }
-            }
-        });
-    }
+            });
+        }catch(Exception e){}
+        }
+
 }

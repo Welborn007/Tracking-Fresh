@@ -638,9 +638,10 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
     @Override
     protected void onRestart() {
         super.onRestart();
-
-        Product_Fragment.map_Holder.setVisibility(View.VISIBLE);
-        Product_Fragment.frameLayout.setVisibility(View.GONE);
+try {
+    Product_Fragment.map_Holder.setVisibility(View.VISIBLE);
+    Product_Fragment.frameLayout.setVisibility(View.GONE);
+}catch (Exception e){}
     }
 
     private void getVerifiedMobileNumber(String Token) {
@@ -1104,21 +1105,25 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
 
     @Override
     public void onBackPressed() {
-        if (exit) {
-            finishAffinity(); // finish activity
-        } else {
-            Product_Fragment.map_Holder.setVisibility(View.VISIBLE);
-            Product_Fragment.frameLayout.setVisibility(View.GONE);
-            Toast.makeText(this, "Press Back again to Exit.",
-                    Toast.LENGTH_SHORT).show();
-            exit = true;
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    exit = false;
-                }
-            }, 3 * 1000);
+        try {
+            if (exit) {
+                finishAffinity(); // finish activity
+            } else {
+                Product_Fragment.map_Holder.setVisibility(View.VISIBLE);
+                Product_Fragment.frameLayout.setVisibility(View.GONE);
+                Toast.makeText(this, "Press Back again to Exit.",
+                        Toast.LENGTH_SHORT).show();
+                exit = true;
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        exit = false;
+                    }
+                }, 3 * 1000);
 
+            }
+        }catch (Exception e){
+            finish();
         }
 
     }

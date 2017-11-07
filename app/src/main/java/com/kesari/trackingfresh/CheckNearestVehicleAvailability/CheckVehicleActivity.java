@@ -1,8 +1,10 @@
 package com.kesari.trackingfresh.CheckNearestVehicleAvailability;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -11,11 +13,13 @@ import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.DashBoard.DashboardActivity;
+import com.kesari.trackingfresh.Login.LoginActivity;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Utilities.Constants;
@@ -48,7 +52,7 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
     private Location Current_Location;
     private LatLng Current_Origin;
     ScheduledExecutorService scheduleTaskExecutor;
-
+    Dialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +71,14 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
             avi = (AVLoadingIndicatorView) findViewById(R.id.avi);
             aviFailed = (AVLoadingIndicatorView) findViewById(R.id.aviFailed);
 
+
+             dialog = new Dialog(CheckVehicleActivity.this);
+//            final Dialog dialog = new Dialog(CheckVehicleActivity.this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.progressdialog);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            dialog.show();
             final LocationManager locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
 
             if ( !locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) )
@@ -163,8 +175,9 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
                 @Override
                 public void onFailure(String result) {
                     search_text.setText("Sorry! We don't serve on this route currently");
-                    aviFailed.setVisibility(View.VISIBLE);
-                    avi.setVisibility(View.GONE);
+//                    aviFailed.setVisibility(View.VISIBLE);
+//                    avi.setVisibility(View.GONE);
+                    dialog.dismiss();
                     SharedPrefUtil.setNearestRouteMainPOJO(CheckVehicleActivity.this,"");
 
                     Intent intent = new Intent(CheckVehicleActivity.this, DashboardActivity.class);
@@ -188,8 +201,9 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
             if(nearestRouteMainPOJO.getData().isEmpty())
             {
                 search_text.setText("Sorry! We don't serve on this route currently");
-                aviFailed.setVisibility(View.VISIBLE);
-                avi.setVisibility(View.GONE);
+//                aviFailed.setVisibility(View.VISIBLE);
+//                avi.setVisibility(View.GONE);
+                dialog.dismiss();
                 SharedPrefUtil.setNearestRouteMainPOJO(CheckVehicleActivity.this,"");
 
                 Intent intent = new Intent(CheckVehicleActivity.this, DashboardActivity.class);
@@ -199,9 +213,9 @@ public class CheckVehicleActivity extends AppCompatActivity implements NetworkUt
             else
             {
                 SharedPrefUtil.setNearestRouteMainPOJO(CheckVehicleActivity.this,Response);
-                aviFailed.setVisibility(View.GONE);
-                avi.setVisibility(View.VISIBLE);
-
+//                aviFailed.setVisibility(View.GONE);
+//                avi.setVisibility(View.VISIBLE);
+                dialog.show();
                 Intent intent = new Intent(CheckVehicleActivity.this, DashboardActivity.class);
                 startActivity(intent);
                 finish();
