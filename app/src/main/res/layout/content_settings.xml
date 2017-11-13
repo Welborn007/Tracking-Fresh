@@ -77,7 +77,7 @@ android:visibility="gone"
             />
         </LinearLayout>
 
-        <com.kesari.trackingfresh.SlidingTabs.SlidingTabLayout
+        <com.trackingfresh.customer.SlidingTabs.SlidingTabLayout
             android:id="@+id/tourTabSlider"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

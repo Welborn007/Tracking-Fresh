@@ -1,35 +1,27 @@
 {
   "project_info": {
-    "project_number": "564733435966",
-    "firebase_url": "https://tracking-fresh-168608.firebaseio.com",
-    "project_id": "tracking-fresh-168608",
-    "storage_bucket": "tracking-fresh-168608.appspot.com"
+    "project_number": "231116274575",
+    "firebase_url": "https://tracking-fresh-customer-app.firebaseio.com",
+    "project_id": "tracking-fresh-customer-app",
+    "storage_bucket": "tracking-fresh-customer-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:564733435966:android:e05aaeb71eccd00f",
+        "mobilesdk_app_id": "1:231116274575:android:4dc003777b788a61",
         "android_client_info": {
-          "package_name": "com.kesari.trackingfresh"
+          "package_name": "com.trackingfresh.customer"
         }
       },
       "oauth_client": [
         {
-          "client_id": "564733435966-91keil9q92h75ppja7qbhs46f181jhb5.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.kesari.trackingfresh",
-            "certificate_hash": "a9bdd58a26aa209ea121d58ac7e05288c316a811"
-          }
-        },
-        {
-          "client_id": "564733435966-l7d3imnphle8jvc8c77ll4esfn0uodb9.apps.googleusercontent.com",
+          "client_id": "231116274575-tlc03pr453pa5969jmmt8hlaao5drthb.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDoJCSIjyCfQAO_F0NNaPXm_vPxrLhJWXM"
+          "current_key": "AIzaSyBdB6t5CN0JiJQph_TYqZmr1N-3Do_7E6M"
         }
       ],
       "services": {
@@ -37,13 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "564733435966-l7d3imnphle8jvc8c77ll4esfn0uodb9.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2

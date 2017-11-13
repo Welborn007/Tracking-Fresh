@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.kesari.trackingfresh">
+    package="com.trackingfresh.customer">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -20,7 +20,7 @@
         android:required="true" />
 
     <application
-        android:name=".network.MyApplication"
+        android:name="com.trackingfresh.customer.network.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -48,12 +48,12 @@
             android:value="0736b1c8cd418d92fbe8137780b997d2ac5f4f20" />
 
         <activity
-            android:name=".Splash.SplashActivity"
+            android:name="com.trackingfresh.customer.Splash.SplashActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
         <activity
-            android:name=".Splash.NewSplash"
+            android:name="com.trackingfresh.customer.Splash.NewSplash"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
@@ -64,82 +64,82 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Login.LoginActivity"
+            android:name="com.trackingfresh.customer.Login.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
         <activity
-            android:name=".DashBoard.DashboardActivity"
+            android:name="com.trackingfresh.customer.DashBoard.DashboardActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".DetailPage.DetailsActivity"
+            android:name="com.trackingfresh.customer.DetailPage.DetailsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Cart.AddToCart"
+            android:name="com.trackingfresh.customer.Cart.AddToCart"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/my_cart"/>
         <activity
-            android:name=".DeliveryAddress.AddDeliveryAddress.Add_DeliveryAddress"
+            android:name="com.trackingfresh.customer.DeliveryAddress.AddDeliveryAddress.Add_DeliveryAddress"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/delivery_address"/>
         <activity
-            android:name=".DeliveryAddress.DefaultDeliveryAddress.Default_DeliveryAddress"
+            android:name="com.trackingfresh.customer.DeliveryAddress.DefaultDeliveryAddress.Default_DeliveryAddress"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/delivery_address"/>
         <activity
-            android:name=".Payment.PaymentDetails"
+            android:name="com.trackingfresh.customer.Payment.PaymentDetails"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/payment_details"/>
         <activity
-            android:name=".Order.OrderReview"
+            android:name="com.trackingfresh.customer.Order.OrderReview"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/order_review"/>
         <activity
-            android:name=".Register.RegisterActivity"
+            android:name="com.trackingfresh.customer.Register.RegisterActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".OTP.OTP"
+            android:name="com.trackingfresh.customer.OTP.OTP"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
 
-        <service android:name=".SNS.MyFirebaseMessagingService">
+        <service android:name="com.trackingfresh.customer.SNS.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".SNS.MyFirebaseInstanceIDService">
+        <service android:name="com.trackingfresh.customer.SNS.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 
         <activity
-            android:name=".ForgetPassword.ForgotPassword_Activity"
+            android:name="com.trackingfresh.customer.ForgetPassword.ForgotPassword_Activity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/forgot_password"/>
         <activity
-            android:name=".YourOrders.OrderListActivity"
+            android:name="com.trackingfresh.customer.YourOrders.OrderListActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/last_order"/>
 
-        <service android:name=".Map.LocationServiceNew" />
+        <service android:name="com.trackingfresh.customer.Map.LocationServiceNew" />
 
         <activity
-            android:name=".MyProfile.ProfileActivity"
+            android:name="com.trackingfresh.customer.MyProfile.ProfileActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/profile"/>
         <activity
-            android:name=".OrderTracking.OrderBikerTrackingActivity"
+            android:name="com.trackingfresh.customer.OrderTracking.OrderBikerTrackingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
@@ -154,74 +154,74 @@
         </provider>
 
         <activity
-            android:name=".DeliveryAddress.UpdateDeleteDeliveryAddress.FetchedDeliveryAddressActivity"
+            android:name="com.trackingfresh.customer.DeliveryAddress.UpdateDeleteDeliveryAddress.FetchedDeliveryAddressActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ConfirmOrder.ConfirmOrderActivity"
+            android:name="com.trackingfresh.customer.ConfirmOrder.ConfirmOrderActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/ordering"/>
         <activity
-            android:name=".CheckNearestVehicleAvailability.CheckVehicleActivity"
+            android:name="com.trackingfresh.customer.CheckNearestVehicleAvailability.CheckVehicleActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
         <activity
-            android:name=".VehicleRoute.RouteActivity"
+            android:name="com.trackingfresh.customer.VehicleRoute.RouteActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
         <activity
-            android:name=".TKCash.TKWalletActivity"
+            android:name="com.trackingfresh.customer.TKCash.TKWalletActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/tkfwallet"/>
         <activity
-            android:name=".ReferEarn.ReferralCodeActivity"
+            android:name="com.trackingfresh.customer.ReferEarn.ReferralCodeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="Invite Friends"
             />
         <activity
-            android:name=".HelpAndFAQ.HelpActivity"
+            android:name="com.trackingfresh.customer.HelpAndFAQ.HelpActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/help"/>
         <activity
-            android:name=".Legal.LegalActivity"
+            android:name="com.trackingfresh.customer.Legal.LegalActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/legal"/>
         <activity
-            android:name=".DeliveryAddress.UpdateDeliveryAddress.UpdateDeliveryAddressActivity"
+            android:name="com.trackingfresh.customer.DeliveryAddress.UpdateDeliveryAddress.UpdateDeliveryAddressActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/update_address"/>
         <activity
-            android:name=".ChangePassword.ChangePasswordActivity"
+            android:name="com.trackingfresh.customer.ChangePassword.ChangePasswordActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/change_pass"/>
         <activity
-            android:name=".Settings.SettingsActivity"
+            android:name="com.trackingfresh.customer.Settings.SettingsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/settings"/>
         <activity
-            android:name=".MyOffers.MyOffersActivity"
+            android:name="com.trackingfresh.customer.MyOffers.MyOffersActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/offers"/>
 
-        <activity android:name=".NotificationList.NotificationListActivity"
+        <activity android:name="com.trackingfresh.customer.NotificationList.NotificationListActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/notification"></activity>
-        <activity android:name=".orderPlace.OrderPlaceActivity"
+        <activity android:name="com.trackingfresh.customer.orderPlace.OrderPlaceActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/order_placed"/>
 
-        <receiver android:name=".Map.RestartServiceReceiver" >
+        <receiver android:name="com.trackingfresh.customer.Map.RestartServiceReceiver" >
         </receiver>
     </application>
 
