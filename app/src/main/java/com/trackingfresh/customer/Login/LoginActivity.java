@@ -1290,7 +1290,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     public void printHashKey(Context pContext) {
         try {
-            PackageInfo info = getPackageManager().getPackageInfo("com.kesari.trackingfresh", PackageManager.GET_SIGNATURES);
+            PackageInfo info = getPackageManager().getPackageInfo("com.trackingfresh.customer", PackageManager.GET_SIGNATURES);
             for (Signature signature : info.signatures) {
                 MessageDigest md = MessageDigest.getInstance("SHA");
                 md.update(signature.toByteArray());

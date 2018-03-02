@@ -148,7 +148,7 @@ public class ProfileActivity extends AppCompatActivity implements NetworkUtilsRe
                 public void onClick(View v) {
                     Intent intent = new Intent(android.content.Intent.ACTION_SEND);
                     intent.setType("text/plain");
-                    String shareBodyText = "https://play.google.com/store/apps/details?id=com.kesari.trackingfresh" + "\n\n" + "Referral Code - " + SharedPrefUtil.getUser(ProfileActivity.this).getData().getReferralCode();
+                    String shareBodyText = "https://play.google.com/store/apps/details?id=com.trackingfresh.customer" + "\n\n" + "Referral Code - " + SharedPrefUtil.getUser(ProfileActivity.this).getData().getReferralCode();
                     intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Referral Code");
                     intent.putExtra(android.content.Intent.EXTRA_TEXT, shareBodyText);
                     startActivity(Intent.createChooser(intent, "Choose sharing method"));

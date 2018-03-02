@@ -1,10 +1,16 @@
 package com.trackingfresh.customer.Splash;
 
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.PermissionInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
@@ -12,7 +18,11 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -22,8 +32,10 @@ import android.widget.Button;
 import com.trackingfresh.customer.BuildConfig;
 import com.trackingfresh.customer.CheckNearestVehicleAvailability.CheckVehicleActivity;
 import com.trackingfresh.customer.Login.LoginActivity;
+import com.trackingfresh.customer.Map.LocationServiceNew;
 import com.trackingfresh.customer.R;
 import com.trackingfresh.customer.Register.RegisterActivity;
+import com.trackingfresh.customer.Utilities.IOUtils;
 import com.trackingfresh.customer.Utilities.SharedPrefUtil;
 
 import org.jsoup.Jsoup;
@@ -32,15 +44,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class NewSplash extends AppCompatActivity {
 
+    private static final int SPLASH_PERMISSION = 101;
+    private static final int SPLASH_PERMISSION_LOGIN = 102;
+    private static final int SPLASH_PERMISSION_REG = 103;
     Button btnLogin,login;
     private String TAG = this.getClass().getSimpleName();
 
     public static String versionName ="";
     public static String versionCode ="";
     Bitmap bitmap;
+//    private PermissionListener permissionListener;
+    String[] permissions = new String[]{Manifest.permission.READ_SMS, Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,17 +68,23 @@ public class NewSplash extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_new_splash);
 
+        if (hasPermissions(permissions, SPLASH_PERMISSION)) {
+            checkFirstRun();
 
-        checkFirstRun();
+        }
         Button buttonSignUp= (Button) findViewById(R.id.buttonSignUp);
         Button buttonLogin= (Button) findViewById(R.id.buttonLogin);
 
         buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent startMainActivity = new Intent(getApplicationContext(),RegisterActivity.class);
-                startMainActivity.putExtra("Type","simple");
-                startActivity(startMainActivity);
+
+//                if (hasPermissions(permissions, SPLASH_PERMISSION_REG)) {
+                    Intent startMainActivity = new Intent(getApplicationContext(),RegisterActivity.class);
+                    startMainActivity.putExtra("Type","simple");
+                    startActivity(startMainActivity);
+//                }
+
             }
         });
 
@@ -70,7 +95,10 @@ public class NewSplash extends AppCompatActivity {
                /* Intent startMainActivity = new Intent(getApplicationContext(),LoginActivity.class);
                 startActivity(startMainActivity);
                 finish();*/
-                startApp();
+//                if (hasPermissions(permissions, SPLASH_PERMISSION_LOGIN)) {
+                    startApp();
+//                }
+
             }
         });
 
@@ -156,6 +184,13 @@ public class NewSplash extends AppCompatActivity {
         }
     }
 
+/*
+    @Override
+    public void onPermissionDenied() {
+        finishAffinity();
+    }
+*/
+
     private class GetVersionCode extends AsyncTask<Void, String, String> {
         @Override
         protected String doInBackground(Void... voids) {
@@ -201,7 +236,7 @@ public class NewSplash extends AppCompatActivity {
         try
         {
 
-            String url = "https://play.google.com/store/apps/details?id=com.kesari.trackingfresh";
+            String url = "https://play.google.com/store/apps/details?id=com.trackingfresh.customer";
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse(url));
             //startActivity(i);
@@ -257,4 +292,127 @@ public class NewSplash extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    /*Added for permission*/
+    //Permissions
+    public boolean hasPermissions(String[] flags, int requestCode) {
+//        this.permissionListener = permissionListener;
+        List<String> permissionToBeRequested = new ArrayList<>();
+        for (String flag : flags) {
+            if (!(ContextCompat.checkSelfPermission(this, flag) == PackageManager.PERMISSION_GRANTED)) {
+                permissionToBeRequested.add(flag);
+            }
+        }
+        if (permissionToBeRequested.isEmpty())
+            return true;
+        else {
+            askForPermission(permissionToBeRequested, requestCode);
+            return false;
+        }
+    }
+/*
+    public interface PermissionListener {
+        void onPermissionDenied();
+    }*/
+    private void askForPermission(List<String> permissionToBeRequested, int requestCode) {
+        String[] stringPermissions = new String[permissionToBeRequested.size()];
+        stringPermissions = (String[]) permissionToBeRequested.toArray(stringPermissions);
+//        LogUtil.info(TAG, "stringPermissions : " + stringPermissions.length);
+        ActivityCompat.requestPermissions(this, stringPermissions, requestCode);
+    }
+
+    public void askForPermission(String[] permissionToBeRequested, int requestCode) {
+//        LogUtil.info(TAG, "stringPermissions : " + permissionToBeRequested.length);
+        ActivityCompat.requestPermissions(this, permissionToBeRequested, requestCode);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        List<String> deniedPermissions = new ArrayList<>();
+        if (requestCode == SPLASH_PERMISSION) {
+            for (int i = 0; i <= permissions.length - 1; i++) {
+                if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
+                    deniedPermissions.add(permissions[i]);
+                }
+            }
+            if (!deniedPermissions.isEmpty())
+                isUserDeniedPermissionForEver(deniedPermissions);
+            if (permissions.length == grantResults.length) {
+                checkFirstRun();
+            }
+        }else {
+            for (int i = 0; i <= permissions.length - 1; i++) {
+                if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
+                    deniedPermissions.add(permissions[i]);
+                }
+            }
+            if (!deniedPermissions.isEmpty())
+                isUserDeniedPermissionForEver(deniedPermissions);
+            if (permissions.length == grantResults.length) {
+                checkFirstRun();
+            }
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    public void isUserDeniedPermissionForEver(List<String> permissions) {
+        String permissionsName = "";
+        for (String permission : permissions) {
+            if (!shouldShowRequestPermissionRationale(permission)) {
+                try {
+                    PermissionInfo permissionInfo = getPackageManager().getPermissionInfo(permission, 0);
+                    String groupName = permissionInfo.group.split("\\.")[(permissionInfo.group.split("\\.").length - 1)];
+                    permissionsName = permissionsName.isEmpty() ? groupName : permissionsName + " And " + groupName;
+                } catch (PackageManager.NameNotFoundException e) {
+//                    LogUtil.printException(e);
+                }
+            }
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(NewSplash.this);
+        builder.setMessage("All Permissions should be granted to use Tracking Fresh")
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        goToPermissionSettings();
+                        dialog.cancel();
+                    }
+                })
+                .setNegativeButton("Deny", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+//                        permissionListener.onPermissionDenied();
+
+                        dialog.cancel();
+                        finishAffinity();
+
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+
+      /*  DialogUtils.showAlert(this, getResString(R.string.permission), getResString(R.string.need_permission), getResString(R.string.okay), getResString(R.string.deny), new DialogListener() {
+                    @Override
+                    public void onPositiveClicked() {
+                        MyApplication.LOOKING_FOR_PERMISSION = true;
+                        goToPermissionSettings();
+                    }
+
+                    @Override
+                    public void onNegativeClicked() {
+                        permissionListener.onPermissionDenied();
+                    }
+                }
+        );*/
+    }
+
+    public void goToPermissionSettings() {
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getPackageName(), null);
+        intent.setData(uri);
+        startActivity(intent);
+    }
+
+
 }

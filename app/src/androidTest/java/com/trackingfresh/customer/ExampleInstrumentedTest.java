@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.kesari.trackingfresh", appContext.getPackageName());
+        assertEquals("com.trackingfresh.customer", appContext.getPackageName());
     }
 }

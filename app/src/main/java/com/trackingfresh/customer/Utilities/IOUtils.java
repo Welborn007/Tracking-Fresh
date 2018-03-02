@@ -128,13 +128,13 @@ public class IOUtils {
                     strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
                 }
                 strAdd = strReturnedAddress.toString();
-                Log.w("My Current loction address", strReturnedAddress.toString());
+                Log.w("My loction address", strReturnedAddress.toString());
             } else {
-                Log.w("My Current loction address", "No Address returned!");
+                Log.w("My loction address", "No Address returned!");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.w("My Current loction address", "Canont get Address!");
+            Log.w("My loction address", "Canont get Address!");
         }
         return strAdd;
     }
@@ -854,12 +854,18 @@ public class IOUtils {
                             Log.e("IOUTILS", "Location service is already running");
                         }
                     }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                });
+                /*.setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        context.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        if (!IOUtils.isServiceRunning(LocationServiceNew.class, context)) {
+                            // LOCATION SERVICE
+                            context.startService(new Intent(context, LocationServiceNew.class));
+                            Log.e("IOUTILS", "Location service is already running");
+                        }
                         dialog.cancel();
                     }
-                });
+                });*/
         final AlertDialog alert = builder.create();
         alert.show();
     }
