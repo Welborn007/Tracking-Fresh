@@ -33,14 +33,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
 
 /**
  * Created by kesari on 05/11/16.
  */
-public class MyApplication extends Application
-{
+public class MyApplication extends Application {
 
     private static MyApplication mInstance;
     private RequestQueue requestQueue;
@@ -53,10 +50,12 @@ public class MyApplication extends Application
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+       /*
         Realm.init(this);
         RealmConfiguration configuration = new RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build();
         Realm.setDefaultConfiguration(configuration);
         Realm.getInstance(configuration);
+        */
 
         initFresco();
         Fabric.with(this, new Crashlytics());
@@ -64,24 +63,22 @@ public class MyApplication extends Application
 
 
         Gson gson = new Gson();
-        Type type = new TypeToken<List<AddCart_model>>(){}.getType();
+        Type type = new TypeToken<List<AddCart_model>>() {
+        }.getType();
         ArrayList<AddCart_model> Products = gson.fromJson(SharedPrefUtil.getKeyUserCartItem(getApplicationContext()), type);
 
-        if(Products != null)
-        {
-            if(!Products.isEmpty())
-            {
+        if (Products != null) {
+            if (!Products.isEmpty()) {
                 myProducts = Products;
             }
         }
 
-        Type type1 = new TypeToken<List<CardPOJO>>(){}.getType();
+        Type type1 = new TypeToken<List<CardPOJO>>() {
+        }.getType();
         ArrayList<CardPOJO> cardPOJOs1 = gson.fromJson(SharedPrefUtil.getKeySavedCards(getApplicationContext()), type1);
 
-        if(cardPOJOs1 != null)
-        {
-            if(!cardPOJOs1.isEmpty())
-            {
+        if (cardPOJOs1 != null) {
+            if (!cardPOJOs1.isEmpty()) {
                 cardPOJOs = cardPOJOs1;
             }
         }
@@ -144,19 +141,19 @@ public class MyApplication extends Application
     public ArrayList<CardPOJO> getCardList() {
 
         Gson gson = new Gson();
-        Type type = new TypeToken<List<CardPOJO>>(){}.getType();
+        Type type = new TypeToken<List<CardPOJO>>() {
+        }.getType();
         ArrayList<CardPOJO> cardPOJOs = gson.fromJson(SharedPrefUtil.getKeySavedCards(getApplicationContext()), type);
 
         return cardPOJOs;
     }
 
-    public void saveCards()
-    {
+    public void saveCards() {
         //Set the values
         Gson gson = new Gson();
         String jsonText = gson.toJson(cardPOJOs);
 
-        SharedPrefUtil.setKeySavedCards(getApplicationContext(),jsonText);
+        SharedPrefUtil.setKeySavedCards(getApplicationContext(), jsonText);
     }
 
     public void removeAllCards() {
@@ -175,8 +172,7 @@ public class MyApplication extends Application
         saveCart();
     }
 
-    public String getProductQuantity(String product_id)
-    {
+    public String getProductQuantity(String product_id) {
 
         //DashboardActivity.updateNotificationsBadge(myProducts.size());
 
@@ -189,8 +185,7 @@ public class MyApplication extends Application
         return "0";
     }
 
-    public boolean checkifproductexists(String product_id)
-    {
+    public boolean checkifproductexists(String product_id) {
 
         //DashboardActivity.updateNotificationsBadge(myProducts.size());
 
@@ -204,8 +199,7 @@ public class MyApplication extends Application
         return false;
     }
 
-    public boolean IncrementProductQuantity(String product_id)
-    {
+    public boolean IncrementProductQuantity(String product_id) {
         //DashboardActivity.updateNotificationsBadge(myProducts.size());
 
         for (AddCart_model item : myProducts) {
@@ -219,8 +213,7 @@ public class MyApplication extends Application
         return false;
     }
 
-    public boolean DecrementProductQuantity(String product_id)
-    {
+    public boolean DecrementProductQuantity(String product_id) {
         //DashboardActivity.updateNotificationsBadge(myProducts.size());
 
         for (AddCart_model item : myProducts) {
@@ -234,8 +227,7 @@ public class MyApplication extends Application
         return false;
     }
 
-    public boolean RemoveProductonZeroQuantity(String product_id)
-    {
+    public boolean RemoveProductonZeroQuantity(String product_id) {
         //DashboardActivity.updateNotificationsBadge(myProducts.size());
 
         for (AddCart_model item : myProducts) {
@@ -268,14 +260,14 @@ public class MyApplication extends Application
         //DashboardActivity.updateNotificationsBadge(myProducts.size());
 
         Gson gson = new Gson();
-        Type type = new TypeToken<List<AddCart_model>>(){}.getType();
+        Type type = new TypeToken<List<AddCart_model>>() {
+        }.getType();
         ArrayList<AddCart_model> Products = gson.fromJson(SharedPrefUtil.getKeyUserCartItem(getApplicationContext()), type);
 
         return Products;
     }
 
-    public void saveCart()
-    {
+    public void saveCart() {
         //Set the values
         Gson gson = new Gson();
         String jsonText = gson.toJson(myProducts);
@@ -290,6 +282,6 @@ public class MyApplication extends Application
         ReferralCodeActivity.updateNotificationsBadge(myProducts.size());
         MyOffersActivity.updateNotificationsBadge(myProducts.size());
 
-        SharedPrefUtil.setKeyUserCartItem(getApplicationContext(),jsonText);
+        SharedPrefUtil.setKeyUserCartItem(getApplicationContext(), jsonText);
     }
 }

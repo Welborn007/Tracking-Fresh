@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/DemoFresh.iml" filepath="$PROJECT_DIR$/DemoFresh.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Tracking-fresh.iml" filepath="$PROJECT_DIR$/Tracking-fresh.iml" />
-      <module fileurl="file://$PROJECT_DIR$/TrackingFresh.iml" filepath="$PROJECT_DIR$/TrackingFresh.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tracking-fresh.iml" filepath="$PROJECT_DIR$/tracking-fresh.iml" />
     </modules>
   </component>
 </project>
