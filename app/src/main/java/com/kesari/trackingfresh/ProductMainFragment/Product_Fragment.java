@@ -1,16 +1,10 @@
 package com.kesari.trackingfresh.ProductMainFragment;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,7 +16,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -53,7 +46,6 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.CheckNearestVehicleAvailability.CheckVehicleActivity;
 import com.kesari.trackingfresh.CheckNearestVehicleAvailability.NearestVehicleMainPOJO;
-import com.kesari.trackingfresh.DashBoard.DashboardActivity;
 import com.kesari.trackingfresh.Map.HttpConnection;
 import com.kesari.trackingfresh.Map.JSON_POJO;
 import com.kesari.trackingfresh.Map.PathJSONParser;
@@ -254,12 +246,12 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
                 }
             });
 
-            GuestAddress.setOnClickListener(new View.OnClickListener() {
+           /* GuestAddress.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     sendNotification("Check Our New Seasonal Products!!!");
                 }
-            });
+            });*/
 
             recyclerView.addOnItemTouchListener(
                     new RecyclerItemClickListener(getApplicationContext(), new RecyclerItemClickListener.OnItemClickListener() {
@@ -315,49 +307,49 @@ public class Product_Fragment extends Fragment implements OnMapReadyCallback {
         return V;
     }
 
-    private void sendNotification(String messageBody) {
-        try
-        {
-
-            Intent intent = new Intent(getActivity(), DashboardActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            PendingIntent pendingIntent = PendingIntent.getActivity(getActivity(), 0, intent,
-                    PendingIntent.FLAG_ONE_SHOT);
-
-            Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-
-            Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getActivity())
-                    .setContentTitle("Tracking Fresh")
-                    .setContentText(messageBody)
-                    .setLargeIcon(largeIcon)
-                    .setAutoCancel(true)
-                    .setSound(defaultSoundUri)
-                    .setContentIntent(pendingIntent);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                notificationBuilder.setSmallIcon(R.drawable.ic_stat_tkf);
-            } else {
-                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
-            }
-
-            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.notif_banner);
-            //bitmap = Bitmap.createScaledBitmap(bitmap, 500, 350, false);
-
-            notificationBuilder.setStyle(new NotificationCompat.BigPictureStyle()
-                    .bigPicture(bitmap));
-
-            NotificationManager notificationManager =
-                    (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-
-            Random random = new Random();
-            int id = random.nextInt(9999 - 1000) + 1000;
-            notificationManager.notify(id, notificationBuilder.build());
-
-        } catch (Exception e) {
-            Log.i(TAG, e.getMessage());
-        }
-    }
+//    private void sendNotification(String messageBody) {
+//        try
+//        {
+//
+//            Intent intent = new Intent(getActivity(), DashboardActivity.class);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            PendingIntent pendingIntent = PendingIntent.getActivity(getActivity(), 0, intent,
+//                    PendingIntent.FLAG_ONE_SHOT);
+//
+//            Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+//
+//            Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+//            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getActivity())
+//                    .setContentTitle("Tracking Fresh")
+//                    .setContentText(messageBody)
+//                    .setLargeIcon(largeIcon)
+//                    .setAutoCancel(true)
+//                    .setSound(defaultSoundUri)
+//                    .setContentIntent(pendingIntent);
+//
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                notificationBuilder.setSmallIcon(R.drawable.ic_stat_tkf);
+//            } else {
+//                notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+//            }
+//
+//            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.notif_banner);
+//            //bitmap = Bitmap.createScaledBitmap(bitmap, 500, 350, false);
+//
+//            notificationBuilder.setStyle(new NotificationCompat.BigPictureStyle()
+//                    .bigPicture(bitmap));
+//
+//            NotificationManager notificationManager =
+//                    (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+//
+//            Random random = new Random();
+//            int id = random.nextInt(9999 - 1000) + 1000;
+//            notificationManager.notify(id, notificationBuilder.build());
+//
+//        } catch (Exception e) {
+//            Log.i(TAG, e.getMessage());
+//        }
+//    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {

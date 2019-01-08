@@ -1,10 +1,12 @@
 package com.kesari.trackingfresh.OrderTracking;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -12,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
@@ -21,12 +24,15 @@ import android.text.Html;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -35,15 +41,12 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
-import com.kesari.trackingfresh.CheckNearestVehicleAvailability.CheckVehicleActivity;
 import com.kesari.trackingfresh.CheckNearestVehicleAvailability.NearestVehicleMainPOJO;
-import com.kesari.trackingfresh.DashBoard.DashboardActivity;
 import com.kesari.trackingfresh.Map.HttpConnection;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
 import com.kesari.trackingfresh.Map.PathJSONParser;
 import com.kesari.trackingfresh.Order.OrderReview;
 import com.kesari.trackingfresh.R;
-import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
 import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
 import com.kesari.trackingfresh.network.FireToast;
@@ -51,35 +54,30 @@ import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.ActionClickListener;
+import com.seatgeek.placesautocomplete.PlacesAutocompleteTextView;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class OrderBikerTrackingActivity extends AppCompatActivity implements NetworkUtilsReceiver.NetworkResponseInt,OnMapReadyCallback {
 
     private NetworkUtilsReceiver networkUtilsReceiver;
     private SupportMapFragment supportMapFragment;
-    private LatLng Current_Origin;
+    private LatLng Current_Origin,Home_ORIGIN;
     //GoogleMap googleMap;
     private String TAG = this.getClass().getSimpleName();
     //private GPSTracker gps;
     private Location Current_Location;
     LatLng oldLocation, newLocation;
     private static final int DURATION = 3000;
-    ScheduledExecutorService scheduleTaskExecutor;
     private GoogleMap map;
-    Marker marker;
+    Marker marker,homeMarker;
     HashMap<String, HashMap> extraMarkerInfo = new HashMap<String, HashMap>();
 
     private static final String TAG_ID = "id";
@@ -92,6 +90,9 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
     private Gson gson;
     NearestVehicleMainPOJO nearestVehicleMainPOJO;
     String[] geoArray;
+    private BroadcastReceiver _refreshReceiver = new MyReceiver();
+    private Location old_Location;
+    PlacesAutocompleteTextView placesAutocompleteTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,8 +173,9 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
 
             oldLocation = Current_Origin;
 
-
-
+            old_Location = new Location(LocationManager.GPS_PROVIDER);
+            old_Location.setLatitude(Current_Origin.latitude);
+            old_Location.setLongitude(Current_Origin.longitude);
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
@@ -186,36 +188,13 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
         try
         {
 
-            //getData();
-
             map = googleMap;
             if (ActivityCompat.checkSelfPermission(OrderBikerTrackingActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                     ActivityCompat.checkSelfPermission(OrderBikerTrackingActivity.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
+            map.setMyLocationEnabled(true);
 
-            //map.setMyLocationEnabled(true);
-
-           /* Location location = new Location(LocationManager.GPS_PROVIDER);
-            location.setLatitude(Current_Location.getLatitude());
-            location.setLongitude(Current_Location.getLongitude());*/
-
-            //updateCurrentLocationMarker();
-
-        /*CameraPosition cameraPosition = new CameraPosition.Builder().
-                target(Current_Origin).
-                tilt(60).
-                zoom(18).
-                bearing(0).
-                build();
-
-        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));*/
-
-        /*map.addMarker(new MarkerOptions().position(Current_Origin)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_home))
-                .title("Origin"));*/
-
-            //map.moveCamera(CameraUpdateFactory.newLatLngZoom(Current_Origin, 18.0f));
 
             if (!NetworkUtils.isNetworkConnectionOn(OrderBikerTrackingActivity.this)) {
                 FireToast.customSnackbarWithListner(OrderBikerTrackingActivity.this, "No internet access", "Settings", new ActionClickListener() {
@@ -228,103 +207,31 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
             }
             else
             {
-                scheduleTaskExecutor = Executors.newScheduledThreadPool(1);
+                Current_Location = SharedPrefUtil.getLocation(OrderBikerTrackingActivity.this);
+                Current_Origin = new LatLng(Current_Location.getLatitude(), Current_Location.getLongitude());
 
-                // This schedule a task to run every 10 minutes:
-                scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
-                    public void run() {
+                Log.i("laittudeText",String.valueOf(Current_Origin.latitude));
 
-                        Current_Location = SharedPrefUtil.getLocation(OrderBikerTrackingActivity.this);
-                        Current_Origin = new LatLng(Current_Location.getLatitude(), Current_Location.getLongitude());
+                CameraPosition cameraPosition = new CameraPosition.Builder().
+                        target(Current_Origin).
+                        tilt(60).
+                        zoom(18).
+                        bearing(0).
+                        build();
 
-                        Log.i("laittudeText",String.valueOf(Current_Origin.latitude));
-
-                        /*if(!String.valueOf(Current_Origin.latitude).equalsIgnoreCase("0.0")  && !String.valueOf(Current_Origin.longitude).equalsIgnoreCase("0.0"))
-                        {
-                            IOUtils ioUtils = new IOUtils();
-
-                            ioUtils.getGETStringRequest(OrderBikerTrackingActivity.this, Constants.LocationAPI, new IOUtils.VolleyCallback() {
-                                @Override
-                                public void onSuccess(String result) {
-                                    DriverLocationResponse(result);
-                                }
-                            });
-                        }*/
-
-
-                        String url = Constants.CheckNearestVehicle ;
-
-                        Log.i("url", url);
-
-                        JSONObject jsonObject = new JSONObject();
-
-                        try {
-
-                            JSONObject postObject = new JSONObject();
-
-                            postObject.put("longitude", SharedPrefUtil.getLocation(OrderBikerTrackingActivity.this).getLongitude());
-                            postObject.put("latitude", SharedPrefUtil.getLocation(OrderBikerTrackingActivity.this).getLatitude());
-
-                            jsonObject.put("post", postObject);
-
-                            Log.i("JSON CREATED", jsonObject.toString());
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        Map<String, String> params = new HashMap<String, String>();
-                        params.put("Authorization", "JWT " + SharedPrefUtil.getToken(OrderBikerTrackingActivity.this));
-
-                        IOUtils ioUtils = new IOUtils();
-
-                        ioUtils.sendJSONObjectRequestHeader(OrderBikerTrackingActivity.this, url,params, jsonObject, new IOUtils.VolleyCallback() {
-                            @Override
-                            public void onSuccess(String result) {
-                                DriverLocationResponse(result);
-                            }
-                        });
-                    }
-                }, 0, 5, TimeUnit.SECONDS);
+                map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             }
 
-        /*ScheduledExecutorService scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
-
-        // This schedule a task to run every 10 minutes:
-        scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
-            public void run() {
-                if (!NetworkUtils.isNetworkConnectionOn(getActivity())) {
-                    FireToast.customSnackbarWithListner(getActivity(), "No internet access", "Settings", new ActionClickListener() {
-                        @Override
-                        public void onActionClicked(Snackbar snackbar) {
-                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                        }
-                    });
-                    return;
-                } else {
-                    //getDriverLocationTask();
-
-                    IOUtils ioUtils = new IOUtils();
-
-                    ioUtils.getGETStringRequest(getActivity(),Constants.LocationAPI, new IOUtils.VolleyCallback() {
-                        @Override
-                        public void onSuccess(String result) {
-                            DriverLocationResponse(result);
-                        }
-                    });
 
 
-                    //DriverLocationResponse(IOUtils.getStringRequest(getActivity(),Constants.LocationAPI));
-                    //getDriverLocationTaskSample();
-                }
-            }
-        }, 0, 3, TimeUnit.SECONDS);*/
-
-            map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                 @Override
-                public boolean onMarkerClick(Marker marker) {
-
-                    return false;
+                public void onMapClick(LatLng latLng) {
+                    Home_ORIGIN = latLng;
+                    homeMarker = map.addMarker(new MarkerOptions().position(Home_ORIGIN)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_home))
+                            .title("Origin"));
+                    DriverLocationResponse();
                 }
             });
 
@@ -357,45 +264,13 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
         return brng;
     }
 
-    public void DriverLocationResponse(String resp) {
+    public void DriverLocationResponse() {
         map.clear();
         try {
 
-            nearestVehicleMainPOJO = gson.fromJson(resp, NearestVehicleMainPOJO.class);
-
-            if(nearestVehicleMainPOJO.getData().isEmpty())
-            {
-                Intent intent = new Intent(OrderBikerTrackingActivity.this, CheckVehicleActivity.class);
-                startActivity(intent);
-                finish();
-            }
-            else
-            {
-                geoArray = nearestVehicleMainPOJO.getData().get(0).getGeo().getCoordinates();
-            }
-
-           /* JSONObject jsonObject = new JSONObject(resp);
-
-            JSONObject dataObject = jsonObject.getJSONObject("data");
-
-            String created_at = dataObject.getString("created_at");
-
-            JSONArray geoArray = dataObject.getJSONArray("geo");
-
-            Double cust_longitude = geoArray.getDouble(0);
-            Double cust_latitude = geoArray.getDouble(1);*/
-
-            Double cust_longitude = Double.parseDouble(geoArray[0]);
-            Double cust_latitude = Double.parseDouble(geoArray[1]);
 
 //                final LatLng startPosition = marker.getPosition();
-            final LatLng finalPosition = new LatLng(cust_latitude, cust_longitude);
-
-            LatLng currentPosition = new LatLng(
-                    cust_latitude,
-                    cust_longitude);
-
-            //marker.setPosition(currentPosition);
+            final LatLng finalPosition = new LatLng(Current_Origin.latitude, Current_Origin.longitude);
 
             map.setTrafficEnabled(true);
 
@@ -408,30 +283,10 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
 
             map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-            newLocation = currentPosition;
+            newLocation = Current_Origin;
 
-            addMarkers("1", "TKF Vehicle", cust_latitude, cust_longitude);
-            getMapsApiDirectionsUrl(cust_latitude, cust_longitude);
-
-            /*latlang = new LatLng(cust_latitude, cust_longitude);
-
-            Location loc1 = new Location("");
-            loc1.setLatitude(Current_Origin.latitude);
-            loc1.setLongitude(Current_Origin.longitude);
-
-            Location loc2 = new Location("");
-            loc2.setLatitude(latlang.latitude);
-            loc2.setLongitude(latlang.longitude);
-
-            float distanceInMeters = loc1.distanceTo(loc2) / 1000;*/
-
-
-
-            //String VehicleAddress = IOUtils.getCompleteAddressString(getActivity(), latlang.latitude, latlang.longitude);
-
-            //String CustomerAddress = IOUtils.getCompleteAddressString(getActivity(), Current_Origin.latitude, Current_Origin.longitude);
-
-            //kilometre.setText("Vehicle is " + String.valueOf(IOUtils.roundToOneDigit(distanceInMeters)) + " kms away at " + VehicleAddress);
+            addMarkers("1", "TKF Vehicle", Current_Origin.latitude, Current_Origin.longitude);
+            getMapsApiDirectionsUrl(Home_ORIGIN.latitude, Home_ORIGIN.longitude);
 
         } catch (Exception e) {
             //Toast.makeText(getActivity(), "exception", Toast.LENGTH_SHORT).show();
@@ -456,7 +311,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                 .fillColor(0x30ff0000));*/
 
             if (map != null) {
-                marker = map.addMarker(new MarkerOptions().position(dest)
+                marker = map.addMarker(new MarkerOptions().position(Current_Origin)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_up_angle))
                         .rotation((float) bearingBetweenLocations(oldLocation,newLocation))
                         .title(location_name));
@@ -476,7 +331,7 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                     }
                 }, DURATION - 500);
 
-                map.addMarker(new MarkerOptions().position(Current_Origin)
+                homeMarker = map.addMarker(new MarkerOptions().position(Home_ORIGIN)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_home))
                         .title("Origin"));
 
@@ -676,9 +531,12 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
                 Log.e(TAG, "Location service is stopped");
             }
 
-            if(!scheduleTaskExecutor.isShutdown())
+            try
             {
-                scheduleTaskExecutor.shutdown();
+                unregisterReceiver(this._refreshReceiver);
+            }catch (Exception e)
+            {
+                e.printStackTrace();
             }
 
         }catch (Exception e)
@@ -690,9 +548,6 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
-        Intent intent = new Intent(OrderBikerTrackingActivity.this, DashboardActivity.class);
-        startActivity(intent);
         finish();
     }
 
@@ -700,8 +555,6 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent intent = new Intent(OrderBikerTrackingActivity.this, DashboardActivity.class);
-                startActivity(intent);
                 finish();
                 return true;
         }
@@ -733,4 +586,89 @@ public class OrderBikerTrackingActivity extends AppCompatActivity implements Net
             Log.i(TAG,e.getMessage());
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        IntentFilter filter = new IntentFilter("SOMEACTION");
+        registerReceiver(_refreshReceiver, filter);
+    }
+
+    public class MyReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //Toast.makeText(context, "Intent Detected.", Toast.LENGTH_LONG).show();
+
+            Double lat = intent.getDoubleExtra("lat",0.0);
+            Double lon = intent.getDoubleExtra("lon",0.0);
+
+            Log.i("ChangedLatReceiver_Main", String.valueOf(lat));
+            Log.i("ChangedLonReceiver_Main", String.valueOf(lon));
+
+            Location location = new Location(LocationManager.GPS_PROVIDER);
+            location.setLatitude(lat);
+            location.setLongitude(lon);
+
+            if(location.distanceTo(old_Location) > 40) {
+                Current_Origin = new LatLng(lat, lon);
+                //vehicle.setPosition(Current_Origin);
+
+                CameraPosition cameraPosition = new CameraPosition.Builder().
+                        target(Current_Origin).
+                        tilt(0).
+                        zoom(17).
+                        bearing(0).
+                        build();
+
+                map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+                marker.setRotation((float) bearingBetweenLocations(oldLocation,Current_Origin));
+                animateMarker(map,marker,Current_Origin,false);
+
+                oldLocation = Current_Origin;
+
+                old_Location = new Location(LocationManager.GPS_PROVIDER);
+                old_Location.setLatitude(lat);
+                old_Location.setLongitude(lon);
+            }
+
+        }
+    }
+
+    public static void animateMarker(final GoogleMap map, final Marker marker, final LatLng toPosition,
+                                     final boolean hideMarker) {
+        final Handler handler = new Handler();
+        final long start = SystemClock.uptimeMillis();
+        Projection proj = map.getProjection();
+        Point startPoint = proj.toScreenLocation(marker.getPosition());
+        final LatLng startLatLng = proj.fromScreenLocation(startPoint);
+        final long duration = 3000;
+
+        final Interpolator interpolator = new LinearInterpolator();
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                float t = interpolator.getInterpolation((float) elapsed / duration);
+                double lng = t * toPosition.longitude + (1 - t) * startLatLng.longitude;
+                double lat = t * toPosition.latitude + (1 - t) * startLatLng.latitude;
+
+                marker.setPosition(new LatLng(lat, lng));
+
+                if (t < 1.0) {
+                    // Post again 16ms later.
+                    handler.postDelayed(this, 16);
+                } else {
+                    if (hideMarker) {
+                        marker.setVisible(false);
+                    } else {
+                        marker.setVisible(true);
+                    }
+                }
+            }
+        });
+    }
+
 }

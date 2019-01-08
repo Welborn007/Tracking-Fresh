@@ -28,7 +28,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -64,6 +63,7 @@ import com.google.gson.Gson;
 import com.kesari.trackingfresh.CheckNearestVehicleAvailability.CheckVehicleActivity;
 import com.kesari.trackingfresh.ForgetPassword.ForgotPassword_Activity;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
+import com.kesari.trackingfresh.OrderTracking.OrderBikerTrackingActivity;
 import com.kesari.trackingfresh.R;
 import com.kesari.trackingfresh.Register.RegisterActivity;
 import com.kesari.trackingfresh.Utilities.Constants;
@@ -185,7 +185,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onClick(View v) {
 
-                    String UserName = user_name.getText().toString();
+                    Intent intent = new Intent(LoginActivity.this, OrderBikerTrackingActivity.class);
+                    startActivity(intent);
+                    finish();
+
+                    /*String UserName = user_name.getText().toString();
                     String Password = password.getText().toString();
 
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -209,7 +213,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     } else if (Password.isEmpty()) {
                         //Toast.makeText(LoginActivity.this, getString(R.string.password), Toast.LENGTH_SHORT).show();
                         password.setError(getString(R.string.password));
-                    }
+                    }*/
 
                 }
             });

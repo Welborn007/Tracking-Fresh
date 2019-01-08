@@ -5,17 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Point;
 import android.graphics.drawable.LayerDrawable;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -23,58 +18,29 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Display;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.login.LoginManager;
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.gson.Gson;
 import com.kesari.trackingfresh.Cart.AddToCart;
-import com.kesari.trackingfresh.Login.LoginActivity;
 import com.kesari.trackingfresh.Map.LocationServiceNew;
-import com.kesari.trackingfresh.MyProfile.ProfileActivity;
-import com.kesari.trackingfresh.OTP.OTP;
 import com.kesari.trackingfresh.OTP.SendOtpPOJO;
 import com.kesari.trackingfresh.ProductMainFragment.Product_Fragment;
 import com.kesari.trackingfresh.R;
-import com.kesari.trackingfresh.Utilities.Constants;
 import com.kesari.trackingfresh.Utilities.IOUtils;
-import com.kesari.trackingfresh.Utilities.SharedPrefUtil;
-import com.kesari.trackingfresh.VehicleRoute.RouteActivity;
-import com.kesari.trackingfresh.YourOrders.OrderListActivity;
 import com.kesari.trackingfresh.network.FireToast;
 import com.kesari.trackingfresh.network.MyApplication;
 import com.kesari.trackingfresh.network.NetworkUtils;
 import com.kesari.trackingfresh.network.NetworkUtilsReceiver;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.ActionClickListener;
-import com.squareup.picasso.Picasso;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -161,7 +127,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 }
             });
 
-            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+           /* NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             View header = navigationView.getHeaderView(0);
 
             my_orders_holder = (RelativeLayout) header.findViewById(R.id.my_orders_holder);
@@ -174,10 +140,10 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                         .with(DashboardActivity.this)
                         .load(SharedPrefUtil.getUser(DashboardActivity.this).getData().getProfileImage())
                         .into(profile_image);
-            }
+            }*/
 
 
-            profile_holder = (RelativeLayout) header.findViewById(R.id.profile_holder);
+           /* profile_holder = (RelativeLayout) header.findViewById(R.id.profile_holder);
             help_holder = (RelativeLayout) header.findViewById(R.id.help_holder);
             route_holder = (RelativeLayout) header.findViewById(R.id.route_holder);
 
@@ -226,21 +192,21 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             logo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                /*Product_Fragment product_fragment = new Product_Fragment();
+                *//*Product_Fragment product_fragment = new Product_Fragment();
 
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
                 transaction.replace(R.id.fragment_holder, product_fragment);
-                transaction.commit();*/
+                transaction.commit();*//*
                 }
-            });
+            });*/
 
-            filter.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    getProfileData();
-                }
-            });
+//            filter.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    getProfileData();
+//                }
+//            });
 
             final LocationManager locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
 
@@ -263,6 +229,8 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
             FragmentTransaction transaction = manager.beginTransaction();
             transaction.replace(R.id.fragment_holder, product_fragment);
             transaction.commit();
+
+            Product_Fragment.map_Holder.setVisibility(View.VISIBLE);
 
             updateNotificationsBadge(myApplication.getProductsArraylist().size());
 
@@ -288,7 +256,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 }
             }, 3000);*/
 
-            final Handler handler = new Handler();
+            /*final Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -297,14 +265,14 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
 
                 }
             }, 3000);
-
+*/
 
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
     }
 
-    private void getProfileData() {
+    /*private void getProfileData() {
         try {
 
             IOUtils ioUtils = new IOUtils();
@@ -337,17 +305,17 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
         } catch (Exception e) {
             Log.i(TAG, e.getMessage());
         }
-    }
+    }*/
 
-    @Override
+    /*@Override
     protected void onRestart() {
         super.onRestart();
 
         Product_Fragment.map_Holder.setVisibility(View.VISIBLE);
         Product_Fragment.frameLayout.setVisibility(View.GONE);
-    }
+    }*/
 
-    private void getVerifiedMobileNumber(String Token)
+    /*private void getVerifiedMobileNumber(String Token)
     {
         try
         {
@@ -447,10 +415,10 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
                 }
             });
 
-            /*gpsTracker = new GPSTracker(DashboardActivity.this);
+            *//*gpsTracker = new GPSTracker(DashboardActivity.this);
 
             Double Lat = gpsTracker.getLatitude();
-            Double Long = gpsTracker.getLongitude();*/
+            Double Long = gpsTracker.getLongitude();*//*
 
             WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
             Window window = dialog.getWindow();
@@ -615,7 +583,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
 
         dialog.show();
 
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -657,7 +625,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
         // onCreateOptionsMenu(Menu) will be called again.
     }
 
-    @Override
+    /*@Override
     protected void onStart() {
 
         try
@@ -761,7 +729,7 @@ public class DashboardActivity extends AppCompatActivity implements NetworkUtils
 
         return popupWindow;
     }
-
+*/
    /* @Override
     public void onBackPressed() {
         super.onBackPressed();

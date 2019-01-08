@@ -132,7 +132,7 @@ public class LocationServiceNew extends Service implements LocationListener,
 		/*// BROADCAST
 		sendBroadcast(new Intent(Constants.INTENT_ACTION_LOCATION_CHANGED));*/
 
-
+        broadcastIntent(location.getLatitude(),location.getLongitude());
     }
 
     public LatLng LocationCoords(Double lat, Double lon)
@@ -160,4 +160,13 @@ public class LocationServiceNew extends Service implements LocationListener,
     public void onLocationChanged(Location arg0) {
         newLocation(arg0);
     }
+
+    public void broadcastIntent(Double lat,Double lon){
+        Intent intent = new Intent();
+        intent.setAction("SOMEACTION");
+        intent.putExtra("lat",lat);
+        intent.putExtra("lon",lon);
+        sendBroadcast(intent);
+    }
+
 }
